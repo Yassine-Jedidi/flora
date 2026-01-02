@@ -19,7 +19,7 @@ export function Navbar() {
             >
               <path
                 d="M0 6 Q0 0 6 0 L34 0 Q40 0 40 6 L40 26 Q40 32 34 32 L6 32 Q0 32 0 26 Z"
-                fill="rgb(236, 72, 153)"
+                className="fill-pink-500"
               />
             </svg>
           </div>
@@ -33,7 +33,7 @@ export function Navbar() {
             <input
               type="text"
               placeholder="Explore unique treasures..."
-              className="w-full rounded-full bg-[#fce7f3] py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-pink-200 border-0"
+              className="w-full rounded-full bg-pink-100 py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-pink-200 border-0"
             />
           </div>
         </div>
@@ -68,11 +68,11 @@ export function Navbar() {
 
         {/* User Icons */}
         <div className="flex items-center gap-3 shrink-0">
-          <button className="relative rounded-full bg-[#fce7f3] p-2 text-foreground hover:bg-[#fbcfe8] transition-colors">
+          <button className="relative rounded-full bg-pink-100 p-2 text-foreground hover:bg-pink-200 transition-colors">
             <ShoppingBag className="h-5 w-5" />
             <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-pink-500 border-2 border-background" />
           </button>
-          <button className="rounded-full bg-[#fce7f3] p-2 text-foreground hover:bg-[#fbcfe8] transition-colors">
+          <button className="rounded-full bg-pink-100 p-2 text-foreground hover:bg-pink-200 transition-colors">
             <User className="h-5 w-5" />
           </button>
         </div>
