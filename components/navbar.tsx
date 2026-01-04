@@ -2,6 +2,7 @@
 
 import { Search, ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Navbar() {
   return (
@@ -9,21 +10,14 @@ export function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <div className="relative h-8 w-10">
-            {/* Wavy-edged rectangular shape */}
-            <svg
-              className="h-8 w-10"
-              viewBox="0 0 40 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M0 6 Q0 0 6 0 L34 0 Q40 0 40 6 L40 26 Q40 32 34 32 L6 32 Q0 32 0 26 Z"
-                className="fill-pink-500"
-              />
-            </svg>
-          </div>
-          <span className="text-xl font-semibold text-foreground">Flora</span>
+          <Image
+            src="/flora sparkle.png"
+            alt="Flora Logo"
+            width={180}
+            height={80}
+            className="h-16 w-auto object-contain"
+            priority
+          />
         </Link>
 
         {/* Search Bar */}

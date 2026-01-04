@@ -2,6 +2,7 @@
 
 import { Camera, Mail, Heart } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -13,23 +14,13 @@ export function Footer() {
           {/* Left Section - Company Information */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              {/* Logo Icon - Pink ribbon/banner */}
-              <div className="relative h-8 w-10">
-                <svg
-                  className="h-8 w-10"
-                  viewBox="0 0 40 32"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M0 6 Q0 0 6 0 L34 0 Q40 0 40 6 L40 26 Q40 32 34 32 L6 32 Q0 32 0 26 Z"
-                    className="fill-pink-500"
-                  />
-                </svg>
-              </div>
-              <span className="text-xl font-bold text-foreground">
-                Flora Accessories
-              </span>
+              <Image
+                src="/flora sparkle.png"
+                alt="Flora Logo"
+                width={120}
+                height={40}
+                className="h-24 w-auto object-contain"
+              />
             </div>
             <p className="text-sm text-muted-foreground max-w-xs">
               Elevating everyday moments with exquisite adornments.
