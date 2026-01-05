@@ -6,7 +6,7 @@ import { ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, C
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TUNISIA_GOVERNORATES } from "@/lib/constants/tunisia";
+import { TUNISIA_GOVERNORATES, TUNISIA_LOCATIONS } from "@/lib/constants/tunisia";
 import {
     Select,
     SelectContent,
@@ -27,6 +27,10 @@ interface Product {
 
 export function ProductDetails({ product }: { product: Product }) {
     const [selectedImage, setSelectedImage] = useState(0);
+    const [selectedGov, setSelectedGov] = useState<string>("");
+    const [selectedCity, setSelectedCity] = useState<string>("");
+
+    const availableCities = selectedGov ? TUNISIA_LOCATIONS[selectedGov] || [] : [];
 
     const nextImage = useCallback(() => {
         if (product.images.length > 0) {
@@ -202,7 +206,13 @@ export function ProductDetails({ product }: { product: Product }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Governorate</Label>
-                                <Select>
+                                <Select
+                                    value={selectedGov}
+                                    onValueChange={(val) => {
+                                        setSelectedGov(val);
+                                        setSelectedCity("");
+                                    }}
+                                >
                                     <SelectTrigger className="!h-12 rounded-full px-6 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium w-full">
                                         <SelectValue placeholder="Select state" />
                                     </SelectTrigger>
@@ -216,14 +226,23 @@ export function ProductDetails({ product }: { product: Product }) {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">City / Neighborhood</Label>
-                                <div className="relative group">
-                                    <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
-                                    <Input
-                                        placeholder="Town or area"
-                                        className="h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
-                                    />
-                                </div>
+                                <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">City / Delegation</Label>
+                                <Select
+                                    value={selectedCity}
+                                    onValueChange={setSelectedCity}
+                                    disabled={!selectedGov}
+                                >
+                                    <SelectTrigger className="!h-12 rounded-full px-6 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium w-full disabled:opacity-50">
+                                        <SelectValue placeholder={selectedGov ? "Select city" : "Choose state first"} />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper" className="rounded-2xl border-pink-50 shadow-xl max-h-48 bg-white">
+                                        {availableCities.map((city) => (
+                                            <SelectItem key={city} value={city} className="rounded-xl focus:bg-pink-50 focus:text-[#FF8BBA]">
+                                                {city}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
 
