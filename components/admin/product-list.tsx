@@ -72,7 +72,7 @@ export function ProductList({ products }: ProductListProps) {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="px-6 py-4 font-bold text-gray-700">
-                                    {Number(product.price).toFixed(2)} <span className="text-[10px] text-gray-400">DT</span>
+                                    {Number(product.price).toFixed(3)} <span className="text-[10px] text-gray-400">DT</span>
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
                                     <span className={`text-sm font-semibold ${product.stock <= 5 ? 'text-red-500' : 'text-gray-600'}`}>

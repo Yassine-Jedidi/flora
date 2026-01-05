@@ -159,7 +159,7 @@ export function ProductForm({ categories }: ProductFormProps) {
                                         id="price"
                                         {...form.register("price")}
                                         type="number"
-                                        step="0.01"
+                                        step="0.001"
                                         className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
                                     />
                                     {form.formState.errors.price && (
