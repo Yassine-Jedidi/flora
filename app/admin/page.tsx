@@ -5,7 +5,7 @@ import { ProductList } from "@/components/admin/product-list";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 
-export default async function NewProductPage() {
+export default async function AdminPage() {
     let categories = await getCategories();
     const products = await getProducts();
 
