@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Loader2 } from "lucide-react";
+import { useState } from "react";
 import {
     Table,
     TableBody,
@@ -13,12 +14,45 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deleteProduct } from "@/app/actions/product";
+import { useRouter } from "next/navigation";
 
 interface ProductListProps {
     products: any[];
 }
 
 export function ProductList({ products }: ProductListProps) {
+    const router = useRouter();
+    const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+    const onDelete = async (id: string) => {
+        setIsDeleting(id);
+        try {
+            const result = await deleteProduct(id);
+            if (result.success) {
+                router.refresh();
+            } else {
+                alert(result.error || "Error deleting product");
+            }
+        } catch (error) {
+            console.error("Delete error:", error);
+            alert("Something went wrong");
+        } finally {
+            setIsDeleting(null);
+        }
+    };
+
     if (products.length === 0) {
         return (
             <Card className="border-dashed border-pink-200 bg-pink-50/10 rounded-3xl">
@@ -96,9 +130,40 @@ export function ProductList({ products }: ProductListProps) {
                                         <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#003366] hover:bg-pink-50 rounded-full">
                                             <Pencil className="w-4 h-4" />
                                         </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full">
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
+
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    disabled={isDeleting === product.id}
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full"
+                                                >
+                                                    {isDeleting === product.id ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : (
+                                                        <Trash2 className="w-4 h-4" />
+                                                    )}
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent className="rounded-3xl border-pink-100">
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle className="text-[#003366] font-bold text-xl">Are you absolutely sure? ✨</AlertDialogTitle>
+                                                    <AlertDialogDescription className="text-gray-500">
+                                                        This will permanently remove <span className="font-bold text-pink-500">{product.name}</span> from your beautiful inventory. This action cannot be undone.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel className="rounded-full border-pink-100 text-gray-500 hover:bg-pink-50 transition-all">Cancel</AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                        onClick={() => onDelete(product.id)}
+                                                        className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold transition-all"
+                                                    >
+                                                        Yes, delete it
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </div>
                                 </TableCell>
                             </TableRow>
