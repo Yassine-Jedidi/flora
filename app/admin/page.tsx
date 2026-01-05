@@ -17,7 +17,7 @@ export default async function AdminPage() {
     return (
         <div className="min-h-screen flex flex-col bg-[#FDF8FA]">
             <Navbar />
-            <main className="flex-1 container mx-auto py-12 px-4">
+            <main className="flex-1 container mx-auto pt-36 pb-12 px-4">
                 <div className="max-w-5xl mx-auto space-y-12">
                     <div className="flex flex-col items-center text-center space-y-4">
                         <div className="bg-pink-100 text-[#FF8BBA] px-4 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase shadow-sm">

@@ -3,8 +3,11 @@
 import { Search, ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export function Navbar() {
+  const pathname = usePathname();
+
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-[100]">
       <div className="bg-white/80 backdrop-blur-md rounded-full border border-pink-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] px-6">
@@ -16,7 +19,7 @@ export function Navbar() {
               alt="Flora Logo"
               width={180}
               height={80}
-              className="h-10 w-auto object-contain"
+              className="h-14 w-auto object-contain"
               priority
             />
           </Link>
@@ -37,28 +40,26 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-8 shrink-0">
             <Link
               href="/rings"
-              className="text-xs font-bold text-[#3E343C] hover:text-[#FF8BBA] transition-colors uppercase tracking-widest"
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/rings" ? "text-[#FF8BBA]" : "text-[#3E343C] hover:text-[#FF8BBA]"
+                }`}
             >
               Rings
             </Link>
             <Link
               href="/bracelets"
-              className="text-xs font-bold text-[#3E343C] hover:text-[#FF8BBA] transition-colors uppercase tracking-widest"
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/bracelets" ? "text-[#FF8BBA]" : "text-[#3E343C] hover:text-[#FF8BBA]"
+                }`}
             >
               Bracelets
             </Link>
             <Link
               href="/necklaces"
-              className="text-xs font-bold text-[#3E343C] hover:text-[#FF8BBA] transition-colors uppercase tracking-widest"
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/necklaces" ? "text-[#FF8BBA]" : "text-[#3E343C] hover:text-[#FF8BBA]"
+                }`}
             >
               Necklaces
             </Link>
-            <Link
-              href="/new-arrivals"
-              className="text-xs font-bold text-[#FF8BBA] hover:text-pink-600 transition-colors uppercase tracking-widest"
-            >
-              New
-            </Link>
+
           </div>
 
           {/* User Icons */}
