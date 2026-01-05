@@ -7,8 +7,8 @@ export const ProductSchema = z.object({
   categoryId: z.string().min(1, "Please select a category"),
   stock: z.coerce.number().int().min(0, "Stock cannot be negative"),
   images: z.array(z.string().url()).min(1, "At least one image is required"),
-  isFeatured: z.boolean().default(false),
-  isArchived: z.boolean().default(false),
+  isFeatured: z.boolean(),
+  isArchived: z.boolean(),
 });
 
 export type ProductFormValues = z.infer<typeof ProductSchema>;

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductSchema, type ProductFormValues } from "@/lib/validations/product";
 import { createProduct } from "@/app/actions/product";
-import { UploadDropzone } from "@/lib/uploadthing";
+import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
 import { Loader2, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -40,7 +40,7 @@ export function ProductForm({ categories }: ProductFormProps) {
     const [isPending, setIsPending] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const form = useForm<ProductFormValues>({
+    const form = useForm({
         resolver: zodResolver(ProductSchema),
         defaultValues: {
             name: "",
@@ -51,7 +51,7 @@ export function ProductForm({ categories }: ProductFormProps) {
             images: [],
             isFeatured: false,
             isArchived: false,
-        },
+        } as ProductFormValues,
     });
 
     const images = form.watch("images") || [];
@@ -78,12 +78,30 @@ export function ProductForm({ categories }: ProductFormProps) {
         }
     };
 
+    const { startUpload, isUploading } = useUploadThing("productImage", {
+        onClientUploadComplete: (res: { url: string }[]) => {
+            const urls = res.map((f) => f.url);
+            const updatedImages = [...images, ...urls];
+            form.setValue("images", updatedImages, { shouldValidate: true });
+        },
+        onUploadError: () => {
+            alert("Error uploading images");
+        },
+    });
+
+    const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length > 0) {
+            await startUpload(files);
+        }
+    };
+
     const removeImage = (urlToRemove: string) => {
         const updatedImages = images.filter((url) => url !== urlToRemove);
         form.setValue("images", updatedImages, { shouldValidate: true });
     };
 
-    const onInvalid = (errors: any) => {
+    const onInvalid = (errors: unknown) => {
         console.log("Form Errors:", errors);
     };
 
@@ -97,7 +115,7 @@ export function ProductForm({ categories }: ProductFormProps) {
                 </div>
             )}
 
-            <form onSubmit={form.handleSubmit(onSubmit, onInvalid) as any}>
+            <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
                 <CardHeader className="pb-8">
                     <CardTitle className="text-2xl font-bold text-[#003366]">Listing Details</CardTitle>
                     <CardDescription>Enter the information that will be shown to customers.</CardDescription>
@@ -113,7 +131,7 @@ export function ProductForm({ categories }: ProductFormProps) {
                                     id="name"
                                     {...form.register("name")}
                                     placeholder="e.g. Sparkly Butterfly Clip"
-                                    className="rounded-xl border-pink-100 focus-visible:ring-pink-300"
+                                    className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
                                 />
                                 {form.formState.errors.name && (
                                     <p className="text-red-500 text-xs">{form.formState.errors.name.message}</p>
@@ -127,7 +145,7 @@ export function ProductForm({ categories }: ProductFormProps) {
                                     {...form.register("description")}
                                     rows={4}
                                     placeholder="Tell a story about this accessory..."
-                                    className="rounded-xl border-pink-100 focus-visible:ring-pink-300 resize-none"
+                                    className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white resize-none"
                                 />
                                 {form.formState.errors.description && (
                                     <p className="text-red-500 text-xs">{form.formState.errors.description.message}</p>
@@ -213,21 +231,37 @@ export function ProductForm({ categories }: ProductFormProps) {
                                     </div>
                                 ))}
                                 {images.length < 4 && (
-                                    <div className="aspect-square rounded-2xl border-2 border-dashed border-pink-100 bg-pink-50/20 hover:bg-pink-50/40 transition-colors flex flex-col items-center justify-center p-0 overflow-hidden">
-                                        <UploadDropzone
-                                            endpoint="productImage"
-                                            onClientUploadComplete={(res) => {
-                                                const urls = res.map((f) => f.url);
-                                                const updatedImages = [...images, ...urls];
-                                                form.setValue("images", updatedImages, { shouldValidate: true });
-                                            }}
-                                            appearance={{
-                                                button: "bg-[#FF8BBA] hover:bg-[#FF75AA] text-xs px-4 py-2 h-auto rounded-full transition-all",
-                                                allowedContent: "hidden",
-                                                label: "text-xs font-semibold text-pink-400 mt-2",
-                                                container: "border-none p-4",
-                                            }}
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            id="image-upload"
+                                            className="hidden"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={handleImageSelect}
+                                            disabled={isUploading}
                                         />
+                                        <label
+                                            htmlFor="image-upload"
+                                            className={`
+                                                aspect-square rounded-3xl border-2 border-dashed border-pink-200
+                                                flex flex-col items-center justify-center p-6 text-center
+                                                cursor-pointer transition-all hover:bg-pink-50/30 hover:border-pink-300
+                                                ${isUploading ? "opacity-50 cursor-not-allowed" : ""}
+                                            `}
+                                        >
+                                            <div className="bg-pink-100 p-3 rounded-full mb-3 text-[#FF8BBA] group-hover:scale-110 transition-transform">
+                                                {isUploading ? (
+                                                    <Loader2 className="w-6 h-6 animate-spin" />
+                                                ) : (
+                                                    <Plus className="w-6 h-6" />
+                                                )}
+                                            </div>
+                                            <p className="text-xs font-bold text-[#003366]">
+                                                {isUploading ? "Uploading..." : "Add Photo ✨"}
+                                            </p>
+                                            <p className="text-[10px] text-pink-400 mt-1">Max 4MB per image</p>
+                                        </label>
                                     </div>
                                 )}
                             </div>
