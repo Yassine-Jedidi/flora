@@ -36,6 +36,7 @@ model Product {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orders    Order[]
 
   @@index([categoryId])
 }
@@ -48,6 +49,36 @@ model ProductImage {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  productId       String
+  product         Product     @relation(fields: [productId], references: [id])
+  
+  // Guest Information
+  fullName        String
+  phoneNumber     String
+  governorate     String
+  city            String      // Delegation
+  detailedAddress String
+  
+  // Order details
+  totalPrice      Decimal     @db.Decimal(10, 3)
+  status          OrderStatus @default(PENDING)
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@index([productId])
 }

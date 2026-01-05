@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight, User, MapPin, Phone } from "lucide-react";
+import { ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight, User, MapPin, Phone, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { OrderSchema, type OrderFormValues } from "@/lib/validations/order";
+import { createOrder } from "@/app/actions/order";
 
 interface Product {
     id: string;
@@ -27,10 +31,40 @@ interface Product {
 
 export function ProductDetails({ product }: { product: Product }) {
     const [selectedImage, setSelectedImage] = useState(0);
-    const [selectedGov, setSelectedGov] = useState<string>("");
-    const [selectedCity, setSelectedCity] = useState<string>("");
+    const [isPending, setIsPending] = useState(false);
+    const [success, setSuccess] = useState(false);
 
+    const form = useForm<OrderFormValues>({
+        resolver: zodResolver(OrderSchema),
+        defaultValues: {
+            fullName: "",
+            phoneNumber: "",
+            governorate: "",
+            city: "",
+            detailedAddress: "",
+        },
+    });
+
+    const selectedGov = form.watch("governorate");
+    const selectedCity = form.watch("city");
     const availableCities = selectedGov ? TUNISIA_LOCATIONS[selectedGov] || [] : [];
+
+    const onSubmit = async (values: OrderFormValues) => {
+        setIsPending(true);
+        try {
+            const result = await createOrder(product.id, values);
+            if (result.success) {
+                setSuccess(true);
+                form.reset();
+            } else {
+                alert(result.error || "Une erreur est survenue.");
+            }
+        } catch (error) {
+            alert("Une erreur est survenue.");
+        } finally {
+            setIsPending(false);
+        }
+    };
 
     const nextImage = useCallback(() => {
         if (product.images.length > 0) {
@@ -49,6 +83,28 @@ export function ProductDetails({ product }: { product: Product }) {
         const interval = setInterval(nextImage, 5000);
         return () => clearInterval(interval);
     }, [nextImage, product.images.length]);
+
+    if (success) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-6 animate-in fade-in zoom-in duration-500">
+                <div className="w-24 h-24 rounded-full bg-pink-50 flex items-center justify-center text-[#FF8BBA]">
+                    <ShoppingBag className="w-12 h-12" />
+                </div>
+                <div className="space-y-2">
+                    <h2 className="text-3xl font-black text-[#3E343C]">Commande Validée ! ✨</h2>
+                    <p className="text-[#8B7E84] max-w-md">
+                        Merci pour votre commande, {product.name} sera bientôt chez vous. Nous vous contacterons par téléphone pour confirmer les détails.
+                    </p>
+                </div>
+                <Button
+                    onClick={() => setSuccess(false)}
+                    className="rounded-full px-8 bg-[#FF8BBA] hover:bg-pink-600 shadow-xl shadow-pink-100"
+                >
+                    Commander un autre article
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
@@ -171,7 +227,7 @@ export function ProductDetails({ product }: { product: Product }) {
                 </div>
 
                 {/* Quick Order Form */}
-                <div className="space-y-6 pt-6 border-t border-dotted border-pink-100">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t border-dotted border-pink-100">
                     <div className="flex items-center gap-2 mb-2">
                         <span className="text-sm font-black text-[#3E343C] uppercase tracking-wider">Quick Order Details</span>
                         <div className="h-px flex-1 bg-pink-50" />
@@ -185,20 +241,33 @@ export function ProductDetails({ product }: { product: Product }) {
                                 <div className="relative group">
                                     <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
                                     <Input
-                                        placeholder="e.g. Jane Doe"
-                                        className="h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                        {...form.register("fullName")}
+                                        placeholder="ex. Sarra Ben Ali"
+                                        className={`h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium ${form.formState.errors.fullName ? "border-red-300" : ""}`}
                                     />
                                 </div>
+                                {form.formState.errors.fullName && (
+                                    <p className="text-[10px] text-red-500 font-bold ml-4 uppercase tracking-tighter">
+                                        {form.formState.errors.fullName.message}
+                                    </p>
+                                )}
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Phone Number</Label>
                                 <div className="relative group">
                                     <Phone className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
                                     <Input
-                                        placeholder="00 000 000"
-                                        className="h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                        {...form.register("phoneNumber")}
+                                        placeholder="20 000 000"
+                                        maxLength={8}
+                                        className={`h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium ${form.formState.errors.phoneNumber ? "border-red-300" : ""}`}
                                     />
                                 </div>
+                                {form.formState.errors.phoneNumber && (
+                                    <p className="text-[10px] text-red-500 font-bold ml-4 uppercase tracking-tighter">
+                                        {form.formState.errors.phoneNumber.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -209,11 +278,11 @@ export function ProductDetails({ product }: { product: Product }) {
                                 <Select
                                     value={selectedGov}
                                     onValueChange={(val) => {
-                                        setSelectedGov(val);
-                                        setSelectedCity("");
+                                        form.setValue("governorate", val, { shouldValidate: true });
+                                        form.setValue("city", "");
                                     }}
                                 >
-                                    <SelectTrigger className="!h-12 rounded-full px-6 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium w-full">
+                                    <SelectTrigger className={`!h-12 rounded-full px-6 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium w-full ${form.formState.errors.governorate ? "border-red-300" : ""}`}>
                                         <SelectValue placeholder="Select state" />
                                     </SelectTrigger>
                                     <SelectContent position="popper" className="rounded-2xl border-pink-50 shadow-xl max-h-48 bg-white">
@@ -224,15 +293,20 @@ export function ProductDetails({ product }: { product: Product }) {
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {form.formState.errors.governorate && (
+                                    <p className="text-[10px] text-red-500 font-bold ml-4 uppercase tracking-tighter">
+                                        {form.formState.errors.governorate.message}
+                                    </p>
+                                )}
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">City / Delegation</Label>
                                 <Select
                                     value={selectedCity}
-                                    onValueChange={setSelectedCity}
+                                    onValueChange={(val) => form.setValue("city", val, { shouldValidate: true })}
                                     disabled={!selectedGov}
                                 >
-                                    <SelectTrigger className="!h-12 rounded-full px-6 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium w-full disabled:opacity-50">
+                                    <SelectTrigger className={`!h-12 rounded-full px-6 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium w-full disabled:opacity-50 ${form.formState.errors.city ? "border-red-300" : ""}`}>
                                         <SelectValue placeholder={selectedGov ? "Select city" : "Choose state first"} />
                                     </SelectTrigger>
                                     <SelectContent position="popper" className="rounded-2xl border-pink-50 shadow-xl max-h-48 bg-white">
@@ -243,6 +317,11 @@ export function ProductDetails({ product }: { product: Product }) {
                                         ))}
                                     </SelectContent>
                                 </Select>
+                                {form.formState.errors.city && (
+                                    <p className="text-[10px] text-red-500 font-bold ml-4 uppercase tracking-tighter">
+                                        {form.formState.errors.city.message}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -250,22 +329,38 @@ export function ProductDetails({ product }: { product: Product }) {
                         <div className="space-y-2">
                             <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Detailed Address</Label>
                             <Textarea
+                                {...form.register("detailedAddress")}
                                 placeholder="Street name, house number, floor..."
-                                className="min-h-20 rounded-[1.5rem] p-4 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                className={`min-h-20 rounded-[1.5rem] p-4 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium ${form.formState.errors.detailedAddress ? "border-red-300" : ""}`}
                             />
+                            {form.formState.errors.detailedAddress && (
+                                <p className="text-[10px] text-red-500 font-bold ml-4 uppercase tracking-tighter">
+                                    {form.formState.errors.detailedAddress.message}
+                                </p>
+                            )}
                         </div>
                     </div>
-                </div>
 
-                {/* Actions */}
-                <div className="space-y-4 mt-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Button className="flex-1 h-16 rounded-full bg-[#FF8BBA] hover:bg-pink-600 text-white text-xl font-black shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight">
-                            <ShoppingBag className="w-6 h-6" />
-                            Place Order ✨
-                        </Button>
+                    {/* Actions */}
+                    <div className="space-y-4 mt-6">
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <Button
+                                type="submit"
+                                disabled={isPending}
+                                className="flex-1 h-16 rounded-full bg-[#FF8BBA] hover:bg-pink-600 text-white text-xl font-black shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight disabled:opacity-70"
+                            >
+                                {isPending ? (
+                                    <Loader2 className="w-6 h-6 animate-spin" />
+                                ) : (
+                                    <>
+                                        <ShoppingBag className="w-6 h-6" />
+                                        Place Order ✨
+                                    </>
+                                )}
+                            </Button>
+                        </div>
                     </div>
-                </div>
+                </form>
 
                 {/* Trust Badges */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-dotted border-gray-200">
