@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight, User, MapPin, Phone, Loader2 } from "lucide-react";
+import { ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight, User, MapPin, Phone, Loader2, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +25,7 @@ interface Product {
     name: string;
     description: string;
     price: number;
+    stock: number;
     category: { name: string };
     images: { url: string }[];
 }
@@ -42,25 +43,33 @@ export function ProductDetails({ product }: { product: Product }) {
             governorate: "",
             city: "",
             detailedAddress: "",
+            quantity: 1,
         },
     });
 
     const selectedGov = form.watch("governorate");
     const selectedCity = form.watch("city");
+    const quantity = form.watch("quantity");
     const availableCities = selectedGov ? TUNISIA_LOCATIONS[selectedGov] || [] : [];
 
     const onSubmit = async (values: OrderFormValues) => {
         setIsPending(true);
         try {
+            console.log("Submitting order...", values);
             const result = await createOrder(product.id, values);
+            console.log("Order result:", result);
+
             if (result.success) {
                 setSuccess(true);
                 form.reset();
+                window.scrollTo({ top: 0, behavior: "smooth" });
             } else {
-                alert(result.error || "Une erreur est survenue.");
+                console.error("Order failed:", result.error);
+                alert(result.error || "An error occurred.");
             }
         } catch (error) {
-            alert("Une erreur est survenue.");
+            console.error("Submission error:", error);
+            alert("An error occurred during submission.");
         } finally {
             setIsPending(false);
         }
@@ -91,16 +100,16 @@ export function ProductDetails({ product }: { product: Product }) {
                     <ShoppingBag className="w-12 h-12" />
                 </div>
                 <div className="space-y-2">
-                    <h2 className="text-3xl font-black text-[#3E343C]">Commande Validée ! ✨</h2>
+                    <h2 className="text-3xl font-black text-[#3E343C]">Order Placed! ✨</h2>
                     <p className="text-[#8B7E84] max-w-md">
-                        Merci pour votre commande, {product.name} sera bientôt chez vous. Nous vous contacterons par téléphone pour confirmer les détails.
+                        Thank you for your order, {product.name} will be with you soon. We will contact you by phone to confirm the details.
                     </p>
                 </div>
                 <Button
                     onClick={() => setSuccess(false)}
                     className="rounded-full px-8 bg-[#FF8BBA] hover:bg-pink-600 shadow-xl shadow-pink-100"
                 >
-                    Commander un autre article
+                    Order another item
                 </Button>
             </div>
         );
@@ -242,7 +251,7 @@ export function ProductDetails({ product }: { product: Product }) {
                                     <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
                                     <Input
                                         {...form.register("fullName")}
-                                        placeholder="ex. Sarra Ben Ali"
+                                        placeholder="e.g. Sarra Ben Ali"
                                         className={`h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium ${form.formState.errors.fullName ? "border-red-300" : ""}`}
                                     />
                                 </div>
@@ -339,6 +348,36 @@ export function ProductDetails({ product }: { product: Product }) {
                                 </p>
                             )}
                         </div>
+
+                        {/* Quantity Selector */}
+                        <div className="flex items-center justify-between p-4 rounded-[1.5rem] bg-gray-50/50 border border-gray-100">
+                            <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em]">Quantity</Label>
+                            <div className="flex items-center gap-4 bg-white rounded-full p-1 shadow-sm border border-gray-100">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const current = form.getValues("quantity");
+                                        if (current > 1) form.setValue("quantity", current - 1);
+                                    }}
+                                    className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-50 text-gray-400 hover:text-[#FF8BBA] transition-colors"
+                                >
+                                    <Minus className="w-4 h-4" />
+                                </button>
+                                <span className="w-8 text-center font-black text-[#3E343C]">{quantity}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const current = form.getValues("quantity");
+                                        if (current < product.stock) {
+                                            form.setValue("quantity", current + 1);
+                                        }
+                                    }}
+                                    className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-50 text-gray-400 hover:text-[#FF8BBA] transition-colors"
+                                >
+                                    <Plus className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Actions */}
@@ -347,7 +386,7 @@ export function ProductDetails({ product }: { product: Product }) {
                             <Button
                                 type="submit"
                                 disabled={isPending}
-                                className="flex-1 h-16 rounded-full bg-[#FF8BBA] hover:bg-pink-600 text-white text-xl font-black shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight disabled:opacity-70"
+                                className="flex-1 h-16 rounded-full bg-[#E54884] hover:bg-[#D43478] text-white text-xl font-black shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight disabled:opacity-70"
                             >
                                 {isPending ? (
                                     <Loader2 className="w-6 h-6 animate-spin" />

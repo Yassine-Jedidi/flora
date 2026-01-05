@@ -74,6 +74,7 @@ model Order {
   detailedAddress String
   
   // Order details
+  quantity        Int         @default(1)
   totalPrice      Decimal     @db.Decimal(10, 3)
   status          OrderStatus @default(PENDING)
   

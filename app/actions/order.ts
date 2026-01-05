@@ -8,7 +8,7 @@ export async function createOrder(productId: string, values: OrderFormValues) {
         const validatedFields = OrderSchema.safeParse(values);
 
         if (!validatedFields.success) {
-            return { error: "Données invalides." };
+            return { error: "Invalid data." };
         }
 
         const product = await prisma.product.findUnique({
@@ -16,7 +16,7 @@ export async function createOrder(productId: string, values: OrderFormValues) {
         });
 
         if (!product) {
-            return { error: "Produit non trouvé." };
+            return { error: "Product not found." };
         }
 
         const order = await prisma.order.create({
@@ -27,7 +27,8 @@ export async function createOrder(productId: string, values: OrderFormValues) {
                 governorate: values.governorate,
                 city: values.city,
                 detailedAddress: values.detailedAddress,
-                totalPrice: product.price,
+                quantity: values.quantity,
+                totalPrice: Number(product.price) * values.quantity,
                 status: "PENDING",
             }
         });
@@ -35,6 +36,6 @@ export async function createOrder(productId: string, values: OrderFormValues) {
         return { success: true, orderId: order.id };
     } catch (error) {
         console.error("Order creation error:", error);
-        return { error: "Une erreur est survenue lors de la création de la commande." };
+        return { error: "An error occurred while creating the order." };
     }
 }
