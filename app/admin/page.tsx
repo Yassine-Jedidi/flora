@@ -1,12 +1,21 @@
 import { getCategories, seedCategories } from "@/app/actions/product";
 import { getProducts } from "@/app/actions/get-products";
+import { getOrders } from "@/app/actions/get-orders";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
 
-export default async function AdminPage() {
+export default async function AdminPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ page?: string }>;
+}) {
+    const params = await searchParams;
+    const page = Number(params?.page) || 1;
+
     let categories = await getCategories();
     const products = await getProducts();
+    const ordersData = await getOrders(page);
 
     // If no categories exist, seed some defaults automatically for the user
     if (categories.length === 0) {
@@ -34,6 +43,11 @@ export default async function AdminPage() {
                     <AdminDashboard
                         categories={categories.map(c => ({ id: c.id, name: c.name }))}
                         products={products}
+                        orders={ordersData.orders}
+                        pagination={{
+                            currentPage: ordersData.currentPage,
+                            totalPages: ordersData.totalPages,
+                        }}
                     />
                 </div>
             </main>

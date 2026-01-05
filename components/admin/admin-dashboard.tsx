@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusCircle, ListTodo, Pencil } from "lucide-react";
+import { PlusCircle, ListTodo, Pencil, ShoppingBag } from "lucide-react";
 import { ProductForm } from "@/components/admin/product-form";
 import { ProductList } from "@/components/admin/product-list";
+import { OrderList } from "@/components/admin/order-list";
 import { ProductFormValues } from "@/lib/validations/product";
 
 interface ProductImage {
@@ -33,10 +34,15 @@ interface Product {
 interface AdminDashboardProps {
     categories: Category[];
     products: Product[];
+    orders: any[];
+    pagination?: {
+        currentPage: number;
+        totalPages: number;
+    };
 }
 
-export function AdminDashboard({ categories, products }: AdminDashboardProps) {
-    const [activeTab, setActiveTab] = useState("inventory");
+export function AdminDashboard({ categories, products, orders, pagination }: AdminDashboardProps) {
+    const [activeTab, setActiveTab] = useState("orders");
     const [editingProduct, setEditingProduct] = useState<(ProductFormValues & { id: string }) | null>(null);
 
     const handleEdit = (product: Product) => {
@@ -59,6 +65,14 @@ export function AdminDashboard({ categories, products }: AdminDashboardProps) {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="flex justify-center mb-10">
                 <TabsList className="bg-white border border-pink-50 p-1.5 h-14 rounded-full shadow-lg shadow-pink-100/30">
+                    <TabsTrigger
+                        value="orders"
+                        className="rounded-full px-8 h-full data-[state=active]:bg-[#FF8BBA] data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-[#003366]"
+                    >
+                        <ShoppingBag className="w-4 h-4 mr-2" />
+                        Orders
+                    </TabsTrigger>
+
                     <TabsTrigger
                         value="add"
                         className="rounded-full px-8 h-full data-[state=active]:bg-[#FF8BBA] data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-[#003366]"
@@ -86,6 +100,10 @@ export function AdminDashboard({ categories, products }: AdminDashboardProps) {
                     </TabsTrigger>
                 </TabsList>
             </div>
+
+            <TabsContent value="orders" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <OrderList orders={orders} pagination={pagination} />
+            </TabsContent>
 
             <TabsContent value="add" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <ProductForm
