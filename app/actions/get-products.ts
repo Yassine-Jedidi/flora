@@ -24,3 +24,31 @@ export async function getProducts() {
     return [];
   }
 }
+
+export async function getProductsByCategory(categorySlug: string) {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        category: {
+          slug: categorySlug,
+        },
+        isArchived: false,
+      },
+      include: {
+        category: true,
+        images: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return products.map((product) => ({
+      ...product,
+      price: product.price.toNumber(),
+    }));
+  } catch (error) {
+    console.error(`Error fetching products for category ${categorySlug}:`, error);
+    return [];
+  }
+}
