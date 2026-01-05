@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, Mail, Heart } from "lucide-react";
+import { Instagram, Facebook, Heart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -26,24 +26,46 @@ export function Footer() {
               Elevating everyday moments with exquisite adornments.
             </p>
             <div className="flex items-center gap-4 mt-2">
-              <button
+              <a
+                href="https://www.instagram.com/flora_.access/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-purple-500 hover:text-purple-600 transition-colors"
                 aria-label="Instagram"
               >
-                <Camera className="h-5 w-5" />
-              </button>
-              <button
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@floraaccess"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-purple-500 hover:text-purple-600 transition-colors"
-                aria-label="Email"
+                aria-label="TikTok"
               >
-                <Mail className="h-5 w-5" />
-              </button>
-              <button
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
+                  <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                </svg>
+              </a>
+              <a
+                href="https://www.facebook.com/people/Flora-Accessories/61586066246480/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-purple-500 hover:text-purple-600 transition-colors"
-                aria-label="Favorites"
+                aria-label="Facebook"
               >
-                <Heart className="h-5 w-5" />
-              </button>
+                <Facebook className="h-5 w-5" />
+              </a>
             </div>
           </div>
 
