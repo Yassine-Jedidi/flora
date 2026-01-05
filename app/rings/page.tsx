@@ -16,9 +16,9 @@ export default async function RingsPage({
         <div className="min-h-screen flex flex-col bg-white">
             <Navbar />
 
-            <main className="flex-1">
+            <main className="flex-1 pt-32">
                 {/* Image-Matched Header */}
-                <div className="relative overflow-hidden bg-[#FFF5F8] pt-24 pb-20">
+                <div className="relative overflow-hidden bg-[#FFF5F8] pt-40 pb-20">
                     {/* Dotted Pattern Background */}
                     <div
                         className="absolute inset-0 opacity-[0.4]"
