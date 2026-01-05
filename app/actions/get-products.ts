@@ -25,8 +25,21 @@ export async function getProducts() {
   }
 }
 
-export async function getProductsByCategory(categorySlug: string) {
+export async function getProductsByCategory(categorySlug: string, sort?: string) {
   try {
+    let orderBy: any = { createdAt: "desc" };
+
+    if (sort === "popular") {
+      orderBy = [
+        { isFeatured: "desc" },
+        { createdAt: "desc" }
+      ];
+    } else if (sort === "newest") {
+      orderBy = { createdAt: "desc" };
+    } else if (sort === "price") {
+      orderBy = { price: "asc" };
+    }
+
     const products = await prisma.product.findMany({
       where: {
         category: {
@@ -38,9 +51,7 @@ export async function getProductsByCategory(categorySlug: string) {
         category: true,
         images: true,
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy,
     });
 
     return products.map((product) => ({

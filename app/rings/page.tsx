@@ -2,10 +2,15 @@ import { getProductsByCategory } from "@/app/actions/get-products";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/shop/product-card";
-import Link from "next/link";
+import { SortToggle } from "@/components/shop/sort-toggle";
 
-export default async function RingsPage() {
-    const products = await getProductsByCategory("rings");
+export default async function RingsPage({
+    searchParams
+}: {
+    searchParams: Promise<{ sort?: string }>
+}) {
+    const { sort } = await searchParams;
+    const products = await getProductsByCategory("rings", sort || "popular");
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -58,20 +63,7 @@ export default async function RingsPage() {
                             </span>
                         </div>
 
-                        <div className="flex items-center gap-4">
-                            <label className="text-sm font-bold text-[#8B7E84]">Sort by:</label>
-                            <div className="bg-[#FDF2F7] p-1 rounded-full flex items-center">
-                                <button className="bg-white text-[#FF8BBA] px-6 py-2 rounded-full text-sm font-bold shadow-sm transition-all">
-                                    Popular
-                                </button>
-                                <button className="text-[#8B7E84] px-6 py-2 rounded-full text-sm font-bold hover:text-[#FF8BBA] transition-all">
-                                    Newest
-                                </button>
-                                <button className="text-[#8B7E84] px-6 py-2 rounded-full text-sm font-bold hover:text-[#FF8BBA] transition-all">
-                                    Price
-                                </button>
-                            </div>
-                        </div>
+                        <SortToggle />
                     </div>
                 </div>
 
@@ -82,7 +74,7 @@ export default async function RingsPage() {
                             <p className="text-lg text-gray-500 font-medium">New collection arriving soon.</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+                        <div key={sort} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
                             {products.map((product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}

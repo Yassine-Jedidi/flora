@@ -20,7 +20,7 @@ export function ProductCard({ product }: ProductCardProps) {
     const isNew = new Date(product.createdAt).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
 
     return (
-        <div className="group flex flex-col bg-white rounded-[2.5rem] p-4 shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-50">
+        <div className="group flex flex-col bg-white rounded-[2.5rem] p-4 shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-50 animate-in fade-in zoom-in-95 duration-700">
             {/* Image Container */}
             <div className="relative aspect-square overflow-hidden rounded-[2rem] bg-[#F9FAFB]">
                 {product.images[0] ? (
