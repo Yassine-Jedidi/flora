@@ -1,15 +1,15 @@
 import { CategoryPage } from "@/components/shop/category-page";
 
-export default async function RingsPage({
+export default async function EarringsPage({
     searchParams
 }: {
     searchParams: Promise<{ sort?: string }>
 }) {
     return (
         <CategoryPage
-            categorySlug="rings"
-            title="Rings"
-            subtitle="Adorn your fingers with a touch of magic and sparkle"
+            categorySlug="earrings"
+            title="Earrings"
+            subtitle="Let your ears sparkle with every move"
             searchParams={searchParams}
         />
     );

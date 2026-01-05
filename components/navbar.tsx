@@ -59,6 +59,13 @@ export function Navbar() {
             >
               Necklaces
             </Link>
+            <Link
+              href="/earrings"
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/earrings" ? "text-[#FF8BBA]" : "text-[#3E343C] hover:text-[#FF8BBA]"
+                }`}
+            >
+              Earrings
+            </Link>
 
           </div>
 

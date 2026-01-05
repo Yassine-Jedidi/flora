@@ -1,15 +1,15 @@
 import { CategoryPage } from "@/components/shop/category-page";
 
-export default async function RingsPage({
+export default async function NecklacesPage({
     searchParams
 }: {
     searchParams: Promise<{ sort?: string }>
 }) {
     return (
         <CategoryPage
-            categorySlug="rings"
-            title="Rings"
-            subtitle="Adorn your fingers with a touch of magic and sparkle"
+            categorySlug="necklaces"
+            title="Necklaces"
+            subtitle="Frame your beauty with our delicate chains"
             searchParams={searchParams}
         />
     );
