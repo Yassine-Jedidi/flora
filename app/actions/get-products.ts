@@ -63,3 +63,27 @@ export async function getProductsByCategory(categorySlug: string, sort?: string)
     return [];
   }
 }
+
+export async function getProduct(id: string) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        category: true,
+        images: true,
+      },
+    });
+
+    if (!product) return null;
+
+    return {
+      ...product,
+      price: product.price.toNumber(),
+    };
+  } catch (error) {
+    console.error(`Error fetching product ${id}:`, error);
+    return null;
+  }
+}

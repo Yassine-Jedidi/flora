@@ -1,0 +1,241 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
+import { ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, ChevronRight, User, MapPin, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+interface Product {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    category: { name: string };
+    images: { url: string }[];
+}
+
+export function ProductDetails({ product }: { product: Product }) {
+    const [selectedImage, setSelectedImage] = useState(0);
+
+    const nextImage = useCallback(() => {
+        if (product.images.length > 0) {
+            setSelectedImage((prev) => (prev + 1) % product.images.length);
+        }
+    }, [product.images.length]);
+
+    const prevImage = useCallback(() => {
+        if (product.images.length > 0) {
+            setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length);
+        }
+    }, [product.images.length]);
+
+    useEffect(() => {
+        if (product.images.length <= 1) return;
+        const interval = setInterval(nextImage, 5000);
+        return () => clearInterval(interval);
+    }, [nextImage, product.images.length]);
+
+    return (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Image Gallery */}
+            <div className="relative space-y-8">
+                {/* Background Glow */}
+                <div className="absolute -top-10 -left-10 w-64 h-64 bg-pink-100/50 rounded-full blur-[100px] -z-10" />
+                <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] -z-10" />
+
+                <div className="relative mx-auto max-w-[550px] aspect-square overflow-hidden rounded-[3rem] bg-[#F9FAFB] border border-pink-50 shadow-sm group">
+                    <div className="relative w-full h-full">
+                        {product.images.map((img, idx) => (
+                            <div
+                                key={img.url}
+                                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${selectedImage === idx ? "opacity-100 z-0" : "opacity-0 -z-10"
+                                    }`}
+                            >
+                                <Image
+                                    src={img.url}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover"
+                                    priority={idx === 0}
+                                />
+                            </div>
+                        ))}
+
+                        {!product.images[0] && (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                                <ShoppingBag className="w-20 h-20 text-gray-200" />
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Navigation Arrows */}
+                    {product.images.length > 1 && (
+                        <>
+                            <button
+                                onClick={(e) => { e.preventDefault(); prevImage(); }}
+                                className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-[#FF8BBA] hover:scale-110 active:scale-95"
+                            >
+                                <ChevronLeft className="w-6 h-6" />
+                            </button>
+                            <button
+                                onClick={(e) => { e.preventDefault(); nextImage(); }}
+                                className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-[#FF8BBA] hover:scale-110 active:scale-95"
+                            >
+                                <ChevronRight className="w-6 h-6" />
+                            </button>
+                        </>
+                    )}
+
+                    {/* Share/Favorite on image */}
+                    <button className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-lg hover:scale-110 transition-transform z-10 text-[#FF8BBA]">
+                        <Heart className="w-6 h-6" />
+                    </button>
+
+                    {/* Pulse pagination dots */}
+                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                        {product.images.map((_, idx) => (
+                            <div
+                                key={idx}
+                                className={`h-2 rounded-full transition-all duration-500 ${selectedImage === idx ? "w-8 bg-[#FF8BBA]" : "w-2 bg-pink-200"
+                                    }`}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Thumbnails */}
+                {product.images.length > 1 && (
+                    <div className="flex justify-center gap-4 overflow-x-auto pb-2 scrollbar-none">
+                        {product.images.map((img, index) => (
+                            <button
+                                key={img.url}
+                                onClick={() => setSelectedImage(index)}
+                                className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === index ? "border-[#FF8BBA] shadow-md scale-95" : "border-transparent hover:border-pink-200"
+                                    }`}
+                            >
+                                <Image src={img.url} alt="" fill className="object-cover" />
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Product Info */}
+            <div className="flex flex-col gap-8">
+                <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-black text-[#FF8BBA] bg-pink-50 px-3 py-1 rounded-full uppercase tracking-widest border border-pink-100">
+                            {product.category.name}
+                        </span>
+                    </div>
+
+                    <h1 className="text-4xl md:text-5xl font-black text-[#3E343C] leading-tight tracking-tight">
+                        {product.name}
+                    </h1>
+
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-black text-[#FF8BBA]">
+                            {product.price.toFixed(2)}
+                        </span>
+                        <span className="text-xl font-bold text-[#FF8BBA]">DT</span>
+                    </div>
+                </div>
+
+                <div className="w-full h-px bg-gradient-to-r from-pink-100 via-pink-50 to-transparent" />
+
+                <div className="space-y-4">
+                    <p className="text-[#8B7E84] leading-relaxed text-lg">
+                        {product.description}
+                    </p>
+                </div>
+
+                {/* Quick Checkout Form */}
+                <div className="space-y-6 pt-6 border-t border-dotted border-pink-100">
+                    <div className="flex items-center gap-2 mb-2">
+                        <span className="text-sm font-black text-[#3E343C] uppercase tracking-wider">Quick Order</span>
+                        <div className="h-px flex-1 bg-pink-50" />
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Full Name</Label>
+                            <div className="relative group">
+                                <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
+                                <Input
+                                    placeholder="e.g. Jane Doe"
+                                    className="h-14 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Phone Number</Label>
+                                <div className="relative group">
+                                    <Phone className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
+                                    <Input
+                                        placeholder="00 000 000"
+                                        className="h-14 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Delivery Address</Label>
+                                <div className="relative group">
+                                    <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
+                                    <Input
+                                        placeholder="City, Street, House..."
+                                        className="h-14 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Actions */}
+                <div className="space-y-4 mt-6">
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        <Button className="flex-1 h-20 rounded-full bg-[#FF8BBA] hover:bg-pink-600 text-white text-xl font-black shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight">
+                            <ShoppingBag className="w-6 h-6" />
+                            Place Order ✨
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Trust Badges */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-dotted border-gray-200">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600">
+                            <ShieldCheck className="w-5 h-5" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xs font-black text-[#3E343C]">Premium Quality</span>
+                            <span className="text-[10px] text-gray-400 font-medium">Certified Jewelry</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                            <Truck className="w-5 h-5" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xs font-black text-[#3E343C]">Fast Delivery</span>
+                            <span className="text-[10px] text-gray-400 font-medium">Standard & Express</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                            <RefreshCw className="w-5 h-5" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-xs font-black text-[#3E343C]">Easy Returns</span>
+                            <span className="text-[10px] text-gray-400 font-medium">30 Days Return</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

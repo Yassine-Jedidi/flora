@@ -22,7 +22,7 @@ export function ProductCard({ product }: ProductCardProps) {
     return (
         <div className="group flex flex-col bg-white rounded-[2.5rem] p-4 shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-50 animate-in fade-in zoom-in-95 duration-700">
             {/* Image Container */}
-            <div className="relative aspect-square overflow-hidden rounded-[2rem] bg-[#F9FAFB]">
+            <Link href={`/product/${product.id}`} className="relative aspect-square overflow-hidden rounded-[2rem] bg-[#F9FAFB]">
                 {product.images[0] ? (
                     <Image
                         src={product.images[0].url}
@@ -54,16 +54,24 @@ export function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 {/* Heart Icon */}
-                <button className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md hover:scale-110 transition-transform">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        // Wishlist logic here
+                    }}
+                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md hover:scale-110 transition-transform z-20"
+                >
                     <Heart className="w-5 h-5 text-[#FF8BBA] fill-[#FF8BBA]" />
                 </button>
-            </div>
+            </Link>
 
             {/* Content Section */}
             <div className="mt-6 flex flex-col gap-3 px-2">
-                <h3 className="text-xl font-black text-[#003366] group-hover:text-pink-500 transition-colors line-clamp-1">
-                    {product.name}
-                </h3>
+                <Link href={`/product/${product.id}`}>
+                    <h3 className="text-xl font-black text-[#003366] group-hover:text-pink-500 transition-colors line-clamp-1">
+                        {product.name}
+                    </h3>
+                </Link>
 
                 {/* Dotted Divider */}
                 <div className="w-full border-t border-dotted border-gray-200 my-1" />
