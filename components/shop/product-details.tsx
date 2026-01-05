@@ -6,6 +6,15 @@ import { ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, Star, ChevronLeft, C
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { TUNISIA_GOVERNORATES } from "@/lib/constants/tunisia";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Product {
     id: string;
@@ -129,6 +138,12 @@ export function ProductDetails({ product }: { product: Product }) {
                         <span className="text-[10px] font-black text-[#FF8BBA] bg-pink-50 px-3 py-1 rounded-full uppercase tracking-widest border border-pink-100">
                             {product.category.name}
                         </span>
+                        <div className="flex items-center gap-1 ml-2">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                                <Star key={s} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                            ))}
+                            <span className="text-[10px] font-bold text-gray-400 ml-1">(4.9)</span>
+                        </div>
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-black text-[#3E343C] leading-tight tracking-tight">
@@ -151,46 +166,74 @@ export function ProductDetails({ product }: { product: Product }) {
                     </p>
                 </div>
 
-                {/* Quick Checkout Form */}
+                {/* Quick Order Form */}
                 <div className="space-y-6 pt-6 border-t border-dotted border-pink-100">
                     <div className="flex items-center gap-2 mb-2">
-                        <span className="text-sm font-black text-[#3E343C] uppercase tracking-wider">Quick Order</span>
+                        <span className="text-sm font-black text-[#3E343C] uppercase tracking-wider">Quick Order Details</span>
                         <div className="h-px flex-1 bg-pink-50" />
                     </div>
 
                     <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Full Name</Label>
-                            <div className="relative group">
-                                <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
-                                <Input
-                                    placeholder="e.g. Jane Doe"
-                                    className="h-14 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
-                                />
-                            </div>
-                        </div>
-
+                        {/* Name & Phone */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Full Name</Label>
+                                <div className="relative group">
+                                    <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
+                                    <Input
+                                        placeholder="e.g. Jane Doe"
+                                        className="h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                    />
+                                </div>
+                            </div>
                             <div className="space-y-2">
                                 <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Phone Number</Label>
                                 <div className="relative group">
                                     <Phone className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
                                     <Input
                                         placeholder="00 000 000"
-                                        className="h-14 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                        className="h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Location Dropdowns */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Delivery Address</Label>
+                                <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Governorate</Label>
+                                <Select>
+                                    <SelectTrigger className="!h-12 rounded-full px-6 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium w-full">
+                                        <SelectValue placeholder="Select state" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper" className="rounded-2xl border-pink-50 shadow-xl max-h-48 bg-white">
+                                        {TUNISIA_GOVERNORATES.map((gov) => (
+                                            <SelectItem key={gov} value={gov} className="rounded-xl focus:bg-pink-50 focus:text-[#FF8BBA]">
+                                                {gov}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">City / Neighborhood</Label>
                                 <div className="relative group">
                                     <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#FF8BBA]/40 group-focus-within:text-[#FF8BBA] transition-colors" />
                                     <Input
-                                        placeholder="City, Street, House..."
-                                        className="h-14 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                                        placeholder="Town or area"
+                                        className="h-12 rounded-full pl-12 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
                                     />
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Detailed Address */}
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em] ml-4">Detailed Address</Label>
+                            <Textarea
+                                placeholder="Street name, house number, floor..."
+                                className="min-h-20 rounded-[1.5rem] p-4 bg-gray-50/50 border-gray-100 focus:bg-white focus:border-[#FF8BBA] focus:ring-4 focus:ring-pink-50 transition-all text-sm font-medium"
+                            />
                         </div>
                     </div>
                 </div>
@@ -198,7 +241,7 @@ export function ProductDetails({ product }: { product: Product }) {
                 {/* Actions */}
                 <div className="space-y-4 mt-6">
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <Button className="flex-1 h-20 rounded-full bg-[#FF8BBA] hover:bg-pink-600 text-white text-xl font-black shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight">
+                        <Button className="flex-1 h-16 rounded-full bg-[#FF8BBA] hover:bg-pink-600 text-white text-xl font-black shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight">
                             <ShoppingBag className="w-6 h-6" />
                             Place Order ✨
                         </Button>
