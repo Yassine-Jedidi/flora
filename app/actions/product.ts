@@ -123,3 +123,62 @@ export async function deleteProduct(id: string) {
     return { error: "Something went wrong!" };
   }
 }
+export async function updateProduct(id: string, values: ProductFormValues) {
+  try {
+    const validatedFields = ProductSchema.safeParse(values);
+
+    if (!validatedFields.success) {
+      return { error: "Invalid fields!" };
+    }
+
+    const { 
+      name, 
+      description, 
+      price, 
+      categoryId, 
+      stock, 
+      images, 
+      isFeatured, 
+      isArchived 
+    } = validatedFields.data;
+
+    // We do a transaction to ensure everything updates correctly
+    await prisma.$transaction(async (tx) => {
+      // 1. Update basic product info
+      await tx.product.update({
+        where: { id },
+        data: {
+          name,
+          description,
+          price,
+          stock,
+          isFeatured,
+          isArchived,
+          categoryId,
+        },
+      });
+
+      // 2. Refresh images (simplest approach: delete and recreate references)
+      // Note: We don't delete from UploadThing here as some images might still be in use
+      // A more robust app would compare and delete unused ones from UT
+      await tx.productImage.deleteMany({
+        where: { productId: id },
+      });
+
+      await tx.productImage.createMany({
+        data: images.map((url) => ({
+          productId: id,
+          url,
+        })),
+      });
+    });
+
+    revalidatePath("/admin");
+    revalidatePath("/");
+    
+    return { success: "Product updated successfully! ✨" };
+  } catch (error) {
+    console.error("Error updating product:", error);
+    return { error: "Something went wrong!" };
+  }
+}

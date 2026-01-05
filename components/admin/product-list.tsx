@@ -28,11 +28,35 @@ import {
 import { deleteProduct } from "@/app/actions/product";
 import { useRouter } from "next/navigation";
 
-interface ProductListProps {
-    products: any[];
+interface ProductImage {
+    id: string;
+    url: string;
 }
 
-export function ProductList({ products }: ProductListProps) {
+interface Category {
+    id: string;
+    name: string;
+}
+
+interface Product {
+    id: string;
+    name: string;
+    description: string;
+    price: number | string;
+    stock: number;
+    categoryId: string;
+    category: Category;
+    images: ProductImage[];
+    isFeatured: boolean;
+    isArchived: boolean;
+}
+
+interface ProductListProps {
+    products: Product[];
+    onEdit: (product: Product) => void;
+}
+
+export function ProductList({ products, onEdit }: ProductListProps) {
     const router = useRouter();
     const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -127,7 +151,12 @@ export function ProductList({ products }: ProductListProps) {
                                 </TableCell>
                                 <TableCell className="px-6 py-4 text-right">
                                     <div className="flex justify-end gap-1">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-[#003366] hover:bg-pink-50 rounded-full">
+                                        <Button
+                                            onClick={() => onEdit(product)}
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 text-gray-400 hover:text-[#003366] hover:bg-pink-50 rounded-full"
+                                        >
                                             <Pencil className="w-4 h-4" />
                                         </Button>
 

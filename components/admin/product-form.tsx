@@ -4,10 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductSchema, type ProductFormValues } from "@/lib/validations/product";
-import { createProduct } from "@/app/actions/product";
+import { createProduct, updateProduct } from "@/app/actions/product";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
-import { Loader2, Plus, X } from "lucide-react";
+import { Loader2, Plus, X, Save, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -33,16 +33,22 @@ import { Button } from "@/components/ui/button";
 
 interface ProductFormProps {
     categories: { id: string; name: string }[];
+    initialData?: (ProductFormValues & { id: string }) | null;
+    onCancel?: () => void;
+    onSuccess?: () => void;
 }
 
-export function ProductForm({ categories }: ProductFormProps) {
+export function ProductForm({ categories, initialData, onCancel, onSuccess }: ProductFormProps) {
     const router = useRouter();
     const [isPending, setIsPending] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
 
     const form = useForm({
         resolver: zodResolver(ProductSchema),
-        defaultValues: {
+        defaultValues: (initialData ? {
+            ...initialData,
+            price: Number(initialData.price),
+        } : {
             name: "",
             description: "",
             price: 0,
@@ -51,7 +57,7 @@ export function ProductForm({ categories }: ProductFormProps) {
             images: [],
             isFeatured: false,
             isArchived: false,
-        } as ProductFormValues,
+        }) as ProductFormValues,
     });
 
     const images = form.watch("images") || [];
@@ -61,14 +67,39 @@ export function ProductForm({ categories }: ProductFormProps) {
         setSuccess(null);
         try {
             console.log("Form Values:", values);
-            const result = await createProduct(values);
+            const result = initialData
+                ? await updateProduct(initialData.id, values)
+                : await createProduct(values);
+
             if (result.success) {
-                setSuccess("Accessory listed successfully! ✨");
+                setSuccess(initialData ? "Accessory updated successfully! ✨" : "Accessory listed successfully! ✨");
                 router.refresh();
-                form.reset();
-                setTimeout(() => setSuccess(null), 5000);
+                if (!initialData) {
+                    form.reset();
+                }
+
+                // Success sequence: Calm and controlled transition
+                setTimeout(() => {
+                    setSuccess(null);
+
+                    if (initialData) {
+                        // For EDITS: Start a smooth climb to the top
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                        // Wait longer (1 second) for the scroll to finish before switching tabs
+                        setTimeout(() => {
+                            if (onSuccess) onSuccess();
+                        }, 1000);
+                    } else {
+                        // For NEW listings: Switch first then scroll so they see the new top row
+                        if (onSuccess) onSuccess();
+                        setTimeout(() => {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 100);
+                    }
+                }, 2500);
             } else {
-                alert(result.error || "Error creating product");
+                alert(result.error || "Error saving product");
             }
         } catch (error) {
             console.error("Submission error:", error);
@@ -117,8 +148,12 @@ export function ProductForm({ categories }: ProductFormProps) {
 
             <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
                 <CardHeader className="pb-8">
-                    <CardTitle className="text-2xl font-bold text-[#003366]">Listing Details</CardTitle>
-                    <CardDescription>Enter the information that will be shown to customers.</CardDescription>
+                    <CardTitle className="text-2xl font-bold text-[#003366]">
+                        {initialData ? "Refine Your Treasure ✨" : "Listing Details"}
+                    </CardTitle>
+                    <CardDescription>
+                        {initialData ? "Update the information about this beautiful accessory." : "Enter the information that will be shown to customers."}
+                    </CardDescription>
                 </CardHeader>
 
                 <CardContent className="space-y-10">
@@ -279,18 +314,33 @@ export function ProductForm({ categories }: ProductFormProps) {
                     <p className="text-xs text-gray-400 font-medium">
                         Your changes are saved to the secure inventory vault.
                     </p>
-                    <Button
-                        disabled={isPending}
-                        type="submit"
-                        className="bg-[#FF8BBA] hover:bg-[#FF75AA] text-white px-8 py-2 rounded-full font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-70 h-auto text-sm"
-                    >
-                        {isPending ? (
-                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        ) : (
-                            <Plus className="w-4 h-4 mr-2" />
+                    <div className="flex gap-3">
+                        {initialData && onCancel && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={onCancel}
+                                className="rounded-full border-pink-100 text-gray-500 hover:bg-pink-50 px-6 font-bold"
+                            >
+                                <RotateCcw className="w-4 h-4 mr-2" />
+                                Cancel Edit
+                            </Button>
                         )}
-                        List This Accessory
-                    </Button>
+                        <Button
+                            disabled={isPending}
+                            type="submit"
+                            className="bg-[#FF8BBA] hover:bg-[#FF75AA] text-white px-8 py-2 rounded-full font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-70 h-auto text-sm"
+                        >
+                            {isPending ? (
+                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                            ) : initialData ? (
+                                <Save className="w-4 h-4 mr-2" />
+                            ) : (
+                                <Plus className="w-4 h-4 mr-2" />
+                            )}
+                            {initialData ? "Save Changes" : "List This Accessory"}
+                        </Button>
+                    </div>
                 </CardFooter>
             </form>
         </Card>

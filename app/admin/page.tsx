@@ -1,11 +1,8 @@
 import { getCategories, seedCategories } from "@/app/actions/product";
 import { getProducts } from "@/app/actions/get-products";
-import { ProductForm } from "@/components/admin/product-form";
-import { ProductList } from "@/components/admin/product-list";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusCircle, ListTodo } from "lucide-react";
+import { AdminDashboard } from "@/components/admin/admin-dashboard";
 
 export default async function AdminPage() {
     let categories = await getCategories();
@@ -34,34 +31,10 @@ export default async function AdminPage() {
                         </p>
                     </div>
 
-                    <Tabs defaultValue="add" className="w-full">
-                        <div className="flex justify-center mb-10">
-                            <TabsList className="bg-white border border-pink-50 p-1.5 h-14 rounded-full shadow-lg shadow-pink-100/30">
-                                <TabsTrigger
-                                    value="add"
-                                    className="rounded-full px-8 h-full data-[state=active]:bg-[#FF8BBA] data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-[#003366]"
-                                >
-                                    <PlusCircle className="w-4 h-4 mr-2" />
-                                    Add New Product
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="inventory"
-                                    className="rounded-full px-8 h-full data-[state=active]:bg-[#FF8BBA] data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-[#003366]"
-                                >
-                                    <ListTodo className="w-4 h-4 mr-2" />
-                                    Your Inventory
-                                </TabsTrigger>
-                            </TabsList>
-                        </div>
-
-                        <TabsContent value="add" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <ProductForm categories={categories} />
-                        </TabsContent>
-
-                        <TabsContent value="inventory" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <ProductList products={products} />
-                        </TabsContent>
-                    </Tabs>
+                    <AdminDashboard
+                        categories={categories.map(c => ({ id: c.id, name: c.name }))}
+                        products={products}
+                    />
                 </div>
             </main>
             <Footer />
