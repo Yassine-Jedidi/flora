@@ -47,12 +47,18 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
         resolver: zodResolver(ProductSchema),
         defaultValues: (initialData ? {
             ...initialData,
-            originalPrice: Number(initialData.originalPrice),
-            discountedPrice: initialData.discountedPrice ? Number(initialData.discountedPrice) : undefined,
+            // If discountedPrice exists in DB, then:
+            // UI Sale Price = DB discountedPrice
+            // UI Original Price = DB originalPrice
+            // If it doesn't exist:
+            // UI Sale Price = DB originalPrice
+            // UI Original Price = undefined
+            originalPrice: initialData.discountedPrice ? Number(initialData.originalPrice) : undefined,
+            discountedPrice: initialData.discountedPrice ? Number(initialData.discountedPrice) : Number(initialData.originalPrice),
         } : {
             name: "",
             description: "",
-            originalPrice: 0,
+            originalPrice: undefined,
             discountedPrice: undefined,
             categoryId: "",
             stock: 0,
@@ -84,10 +90,19 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
         const percent = Number(e.target.value);
         setDiscountPercent(percent);
         
-        const origPrice = form.getValues("originalPrice");
-        if (origPrice && percent > 0 && percent < 100) {
-            const salePrice = origPrice * (1 - percent / 100);
-            form.setValue("discountedPrice", Number(salePrice.toFixed(3)), { shouldValidate: true });
+        const currentSalePrice = form.getValues("discountedPrice");
+        const currentOrigPrice = form.getValues("originalPrice");
+
+        if (percent > 0 && percent < 100) {
+            if (currentOrigPrice) {
+                // If we have an original price, update the sale price
+                const salePrice = currentOrigPrice * (1 - percent / 100);
+                form.setValue("discountedPrice", Number(salePrice.toFixed(3)), { shouldValidate: true });
+            } else if (currentSalePrice) {
+                // If we only have sale price, calculate what the original price should be 
+                const origPrice = currentSalePrice / (1 - percent / 100);
+                form.setValue("originalPrice", Number(origPrice.toFixed(3)), { shouldValidate: true });
+            }
         }
     };
 
@@ -224,19 +239,23 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
                                 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="originalPrice" className="text-[#003366] font-bold">Original Price (DT)</Label>
+                                        <Label htmlFor="discountedPrice" className="text-[#003366] font-bold">
+                                            Sale Price (DT) {discountPercent && discountPercent > 0 && (
+                                                <span className="text-red-500 text-xs ml-2">🔥 {discountPercent}% OFF</span>
+                                            )}
+                                        </Label>
                                         <Input
-                                            id="originalPrice"
-                                            {...form.register("originalPrice")}
+                                            id="discountedPrice"
+                                            {...form.register("discountedPrice")}
                                             type="number"
                                             step="0.001"
-                                            placeholder="Required"
-                                            className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
+                                            placeholder="Final price"
+                                            className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white font-bold"
                                         />
-                                        {form.formState.errors.originalPrice && (
-                                            <p className="text-red-500 text-xs">{form.formState.errors.originalPrice.message}</p>
+                                        {form.formState.errors.discountedPrice && (
+                                            <p className="text-red-500 text-xs">{form.formState.errors.discountedPrice.message}</p>
                                         )}
-                                        <p className="text-[10px] text-gray-400">Full retail price</p>
+                                        <p className="text-[10px] text-gray-400">Final price customers will pay</p>
                                     </div>
                                     
                                     <div className="space-y-2">
@@ -251,28 +270,26 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
                                             placeholder="0"
                                             className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
                                         />
-                                        <p className="text-[10px] text-gray-400">Auto-calculates sale price</p>
+                                        <p className="text-[10px] text-gray-400">Optional: Enter discount %</p>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="discountedPrice" className="text-[#003366] font-bold">
-                                        Sale Price (DT) {discountPercent && discountPercent > 0 && (
-                                            <span className="text-red-500 text-xs ml-2">🔥 {discountPercent}% OFF</span>
-                                        )}
+                                    <Label htmlFor="originalPrice" className="text-[#003366] font-bold">
+                                        Original Price (DT)
                                     </Label>
                                     <Input
-                                        id="discountedPrice"
-                                        {...form.register("discountedPrice")}
+                                        id="originalPrice"
+                                        {...form.register("originalPrice")}
                                         type="number"
                                         step="0.001"
                                         placeholder="Optional - leave empty for no discount"
-                                        className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white font-bold"
+                                        className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
                                     />
-                                    {form.formState.errors.discountedPrice && (
-                                        <p className="text-red-500 text-xs">{form.formState.errors.discountedPrice.message}</p>
+                                    {form.formState.errors.originalPrice && (
+                                        <p className="text-red-500 text-xs">{form.formState.errors.originalPrice.message}</p>
                                     )}
-                                    <p className="text-[10px] text-gray-400">Final price customers will pay (or leave empty for original price)</p>
+                                    <p className="text-[10px] text-gray-400">Market price (only fill this if you want to show a discount)</p>
                                 </div>
                             </div>
 

@@ -11,6 +11,11 @@ const FavoritesSheet = dynamic(
   { ssr: false }
 );
 
+const CartDropdown = dynamic(
+  () => import("@/components/cart-dropdown").then((m) => m.CartDropdown),
+  { ssr: false }
+);
+
 export function Navbar() {
   const pathname = usePathname();
 
@@ -88,10 +93,7 @@ export function Navbar() {
 
           {/* User Icons */}
           <div className="flex items-center gap-2 shrink-0">
-            <button className="relative rounded-full hover:bg-pink-50 p-2 text-[#3E343C] transition-all duration-300">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#FF8BBA] border-2 border-white shadow-sm" />
-            </button>
+            <CartDropdown />
             <FavoritesSheet />
             <button className="rounded-full bg-[#3E343C] p-2 text-white hover:bg-[#FF8BBA] transition-all duration-300 shadow-md">
               <User className="h-4 w-4" />

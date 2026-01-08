@@ -9,14 +9,15 @@ export async function createProduct(values: ProductFormValues) {
     const validatedFields = ProductSchema.safeParse(values);
 
     if (!validatedFields.success) {
-      return { error: "Invalid fields!" };
+      console.error("Create Product - Validation error:", validatedFields.error.flatten().fieldErrors);
+      return { error: "Invalid fields! " + Object.keys(validatedFields.error.flatten().fieldErrors).join(", ") };
     }
 
     const { 
       name, 
       description, 
-      originalPrice,
-      discountedPrice, 
+      originalPrice: rawOriginalPrice,
+      discountedPrice: rawDiscountedPrice, 
       categoryId, 
       stock, 
       images, 
@@ -24,12 +25,27 @@ export async function createProduct(values: ProductFormValues) {
       isArchived 
     } = validatedFields.data;
 
+    // Manual refinement check
+    if (rawOriginalPrice && rawDiscountedPrice && rawOriginalPrice <= rawDiscountedPrice) {
+      return { error: "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty." };
+    }
+
+    // Logic for optional discount:
+    // If originalPrice is empty or 0, then the sale price is the actual original price, and there's no discount record.
+    const finalOriginalPrice = rawOriginalPrice && rawOriginalPrice > 0 
+      ? rawOriginalPrice 
+      : rawDiscountedPrice;
+    
+    const finalDiscountedPrice = (rawOriginalPrice && rawOriginalPrice > 0 && rawOriginalPrice > rawDiscountedPrice)
+      ? rawDiscountedPrice 
+      : null;
+
     const product = await prisma.product.create({
       data: {
         name,
         description,
-        originalPrice,
-        discountedPrice,
+        originalPrice: finalOriginalPrice,
+        discountedPrice: finalDiscountedPrice,
         stock,
         isFeatured,
         isArchived,
@@ -142,20 +158,35 @@ export async function updateProduct(id: string, values: ProductFormValues) {
     const validatedFields = ProductSchema.safeParse(values);
 
     if (!validatedFields.success) {
-      return { error: "Invalid fields!" };
+      console.error("Update Product - Validation error:", validatedFields.error.flatten().fieldErrors);
+      return { error: "Invalid fields! " + Object.keys(validatedFields.error.flatten().fieldErrors).join(", ") };
     }
 
     const { 
       name, 
       description, 
-      originalPrice,
-      discountedPrice, 
+      originalPrice: rawOriginalPrice,
+      discountedPrice: rawDiscountedPrice, 
       categoryId, 
       stock, 
       images, 
       isFeatured, 
       isArchived 
     } = validatedFields.data;
+
+    // Manual refinement check
+    if (rawOriginalPrice && rawDiscountedPrice && rawOriginalPrice <= rawDiscountedPrice) {
+      return { error: "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty." };
+    }
+
+    // Logic for optional discount:
+    const finalOriginalPrice = rawOriginalPrice && rawOriginalPrice > 0 
+      ? rawOriginalPrice 
+      : rawDiscountedPrice;
+    
+    const finalDiscountedPrice = (rawOriginalPrice && rawOriginalPrice > 0 && rawOriginalPrice > rawDiscountedPrice)
+      ? rawDiscountedPrice 
+      : null;
 
     // We do a transaction to ensure everything updates correctly
     await prisma.$transaction(async (tx) => {
@@ -165,8 +196,8 @@ export async function updateProduct(id: string, values: ProductFormValues) {
         data: {
           name,
           description,
-          originalPrice,
-          discountedPrice,
+          originalPrice: finalOriginalPrice,
+          discountedPrice: finalDiscountedPrice,
           stock,
           isFeatured,
           isArchived,

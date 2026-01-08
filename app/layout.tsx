@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import { FavoritesProvider } from "@/lib/hooks/use-favorites";
+import { CartProvider } from "@/lib/hooks/use-cart";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunito.variable} font-sans antialiased`}>
-        <FavoritesProvider>{children}</FavoritesProvider>
+        <CartProvider>
+          <FavoritesProvider>{children}</FavoritesProvider>
+        </CartProvider>
       </body>
     </html>
   );

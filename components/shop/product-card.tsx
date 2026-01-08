@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { useFavorites } from "@/lib/hooks/use-favorites";
+import { useCart } from "@/lib/hooks/use-cart";
 import dynamic from "next/dynamic";
 
 const FavoriteButton = dynamic(() => import("./favorite-button"), {
@@ -39,10 +40,16 @@ export function ProductCard({ product }: ProductCardProps) {
   const displayPrice = product.discountedPrice || product.originalPrice;
 
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { addItem } = useCart();
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     toggleFavorite(product as any);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addItem(product);
   };
 
   return (
@@ -116,7 +123,10 @@ export function ProductCard({ product }: ProductCardProps) {
             </span>
           </div>
 
-          <button className="w-12 h-12 rounded-full bg-[#A78BFA]/10 hover:bg-[#A78BFA]/20 text-[#A78BFA] flex items-center justify-center transition-all shadow-sm hover:scale-110">
+          <button 
+            onClick={handleAddToCart}
+            className="w-12 h-12 rounded-full bg-[#A78BFA]/10 hover:bg-[#A78BFA]/20 text-[#A78BFA] flex items-center justify-center transition-all shadow-sm hover:scale-110"
+          >
             <ShoppingBag className="w-5 h-5" />
           </button>
         </div>
