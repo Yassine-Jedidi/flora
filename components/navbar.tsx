@@ -4,6 +4,12 @@ import { Search, ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const FavoritesSheet = dynamic(
+  () => import("@/components/favorites-sheet").then((m) => m.FavoritesSheet),
+  { ssr: false }
+);
 
 export function Navbar() {
   const pathname = usePathname();
@@ -40,33 +46,44 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-8 shrink-0">
             <Link
               href="/rings"
-              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/rings" ? "text-[#FF8BBA]" : "text-[#3E343C] hover:text-[#FF8BBA]"
-                }`}
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${
+                pathname === "/rings"
+                  ? "text-[#FF8BBA]"
+                  : "text-[#3E343C] hover:text-[#FF8BBA]"
+              }`}
             >
               Rings
             </Link>
             <Link
               href="/bracelets"
-              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/bracelets" ? "text-[#FF8BBA]" : "text-[#3E343C] hover:text-[#FF8BBA]"
-                }`}
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${
+                pathname === "/bracelets"
+                  ? "text-[#FF8BBA]"
+                  : "text-[#3E343C] hover:text-[#FF8BBA]"
+              }`}
             >
               Bracelets
             </Link>
             <Link
               href="/necklaces"
-              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/necklaces" ? "text-[#FF8BBA]" : "text-[#3E343C] hover:text-[#FF8BBA]"
-                }`}
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${
+                pathname === "/necklaces"
+                  ? "text-[#FF8BBA]"
+                  : "text-[#3E343C] hover:text-[#FF8BBA]"
+              }`}
             >
               Necklaces
             </Link>
             <Link
               href="/earrings"
-              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/earrings" ? "text-[#FF8BBA]" : "text-[#3E343C] hover:text-[#FF8BBA]"
-                }`}
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${
+                pathname === "/earrings"
+                  ? "text-[#FF8BBA]"
+                  : "text-[#3E343C] hover:text-[#FF8BBA]"
+              }`}
             >
               Earrings
             </Link>
-
           </div>
 
           {/* User Icons */}
@@ -75,6 +92,7 @@ export function Navbar() {
               <ShoppingBag className="h-5 w-5" />
               <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#FF8BBA] border-2 border-white shadow-sm" />
             </button>
+            <FavoritesSheet />
             <button className="rounded-full bg-[#3E343C] p-2 text-white hover:bg-[#FF8BBA] transition-all duration-300 shadow-md">
               <User className="h-4 w-4" />
             </button>
