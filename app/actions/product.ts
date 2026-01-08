@@ -15,7 +15,8 @@ export async function createProduct(values: ProductFormValues) {
     const { 
       name, 
       description, 
-      price, 
+      originalPrice,
+      discountedPrice, 
       categoryId, 
       stock, 
       images, 
@@ -27,7 +28,8 @@ export async function createProduct(values: ProductFormValues) {
       data: {
         name,
         description,
-        price,
+        originalPrice,
+        discountedPrice,
         stock,
         isFeatured,
         isArchived,
@@ -146,7 +148,8 @@ export async function updateProduct(id: string, values: ProductFormValues) {
     const { 
       name, 
       description, 
-      price, 
+      originalPrice,
+      discountedPrice, 
       categoryId, 
       stock, 
       images, 
@@ -162,7 +165,8 @@ export async function updateProduct(id: string, values: ProductFormValues) {
         data: {
           name,
           description,
-          price,
+          originalPrice,
+          discountedPrice,
           stock,
           isFeatured,
           isArchived,

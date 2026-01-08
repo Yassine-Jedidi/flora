@@ -8,7 +8,8 @@ interface ProductCardProps {
     product: {
         id: string;
         name: string;
-        price: number;
+        originalPrice: number;
+        discountedPrice?: number;
         images: { url: string }[];
         category: { name: string };
         isFeatured?: boolean;
@@ -18,6 +19,11 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
     const isNew = new Date(product.createdAt).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const hasDiscount = product.discountedPrice && product.discountedPrice < product.originalPrice;
+    const discountPercentage = hasDiscount 
+        ? Math.round(((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100)
+        : 0;
+    const displayPrice = product.discountedPrice || product.originalPrice;
 
     return (
         <div className="group flex flex-col bg-white rounded-[2.5rem] p-4 shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-50 animate-in fade-in zoom-in-95 duration-700">
@@ -38,6 +44,13 @@ export function ProductCard({ product }: ProductCardProps) {
 
                 {/* Badges Container */}
                 <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 items-start">
+                    {/* Discount Badge */}
+                    {hasDiscount && (
+                        <span className="bg-red-500 text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md inline-block rotate-2">
+                            -{discountPercentage}%
+                        </span>
+                    )}
+
                     {/* Bestseller Badge */}
                     {product.isFeatured && (
                         <span className="bg-[#FF8BBA] text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md inline-block -rotate-6">
@@ -77,9 +90,16 @@ export function ProductCard({ product }: ProductCardProps) {
                 <div className="w-full border-t border-dotted border-gray-200 my-1" />
 
                 <div className="flex items-center justify-between pb-2">
-                    <span className="text-2xl font-black text-[#FF8BBA]">
-                        {product.price.toFixed(2)} <span className="text-sm">DT</span>
-                    </span>
+                    <div className="flex flex-col">
+                        {hasDiscount && (
+                            <span className="text-sm font-semibold text-gray-400 line-through">
+                                {product.originalPrice.toFixed(2)} DT
+                            </span>
+                        )}
+                        <span className="text-2xl font-black text-[#FF8BBA]">
+                            {displayPrice.toFixed(2)} <span className="text-sm">DT</span>
+                        </span>
+                    </div>
 
                     <button className="w-12 h-12 rounded-full bg-[#E6F7F9] hover:bg-[#D1F0F4] text-[#42B8C5] flex items-center justify-center transition-all shadow-sm hover:scale-110">
                         <ShoppingBag className="w-5 h-5" />

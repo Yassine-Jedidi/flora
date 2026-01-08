@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProductSchema, type ProductFormValues } from "@/lib/validations/product";
@@ -47,11 +47,13 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
         resolver: zodResolver(ProductSchema),
         defaultValues: (initialData ? {
             ...initialData,
-            price: Number(initialData.price),
+            originalPrice: Number(initialData.originalPrice),
+            discountedPrice: initialData.discountedPrice ? Number(initialData.discountedPrice) : undefined,
         } : {
             name: "",
             description: "",
-            price: 0,
+            originalPrice: 0,
+            discountedPrice: undefined,
             categoryId: "",
             stock: 0,
             images: [],
@@ -61,6 +63,33 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
     });
 
     const images = form.watch("images") || [];
+    const [discountPercent, setDiscountPercent] = useState<number | undefined>(undefined);
+
+    // Watch prices to calculate discount percentage
+    const originalPrice = form.watch("originalPrice");
+    const discountedPrice = form.watch("discountedPrice");
+
+    // Update discount percentage when prices change
+    useEffect(() => {
+        if (originalPrice && discountedPrice && originalPrice > discountedPrice) {
+            const calculated = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
+            setDiscountPercent(calculated);
+        } else {
+            setDiscountPercent(undefined);
+        }
+    }, [originalPrice, discountedPrice]);
+
+    // Handle discount percentage input
+    const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const percent = Number(e.target.value);
+        setDiscountPercent(percent);
+        
+        const origPrice = form.getValues("originalPrice");
+        if (origPrice && percent > 0 && percent < 100) {
+            const salePrice = origPrice * (1 - percent / 100);
+            form.setValue("discountedPrice", Number(salePrice.toFixed(3)), { shouldValidate: true });
+        }
+    };
 
     const onSubmit = async (values: ProductFormValues) => {
         setIsPending(true);
@@ -187,29 +216,74 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
                                 )}
                             </div>
 
-                            <div className="grid grid-cols-2 gap-6">
+                            {/* Pricing Section with Discount */}
+                            <div className="space-y-4 p-4 rounded-2xl bg-gradient-to-br from-pink-50/50 to-purple-50/30 border border-pink-100/50">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-sm font-bold text-[#003366]">💰 Pricing & Discounts</span>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="originalPrice" className="text-[#003366] font-bold">Original Price (DT)</Label>
+                                        <Input
+                                            id="originalPrice"
+                                            {...form.register("originalPrice")}
+                                            type="number"
+                                            step="0.001"
+                                            placeholder="Required"
+                                            className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
+                                        />
+                                        {form.formState.errors.originalPrice && (
+                                            <p className="text-red-500 text-xs">{form.formState.errors.originalPrice.message}</p>
+                                        )}
+                                        <p className="text-[10px] text-gray-400">Full retail price</p>
+                                    </div>
+                                    
+                                    <div className="space-y-2">
+                                        <Label htmlFor="discountPercent" className="text-[#003366] font-bold">Discount %</Label>
+                                        <Input
+                                            id="discountPercent"
+                                            type="number"
+                                            min="0"
+                                            max="99"
+                                            value={discountPercent ?? ""}
+                                            onChange={handleDiscountChange}
+                                            placeholder="0"
+                                            className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
+                                        />
+                                        <p className="text-[10px] text-gray-400">Auto-calculates sale price</p>
+                                    </div>
+                                </div>
+
                                 <div className="space-y-2">
-                                    <Label htmlFor="price" className="text-[#003366] font-bold">Price (DT)</Label>
+                                    <Label htmlFor="discountedPrice" className="text-[#003366] font-bold">
+                                        Sale Price (DT) {discountPercent && discountPercent > 0 && (
+                                            <span className="text-red-500 text-xs ml-2">🔥 {discountPercent}% OFF</span>
+                                        )}
+                                    </Label>
                                     <Input
-                                        id="price"
-                                        {...form.register("price")}
+                                        id="discountedPrice"
+                                        {...form.register("discountedPrice")}
                                         type="number"
                                         step="0.001"
-                                        className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
+                                        placeholder="Optional - leave empty for no discount"
+                                        className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white font-bold"
                                     />
-                                    {form.formState.errors.price && (
-                                        <p className="text-red-500 text-xs">{form.formState.errors.price.message}</p>
+                                    {form.formState.errors.discountedPrice && (
+                                        <p className="text-red-500 text-xs">{form.formState.errors.discountedPrice.message}</p>
                                     )}
+                                    <p className="text-[10px] text-gray-400">Final price customers will pay (or leave empty for original price)</p>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="stock" className="text-[#003366] font-bold">Initial Stock</Label>
-                                    <Input
-                                        id="stock"
-                                        {...form.register("stock")}
-                                        type="number"
-                                        className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
-                                    />
-                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="stock" className="text-[#003366] font-bold">Initial Stock</Label>
+                                <Input
+                                    id="stock"
+                                    {...form.register("stock")}
+                                    type="number"
+                                    className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
+                                />
                             </div>
 
                             <div className="space-y-2">

@@ -17,7 +17,8 @@ export async function getProducts() {
     // Convert Decimal to number for Client Component serialization
     return products.map((product) => ({
       ...product,
-      price: product.price.toNumber(),
+      originalPrice: product.originalPrice.toNumber(),
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,
     }));
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -37,7 +38,7 @@ export async function getProductsByCategory(categorySlug: string, sort?: string)
     } else if (sort === "newest") {
       orderBy = { createdAt: "desc" };
     } else if (sort === "price") {
-      orderBy = { price: "asc" };
+      orderBy = { originalPrice: "asc" };
     }
 
     const products = await prisma.product.findMany({
@@ -56,7 +57,8 @@ export async function getProductsByCategory(categorySlug: string, sort?: string)
 
     return products.map((product) => ({
       ...product,
-      price: product.price.toNumber(),
+      originalPrice: product.originalPrice.toNumber(),
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,
     }));
   } catch (error) {
     console.error(`Error fetching products for category ${categorySlug}:`, error);
@@ -80,7 +82,8 @@ export async function getProduct(id: string) {
 
     return {
       ...product,
-      price: product.price.toNumber(),
+      originalPrice: product.originalPrice.toNumber(),
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,
     };
   } catch (error) {
     console.error(`Error fetching product ${id}:`, error);

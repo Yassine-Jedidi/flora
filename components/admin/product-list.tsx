@@ -42,7 +42,8 @@ interface Product {
     id: string;
     name: string;
     description: string;
-    price: number | string;
+    originalPrice: number | string;
+    discountedPrice?: number | string | null;
     stock: number;
     categoryId: string;
     category: Category;
@@ -129,8 +130,22 @@ export function ProductList({ products, onEdit }: ProductListProps) {
                                         {product.category.name}
                                     </Badge>
                                 </TableCell>
-                                <TableCell className="px-6 py-4 font-bold text-gray-700">
-                                    {Number(product.price).toFixed(3)} <span className="text-[10px] text-gray-400">DT</span>
+                                <TableCell className="px-6 py-4">
+                                    <div className="flex flex-col gap-1">
+                                        {product.discountedPrice && Number(product.discountedPrice) < Number(product.originalPrice) && (
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs text-gray-400 line-through">
+                                                    {Number(product.originalPrice).toFixed(3)} DT
+                                                </span>
+                                                <Badge className="bg-red-500 hover:bg-red-600 text-[10px] px-1.5 py-0">
+                                                    -{Math.round(((Number(product.originalPrice) - Number(product.discountedPrice)) / Number(product.originalPrice)) * 100)}%
+                                                </Badge>
+                                            </div>
+                                        )}
+                                        <span className="font-bold text-gray-700">
+                                            {Number(product.discountedPrice || product.originalPrice).toFixed(3)} <span className="text-[10px] text-gray-400">DT</span>
+                                        </span>
+                                    </div>
                                 </TableCell>
                                 <TableCell className="px-6 py-4">
                                     <span className={`text-sm font-semibold ${product.stock <= 5 ? 'text-red-500' : 'text-gray-600'}`}>

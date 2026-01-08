@@ -24,7 +24,8 @@ interface Product {
     id: string;
     name: string;
     description: string;
-    price: number;
+    originalPrice: number;
+    discountedPrice?: number;
     stock: number;
     category: { name: string };
     images: { url: string }[];
@@ -219,11 +220,25 @@ export function ProductDetails({ product }: { product: Product }) {
                         {product.name}
                     </h1>
 
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-4xl font-black text-[#FF8BBA]">
-                            {product.price.toFixed(2)}
-                        </span>
-                        <span className="text-xl font-bold text-[#FF8BBA]">DT</span>
+                    <div className="flex items-center gap-4">
+                        <div className="flex flex-col">
+                            {product.discountedPrice && product.discountedPrice < product.originalPrice && (
+                                <div className="flex items-center gap-2">
+                                    <span className="text-lg font-semibold text-gray-400 line-through">
+                                        {product.originalPrice.toFixed(2)} DT
+                                    </span>
+                                    <span className="bg-red-500 text-white text-xs font-black px-2 py-1 rounded-md">
+                                        -{Math.round(((product.originalPrice - product.discountedPrice) / product.originalPrice) * 100)}%
+                                    </span>
+                                </div>
+                            )}
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-4xl font-black text-[#FF8BBA]">
+                                    {(product.discountedPrice || product.originalPrice).toFixed(2)}
+                                </span>
+                                <span className="text-xl font-bold text-[#FF8BBA]">DT</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
