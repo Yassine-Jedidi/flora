@@ -60,18 +60,7 @@ export function ProductDetails({ product }: { product: Product }) {
       image: product.images[0]?.url || "",
       quantity 
     });
-    toast.success("Added to your Treasures! ✨");
-  };
-
-  const onBuyNow = async () => {
-    addItem({ 
-      id: product.id,
-      name: product.name,
-      price: product.discountedPrice || product.originalPrice,
-      image: product.images[0]?.url || "",
-      quantity 
-    });
-    router.push("/checkout");
+    toast.success("Added to your cart! ✨");
   };
 
   const nextImage = useCallback(() => {
@@ -295,16 +284,16 @@ export function ProductDetails({ product }: { product: Product }) {
           <div className="flex flex-col gap-3">
             <Button
               type="button"
-              onClick={onBuyNow}
-              className="h-16 rounded-2xl bg-[#A78BFA] hover:bg-[#8B5CF6] text-white text-lg font-black shadow-xl shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight"
+              onClick={onAddToCart}
+              className="h-14 rounded-2xl bg-[#A78BFA] hover:bg-[#8B5CF6] text-white text-base font-black shadow-lg shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight"
             >
-              Order Now ✨
+              Add to Cart ✨
             </Button>
             
             <Button
               type="button"
               onClick={() => toggleFavorite(product as any)}
-              className="h-12 rounded-2xl bg-white border-2 border-pink-100 text-[#FF8BBA] hover:bg-pink-50 text-sm font-black transition-all hover:scale-[1.02] active:scale-95 gap-3"
+              className="h-11 rounded-2xl bg-white border-2 border-pink-100 text-[#FF8BBA] hover:bg-pink-50 text-xs font-black transition-all hover:scale-[1.02] active:scale-95 gap-3"
             >
               <Heart className={`w-4 h-4 ${isFavorite(product.id) ? "fill-[#FF8BBA]" : ""}`} />
               Add to favorites
