@@ -54,6 +54,8 @@ export function ProductCard({ product }: ProductCardProps) {
       id: product.id,
       name: product.name,
       price: product.discountedPrice || product.originalPrice,
+      originalPrice: product.originalPrice,
+      discountedPrice: product.discountedPrice,
       image: product.images[0]?.url || "",
       quantity: 1
     });

@@ -377,9 +377,16 @@ export default function CheckoutPage() {
                                 <Plus className="w-3 h-3" />
                               </button>
                             </div>
-                            <p className="text-sm font-bold text-white">
-                              {(item.price * item.quantity).toFixed(2)} DT
-                            </p>
+                            <div className="flex flex-col items-end flex-1">
+                              <p className="text-sm font-bold text-white">
+                                {(item.price * item.quantity).toFixed(2)} DT
+                              </p>
+                              {item.originalPrice && item.originalPrice > item.price && (
+                                <p className="text-[10px] text-pink-200/60 line-through">
+                                  {(item.originalPrice * item.quantity).toFixed(2)} DT
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>

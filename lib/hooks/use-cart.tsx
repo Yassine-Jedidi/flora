@@ -12,6 +12,8 @@ export interface CartItem {
   id: string;
   name: string;
   price: number;
+  originalPrice?: number;
+  discountedPrice?: number;
   image: string;
   quantity: number;
 }
@@ -40,14 +42,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
         const parsed = JSON.parse(stored);
         // Migration: Ensure all items have the new flat price/image structure
         const migrated = parsed.map((item: any) => {
-          if (item.price === undefined) {
-            return {
-              ...item,
-              price: item.discountedPrice || item.originalPrice || 0,
-              image: item.image || (item.images?.[0]?.url) || "",
-            };
-          }
-          return item;
+          return {
+            ...item,
+            price: item.price ?? (item.discountedPrice || item.originalPrice || 0),
+            originalPrice: item.originalPrice ?? item.price,
+            discountedPrice: item.discountedPrice ?? (item.price !== item.originalPrice ? item.price : undefined),
+            image: item.image || (item.images?.[0]?.url) || "",
+          };
         });
         setCart(migrated);
       } catch (e) {

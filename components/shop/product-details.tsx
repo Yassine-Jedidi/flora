@@ -53,12 +53,14 @@ export function ProductDetails({ product }: { product: Product }) {
   const quantity = form.watch("quantity");
 
   const onAddToCart = () => {
-    addItem({ 
+    addItem({
       id: product.id,
       name: product.name,
       price: product.discountedPrice || product.originalPrice,
+      originalPrice: product.originalPrice,
+      discountedPrice: product.discountedPrice,
       image: product.images[0]?.url || "",
-      quantity 
+      quantity,
     });
     toast.success("Added to your cart! ✨");
   };
@@ -289,56 +291,52 @@ export function ProductDetails({ product }: { product: Product }) {
             >
               Add to Cart ✨
             </Button>
-            
+
             <Button
               type="button"
               onClick={() => toggleFavorite(product as any)}
               className="h-11 rounded-2xl bg-white border-2 border-pink-100 text-[#FF8BBA] hover:bg-pink-50 text-xs font-black transition-all hover:scale-[1.02] active:scale-95 gap-3"
             >
-              <Heart className={`w-4 h-4 ${isFavorite(product.id) ? "fill-[#FF8BBA]" : ""}`} />
+              <Heart
+                className={`w-4 h-4 ${
+                  isFavorite(product.id) ? "fill-[#FF8BBA]" : ""
+                }`}
+              />
               Add to favorites
             </Button>
           </div>
         </div>
 
         {/* Trust Badges */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-dotted border-gray-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8 border-t border-dotted border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600">
+            <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-[#FF8BBA]">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-black text-[#3E343C]">
-                Premium Quality
+                Quality Guaranteed
               </span>
               <span className="text-[10px] text-gray-400 font-medium">
-                Certified Jewelry
+                Premium Materials
               </span>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-[#A78BFA]">
               <Truck className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-black text-[#3E343C]">
                 Fast Delivery
               </span>
-              <span className="text-[10px] text-gray-400 font-medium">
-                Standard & Express
-              </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
-              <RefreshCw className="w-5 h-5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-black text-[#3E343C]">
-                Easy Returns
-              </span>
-              <span className="text-[10px] text-gray-400 font-medium">
-                30 Days Return
+              <span className="text-[10px] text-gray-400 font-medium flex items-center gap-1">
+                Delivery across Tunisia
+                <img
+                  src="https://flagcdn.com/tn.svg"
+                  alt="Tunisia Flag"
+                  className="w-4 h-auto rounded-sm"
+                />
               </span>
             </div>
           </div>

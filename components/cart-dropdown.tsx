@@ -96,9 +96,16 @@ export function CartDropdown() {
                     
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-black text-[#003366] truncate">{item.name}</h4>
-                      <p className="text-xs font-bold text-[#FF8BBA] mt-1">
-                        {(item.price || 0).toFixed(2)} DT
-                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <p className="text-xs font-bold text-[#FF8BBA]">
+                          {(item.price || 0).toFixed(2)} DT
+                        </p>
+                        {item.originalPrice && item.originalPrice > item.price && (
+                          <p className="text-[10px] text-pink-300 line-through">
+                            {item.originalPrice.toFixed(2)} DT
+                          </p>
+                        )}
+                      </div>
                       
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center gap-2 bg-white rounded-full border border-gray-100 p-1">
