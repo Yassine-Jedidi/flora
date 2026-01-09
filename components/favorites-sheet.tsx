@@ -12,9 +12,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useFavorites, type FavoriteProduct } from "@/lib/hooks/use-favorites";
+import { useFavorites } from "@/lib/hooks/use-favorites";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Product } from "@/lib/types";
 
 export function FavoritesSheet() {
   const { favorites, removeFavorite } = useFavorites();
@@ -27,19 +28,19 @@ export function FavoritesSheet() {
     });
   };
 
-  const hasDiscount = (product: FavoriteProduct) =>
+  const hasDiscount = (product: Product) =>
     product.discountedPrice && product.discountedPrice < product.originalPrice;
 
-  const discountPercentage = (product: FavoriteProduct) =>
+  const discountPercentage = (product: Product) =>
     hasDiscount(product)
       ? Math.round(
-          ((product.originalPrice - product.discountedPrice!) /
+          ((product.originalPrice - (product.discountedPrice ?? 0)) /
             product.originalPrice) *
             100
         )
       : 0;
 
-  const displayPrice = (product: FavoriteProduct) =>
+  const displayPrice = (product: Product) =>
     product.discountedPrice || product.originalPrice;
 
   return (

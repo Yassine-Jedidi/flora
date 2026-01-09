@@ -17,7 +17,10 @@ export interface Product {
   discountedPrice: number | null;
   stock: number;
   categoryId: string;
-  category: Category;
+  category: {
+    id: string;
+    name: string;
+  };
   images: ProductImage[];
   isFeatured: boolean;
   isArchived: boolean;
@@ -30,7 +33,30 @@ export interface CartItem {
   name: string;
   price: number;
   originalPrice?: number;
-  discountedPrice?: number;
+  discountedPrice?: number | null;
   image: string;
   quantity: number;
+}
+
+export interface OrderItem {
+  id: string;
+  productId: string;
+  product: {
+    name: string;
+  };
+  quantity: number;
+  price: number;
+}
+
+export interface Order {
+  id: string;
+  fullName: string;
+  phoneNumber: string;
+  governorate: string;
+  city: string;
+  detailedAddress: string;
+  totalPrice: number;
+  status: string;
+  createdAt: string | Date;
+  items: OrderItem[];
 }
