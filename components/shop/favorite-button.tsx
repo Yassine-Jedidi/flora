@@ -1,12 +1,12 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useFavorites } from "@/lib/hooks/use-favorites";
+import { useFavorites, type FavoriteProduct } from "@/lib/hooks/use-favorites";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 interface FavoriteButtonProps {
-  product: any;
+  product: FavoriteProduct;
   className?: string;
 }
 
@@ -15,6 +15,7 @@ export default function FavoriteButton({
   className,
 }: FavoriteButtonProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
+  const active = isFavorite(product.id);
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -29,8 +30,6 @@ export default function FavoriteButton({
       });
     }
   };
-
-  const active = isFavorite(product.id);
 
   return (
     <button

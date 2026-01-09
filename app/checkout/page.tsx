@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,11 +36,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function CheckoutPage() {
-  const router = useRouter();
   const { cart, totalPrice, clearCart, updateQuantity, removeItem } = useCart();
   const [isPending, setIsPending] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -56,7 +54,6 @@ export default function CheckoutPage() {
       governorate: "",
       city: "",
       detailedAddress: "",
-      quantity: 1, // Not used in multi-item but required by schema for now
     },
   });
 
@@ -111,7 +108,7 @@ export default function CheckoutPage() {
               Order Completed!
             </h1>
             <p className="text-gray-500 font-bold mb-8">
-              Your order has been placed successfully. We'll contact you soon
+              Your order has been placed successfully. We&apos;ll contact you soon
               for confirmation.
             </p>
             <Link href="/">
@@ -157,7 +154,7 @@ export default function CheckoutPage() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-8"
               >
-                <div className="p-8 rounded-[32px] bg-white border border-pink-50 shadow-sm space-y-6">
+                <div className="p-8 rounded-4xl bg-white border border-pink-50 shadow-sm space-y-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
                       <ShoppingBag className="w-4 h-4 text-[#FF8BBA]" />
@@ -221,7 +218,7 @@ export default function CheckoutPage() {
                           })
                         }
                       >
-                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-[52px] text-[#003366] font-medium">
+                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-[#003366] font-medium">
                           <SelectValue placeholder="Select governorate" />
                         </SelectTrigger>
                         <SelectContent className="rounded-2xl border-pink-100">
@@ -249,7 +246,7 @@ export default function CheckoutPage() {
                           form.setValue("city", v, { shouldValidate: true })
                         }
                       >
-                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-[52px] text-[#003366] font-medium">
+                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-[#003366] font-medium">
                           <SelectValue placeholder="Select city" />
                         </SelectTrigger>
                         <SelectContent className="rounded-2xl border-pink-100">
@@ -290,7 +287,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-4 p-4 rounded-[2rem] bg-purple-50/50 border border-purple-100">
+                  <div className="flex items-center gap-4 p-4 rounded-4xl bg-purple-50/50 border border-purple-100">
                     <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-purple-500 shadow-sm">
                       <CreditCard className="w-5 h-5" />
                     </div>
@@ -327,7 +324,7 @@ export default function CheckoutPage() {
 
                   <h3 className="text-2xl font-black mb-8">Order Summary</h3>
 
-                  <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar mb-8 space-y-4">
+                  <div className="max-h-75 overflow-y-auto pr-2 custom-scrollbar mb-8 space-y-4">
                     {cart.map((item) => (
                       <div key={item.id} className="flex gap-4">
                         <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white/10 shrink-0 border border-white/5">

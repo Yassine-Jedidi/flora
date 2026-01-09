@@ -2,13 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import {
   ShoppingBag,
   Heart,
   ShieldCheck,
   Truck,
-  RefreshCw,
   Star,
   ChevronLeft,
   ChevronRight,
@@ -17,7 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useFavorites } from "@/lib/hooks/use-favorites";
 import dynamic from "next/dynamic";
@@ -36,10 +34,10 @@ interface Product {
   stock: number;
   category: { name: string };
   images: { url: string }[];
+  createdAt: string | Date;
 }
 
 export function ProductDetails({ product }: { product: Product }) {
-  const router = useRouter();
   const { addItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -50,7 +48,11 @@ export function ProductDetails({ product }: { product: Product }) {
     },
   });
 
-  const quantity = form.watch("quantity");
+  const quantity = useWatch({
+    control: form.control,
+    name: "quantity",
+    defaultValue: 1,
+  });
 
   const onAddToCart = () => {
     addItem({
@@ -294,7 +296,7 @@ export function ProductDetails({ product }: { product: Product }) {
 
             <Button
               type="button"
-              onClick={() => toggleFavorite(product as any)}
+              onClick={() => toggleFavorite(product)}
               className="h-11 rounded-2xl bg-white border-2 border-pink-100 text-[#FF8BBA] hover:bg-pink-50 text-xs font-black transition-all hover:scale-[1.02] active:scale-95 gap-3"
             >
               <Heart
@@ -332,11 +334,14 @@ export function ProductDetails({ product }: { product: Product }) {
               </span>
               <span className="text-[10px] text-gray-400 font-medium flex items-center gap-1">
                 Delivery across Tunisia
-                <img
-                  src="https://flagcdn.com/tn.svg"
-                  alt="Tunisia Flag"
-                  className="w-4 h-auto rounded-sm"
-                />
+                <div className="relative w-4 h-3 overflow-hidden rounded-sm">
+                  <Image
+                    src="https://flagcdn.com/tn.svg"
+                    alt="Tunisia Flag"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </span>
             </div>
           </div>

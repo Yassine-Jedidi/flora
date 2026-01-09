@@ -7,6 +7,7 @@ import {
   useEffect,
   ReactNode,
   useMemo,
+  useCallback,
 } from "react";
 
 export interface FavoriteProduct {
@@ -58,9 +59,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
     const persisted = readFavoritesFromStorage();
     if (persisted.length > 0) {
-      // Use a small delay to avoid cascading render warning in some environments
-      // or just accept that we need to sync with storage on mount.
-      setFavorites(persisted);
+      // Use setTimeout to avoid cascading render warning
+      const timer = setTimeout(() => setFavorites(persisted), 0);
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -76,30 +77,32 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     }
   }, [favorites]);
 
-  const addFavorite = (product: FavoriteProduct) => {
+  const addFavorite = useCallback((product: FavoriteProduct) => {
     setFavorites((prev) => {
       if (prev.some((fav) => fav.id === product.id)) {
         return prev;
       }
       return [...prev, product];
     });
-  };
+  }, []);
 
-  const removeFavorite = (productId: string) => {
+  const removeFavorite = useCallback((productId: string) => {
     setFavorites((prev) => prev.filter((fav) => fav.id !== productId));
-  };
+  }, []);
 
-  const toggleFavorite = (product: FavoriteProduct) => {
+  const toggleFavorite = useCallback((product: FavoriteProduct) => {
     setFavorites((prev) => {
       if (prev.some((fav) => fav.id === product.id)) {
         return prev.filter((fav) => fav.id !== product.id);
       }
       return [...prev, product];
     });
-  };
+  }, []);
 
-  const isFavorite = (productId: string) =>
-    favorites.some((fav) => fav.id === productId);
+  const isFavorite = useCallback((productId: string) =>
+    favorites.some((fav) => fav.id === productId),
+    [favorites]
+  );
 
   const value = useMemo(
     () => ({
@@ -109,7 +112,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       toggleFavorite,
       isFavorite,
     }),
-    [favorites]
+    [favorites, addFavorite, removeFavorite, toggleFavorite, isFavorite]
   );
 
   return (

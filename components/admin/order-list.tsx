@@ -22,7 +22,7 @@ interface Order {
     governorate: string;
     city: string;
     detailedAddress: string;
-    totalPrice: any;
+    totalPrice: number | string;
     status: string;
     createdAt: Date;
 }

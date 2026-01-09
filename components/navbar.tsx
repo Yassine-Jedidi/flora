@@ -18,11 +18,19 @@ const CartDropdown = dynamic(
   { ssr: false }
 );
 
+interface SearchResult {
+  id: string;
+  name: string;
+  originalPrice: number;
+  discountedPrice: number | null;
+  images: { url: string }[];
+}
+
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -61,7 +69,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-[100]">
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-100">
       <div className="bg-white/80 backdrop-blur-md rounded-full border border-pink-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] px-6">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo */}
@@ -104,7 +112,7 @@ export function Navbar() {
 
             {/* Search Dropdown */}
             {showDropdown && searchResults.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 overflow-hidden z-[110] animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 overflow-hidden z-110 animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="p-2">
                   {searchResults.map((product) => (
                     <button
@@ -146,8 +154,8 @@ export function Navbar() {
             )}
 
             {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-6 text-center z-[110] animate-in fade-in slide-in-from-top-2 duration-200">
-                <p className="text-sm font-bold text-gray-400">No treasures found matching "{searchQuery}"</p>
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-6 text-center z-110 animate-in fade-in slide-in-from-top-2 duration-200">
+                <p className="text-sm font-bold text-gray-400">No treasures found matching &quot;{searchQuery}&quot;</p>
               </div>
             )}
           </div>

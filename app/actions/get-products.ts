@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/db";
+import { Prisma } from "@prisma/client";
 
 export async function getProducts() {
   try {
@@ -19,6 +20,9 @@ export async function getProducts() {
       ...product,
       originalPrice: product.originalPrice.toNumber(),
       discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      isNew:
+        new Date(product.createdAt).getTime() >
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
     }));
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -28,7 +32,7 @@ export async function getProducts() {
 
 export async function getProductsByCategory(categorySlug: string, sort?: string) {
   try {
-    let orderBy: any = { createdAt: "desc" };
+    let orderBy: Prisma.ProductOrderByWithRelationInput | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
 
     if (sort === "popular") {
       orderBy = [
@@ -58,8 +62,9 @@ export async function getProductsByCategory(categorySlug: string, sort?: string)
     return products.map((product) => ({
       ...product,
       originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,
-    }));
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,      isNew:
+        new Date(product.createdAt).getTime() >
+        Date.now() - 7 * 24 * 60 * 60 * 1000,    }));
   } catch (error) {
     console.error(`Error fetching products for category ${categorySlug}:`, error);
     return [];
@@ -84,6 +89,9 @@ export async function getProduct(id: string) {
       ...product,
       originalPrice: product.originalPrice.toNumber(),
       discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      isNew:
+        new Date(product.createdAt).getTime() >
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
     };
   } catch (error) {
     console.error(`Error fetching product ${id}:`, error);
@@ -113,8 +121,9 @@ export async function searchProducts(query: string) {
     return products.map((product) => ({
       ...product,
       originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,
-    }));
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,      isNew:
+        new Date(product.createdAt).getTime() >
+        Date.now() - 7 * 24 * 60 * 60 * 1000,    }));
   } catch (error) {
     console.error("Error searching products:", error);
     return [];

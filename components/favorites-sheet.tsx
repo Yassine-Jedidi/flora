@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useFavorites, type FavoriteProduct } from "@/lib/hooks/use-favorites";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export function FavoritesSheet() {

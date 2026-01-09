@@ -41,7 +41,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       try {
         const parsed = JSON.parse(stored);
         // Migration: Ensure all items have the new flat price/image structure
-        const migrated = parsed.map((item: any) => {
+        const migrated = parsed.map((item: CartItem & { images?: { url: string }[] }) => {
           return {
             ...item,
             price: item.price ?? (item.discountedPrice || item.originalPrice || 0),
@@ -50,7 +50,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
             image: item.image || (item.images?.[0]?.url) || "",
           };
         });
-        setCart(migrated);
+        const timer = setTimeout(() => setCart(migrated), 0);
+        return () => clearTimeout(timer);
       } catch (e) {
         console.error("Failed to parse cart", e);
       }

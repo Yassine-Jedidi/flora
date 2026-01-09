@@ -4,8 +4,6 @@ import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/shop/product-card";
 import { SortToggle } from "@/components/shop/sort-toggle";
 
-import { Sparkles } from "lucide-react";
-
 interface CategoryPageProps {
     categorySlug: string;
     title: string;

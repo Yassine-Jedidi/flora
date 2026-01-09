@@ -31,10 +31,30 @@ interface Product {
     isArchived: boolean;
 }
 
+interface Order {
+    id: string;
+    items: {
+        id: string;
+        product: {
+            name: string;
+        };
+        quantity: number;
+        price: number;
+    }[];
+    fullName: string;
+    phoneNumber: string;
+    governorate: string;
+    city: string;
+    detailedAddress: string;
+    totalPrice: number | string;
+    status: string;
+    createdAt: Date;
+}
+
 interface AdminDashboardProps {
     categories: Category[];
     products: Product[];
-    orders: any[];
+    orders: Order[];
     pagination?: {
         currentPage: number;
         totalPages: number;

@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
-import { useFavorites } from "@/lib/hooks/use-favorites";
 import { toast } from "sonner";
 import { useCart } from "@/lib/hooks/use-cart";
 import dynamic from "next/dynamic";
@@ -22,13 +21,12 @@ interface ProductCardProps {
     category: { name: string };
     isFeatured?: boolean;
     createdAt: Date | string;
+    isNew?: boolean;
   };
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const isNew =
-    new Date(product.createdAt).getTime() >
-    Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const isNew = product.isNew;
   const hasDiscount =
     product.discountedPrice && product.discountedPrice < product.originalPrice;
   const discountPercentage = hasDiscount
@@ -40,13 +38,7 @@ export function ProductCard({ product }: ProductCardProps) {
     : 0;
   const displayPrice = product.discountedPrice || product.originalPrice;
 
-  const { isFavorite, toggleFavorite } = useFavorites();
   const { addItem } = useCart();
-
-  const handleToggleFavorite = (e: React.MouseEvent) => {
-    e.preventDefault();
-    toggleFavorite(product as any);
-  };
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
