@@ -1,10 +1,12 @@
 "use client";
 
-import { Search, ShoppingBag, User } from "lucide-react";
+import { Search, ShoppingBag, User, X, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { useState, useEffect, useRef } from "react";
+import { searchProducts } from "@/app/actions/get-products";
 
 const FavoritesSheet = dynamic(
   () => import("@/components/favorites-sheet").then((m) => m.FavoritesSheet),
@@ -18,6 +20,45 @@ const CartDropdown = dynamic(
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchQuery.length >= 2) {
+        setIsSearching(true);
+        const results = await searchProducts(searchQuery);
+        setSearchResults(results);
+        setIsSearching(false);
+        setShowDropdown(true);
+      } else {
+        setSearchResults([]);
+        setShowDropdown(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleProductClick = (id: string) => {
+    setShowDropdown(false);
+    setSearchQuery("");
+    router.push(`/product/${id}`);
+  };
 
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-[100]">
@@ -36,15 +77,79 @@ export function Navbar() {
           </Link>
 
           {/* Search Bar - Slightly narrower for the pill look */}
-          <div className="hidden md:flex flex-1 max-w-sm mx-4">
+          <div className="hidden md:flex flex-1 max-w-sm mx-4 relative" ref={searchRef}>
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-pink-300" />
+              {isSearching ? (
+                <Loader2 className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-pink-300 animate-spin" />
+              ) : (
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-pink-300" />
+              )}
               <input
                 type="text"
                 placeholder="Find treasures..."
-                className="w-full rounded-full bg-pink-50/50 py-2 pl-9 pr-4 text-xs text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-200 border border-pink-100/50"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery.length >= 2 && setShowDropdown(true)}
+                className="w-full rounded-full bg-pink-50/50 py-2 pl-9 pr-9 text-xs text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-200 border border-pink-100/50"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-400 transition-colors"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
+
+            {/* Search Dropdown */}
+            {showDropdown && searchResults.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 overflow-hidden z-[110] animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="p-2">
+                  {searchResults.map((product) => (
+                    <button
+                      key={product.id}
+                      onClick={() => handleProductClick(product.id)}
+                      className="w-full flex items-center gap-3 p-3 hover:bg-pink-50/50 rounded-2xl transition-colors text-left group"
+                    >
+                      <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                        {product.images?.[0]?.url ? (
+                          <Image
+                            src={product.images[0].url}
+                            alt={product.name}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <ShoppingBag className="w-5 h-5 text-gray-200" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-bold text-[#3E343C] truncate group-hover:text-[#FF8BBA] transition-colors">
+                          {product.name}
+                        </h4>
+                        <p className="text-xs font-black text-[#FF8BBA]">
+                          {(product.discountedPrice || product.originalPrice).toFixed(2)} DT
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                <div className="bg-pink-50/30 p-3 border-t border-pink-100/50">
+                  <p className="text-[10px] text-center font-bold text-pink-300 uppercase tracking-widest">
+                    Press enter to see all results
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-6 text-center z-[110] animate-in fade-in slide-in-from-top-2 duration-200">
+                <p className="text-sm font-bold text-gray-400">No treasures found matching "{searchQuery}"</p>
+              </div>
+            )}
           </div>
 
           {/* Navigation Links */}

@@ -90,3 +90,33 @@ export async function getProduct(id: string) {
     return null;
   }
 }
+
+export async function searchProducts(query: string) {
+  if (!query || query.length < 2) return [];
+
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        OR: [
+          { name: { contains: query, mode: "insensitive" } },
+          { description: { contains: query, mode: "insensitive" } },
+        ],
+        isArchived: false,
+      },
+      include: {
+        category: true,
+        images: true,
+      },
+      take: 5,
+    });
+
+    return products.map((product) => ({
+      ...product,
+      originalPrice: product.originalPrice.toNumber(),
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+    }));
+  } catch (error) {
+    console.error("Error searching products:", error);
+    return [];
+  }
+}
