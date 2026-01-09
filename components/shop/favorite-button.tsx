@@ -1,12 +1,13 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useFavorites, type FavoriteProduct } from "@/lib/hooks/use-favorites";
+import { useFavorites } from "@/lib/hooks/use-favorites";
+import { Product } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 interface FavoriteButtonProps {
-  product: FavoriteProduct;
+  product: Product;
   className?: string;
 }
 

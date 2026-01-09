@@ -7,16 +7,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-
-export interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  discountedPrice?: number;
-  image: string;
-  quantity: number;
-}
+import { CartItem } from "@/lib/types";
 
 const CART_KEY = "flora_cart";
 

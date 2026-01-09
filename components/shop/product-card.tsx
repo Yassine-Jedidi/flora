@@ -6,37 +6,26 @@ import { ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/lib/hooks/use-cart";
 import dynamic from "next/dynamic";
+import { ProductBadge } from "./product-badge";
+import { Price } from "./price";
 
 const FavoriteButton = dynamic(() => import("./favorite-button"), {
   ssr: false,
 });
 
+import { calculateDiscount } from "@/lib/utils";
+import { Product } from "@/lib/types";
+
 interface ProductCardProps {
-  product: {
-    id: string;
-    name: string;
-    originalPrice: number;
-    discountedPrice?: number;
-    images: { url: string }[];
-    category: { name: string };
-    isFeatured?: boolean;
-    createdAt: Date | string;
-    isNew?: boolean;
-  };
+  product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const isNew = product.isNew;
   const hasDiscount =
     product.discountedPrice && product.discountedPrice < product.originalPrice;
   const discountPercentage = hasDiscount
-    ? Math.round(
-        ((product.originalPrice - product.discountedPrice) /
-          product.originalPrice) *
-          100
-      )
+    ? calculateDiscount(product.originalPrice, product.discountedPrice!)
     : 0;
-  const displayPrice = product.discountedPrice || product.originalPrice;
 
   const { addItem } = useCart();
 
@@ -78,23 +67,17 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 items-start">
           {/* Discount Badge */}
           {hasDiscount && (
-            <span className="bg-red-500 text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md inline-block rotate-2">
-              -{discountPercentage}%
-            </span>
+            <ProductBadge type="discount" content={discountPercentage} />
           )}
 
           {/* Bestseller Badge */}
           {product.isFeatured && (
-            <span className="bg-[#FF8BBA] text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md inline-block -rotate-6">
-              BESTSELLER
-            </span>
+            <ProductBadge type="bestseller" />
           )}
 
           {/* New Badge */}
-          {isNew && (
-            <span className="bg-[#A78BFA] text-white text-[10px] font-black px-3 py-1.5 mt-1 rounded-lg shadow-md inline-block rotate-3">
-              NEW
-            </span>
+          {product.isNew && (
+            <ProductBadge type="new" className="mt-1" />
           )}
         </div>
 
@@ -114,16 +97,10 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="w-full border-t border-dotted border-gray-200 my-1" />
 
         <div className="flex items-center justify-between pb-2">
-          <div className="flex flex-col">
-            {hasDiscount && (
-              <span className="text-sm font-semibold text-gray-400 line-through">
-                {product.originalPrice.toFixed(2)} DT
-              </span>
-            )}
-            <span className="text-2xl font-black text-[#FF8BBA]">
-              {displayPrice.toFixed(2)} <span className="text-sm">DT</span>
-            </span>
-          </div>
+          <Price 
+            price={product.discountedPrice || product.originalPrice} 
+            originalPrice={product.discountedPrice ? product.originalPrice : undefined} 
+          />
 
           <button 
             onClick={handleAddToCart}

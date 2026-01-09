@@ -9,25 +9,15 @@ import {
   useMemo,
   useCallback,
 } from "react";
-
-export interface FavoriteProduct {
-  id: string;
-  name: string;
-  originalPrice: number;
-  discountedPrice?: number;
-  images: { url: string }[];
-  category: { name: string };
-  isFeatured?: boolean;
-  createdAt: Date | string;
-}
+import { Product } from "@/lib/types";
 
 const FAVORITES_KEY = "flora_favorites";
 
 interface FavoritesContextValue {
-  favorites: FavoriteProduct[];
-  addFavorite: (product: FavoriteProduct) => void;
+  favorites: Product[];
+  addFavorite: (product: Product) => void;
   removeFavorite: (productId: string) => void;
-  toggleFavorite: (product: FavoriteProduct) => void;
+  toggleFavorite: (product: Product) => void;
   isFavorite: (productId: string) => boolean;
 }
 
@@ -35,14 +25,14 @@ const FavoritesContext = createContext<FavoritesContextValue | undefined>(
   undefined
 );
 
-const readFavoritesFromStorage = (): FavoriteProduct[] => {
+const readFavoritesFromStorage = (): Product[] => {
   if (typeof window === "undefined") {
     return [];
   }
 
   try {
     const stored = window.localStorage.getItem(FAVORITES_KEY);
-    return stored ? (JSON.parse(stored) as FavoriteProduct[]) : [];
+    return stored ? (JSON.parse(stored) as Product[]) : [];
   } catch (error) {
     console.error("Error parsing favorites from localStorage:", error);
     return [];
@@ -50,7 +40,7 @@ const readFavoritesFromStorage = (): FavoriteProduct[] => {
 };
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
-  const [favorites, setFavorites] = useState<FavoriteProduct[]>([]);
+  const [favorites, setFavorites] = useState<Product[]>([]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -77,7 +67,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     }
   }, [favorites]);
 
-  const addFavorite = useCallback((product: FavoriteProduct) => {
+  const addFavorite = useCallback((product: Product) => {
     setFavorites((prev) => {
       if (prev.some((fav) => fav.id === product.id)) {
         return prev;
@@ -90,7 +80,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     setFavorites((prev) => prev.filter((fav) => fav.id !== productId));
   }, []);
 
-  const toggleFavorite = useCallback((product: FavoriteProduct) => {
+  const toggleFavorite = useCallback((product: Product) => {
     setFavorites((prev) => {
       if (prev.some((fav) => fav.id === product.id)) {
         return prev.filter((fav) => fav.id !== product.id);

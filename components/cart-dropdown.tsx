@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useCart } from "@/lib/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Price } from "@/components/shop/price";
 
 export function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -96,15 +97,12 @@ export function CartDropdown() {
                     
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-black text-[#003366] truncate">{item.name}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <p className="text-xs font-bold text-[#FF8BBA]">
-                          {(item.price || 0).toFixed(2)} DT
-                        </p>
-                        {item.originalPrice && item.originalPrice > item.price && (
-                          <p className="text-[10px] text-pink-300 line-through">
-                            {item.originalPrice.toFixed(2)} DT
-                          </p>
-                        )}
+                      <div className="mt-1">
+                        <Price 
+                          price={item.price} 
+                          originalPrice={item.originalPrice} 
+                          size="xs"
+                        />
                       </div>
                       
                       <div className="flex items-center justify-between mt-2">
@@ -142,7 +140,7 @@ export function CartDropdown() {
             <div className="p-6 bg-white border-t border-pink-50 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-gray-400 font-bold">Total</span>
-                <span className="text-xl font-black text-[#003366]">{totalPrice.toFixed(2)} DT</span>
+                <Price price={totalPrice} size="lg" />
               </div>
               
               <Link 

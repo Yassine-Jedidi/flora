@@ -37,6 +37,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Price } from "@/components/shop/price";
 
 export default function CheckoutPage() {
   const { cart, totalPrice, clearCart, updateQuantity, removeItem } = useCart();
@@ -375,14 +376,13 @@ export default function CheckoutPage() {
                               </button>
                             </div>
                             <div className="flex flex-col items-end flex-1">
-                              <p className="text-sm font-bold text-white">
-                                {(item.price * item.quantity).toFixed(2)} DT
-                              </p>
-                              {item.originalPrice && item.originalPrice > item.price && (
-                                <p className="text-[10px] text-pink-200/60 line-through">
-                                  {(item.originalPrice * item.quantity).toFixed(2)} DT
-                                </p>
-                              )}
+                              <Price 
+                                price={item.price * item.quantity} 
+                                originalPrice={item.originalPrice ? item.originalPrice * item.quantity : undefined}
+                                size="sm"
+                                color="text-white"
+                                className="justify-end"
+                              />
                             </div>
                           </div>
                         </div>
@@ -393,13 +393,11 @@ export default function CheckoutPage() {
                   <div className="space-y-4 pt-6 border-t border-white/20">
                     <div className="flex justify-between items-center text-purple-50 font-bold">
                       <span>Subtotal</span>
-                      <span className="text-white font-black">
-                        {totalPrice.toFixed(2)} DT
-                      </span>
+                      <Price price={totalPrice} size="sm" color="text-white" />
                     </div>
                     <div className="flex justify-between items-center text-purple-50 font-bold">
                       <span>Shipping</span>
-                      <span className="text-white font-black">7.00 DT</span>
+                      <Price price={7.00} size="sm" color="text-white" />
                     </div>
                     <div className="h-px bg-white/20 my-4" />
                     <div className="flex justify-between items-end">
@@ -407,9 +405,7 @@ export default function CheckoutPage() {
                         <p className="text-purple-50 text-[10px] font-black uppercase tracking-widest">
                           Total to pay
                         </p>
-                        <p className="text-4xl font-black tracking-tight">
-                          {finalTotal.toFixed(2)} DT
-                        </p>
+                        <Price price={finalTotal} size="xl" color="text-white" />
                       </div>
                     </div>
                   </div>

@@ -20,22 +20,14 @@ import { useCart } from "@/lib/hooks/use-cart";
 import { useFavorites } from "@/lib/hooks/use-favorites";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
+import { ProductBadge } from "./product-badge";
+import { Price } from "./price";
+import { calculateDiscount } from "@/lib/utils";
+import { Product } from "@/lib/types";
 
 const FavoriteButton = dynamic(() => import("./favorite-button"), {
   ssr: false,
 });
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  originalPrice: number;
-  discountedPrice?: number;
-  stock: number;
-  category: { name: string };
-  images: { url: string }[];
-  createdAt: string | Date;
-}
 
 export function ProductDetails({ product }: { product: Product }) {
   const { addItem } = useCart();
@@ -188,9 +180,7 @@ export function ProductDetails({ product }: { product: Product }) {
       <div className="flex flex-col gap-8">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black text-[#FF8BBA] bg-pink-50 px-3 py-1 rounded-full uppercase tracking-widest border border-pink-100">
-              {product.category.name}
-            </span>
+            <ProductBadge type="category" content={product.category.name} />
             <div className="flex items-center gap-1 ml-2">
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
@@ -212,29 +202,19 @@ export function ProductDetails({ product }: { product: Product }) {
             <div className="flex flex-col">
               {product.discountedPrice &&
                 product.discountedPrice < product.originalPrice && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-semibold text-gray-400 line-through">
-                      {product.originalPrice.toFixed(2)} DT
-                    </span>
-                    <span className="bg-red-500 text-white text-xs font-black px-2 py-1 rounded-md">
-                      -
-                      {Math.round(
-                        ((product.originalPrice - product.discountedPrice) /
-                          product.originalPrice) *
-                          100
-                      )}
-                      %
-                    </span>
+                  <div className="flex items-center gap-2 mb-1">
+                    <ProductBadge 
+                      type="discount" 
+                      content={calculateDiscount(product.originalPrice, product.discountedPrice)} 
+                      className="rotate-0 transition-transform hover:scale-110"
+                    />
                   </div>
                 )}
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-black text-[#FF8BBA]">
-                  {(product.discountedPrice || product.originalPrice).toFixed(
-                    2
-                  )}
-                </span>
-                <span className="text-xl font-bold text-[#FF8BBA]">DT</span>
-              </div>
+              <Price 
+                price={product.discountedPrice || product.originalPrice} 
+                originalPrice={product.discountedPrice ? product.originalPrice : undefined}
+                size="xl"
+              />
             </div>
           </div>
         </div>
