@@ -20,6 +20,30 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Deployment
+
+### 1. Database Setup (Neon)
+- Create a new project on [Neon](https://neon.tech).
+- Enable "Pooling" in the Neon console.
+- Use the **Connection String** with `DATABASE_URL` in your Vercel Environment Variables.
+
+### 2. Uploadthing Setup
+- Create an account on [Uploadthing](https://uploadthing.com).
+- Copy your `UPLOADTHING_TOKEN` to Vercel Environment Variables.
+
+### 3. Deploy to Vercel
+- Push your code to GitHub.
+- Import the repository in [Vercel](https://vercel.com).
+- Add the following Environment Variables:
+  - `DATABASE_URL`
+  - `UPLOADTHING_TOKEN`
+  - `ADMIN_KEY` (Your secret key for the admin dashboard)
+- The build will automatically run `prisma generate` via the `postinstall` script.
+- After the first deployment, run migrations by using the Vercel CLI:
+  ```bash
+  npx prisma migrate deploy
+  ```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
