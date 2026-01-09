@@ -76,9 +76,9 @@ export function CartDropdown() {
                 {cart.map((item) => (
                   <div key={item.id} className="flex gap-4 p-2 rounded-2xl hover:bg-gray-50 transition-colors group/item">
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                      {item.images[0] && (
+                      {item.image && (
                         <Image
-                          src={item.images[0].url}
+                          src={item.image}
                           alt={item.name}
                           fill
                           className="object-cover"
@@ -89,7 +89,7 @@ export function CartDropdown() {
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-black text-[#003366] truncate">{item.name}</h4>
                       <p className="text-xs font-bold text-[#FF8BBA] mt-1">
-                        {(item.discountedPrice || item.originalPrice).toFixed(2)} DT
+                        {(item.price || 0).toFixed(2)} DT
                       </p>
                       
                       <div className="flex items-center justify-between mt-2">
@@ -136,7 +136,7 @@ export function CartDropdown() {
                 onClick={() => setIsOpen(false)}
               >
                 <Button className="w-full bg-[#A78BFA] hover:bg-[#8B5CF6] text-white rounded-full font-black py-6 shadow-lg shadow-purple-100 transition-all hover:scale-[1.02]">
-                  Check Out
+                  Check Out Now
                 </Button>
               </Link>
               

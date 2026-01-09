@@ -18,9 +18,6 @@ export const OrderSchema = z.object({
   detailedAddress: z.string().min(3, {
     message: "Address must be more detailed.",
   }),
-  quantity: z.number().min(1, {
-    message: "Quantity must be at least 1.",
-  }),
 });
 
 export type OrderFormValues = z.infer<typeof OrderSchema>;

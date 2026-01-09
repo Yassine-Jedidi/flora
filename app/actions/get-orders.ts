@@ -10,10 +10,13 @@ export async function getOrders(page: number = 1, pageSize: number = 10) {
             prisma.order.count(),
             prisma.order.findMany({
                 include: {
-                    product: {
-                        select: {
-                            name: true,
-                            price: true,
+                    items: {
+                        include: {
+                            product: {
+                                select: {
+                                    name: true,
+                                }
+                            }
                         }
                     }
                 },
@@ -28,10 +31,10 @@ export async function getOrders(page: number = 1, pageSize: number = 10) {
         const mappedOrders = orders.map(order => ({
             ...order,
             totalPrice: order.totalPrice.toNumber(),
-            product: {
-                ...order.product,
-                price: order.product.price.toNumber()
-            }
+            items: order.items.map(item => ({
+                ...item,
+                price: item.price.toNumber()
+            }))
         }));
 
         return {

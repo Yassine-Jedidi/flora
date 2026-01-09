@@ -11,9 +11,8 @@ import {
 export interface CartItem {
   id: string;
   name: string;
-  originalPrice: number;
-  discountedPrice?: number;
-  images: { url: string }[];
+  price: number;
+  image: string;
   quantity: number;
 }
 
@@ -21,7 +20,7 @@ const CART_KEY = "flora_cart";
 
 interface CartContextValue {
   cart: CartItem[];
-  addItem: (product: any) => void;
+  addItem: (product: CartItem) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -38,7 +37,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem(CART_KEY);
     if (stored) {
       try {
-        setCart(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        // Migration: Ensure all items have the new flat price/image structure
+        const migrated = parsed.map((item: any) => {
+          if (item.price === undefined) {
+            return {
+              ...item,
+              price: item.discountedPrice || item.originalPrice || 0,
+              image: item.image || (item.images?.[0]?.url) || "",
+            };
+          }
+          return item;
+        });
+        setCart(migrated);
       } catch (e) {
         console.error("Failed to parse cart", e);
       }
@@ -49,17 +60,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
   }, [cart]);
 
-  const addItem = (product: any) => {
+  const addItem = (product: CartItem) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
         return prev.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + product.quantity }
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, product];
     });
   };
 
@@ -80,8 +91,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clearCart = () => setCart([]);
 
   const totalPrice = cart.reduce(
-    (acc, item) =>
-      acc + (item.discountedPrice || item.originalPrice) * item.quantity,
+    (acc, item) => acc + item.price * item.quantity,
     0
   );
 

@@ -37,7 +37,7 @@ model Product {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  orders    Order[]
+  orderItems OrderItem[]
 
   @@index([categoryId])
 }
@@ -64,8 +64,6 @@ enum OrderStatus {
 
 model Order {
   id              String      @id @default(cuid())
-  productId       String
-  product         Product     @relation(fields: [productId], references: [id])
   
   // Guest Information
   fullName        String
@@ -75,12 +73,23 @@ model Order {
   detailedAddress String
   
   // Order details
-  quantity        Int         @default(1)
+  items           OrderItem[]
   totalPrice      Decimal     @db.Decimal(10, 3)
   status          OrderStatus @default(PENDING)
   
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+}
 
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  price     Decimal  @db.Decimal(10, 3) // Price at time of purchase
+
+  @@index([orderId])
   @@index([productId])
 }

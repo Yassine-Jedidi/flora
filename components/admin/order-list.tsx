@@ -9,16 +9,19 @@ import { Button } from "@/components/ui/button";
 
 interface Order {
     id: string;
-    product: {
-        name: string;
-        price: any;
-    };
+    items: {
+        id: string;
+        product: {
+            name: string;
+        };
+        quantity: number;
+        price: number;
+    }[];
     fullName: string;
     phoneNumber: string;
     governorate: string;
     city: string;
     detailedAddress: string;
-    quantity: number;
     totalPrice: any;
     status: string;
     createdAt: Date;
@@ -53,9 +56,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                             <TableRow className="hover:bg-transparent border-pink-100">
                                 <TableHead className="font-bold text-[#003366]">Date & Time</TableHead>
                                 <TableHead className="font-bold text-[#003366]">Customer</TableHead>
-                                <TableHead className="font-bold text-[#003366]">Product</TableHead>
-                                <TableHead className="font-bold text-[#003366]">Unit Price</TableHead>
-                                <TableHead className="font-bold text-[#003366]">Quantity</TableHead>
+                                <TableHead className="font-bold text-[#003366]">Items (Qty x Price)</TableHead>
                                 <TableHead className="font-bold text-[#003366]">Total Price</TableHead>
                                 <TableHead className="font-bold text-[#003366]">Location</TableHead>
                                 <TableHead className="font-bold text-[#003366]">Status</TableHead>
@@ -64,7 +65,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                         <TableBody>
                             {orders.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="text-center py-10 text-gray-500">
+                                    <TableCell colSpan={6} className="text-center py-10 text-gray-500">
                                         No orders found.
                                     </TableCell>
                                 </TableRow>
@@ -83,13 +84,16 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                                                 <span className="text-xs text-gray-400">{order.phoneNumber}</span>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-gray-600 font-medium">
-                                            {order.product.name}
+                                        <TableCell className="text-gray-600 font-medium max-w-[250px]">
+                                            <div className="flex flex-col gap-1">
+                                                {order.items.map((item) => (
+                                                    <div key={item.id} className="flex justify-between gap-4 text-xs">
+                                                        <span className="truncate flex-1">{item.product.name}</span>
+                                                        <span className="font-bold shrink-0">{item.quantity} x {Number(item.price).toFixed(2)}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </TableCell>
-                                        <TableCell className="text-gray-500">
-                                            {Number(order.product.price).toFixed(2)} DT
-                                        </TableCell>
-                                        <TableCell className="text-gray-600 font-bold pl-8">{order.quantity}</TableCell>
                                         <TableCell className="font-bold text-[#FF8BBA]">
                                             {Number(order.totalPrice).toFixed(2)} DT
                                         </TableCell>

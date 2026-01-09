@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { useFavorites } from "@/lib/hooks/use-favorites";
+import { toast } from "sonner";
 import { useCart } from "@/lib/hooks/use-cart";
 import dynamic from "next/dynamic";
 
@@ -49,7 +50,14 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    addItem(product);
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.discountedPrice || product.originalPrice,
+      image: product.images[0]?.url || "",
+      quantity: 1
+    });
+    toast.success("Added to cart! ✨");
   };
 
   return (

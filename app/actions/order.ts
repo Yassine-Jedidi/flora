@@ -3,7 +3,7 @@
 import prisma from "@/lib/db";
 import { OrderSchema, type OrderFormValues } from "@/lib/validations/order";
 
-export async function createOrder(productId: string, values: OrderFormValues) {
+export async function createOrder(values: OrderFormValues & { items: { productId: string; quantity: number; price: number }[]; totalPrice: number }) {
     try {
         const validatedFields = OrderSchema.safeParse(values);
 
@@ -11,25 +11,26 @@ export async function createOrder(productId: string, values: OrderFormValues) {
             return { error: "Invalid data." };
         }
 
-        const product = await prisma.product.findUnique({
-            where: { id: productId }
-        });
-
-        if (!product) {
-            return { error: "Product not found." };
+        if (!values.items || values.items.length === 0) {
+            return { error: "Your cart is empty." };
         }
 
         const order = await prisma.order.create({
             data: {
-                productId,
                 fullName: values.fullName,
                 phoneNumber: values.phoneNumber,
                 governorate: values.governorate,
                 city: values.city,
                 detailedAddress: values.detailedAddress,
-                quantity: values.quantity,
-                totalPrice: Number(product.price) * values.quantity,
+                totalPrice: values.totalPrice,
                 status: "PENDING",
+                items: {
+                    create: values.items.map(item => ({
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        price: item.price
+                    }))
+                }
             }
         });
 
