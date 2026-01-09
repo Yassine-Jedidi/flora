@@ -6,11 +6,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/lib/hooks/use-cart";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { cart, totalItems, totalPrice, updateQuantity, removeItem } = useCart();
+
+  const handleRemove = (id: string, name: string) => {
+    removeItem(id);
+    toast.info("Removed from cart", {
+      description: name,
+    });
+  };
 
   // Close when clicking outside
   useEffect(() => {
@@ -110,7 +118,7 @@ export function CartDropdown() {
                         </div>
                         
                         <button 
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => handleRemove(item.id, item.name)}
                           className="opacity-0 group-hover/item:opacity-100 p-1.5 text-gray-300 hover:text-red-500 transition-all"
                         >
                           <Trash2 className="w-4 h-4" />

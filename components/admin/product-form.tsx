@@ -9,6 +9,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
 import { Loader2, Plus, X, Save, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import {
     Card,
@@ -116,7 +117,9 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
                 : await createProduct(values);
 
             if (result.success) {
-                setSuccess(initialData ? "Accessory updated successfully! ✨" : "Accessory listed successfully! ✨");
+                const message = initialData ? "Accessory updated successfully! ✨" : "Accessory listed successfully! ✨";
+                setSuccess(message);
+                toast.success(message);
                 router.refresh();
                 if (!initialData) {
                     form.reset();
@@ -143,11 +146,11 @@ export function ProductForm({ categories, initialData, onCancel, onSuccess }: Pr
                     }
                 }, 2500);
             } else {
-                alert(result.error || "Error saving product");
+                toast.error(result.error || "Error saving product");
             }
         } catch (error) {
             console.error("Submission error:", error);
-            alert("Something went wrong");
+            toast.error("Something went wrong");
         } finally {
             setIsPending(false);
         }

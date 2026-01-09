@@ -4,6 +4,8 @@ import "./globals.css";
 import { FavoritesProvider } from "@/lib/hooks/use-favorites";
 import { CartProvider } from "@/lib/hooks/use-cart";
 
+import { Toaster } from "@/components/ui/sonner";
+
 const nunito = Nunito({
   variable: "--font-nunito",
   subsets: ["latin"],
@@ -24,7 +26,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${nunito.variable} font-sans antialiased`}>
         <CartProvider>
-          <FavoritesProvider>{children}</FavoritesProvider>
+          <FavoritesProvider>
+            {children}
+            <Toaster />
+          </FavoritesProvider>
         </CartProvider>
       </body>
     </html>

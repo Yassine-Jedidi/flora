@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteProduct } from "@/app/actions/product";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface ProductImage {
     id: string;
@@ -66,13 +67,14 @@ export function ProductList({ products, onEdit }: ProductListProps) {
         try {
             const result = await deleteProduct(id);
             if (result.success) {
+                toast.success("Accessory deleted successfully! ✨");
                 router.refresh();
             } else {
-                alert(result.error || "Error deleting product");
+                toast.error(result.error || "Error deleting product");
             }
         } catch (error) {
             console.error("Delete error:", error);
-            alert("Something went wrong");
+            toast.error("Something went wrong");
         } finally {
             setIsDeleting(null);
         }

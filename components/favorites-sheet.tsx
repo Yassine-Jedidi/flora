@@ -14,10 +14,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { useFavorites, type FavoriteProduct } from "@/lib/hooks/use-favorites";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function FavoritesSheet() {
   const { favorites, removeFavorite } = useFavorites();
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleRemove = (id: string, name: string) => {
+    removeFavorite(id);
+    toast.info("Removed from favorites", {
+      description: name,
+    });
+  };
 
   const hasDiscount = (product: FavoriteProduct) =>
     product.discountedPrice && product.discountedPrice < product.originalPrice;
@@ -132,7 +140,7 @@ export function FavoritesSheet() {
 
                 {/* Remove Button */}
                 <button
-                  onClick={() => removeFavorite(product.id)}
+                  onClick={() => handleRemove(product.id, product.name)}
                   className="self-start p-2 text-gray-400 hover:text-red-500 transition-colors hover:bg-red-50 rounded-lg"
                   title="Remove from favorites"
                 >

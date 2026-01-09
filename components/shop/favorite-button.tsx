@@ -3,6 +3,7 @@
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/lib/hooks/use-favorites";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface FavoriteButtonProps {
   product: any;
@@ -18,6 +19,15 @@ export default function FavoriteButton({
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
     toggleFavorite(product);
+    if (!active) {
+      toast.success("Added to favorites! 💖", {
+        description: product.name,
+      });
+    } else {
+      toast.info("Removed from favorites", {
+        description: product.name,
+      });
+    }
   };
 
   const active = isFavorite(product.id);
