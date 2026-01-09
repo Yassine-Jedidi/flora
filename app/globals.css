@@ -44,18 +44,18 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #FF8BBA;
+  --primary: #ff8bba;
   --primary-foreground: #ffffff;
-  --secondary: #FFF0F5;
-  --secondary-foreground: #FF69B4;
-  --muted: #FFF0F5;
-  --muted-foreground: #DB7093;
-  --accent: #E6E6FA;
-  --accent-foreground: #9370DB;
+  --secondary: #fff0f5;
+  --secondary-foreground: #ff69b4;
+  --muted: #fff0f5;
+  --muted-foreground: #db7093;
+  --accent: #e6e6fa;
+  --accent-foreground: #9370db;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #FFE4E1;
-  --input: #FFE4E1;
-  --ring: #FFB6C1;
+  --border: #ffe4e1;
+  --input: #ffe4e1;
+  --ring: #ffb6c1;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -109,6 +109,12 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  ::selection {
+    background-color: #fff5f7;
+    color: #da314d;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-nunito), sans-serif;
@@ -122,11 +128,11 @@
     background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #A78BFA;
+    background-color: #a78bfa;
     border-radius: 20px;
   }
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #A78BFA transparent;
+    scrollbar-color: #a78bfa transparent;
   }
 }
