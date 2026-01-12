@@ -1,24 +1,23 @@
-import { getProductsByCategory } from "@/app/actions/get-products";
+import { getSaleProducts } from "@/app/actions/get-products";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/shop/product-card";
 import { SortToggle } from "@/components/shop/sort-toggle";
+import { CategoryToggle } from "@/components/shop/category-toggle";
+import { Metadata } from "next";
 
-interface CategoryPageProps {
-    categorySlug: string;
-    title: string;
-    subtitle: string;
-    searchParams: Promise<{ sort?: string }>;
-}
+export const metadata: Metadata = {
+    title: "Sale Collection | Flora Accessories",
+    description: "Discover our limited-time treasures with exclusive discounts",
+};
 
-export async function CategoryPage({
-    categorySlug,
-    title,
-    subtitle,
+export default async function SalePage({
     searchParams
-}: CategoryPageProps) {
-    const { sort } = await searchParams;
-    const products = await getProductsByCategory(categorySlug, sort || "popular");
+}: {
+    searchParams: Promise<{ sort?: string; category?: string }>
+}) {
+    const { sort, category } = await searchParams;
+    const products = await getSaleProducts(sort || "popular", category);
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -49,12 +48,12 @@ export async function CategoryPage({
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="flex flex-col items-center text-center space-y-6">
                             <h1 className="text-5xl md:text-[5.5rem] font-black tracking-tight leading-none">
-                                <span className="text-[#FF8BBA]">{title}</span>{" "}
+                                <span className="text-[#FF8BBA]">Sale</span>{" "}
                                 <span className="text-[#3E343C]">Collection</span>
                             </h1>
                             <div className="flex items-center gap-3">
                                 <p className="text-[#8B7E84] text-lg font-medium tracking-wide">
-                                    {subtitle}
+                                    Grab your favorite treasures at a special price
                                 </p>
                             </div>
                         </div>
@@ -63,7 +62,7 @@ export async function CategoryPage({
 
                 {/* Filter & Count Row */}
                 <div className="container mx-auto px-4 py-10">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-pink-50 pb-8 gap-6">
+                    <div className="flex flex-col xl:flex-row xl:items-center justify-between border-b border-pink-50 pb-8 gap-8">
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
                                 <span className="text-xl">🎀</span>
@@ -74,7 +73,10 @@ export async function CategoryPage({
                             </p>
                         </div>
 
-                        <SortToggle />
+                        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
+                            <CategoryToggle />
+                            <SortToggle />
+                        </div>
                     </div>
                 </div>
 
@@ -82,10 +84,15 @@ export async function CategoryPage({
                 <div className="container mx-auto px-4 pb-24">
                     {products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-40">
-                            <p className="text-lg text-gray-500 font-medium">New collection arriving soon.</p>
+                            <p className="text-xl font-black text-[#003366] mb-2 text-center">
+                                {category && category !== "all"
+                                    ? `No ${category} on sale right now`
+                                    : "No items on sale at the moment"}
+                            </p>
+                            <p className="text-gray-400 font-medium text-center">Check back soon for new treasures! ✨</p>
                         </div>
                     ) : (
-                        <div key={sort || 'popular'} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+                        <div key={`${sort || 'popular'}-${category || 'all'}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
                             {products.map((product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}

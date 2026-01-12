@@ -187,3 +187,61 @@ export async function getCategoryImages() {
   
   return images;
 }
+
+export async function getSaleProducts(sort?: string, categorySlug?: string) {
+  try {
+    let orderBy: Prisma.ProductOrderByWithRelationInput | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
+
+    if (sort === "popular") {
+      orderBy = [
+        { isFeatured: "desc" },
+        { createdAt: "desc" }
+      ];
+    } else if (sort === "newest") {
+      orderBy = { createdAt: "desc" };
+    } else if (sort === "price") {
+      orderBy = { originalPrice: "asc" };
+    }
+
+    const where: Prisma.ProductWhereInput = {
+      discountedPrice: {
+        not: null,
+      },
+      isArchived: false,
+    };
+
+    if (categorySlug && categorySlug !== "all") {
+      where.category = {
+        slug: categorySlug,
+      };
+    }
+
+    const products = await prisma.product.findMany({
+      where,
+      include: {
+        category: true,
+        images: true,
+      },
+      orderBy,
+    });
+
+    // Filter to ensure discountedPrice < originalPrice
+    const saleProducts = products.filter(
+      (product) =>
+        product.discountedPrice !== null &&
+        product.discountedPrice.toNumber() < product.originalPrice.toNumber()
+    );
+
+    return saleProducts.map((product) => ({
+      ...product,
+      originalPrice: product.originalPrice.toNumber(),
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      isNew:
+        new Date(product.createdAt).getTime() >
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+    }));
+  } catch (error) {
+    console.error("Error fetching sale products:", error);
+    return [];
+  }
+}

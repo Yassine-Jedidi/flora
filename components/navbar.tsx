@@ -145,6 +145,16 @@ export function Navbar() {
                   >
                     Earrings
                   </Link>
+                  <Link
+                    href="/sale"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/sale"
+                      ? "text-[#FF8BBA]"
+                      : "text-red-500 hover:text-red-600"
+                      }`}
+                  >
+                    Sale %
+                  </Link>
                 </div>
               </div>
             </SheetContent>
@@ -275,6 +285,15 @@ export function Navbar() {
                 }`}
             >
               Earrings
+            </Link>
+            <Link
+              href="/sale"
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/sale"
+                ? "text-[#FF8BBA]"
+                : "text-red-500 hover:text-red-600 font-black"
+                }`}
+            >
+              Sale %
             </Link>
           </div>
 

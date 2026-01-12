@@ -161,7 +161,7 @@ export default function CheckoutPage() {
                       <ShoppingBag className="w-4 h-4 text-[#FF8BBA]" />
                     </div>
                     <h2 className="text-xl font-black text-[#003366]">
-                      Guest Information
+                      Information
                     </h2>
                   </div>
 
