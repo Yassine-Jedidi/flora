@@ -140,36 +140,9 @@ export function ProductForm({
         : await createProduct(values);
 
       if (result.success) {
-        const message = initialData
-          ? "Accessory updated successfully! ✨"
-          : "Accessory listed successfully! ✨";
-        setSuccess(message);
-        toast.success(message);
-        router.refresh();
-        if (!initialData) {
-          form.reset();
-        }
-
-        // Success sequence: Calm and controlled transition
-        setTimeout(() => {
-          setSuccess(null);
-
-          if (initialData) {
-            // For EDITS: Start a smooth climb to the top
-            window.scrollTo({ top: 0, behavior: "smooth" });
-
-            // Wait longer (1 second) for the scroll to finish before switching tabs
-            setTimeout(() => {
-              if (onSuccess) onSuccess();
-            }, 1000);
-          } else {
-            // For NEW listings: Switch first then scroll so they see the new top row
-            if (onSuccess) onSuccess();
-            setTimeout(() => {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }, 100);
-          }
-        }, 2500);
+        toast.success(result.success);
+        // Immediate redirection to inventory for a smooth, fast experience
+        router.push("/admin/inventory");
       } else {
         toast.error(result.error || "Error saving product");
       }
@@ -526,17 +499,15 @@ export function ProductForm({
             Your changes are saved to the secure inventory vault.
           </p>
           <div className="flex gap-3">
-            {initialData && onCancel && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-                className="rounded-full border-pink-100 text-gray-500 hover:bg-pink-50 px-6 font-bold"
-              >
-                <RotateCcw className="w-4 h-4 mr-2" />
-                Cancel Edit
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onCancel ? onCancel() : router.push("/admin/inventory")}
+              className="rounded-full border-pink-100 text-gray-500 hover:bg-pink-50 px-6 font-bold"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              {initialData ? "Back to Inventory" : "Cancel"}
+            </Button>
             <Button
               disabled={isPending}
               type="submit"
@@ -549,7 +520,7 @@ export function ProductForm({
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              {initialData ? "Save Changes" : "List This Accessory"}
+              {isPending ? "Saving..." : initialData ? "Save Changes" : "List This Accessory"}
             </Button>
           </div>
         </CardFooter>
