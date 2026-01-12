@@ -124,14 +124,6 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/returns"
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Returns
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     href="/faq"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
@@ -139,12 +131,14 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/contact"
+                  <a
+                    href="https://www.instagram.com/flora_.access/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Contact Us
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>

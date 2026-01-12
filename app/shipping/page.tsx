@@ -189,11 +189,14 @@ export default function ShippingPage() {
                                         <h4 className="font-black">Need more help?</h4>
                                         <p className="text-sm text-white/80 font-bold tracking-tight">Support is available via WhatsApp</p>
                                     </div>
-                                    <div
-                                        className="ml-auto bg-white text-[#FF8BBA] px-6 py-2 rounded-full font-black text-xs cursor-default"
+                                    <a
+                                        href="https://www.instagram.com/flora_.access/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="ml-auto bg-white text-[#FF8BBA] px-6 py-2 rounded-full font-black text-xs hover:bg-pink-50 transition-colors"
                                     >
                                         Contact
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
