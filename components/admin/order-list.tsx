@@ -14,6 +14,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Order } from "@/lib/types";
+import { OrderStatusToggle } from "./order-status-toggle";
+import { OrderStatus } from "@prisma/client";
 
 interface OrderListProps {
   orders: Order[];
@@ -132,41 +134,10 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        className={`
-                                                    ${
-                                                      order.status === "PENDING"
-                                                        ? "bg-yellow-100 text-yellow-600 hover:bg-yellow-200"
-                                                        : ""
-                                                    }
-                                                    ${
-                                                      order.status ===
-                                                      "CONFIRMED"
-                                                        ? "bg-blue-100 text-blue-600 hover:bg-blue-200"
-                                                        : ""
-                                                    }
-                                                    ${
-                                                      order.status === "SHIPPED"
-                                                        ? "bg-purple-100 text-purple-600 hover:bg-purple-200"
-                                                        : ""
-                                                    }
-                                                    ${
-                                                      order.status ===
-                                                      "DELIVERED"
-                                                        ? "bg-green-100 text-green-600 hover:bg-green-200"
-                                                        : ""
-                                                    }
-                                                    ${
-                                                      order.status ===
-                                                      "CANCELLED"
-                                                        ? "bg-red-100 text-red-600 hover:bg-red-200"
-                                                        : ""
-                                                    }
-                                                    uppercase tracking-wider text-[10px] font-bold rounded-full px-3
-                                                `}
-                      >
-                        {order.status}
-                      </Badge>
+                      <OrderStatusToggle
+                        orderId={order.id}
+                        currentStatus={order.status as OrderStatus}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

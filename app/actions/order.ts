@@ -2,6 +2,8 @@
 
 import prisma from "@/lib/db";
 import { OrderSchema, type OrderFormValues } from "@/lib/validations/order";
+import { revalidatePath } from "next/cache";
+import { OrderStatus } from "@prisma/client";
 
 export async function createOrder(values: OrderFormValues & { items: { productId: string; quantity: number; price: number }[]; totalPrice: number }) {
     try {
@@ -38,5 +40,20 @@ export async function createOrder(values: OrderFormValues & { items: { productId
     } catch (error) {
         console.error("Order creation error:", error);
         return { error: "An error occurred while creating the order." };
+    }
+}
+
+export async function updateOrderStatus(orderId: string, status: OrderStatus) {
+    try {
+        await prisma.order.update({
+            where: { id: orderId },
+            data: { status }
+        });
+
+        revalidatePath("/admin/orders");
+        return { success: true };
+    } catch (error) {
+        console.error("Update Order Status error:", error);
+        return { error: "An error occurred while updating the order status." };
     }
 }
