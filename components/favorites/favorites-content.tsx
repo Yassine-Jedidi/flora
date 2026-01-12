@@ -13,7 +13,7 @@ export default function FavoritesContent() {
   const { favorites } = useFavorites();
 
   return (
-    <div className="min-h-screen bg-[#FFF5F8] pb-24">
+    <div className="min-h-screen bg-[#FFF8FA] pb-24">
       {/* Decorative Header */}
       <div className="relative pt-40 pb-20 overflow-hidden">
         {/* Pattern Background */}
@@ -45,7 +45,7 @@ export default function FavoritesContent() {
                 Your <span className="text-[#FF8BBA]">Treasures</span>
               </h1>
             </div>
-            
+
             <p className="mt-6 text-lg text-gray-500 font-medium max-w-lg">
               {favorites.length === 0
                 ? "Your jewelry box is waiting to be filled with sparkles."

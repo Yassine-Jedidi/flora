@@ -130,6 +130,37 @@ export async function searchProducts(query: string) {
   }
 }
 
+export async function getFeaturedProducts() {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        isFeatured: true,
+        isArchived: false,
+      },
+      include: {
+        category: true,
+        images: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 8,
+    });
+
+    return products.map((product) => ({
+      ...product,
+      originalPrice: product.originalPrice.toNumber(),
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      isNew:
+        new Date(product.createdAt).getTime() >
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+    }));
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    return [];
+  }
+}
+
 export async function getCategoryImages() {
   const categories = ["rings", "bracelets", "necklaces", "earrings"];
   const images: Record<string, string> = {};
