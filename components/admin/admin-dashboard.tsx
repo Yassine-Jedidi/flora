@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusCircle, ListTodo, Pencil, ShoppingBag } from "lucide-react";
+import { PlusCircle, ListTodo, Pencil, ShoppingBag, Calculator } from "lucide-react";
 import { ProductForm } from "@/components/admin/product-form";
 import { ProductList } from "@/components/admin/product-list";
 import { OrderList } from "@/components/admin/order-list";
+import { ProfitCalculator } from "@/components/admin/profit-calculator";
 import { ProductFormValues } from "@/lib/validations/product";
 import { Product, Order } from "@/lib/types";
 
@@ -90,6 +91,14 @@ export function AdminDashboard({
             <ListTodo className="w-4 h-4 mr-2" />
             Your Inventory
           </TabsTrigger>
+
+          <TabsTrigger
+            value="profit"
+            className="rounded-full px-8 h-full data-[state=active]:bg-[#FF8BBA] data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-bold text-[#003366]"
+          >
+            <Calculator className="w-4 h-4 mr-2" />
+            Profit Calc
+          </TabsTrigger>
         </TabsList>
       </div>
 
@@ -133,6 +142,13 @@ export function AdminDashboard({
         className="animate-in fade-in slide-in-from-bottom-4 duration-500"
       >
         <ProductList products={products} onEdit={handleEdit} />
+      </TabsContent>
+
+      <TabsContent
+        value="profit"
+        className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+      >
+        <ProfitCalculator products={products} />
       </TabsContent>
     </Tabs>
   );
