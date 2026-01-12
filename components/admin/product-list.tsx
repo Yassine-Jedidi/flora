@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Pencil, Trash2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -32,10 +33,9 @@ import { Product } from "@/lib/types";
 
 interface ProductListProps {
   products: Product[];
-  onEdit: (product: Product) => void;
 }
 
-export function ProductList({ products, onEdit }: ProductListProps) {
+export function ProductList({ products }: ProductListProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -137,7 +137,7 @@ export function ProductList({ products, onEdit }: ProductListProps) {
                   <div className="flex flex-col gap-1">
                     {product.discountedPrice &&
                       Number(product.discountedPrice) <
-                        Number(product.originalPrice) && (
+                      Number(product.originalPrice) && (
                         <div className="flex items-center gap-2">
                           <span className="text-xs text-gray-400 line-through">
                             {Number(product.originalPrice).toFixed(3)} DT
@@ -148,7 +148,7 @@ export function ProductList({ products, onEdit }: ProductListProps) {
                               ((Number(product.originalPrice) -
                                 Number(product.discountedPrice)) /
                                 Number(product.originalPrice)) *
-                                100
+                              100
                             )}
                             %
                           </Badge>
@@ -164,9 +164,8 @@ export function ProductList({ products, onEdit }: ProductListProps) {
                 </TableCell>
                 <TableCell className="px-6 py-4">
                   <span
-                    className={`text-sm font-semibold ${
-                      product.stock <= 5 ? "text-red-500" : "text-gray-600"
-                    }`}
+                    className={`text-sm font-semibold ${product.stock <= 5 ? "text-red-500" : "text-gray-600"
+                      }`}
                   >
                     {product.stock}
                   </span>
@@ -195,12 +194,14 @@ export function ProductList({ products, onEdit }: ProductListProps) {
                 <TableCell className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-1">
                     <Button
-                      onClick={() => onEdit(product)}
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-gray-400 hover:text-[#003366] hover:bg-pink-50 rounded-full"
+                      asChild
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Link href={`/admin/product/edit/${product.id}`}>
+                        <Pencil className="w-4 h-4" />
+                      </Link>
                     </Button>
 
                     <AlertDialog>

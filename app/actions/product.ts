@@ -58,7 +58,7 @@ export async function createProduct(values: ProductFormValues) {
       },
     });
 
-    revalidatePath("/admin/products");
+    revalidatePath("/admin/inventory");
     revalidatePath("/"); // Revalidate home page if products are shown there
 
     return { success: "Product created successfully!", productId: product.id };
@@ -144,7 +144,7 @@ export async function deleteProduct(id: string) {
       where: { id },
     });
 
-    revalidatePath("/admin");
+    revalidatePath("/admin/inventory");
     revalidatePath("/");
     
     return { success: "Product and its images deleted successfully! ✨" };
@@ -220,7 +220,7 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       });
     });
 
-    revalidatePath("/admin");
+    revalidatePath("/admin/inventory");
     revalidatePath("/");
     
     return { success: "Product updated successfully! ✨" };

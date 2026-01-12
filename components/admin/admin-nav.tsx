@@ -1,0 +1,59 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ShoppingBag, PlusCircle, ListTodo, Calculator } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export function AdminNav() {
+    const pathname = usePathname();
+
+    const navItems = [
+        {
+            href: "/admin/orders",
+            label: "Orders",
+            icon: ShoppingBag,
+        },
+        {
+            href: "/admin/product/new",
+            label: "Add New Product",
+            icon: PlusCircle,
+        },
+        {
+            href: "/admin/inventory",
+            label: "Your Inventory",
+            icon: ListTodo,
+        },
+        {
+            href: "/admin/profit",
+            label: "Profit Calc",
+            icon: Calculator,
+        },
+    ];
+
+    return (
+        <div className="flex justify-center mb-10 w-full overflow-x-auto">
+            <div className="bg-white border border-pink-50 p-1 h-12 rounded-full shadow-lg shadow-pink-100/30 flex items-center min-w-fit">
+                {navItems.map((item) => {
+                    const isActive =
+                        pathname === item.href || pathname.startsWith(item.href + "/");
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                                "flex items-center justify-center rounded-full px-6 h-full transition-all font-bold whitespace-nowrap text-sm",
+                                isActive
+                                    ? "bg-[#FF8BBA] text-white shadow-md"
+                                    : "text-[#003366] hover:bg-pink-50"
+                            )}
+                        >
+                            <item.icon className="w-4 h-4 mr-2" />
+                            {item.label}
+                        </Link>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}

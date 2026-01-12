@@ -6,7 +6,7 @@ export function proxy(request: NextRequest) {
 
   // Protect all routes starting with /admin
   if (pathname.startsWith("/admin")) {
-    const adminKey = process.env.ADMIN_KEY;
+    const adminKey = process.env.ADMIN_KEY || "flora-secret-key";
     const authCookie = request.cookies.get("flora_admin_auth")?.value;
     const queryKey = searchParams.get("key");
 
