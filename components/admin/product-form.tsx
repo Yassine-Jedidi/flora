@@ -56,31 +56,32 @@ export function ProductForm({
     resolver: zodResolver(ProductSchema),
     defaultValues: (initialData
       ? {
-          ...initialData,
-          // If discountedPrice exists in DB, then:
-          // UI Sale Price = DB discountedPrice
-          // UI Original Price = DB originalPrice
-          // If it doesn't exist:
-          // UI Sale Price = DB originalPrice
-          // UI Original Price = undefined
-          originalPrice: initialData.discountedPrice
-            ? Number(initialData.originalPrice)
-            : undefined,
-          discountedPrice: initialData.discountedPrice
-            ? Number(initialData.discountedPrice)
-            : Number(initialData.originalPrice),
-        }
+        ...initialData,
+        // If discountedPrice exists in DB, then:
+        // UI Sale Price = DB discountedPrice
+        // UI Original Price = DB originalPrice
+        // If it doesn't exist:
+        // UI Sale Price = DB originalPrice
+        // UI Original Price = undefined
+        originalPrice: initialData.discountedPrice
+          ? Number(initialData.originalPrice)
+          : undefined,
+        discountedPrice: initialData.discountedPrice
+          ? Number(initialData.discountedPrice)
+          : Number(initialData.originalPrice),
+      }
       : {
-          name: "",
-          description: "",
-          originalPrice: undefined,
-          discountedPrice: undefined,
-          categoryId: "",
-          stock: 0,
-          images: [],
-          isFeatured: false,
-          isArchived: false,
-        }) as ProductFormValues,
+        name: "",
+        description: "",
+        originalPrice: undefined,
+        discountedPrice: undefined,
+        categoryId: "",
+        stock: 0,
+        images: [],
+        isFeatured: false,
+        isArchived: false,
+        isLive: true,
+      }) as ProductFormValues,
   });
 
   const images = form.watch("images") || [];
@@ -401,22 +402,42 @@ export function ProductForm({
                 )}
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
-                <div className="space-y-0.5">
-                  <Label className="text-sm font-bold text-[#003366]">
-                    Featured Product
-                  </Label>
-                  <p className="text-xs text-gray-500">
-                    Show this on the home page
-                  </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm font-bold text-[#003366]">
+                      Featured
+                    </Label>
+                    <p className="text-[10px] text-gray-500">
+                      Home page visibility
+                    </p>
+                  </div>
+                  <Switch
+                    checked={form.watch("isFeatured")}
+                    onCheckedChange={(checked) =>
+                      form.setValue("isFeatured", checked)
+                    }
+                    className="data-[state=checked]:bg-[#FF8BBA]"
+                  />
                 </div>
-                <Switch
-                  checked={form.watch("isFeatured")}
-                  onCheckedChange={(checked) =>
-                    form.setValue("isFeatured", checked)
-                  }
-                  className="data-[state=checked]:bg-[#FF8BBA]"
-                />
+
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm font-bold text-[#003366]">
+                      Live
+                    </Label>
+                    <p className="text-[10px] text-gray-500">
+                      Website visibility
+                    </p>
+                  </div>
+                  <Switch
+                    checked={form.watch("isLive")}
+                    onCheckedChange={(checked) =>
+                      form.setValue("isLive", checked)
+                    }
+                    className="data-[state=checked]:bg-[#A78BFA]"
+                  />
+                </div>
               </div>
             </div>
 
@@ -465,11 +486,10 @@ export function ProductForm({
                                                 aspect-square rounded-3xl border-2 border-dashed border-pink-200
                                                 flex flex-col items-center justify-center p-6 text-center
                                                 cursor-pointer transition-all hover:bg-pink-50/30 hover:border-pink-300
-                                                ${
-                                                  isUploading
-                                                    ? "opacity-50 cursor-not-allowed"
-                                                    : ""
-                                                }
+                                                ${isUploading
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                        }
                                             `}
                     >
                       <div className="bg-pink-100 p-3 rounded-full mb-3 text-[#FF8BBA] group-hover:scale-110 transition-transform">

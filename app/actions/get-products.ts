@@ -51,6 +51,7 @@ export async function getProductsByCategory(categorySlug: string, sort?: string)
           slug: categorySlug,
         },
         isArchived: false,
+        isLive: true,
       },
       include: {
         category: true,
@@ -110,6 +111,7 @@ export async function searchProducts(query: string) {
           { description: { contains: query, mode: "insensitive" } },
         ],
         isArchived: false,
+        isLive: true,
       },
       include: {
         category: true,
@@ -136,6 +138,7 @@ export async function getFeaturedProducts() {
       where: {
         isFeatured: true,
         isArchived: false,
+        isLive: true,
       },
       include: {
         category: true,
@@ -171,6 +174,7 @@ export async function getCategoryImages() {
         where: {
           category: { slug },
           isArchived: false,
+          isLive: true,
           images: { some: {} }
         },
         include: { images: true },
@@ -208,6 +212,7 @@ export async function getSaleProducts(sort?: string, categorySlug?: string) {
         not: null,
       },
       isArchived: false,
+      isLive: true,
     };
 
     if (categorySlug && categorySlug !== "all") {

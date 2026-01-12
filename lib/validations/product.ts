@@ -13,6 +13,7 @@ export const ProductSchema = z.object({
   images: z.array(z.string()).min(1, "At least one image is required"),
   isFeatured: z.boolean().default(false),
   isArchived: z.boolean().default(false),
+  isLive: z.boolean().default(true),
 });
 
 export type ProductFormValues = z.infer<typeof ProductSchema>;

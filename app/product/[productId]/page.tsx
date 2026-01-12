@@ -15,7 +15,7 @@ export default async function ProductPage({
     const { productId } = await params;
     const product = await getProduct(productId);
 
-    if (!product) {
+    if (!product || !product.isLive) {
         return notFound();
     }
 

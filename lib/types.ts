@@ -24,6 +24,7 @@ export interface Product {
   images: ProductImage[];
   isFeatured: boolean;
   isArchived: boolean;
+  isLive: boolean;
   createdAt: string | Date;
   isNew?: boolean;
 }

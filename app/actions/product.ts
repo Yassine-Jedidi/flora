@@ -22,7 +22,8 @@ export async function createProduct(values: ProductFormValues) {
       stock, 
       images, 
       isFeatured, 
-      isArchived 
+      isArchived,
+      isLive
     } = validatedFields.data;
 
     // Manual refinement check
@@ -49,6 +50,7 @@ export async function createProduct(values: ProductFormValues) {
         stock,
         isFeatured,
         isArchived,
+        isLive,
         categoryId,
         images: {
           createMany: {
@@ -171,7 +173,8 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       stock, 
       images, 
       isFeatured, 
-      isArchived 
+      isArchived,
+      isLive
     } = validatedFields.data;
 
     // Manual refinement check
@@ -201,6 +204,7 @@ export async function updateProduct(id: string, values: ProductFormValues) {
           stock,
           isFeatured,
           isArchived,
+          isLive,
           categoryId,
         },
       });

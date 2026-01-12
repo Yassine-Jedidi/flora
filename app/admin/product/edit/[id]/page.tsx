@@ -39,6 +39,7 @@ export default function EditProductPage() {
                         categoryId: product.categoryId,
                         isFeatured: product.isFeatured,
                         isArchived: product.isArchived,
+                        isLive: product.isLive,
                         images: product.images.map((img) => img.url),
                         id: product.id,
                     });
