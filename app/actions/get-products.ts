@@ -129,3 +129,30 @@ export async function searchProducts(query: string) {
     return [];
   }
 }
+
+export async function getCategoryImages() {
+  const categories = ["rings", "bracelets", "necklaces", "earrings"];
+  const images: Record<string, string> = {};
+
+  for (const slug of categories) {
+    try {
+      const product = await prisma.product.findFirst({
+        where: {
+          category: { slug },
+          isArchived: false,
+          images: { some: {} }
+        },
+        include: { images: true },
+        orderBy: { createdAt: 'desc' },
+      });
+      
+      if (product?.images[0]) {
+        images[slug] = product.images[0].url;
+      }
+    } catch (e) {
+      console.error(`Error fetching image for ${slug}`, e);
+    }
+  }
+  
+  return images;
+}
