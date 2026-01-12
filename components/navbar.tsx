@@ -38,6 +38,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
@@ -58,7 +59,11 @@ export function Navbar() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const outsideDesktop = searchRef.current && !searchRef.current.contains(target);
+      const outsideMobile = mobileSearchRef.current && !mobileSearchRef.current.contains(target);
+
+      if (outsideDesktop && outsideMobile) {
         setShowDropdown(false);
       }
     }
@@ -293,7 +298,7 @@ export function Navbar() {
 
         {/* Mobile Search Bar */}
         {mobileSearchOpen && (
-          <div className="md:hidden pb-4 animate-in slide-in-from-top-2 duration-200">
+          <div className="md:hidden pb-4 animate-in slide-in-from-top-2 duration-200" ref={mobileSearchRef}>
             <div className="relative w-full">
               {isSearching ? (
                 <Loader2 className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-pink-300 animate-spin" />
@@ -316,54 +321,54 @@ export function Navbar() {
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
-            </div>
 
-            {/* Mobile Search Results */}
-            {showDropdown && searchResults.length > 0 && (
-              <div className="mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 overflow-hidden">
-                <div className="p-2 max-h-[60vh] overflow-y-auto">
-                  {searchResults.map((product) => (
-                    <button
-                      key={product.id}
-                      onClick={() => {
-                        handleProductClick(product.id);
-                        setMobileSearchOpen(false);
-                      }}
-                      className="w-full flex items-center gap-3 p-3 hover:bg-pink-50/50 rounded-2xl transition-colors text-left group"
-                    >
-                      <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0">
-                        {product.images?.[0]?.url ? (
-                          <Image
-                            src={product.images[0].url}
-                            alt={product.name}
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <ShoppingBag className="w-5 h-5 text-gray-200" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-bold text-[#3E343C] truncate group-hover:text-[#FF8BBA] transition-colors">
-                          {product.name}
-                        </h4>
-                        <p className="text-xs font-black text-[#FF8BBA]">
-                          {(product.discountedPrice || product.originalPrice).toFixed(2)} DT
-                        </p>
-                      </div>
-                    </button>
-                  ))}
+              {/* Mobile Search Results */}
+              {showDropdown && searchResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 overflow-hidden z-110">
+                  <div className="p-2 max-h-[60vh] overflow-y-auto">
+                    {searchResults.map((product) => (
+                      <button
+                        key={product.id}
+                        onClick={() => {
+                          handleProductClick(product.id);
+                          setMobileSearchOpen(false);
+                        }}
+                        className="w-full flex items-center gap-3 p-3 hover:bg-pink-50/50 rounded-2xl transition-colors text-left group"
+                      >
+                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                          {product.images?.[0]?.url ? (
+                            <Image
+                              src={product.images[0].url}
+                              alt={product.name}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <ShoppingBag className="w-5 h-5 text-gray-200" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-bold text-[#3E343C] truncate group-hover:text-[#FF8BBA] transition-colors">
+                            {product.name}
+                          </h4>
+                          <p className="text-xs font-black text-[#FF8BBA]">
+                            {(product.discountedPrice || product.originalPrice).toFixed(2)} DT
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching && (
-              <div className="mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-4 text-center">
-                <p className="text-sm font-bold text-gray-400">No treasures found matching &quot;{searchQuery}&quot;</p>
-              </div>
-            )}
+              {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-4 text-center z-110">
+                  <p className="text-sm font-bold text-gray-400">No treasures found matching &quot;{searchQuery}&quot;</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
