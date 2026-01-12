@@ -38,9 +38,9 @@ export function ProductCard({ product }: ProductCardProps) {
       originalPrice: product.originalPrice,
       discountedPrice: product.discountedPrice,
       image: product.images[0]?.url || "",
-      quantity: 1
+      quantity: 1,
+      stock: product.stock,
     });
-    toast.success("Added to cart! ✨");
   };
 
   return (
@@ -97,12 +97,12 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="w-full border-t border-dotted border-gray-200 my-1" />
 
         <div className="flex items-center justify-between pb-2">
-          <Price 
-            price={product.discountedPrice || product.originalPrice} 
-            originalPrice={product.discountedPrice ? product.originalPrice : undefined} 
+          <Price
+            price={product.discountedPrice || product.originalPrice}
+            originalPrice={product.discountedPrice ? product.originalPrice : undefined}
           />
 
-          <button 
+          <button
             onClick={handleAddToCart}
             className="w-12 h-12 rounded-full bg-[#A78BFA]/10 hover:bg-[#A78BFA]/20 text-[#A78BFA] flex items-center justify-center transition-all shadow-sm hover:scale-110"
           >

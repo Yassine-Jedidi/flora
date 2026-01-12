@@ -36,6 +36,7 @@ export interface CartItem {
   discountedPrice?: number | null;
   image: string;
   quantity: number;
+  stock: number;
 }
 
 export interface OrderItem {

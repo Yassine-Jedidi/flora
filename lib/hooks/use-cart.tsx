@@ -8,6 +8,7 @@ import {
   ReactNode,
 } from "react";
 import { CartItem } from "@/lib/types";
+import { toast } from "sonner";
 
 const CART_KEY = "flora_cart";
 
@@ -54,17 +55,31 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [cart]);
 
   const addItem = (product: CartItem) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
+    const existing = cart.find((item) => item.id === product.id);
+
+    if (existing) {
+      if (existing.quantity + product.quantity > existing.stock) {
+        toast.error(`Only ${existing.stock} items available in stock!`);
+        return;
+      }
+      toast.success("Item quantity updated in cart!");
+      setCart((prev) =>
+        prev.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + product.quantity }
             : item
-        );
-      }
-      return [...prev, product];
-    });
+        )
+      );
+      return;
+    }
+
+    if (product.quantity > product.stock) {
+      toast.error(`Only ${product.stock} items available in stock!`);
+      return;
+    }
+
+    toast.success("Added to cart!");
+    setCart((prev) => [...prev, product]);
   };
 
   const removeItem = (productId: string) => {
@@ -72,12 +87,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity < 1) {
-      removeItem(productId);
+    const item = cart.find((i) => i.id === productId);
+    if (!item) return;
+
+    if (quantity > item.stock) {
+      toast.error(`Only ${item.stock} items available in stock!`);
+      setCart((prev) =>
+        prev.map((i) =>
+          i.id === productId ? { ...i, quantity: item.stock } : i
+        )
+      );
       return;
     }
+
+    if (quantity < 1) {
+      setCart((prev) => prev.filter((i) => i.id !== productId));
+      return;
+    }
+
     setCart((prev) =>
-      prev.map((item) => (item.id === productId ? { ...item, quantity } : item))
+      prev.map((i) => (i.id === productId ? { ...i, quantity } : i))
     );
   };
 

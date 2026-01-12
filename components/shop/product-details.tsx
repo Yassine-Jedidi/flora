@@ -55,8 +55,8 @@ export function ProductDetails({ product }: { product: Product }) {
       discountedPrice: product.discountedPrice,
       image: product.images[0]?.url || "",
       quantity,
+      stock: product.stock,
     });
-    toast.success("Added to your cart! ✨");
   };
 
   const nextImage = useCallback(() => {
@@ -92,9 +92,8 @@ export function ProductDetails({ product }: { product: Product }) {
             {product.images.map((img, idx) => (
               <div
                 key={img.url}
-                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                  selectedImage === idx ? "opacity-100 z-0" : "opacity-0 -z-10"
-                }`}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${selectedImage === idx ? "opacity-100 z-0" : "opacity-0 -z-10"
+                  }`}
               >
                 <Image
                   src={img.url}
@@ -148,9 +147,8 @@ export function ProductDetails({ product }: { product: Product }) {
             {product.images.map((_, idx) => (
               <div
                 key={idx}
-                className={`h-2 rounded-full transition-all duration-500 ${
-                  selectedImage === idx ? "w-8 bg-[#FF8BBA]" : "w-2 bg-pink-200"
-                }`}
+                className={`h-2 rounded-full transition-all duration-500 ${selectedImage === idx ? "w-8 bg-[#FF8BBA]" : "w-2 bg-pink-200"
+                  }`}
               />
             ))}
           </div>
@@ -163,11 +161,10 @@ export function ProductDetails({ product }: { product: Product }) {
               <button
                 key={img.url}
                 onClick={() => setSelectedImage(index)}
-                className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${
-                  selectedImage === index
+                className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === index
                     ? "border-[#FF8BBA] shadow-md scale-95"
                     : "border-transparent hover:border-pink-200"
-                }`}
+                  }`}
               >
                 <Image src={img.url} alt="" fill className="object-cover" />
               </button>
@@ -203,15 +200,15 @@ export function ProductDetails({ product }: { product: Product }) {
               {product.discountedPrice &&
                 product.discountedPrice < product.originalPrice && (
                   <div className="flex items-center gap-2 mb-1">
-                    <ProductBadge 
-                      type="discount" 
-                      content={calculateDiscount(product.originalPrice, product.discountedPrice)} 
+                    <ProductBadge
+                      type="discount"
+                      content={calculateDiscount(product.originalPrice, product.discountedPrice)}
                       className="rotate-0 transition-transform hover:scale-110"
                     />
                   </div>
                 )}
-              <Price 
-                price={product.discountedPrice || product.originalPrice} 
+              <Price
+                price={product.discountedPrice || product.originalPrice}
                 originalPrice={product.discountedPrice ? product.originalPrice : undefined}
                 size="xl"
               />
@@ -280,9 +277,8 @@ export function ProductDetails({ product }: { product: Product }) {
               className="h-11 rounded-2xl bg-white border-2 border-pink-100 text-[#FF8BBA] hover:bg-pink-50 text-xs font-black transition-all hover:scale-[1.02] active:scale-95 gap-3"
             >
               <Heart
-                className={`w-4 h-4 ${
-                  isFavorite(product.id) ? "fill-[#FF8BBA]" : ""
-                }`}
+                className={`w-4 h-4 ${isFavorite(product.id) ? "fill-[#FF8BBA]" : ""
+                  }`}
               />
               Add to favorites
             </Button>

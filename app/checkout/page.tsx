@@ -370,14 +370,15 @@ export default function CheckoutPage() {
                                 onClick={() =>
                                   updateQuantity(item.id, item.quantity + 1)
                                 }
-                                className="w-5 h-5 rounded-full hover:bg-white/20 flex items-center justify-center text-white transition-all"
+                                disabled={item.quantity >= item.stock}
+                                className="w-5 h-5 rounded-full hover:bg-white/20 flex items-center justify-center text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                               >
                                 <Plus className="w-3 h-3" />
                               </button>
                             </div>
                             <div className="flex flex-col items-end flex-1">
-                              <Price 
-                                price={item.price * item.quantity} 
+                              <Price
+                                price={item.price * item.quantity}
                                 originalPrice={item.originalPrice ? item.originalPrice * item.quantity : undefined}
                                 size="sm"
                                 color="text-white"
