@@ -85,8 +85,20 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
             placeholder="Search products..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            className="pl-10 rounded-full border-pink-100 focus:border-pink-300 focus:ring-pink-200"
+            className="pl-10 pr-10 rounded-full border-pink-100 focus:border-pink-300 focus:ring-pink-200"
           />
+          {searchValue && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchValue("");
+                updateFilters("search", "");
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
         <Button
           type="submit"
