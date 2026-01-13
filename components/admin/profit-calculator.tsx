@@ -17,7 +17,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
     const [selectedProductId, setSelectedProductId] = useState<string>("");
     const [sellingPrice, setSellingPrice] = useState<string>("0");
     const [buyingPrice, setBuyingPrice] = useState<string>("0");
-    const [packagingCost, setPackagingCost] = useState<string>("0");
+    const [packagingCost, setPackagingCost] = useState<string>("2");
     const [deliveryCost, setDeliveryCost] = useState<string>("5");
     const [returnCost, setReturnCost] = useState<string>("2");
     const [otherCosts, setOtherCosts] = useState<string>("0");
@@ -39,6 +39,8 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
         }
     };
 
+    const MINIMUM_PROFIT = 20; // 20 DT minimum profit per product
+
     const calculate = () => {
         const sell = parseFloat(sellingPrice) || 0;
         const buy = parseFloat(buyingPrice) || 0;
@@ -58,6 +60,17 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
         // Calculation logic now subtracts previous loss from profit
         const profitDelivered = sell - costDelivered - previousReturnLoss;
         const roiDelivered = costDelivered > 0 ? (profitDelivered / costDelivered) * 100 : 0;
+        const grossProfitMargin = sell > 0 ? (profitDelivered / sell) * 100 : 0;
+
+        // Minimum selling price to achieve $20 profit
+        const minimumSellingPrice = buy + pack + del + other + MINIMUM_PROFIT;
+        const meetsMinimumProfit = profitDelivered >= MINIMUM_PROFIT;
+
+        // Margin status
+        let marginStatus: 'bad' | 'minimum' | 'good' = 'bad';
+        if (grossProfitMargin >= 30) marginStatus = 'good';
+        else if (grossProfitMargin >= 20) marginStatus = 'minimum';
+        else marginStatus = 'bad';
 
         // Scenario 2: Returned (Failed)
         // You pay: Del + Return + Other
@@ -65,10 +78,10 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
         // Net Loss = -(Del + Ret + Other)
         const lossReturned = -(del + ret + other);
 
-        return { profitDelivered, roiDelivered, lossReturned, costDelivered };
+        return { profitDelivered, roiDelivered, lossReturned, costDelivered, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus };
     };
 
-    const { profitDelivered, roiDelivered, lossReturned } = useMemo(calculate, [
+    const { profitDelivered, roiDelivered, lossReturned, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus } = useMemo(calculate, [
         sellingPrice,
         buyingPrice,
         packagingCost,
@@ -228,20 +241,57 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
 
                         <div className="space-y-4">
                             {/* Scenario 1: Delivered */}
-                            <div className={`p-4 rounded-2xl shadow-sm border text-center transition-all ${profitDelivered >= 0 ? 'bg-green-50 border-green-100' : 'bg-orange-50 border-orange-100'}`}>
-                                <p className="text-xs text-green-700 uppercase font-bold tracking-wider mb-1 flex items-center justify-center gap-1">
+                            <div className={`p-4 rounded-2xl shadow-sm border text-center transition-all ${
+                                marginStatus === 'good' ? 'bg-green-50 border-green-100' :
+                                marginStatus === 'minimum' ? 'bg-orange-50 border-orange-100' :
+                                'bg-red-50 border-red-100'
+                            }`}>
+                                <p className={`text-xs uppercase font-bold tracking-wider mb-1 flex items-center justify-center gap-1 ${
+                                    marginStatus === 'good' ? 'text-green-700' :
+                                    marginStatus === 'minimum' ? 'text-orange-700' :
+                                    'text-red-700'
+                                }`}>
                                     <Package className="w-3 h-3" /> If Delivered
                                 </p>
-                                <p className={`text-3xl font-black ${profitDelivered >= 0 ? 'text-green-600' : 'text-orange-500'}`}>
+                                <p className={`text-3xl font-black ${
+                                    marginStatus === 'good' ? 'text-green-600' :
+                                    marginStatus === 'minimum' ? 'text-orange-500' :
+                                    'text-red-500'
+                                }`}>
                                     {profitDelivered >= 0 ? '+' : ''}{formatCurrency(profitDelivered)}
                                 </p>
-                                <div className="mt-3 flex items-center justify-center gap-2">
-                                    <span className="text-xs font-bold text-gray-500">ROI {roiDelivered.toFixed(0)}%</span>
-                                    <div className="h-2 bg-white/60 rounded-full overflow-hidden w-24">
-                                        <div
-                                            className="h-full bg-purple-500 rounded-full transition-all"
-                                            style={{ width: `${Math.min(Math.max(roiDelivered, 0), 100)}%` }}
-                                        />
+                                <div className="mt-3 space-y-2">
+                                    <div className="flex items-center justify-center gap-2">
+                                        <span className="text-xs font-bold text-gray-500">ROI {roiDelivered.toFixed(0)}%</span>
+                                        <div className="h-2 bg-white/60 rounded-full overflow-hidden w-24">
+                                            <div
+                                                className="h-full bg-purple-500 rounded-full transition-all"
+                                                style={{ width: `${Math.min(Math.max(roiDelivered, 0), 100)}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-center gap-2">
+                                        <div>
+                                            <span className="text-xs font-bold text-gray-500">Margin {grossProfitMargin.toFixed(1)}%</span>
+                                            <span className={`text-xs font-bold ml-1 ${
+                                                marginStatus === 'good' ? 'text-green-600' :
+                                                marginStatus === 'minimum' ? 'text-yellow-600' :
+                                                'text-red-600'
+                                            }`}>
+                                                {marginStatus === 'good' ? '(Good)' : marginStatus === 'minimum' ? '(Minimum)' : '(Bad)'}
+                                            </span>
+                                            <p className="text-[10px] text-gray-400 mt-1">Target: 30% (Good) / 20% (Minimum)</p>
+                                        </div>
+                                        <div className="h-2 bg-white/60 rounded-full overflow-hidden w-24">
+                                            <div
+                                                className={`h-full rounded-full transition-all ${
+                                                    marginStatus === 'good' ? 'bg-green-500' :
+                                                    marginStatus === 'minimum' ? 'bg-yellow-500' :
+                                                    'bg-red-500'
+                                                }`}
+                                                style={{ width: `${Math.min(Math.max(grossProfitMargin, 0), 100)}%` }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
