@@ -3,7 +3,53 @@
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
-export async function getProducts() {
+export async function getProducts(page: number = 1, pageSize: number = 10) {
+  try {
+    const skip = (page - 1) * pageSize;
+
+    const [total, products] = await prisma.$transaction([
+      prisma.product.count(),
+      prisma.product.findMany({
+        include: {
+          category: true,
+          images: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: pageSize,
+        skip: skip,
+      }),
+    ]);
+
+    // Convert Decimal to number for Client Component serialization
+    const mappedProducts = products.map((product) => ({
+      ...product,
+      originalPrice: product.originalPrice.toNumber(),
+      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      isNew:
+        new Date(product.createdAt).getTime() >
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+    }));
+
+    return {
+      products: mappedProducts,
+      total,
+      totalPages: Math.ceil(total / pageSize),
+      currentPage: page,
+    };
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return {
+      products: [],
+      total: 0,
+      totalPages: 0,
+      currentPage: 1,
+    };
+  }
+}
+
+export async function getAllProducts() {
   try {
     const products = await prisma.product.findMany({
       include: {

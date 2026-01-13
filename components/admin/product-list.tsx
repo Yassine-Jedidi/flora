@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Pencil, Trash2, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import {
   Table,
@@ -27,17 +27,29 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { deleteProduct } from "@/app/actions/product";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Product } from "@/lib/types";
 
 interface ProductListProps {
   products: Product[];
+  pagination?: {
+    currentPage: number;
+    totalPages: number;
+  };
 }
 
-export function ProductList({ products }: ProductListProps) {
+export function ProductList({ products, pagination }: ProductListProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", newPage.toString());
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const onDelete = async (id: string) => {
     setIsDeleting(id);
@@ -59,17 +71,20 @@ export function ProductList({ products }: ProductListProps) {
 
   if (products.length === 0) {
     return (
-      <Card className="border-dashed border-pink-200 bg-pink-50/10 rounded-3xl">
-        <CardContent className="py-20 flex flex-col items-center justify-center">
-          <p className="text-gray-400 italic">
-            No accessories listed yet. Start by adding one above! ✨
-          </p>
-        </CardContent>
-      </Card>
+      <>
+        <Card className="border-dashed border-pink-200 bg-pink-50/10 rounded-3xl">
+          <CardContent className="py-20 flex flex-col items-center justify-center">
+            <p className="text-gray-400 italic">
+              No accessories listed yet. Start by adding one above! ✨
+            </p>
+          </CardContent>
+        </Card>
+      </>
     );
   }
 
   return (
+    <>
     <Card className="border-pink-100 shadow-xl shadow-pink-100/10 rounded-3xl overflow-hidden">
       <CardHeader className="bg-pink-50/30 border-b border-pink-100/50 py-4">
         <CardTitle className="text-lg font-bold text-[#003366]">
@@ -261,5 +276,39 @@ export function ProductList({ products }: ProductListProps) {
         </Table>
       </CardContent>
     </Card>
+
+    {/* Pagination Controls */}
+    {pagination && (
+      <div className="flex items-center justify-end gap-2 mt-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageChange(pagination.currentPage - 1)}
+          disabled={pagination.currentPage <= 1}
+          className="rounded-full border-pink-100 text-[#003366] hover:bg-pink-50 hover:text-[#FF8BBA]"
+        >
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          Previous
+        </Button>
+        <div className="text-sm font-medium text-gray-500">
+          Page{" "}
+          <span className="text-[#003366] font-bold">
+            {pagination.currentPage}
+          </span>{" "}
+          of {pagination.totalPages}
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageChange(pagination.currentPage + 1)}
+          disabled={pagination.currentPage >= pagination.totalPages}
+          className="rounded-full border-pink-100 text-[#003366] hover:bg-pink-50 hover:text-[#FF8BBA]"
+        >
+          Next
+          <ChevronRight className="h-4 w-4 ml-1" />
+        </Button>
+      </div>
+    )}
+  </>
   );
 }
