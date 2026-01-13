@@ -78,16 +78,23 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
         else if (grossProfitMargin >= 20) marginStatus = 'minimum';
         else marginStatus = 'bad';
 
+        // ROI status
+        let roiStatus: 'bad' | 'minimum' | 'good' | 'excellent' = 'bad';
+        if (roiDelivered >= 150) roiStatus = 'excellent';
+        else if (roiDelivered >= 100) roiStatus = 'good';
+        else if (roiDelivered >= 50) roiStatus = 'minimum';
+        else roiStatus = 'bad';
+
         // Scenario 2: Returned (Failed)
         // You pay: Del + Return + Other
         // You get: Item + Packaging back (so Buying Price + Packaging are recovered)
         // Net Loss = -(Del + Ret + Other)
         const lossReturned = -(del + ret + other);
 
-        return { profitDelivered, roiDelivered, lossReturned, costDelivered, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus, marginRedelivery, worstCaseMarginOk };
+        return { profitDelivered, roiDelivered, lossReturned, costDelivered, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus, marginRedelivery, worstCaseMarginOk, roiStatus };
     };
 
-    const { profitDelivered, roiDelivered, lossReturned, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus, marginRedelivery, worstCaseMarginOk } = useMemo(calculate, [
+    const { profitDelivered, roiDelivered, lossReturned, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus, marginRedelivery, worstCaseMarginOk, roiStatus } = useMemo(calculate, [
         sellingPrice,
         buyingPrice,
         packagingCost,
@@ -289,10 +296,26 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                                 </p>
                                 <div className="mt-3 space-y-2">
                                     <div className="flex items-center justify-center gap-2">
-                                        <span className="text-xs font-bold text-gray-500">ROI {roiDelivered.toFixed(0)}%</span>
+                                        <div>
+                                            <span className="text-xs font-bold text-gray-500">ROI {roiDelivered.toFixed(0)}%</span>
+                                            <span className={`text-xs font-bold ml-1 ${
+                                                roiStatus === 'excellent' ? 'text-blue-600' :
+                                                roiStatus === 'good' ? 'text-green-600' :
+                                                roiStatus === 'minimum' ? 'text-yellow-600' :
+                                                'text-red-600'
+                                            }`}>
+                                                {roiStatus === 'excellent' ? '(Excellent)' : roiStatus === 'good' ? '(Good)' : roiStatus === 'minimum' ? '(Minimum)' : '(Bad)'}
+                                            </span>
+                                            <p className="text-[10px] text-gray-400 mt-1">Target: 100% (Good) / 50% (Minimum)</p>
+                                        </div>
                                         <div className="h-2 bg-white/60 rounded-full overflow-hidden w-24">
                                             <div
-                                                className="h-full bg-purple-500 rounded-full transition-all"
+                                                className={`h-full rounded-full transition-all ${
+                                                    roiStatus === 'excellent' ? 'bg-blue-500' :
+                                                    roiStatus === 'good' ? 'bg-green-500' :
+                                                    roiStatus === 'minimum' ? 'bg-yellow-500' :
+                                                    'bg-red-500'
+                                                }`}
                                                 style={{ width: `${Math.min(Math.max(roiDelivered, 0), 100)}%` }}
                                             />
                                         </div>
