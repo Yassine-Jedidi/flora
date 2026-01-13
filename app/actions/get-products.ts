@@ -3,13 +3,60 @@
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
-export async function getProducts(page: number = 1, pageSize: number = 10) {
+interface ProductFilters {
+  search?: string;
+  category?: string;
+  status?: "all" | "live" | "paused" | "archived";
+  stock?: "all" | "inStock" | "lowStock" | "outOfStock";
+}
+
+export async function getProducts(
+  page: number = 1,
+  pageSize: number = 10,
+  filters?: ProductFilters
+) {
   try {
     const skip = (page - 1) * pageSize;
 
+    // Build where clause based on filters
+    const where: Prisma.ProductWhereInput = {};
+
+    if (filters?.search) {
+      where.name = {
+        contains: filters.search,
+        mode: "insensitive",
+      };
+    }
+
+    if (filters?.category && filters.category !== "all") {
+      where.categoryId = filters.category;
+    }
+
+    if (filters?.status && filters.status !== "all") {
+      if (filters.status === "live") {
+        where.isLive = true;
+        where.isArchived = false;
+      } else if (filters.status === "paused") {
+        where.isLive = false;
+      } else if (filters.status === "archived") {
+        where.isArchived = true;
+      }
+    }
+
+    if (filters?.stock && filters.stock !== "all") {
+      if (filters.stock === "inStock") {
+        where.stock = { gt: 5 };
+      } else if (filters.stock === "lowStock") {
+        where.stock = { gt: 0, lte: 5 };
+      } else if (filters.stock === "outOfStock") {
+        where.stock = 0;
+      }
+    }
+
     const [total, products] = await prisma.$transaction([
-      prisma.product.count(),
+      prisma.product.count({ where }),
       prisma.product.findMany({
+        where,
         include: {
           category: true,
           images: true,
@@ -46,6 +93,17 @@ export async function getProducts(page: number = 1, pageSize: number = 10) {
       totalPages: 0,
       currentPage: 1,
     };
+  }
+}
+
+export async function getCategories() {
+  try {
+    return await prisma.category.findMany({
+      orderBy: { name: "asc" },
+    });
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
   }
 }
 
