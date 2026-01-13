@@ -164,7 +164,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                                     onChange={(e) => setSellingPrice(e.target.value)}
                                     className="font-bold text-[#003366]"
                                 />
-                                {buyingPrice && (parseFloat(buyingPrice) > 0) && (!sellingPrice || !worstCaseMarginOk) && (
+                                {buyingPrice && (parseFloat(buyingPrice) > 0) && (
                                     <Button
                                         onClick={() => {
                                             const buy = parseFloat(buyingPrice);
