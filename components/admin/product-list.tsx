@@ -80,22 +80,22 @@ export function ProductList({ products }: ProductListProps) {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent border-pink-50">
-              <TableHead className="px-6 font-bold text-[#003366]">
+              <TableHead className="px-2 md:px-6 font-bold text-[#003366]">
                 Product
               </TableHead>
-              <TableHead className="px-6 font-bold text-[#003366]">
+              <TableHead className="hidden md:table-cell px-6 font-bold text-[#003366]">
                 Category
               </TableHead>
-              <TableHead className="px-6 font-bold text-[#003366]">
+              <TableHead className="px-2 md:px-6 font-bold text-[#003366]">
                 Price
               </TableHead>
-              <TableHead className="px-6 font-bold text-[#003366]">
+              <TableHead className="hidden sm:table-cell px-2 md:px-6 font-bold text-[#003366]">
                 Stock
               </TableHead>
-              <TableHead className="px-6 font-bold text-[#003366]">
+              <TableHead className="hidden lg:table-cell px-6 font-bold text-[#003366]">
                 Status
               </TableHead>
-              <TableHead className="px-6 font-bold text-[#003366] text-right">
+              <TableHead className="px-2 md:px-6 font-bold text-[#003366] text-right">
                 Actions
               </TableHead>
             </TableRow>
@@ -106,9 +106,9 @@ export function ProductList({ products }: ProductListProps) {
                 key={product.id}
                 className="hover:bg-pink-50/20 border-pink-50 transition-colors"
               >
-                <TableCell className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-pink-100 shadow-sm transition-transform hover:scale-105">
+                <TableCell className="px-2 md:px-6 py-3 md:py-4">
+                  <div className="flex items-center gap-2 md:gap-3">
+                    <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden border border-pink-100 shadow-sm transition-transform hover:scale-105">
                       {product.images[0] ? (
                         <Image
                           src={product.images[0].url}
@@ -120,12 +120,12 @@ export function ProductList({ products }: ProductListProps) {
                         <div className="w-full h-full bg-pink-100" />
                       )}
                     </div>
-                    <span className="font-bold text-[#003366]">
+                    <span className="font-bold text-[#003366] text-sm md:text-base">
                       {product.name}
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="px-6 py-4">
+                <TableCell className="hidden md:table-cell px-6 py-4">
                   <Badge
                     variant="secondary"
                     className="bg-pink-100/50 text-pink-600 border-none hover:bg-pink-100 font-semibold"
@@ -198,7 +198,7 @@ export function ProductList({ products }: ProductListProps) {
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="px-6 py-4 text-right">
+                <TableCell className="px-2 md:px-6 py-3 md:py-4 text-right">
                   <div className="flex justify-end gap-1">
                     <Button
                       variant="ghost"

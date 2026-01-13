@@ -44,22 +44,22 @@ export function OrderList({ orders, pagination }: OrderListProps) {
             {/* ... Table Header ... */}
             <TableHeader className="bg-pink-50/50">
               <TableRow className="hover:bg-transparent border-pink-100">
-                <TableHead className="font-bold text-[#003366]">
+                <TableHead className="font-bold text-[#003366] text-xs md:text-sm">
                   Date & Time
                 </TableHead>
-                <TableHead className="font-bold text-[#003366]">
+                <TableHead className="font-bold text-[#003366] text-xs md:text-sm">
                   Customer
                 </TableHead>
-                <TableHead className="font-bold text-[#003366]">
+                <TableHead className="hidden lg:table-cell font-bold text-[#003366] text-xs md:text-sm">
                   Items (Qty x Price)
                 </TableHead>
-                <TableHead className="font-bold text-[#003366]">
-                  Total Price
+                <TableHead className="font-bold text-[#003366] text-xs md:text-sm">
+                  Total
                 </TableHead>
-                <TableHead className="font-bold text-[#003366]">
+                <TableHead className="hidden md:table-cell font-bold text-[#003366] text-xs md:text-sm">
                   Location
                 </TableHead>
-                <TableHead className="font-bold text-[#003366]">
+                <TableHead className="font-bold text-[#003366] text-xs md:text-sm">
                   Status
                 </TableHead>
               </TableRow>
@@ -80,7 +80,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                     key={order.id}
                     className="hover:bg-pink-50/10 border-pink-50"
                   >
-                    <TableCell className="font-medium text-gray-600 whitespace-nowrap">
+                    <TableCell className="font-medium text-gray-600 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-3 md:py-4">
                       <div className="flex flex-col">
                         <span>
                           {format(new Date(order.createdAt), "MMM d, yyyy")}
@@ -100,7 +100,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-gray-600 font-medium max-w-[250px]">
+                    <TableCell className="hidden lg:table-cell text-gray-600 font-medium max-w-[250px] px-2 md:px-4 py-3 md:py-4">
                       <div className="flex flex-col gap-1">
                         {order.items.map((item) => (
                           <div
@@ -117,7 +117,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                         ))}
                       </div>
                     </TableCell>
-                    <TableCell className="font-bold text-[#FF8BBA]">
+                    <TableCell className="font-bold text-[#FF8BBA] text-xs md:text-sm px-2 md:px-4 py-3 md:py-4">
                       {Number(order.totalPrice).toFixed(2)} DT
                     </TableCell>
                     <TableCell>

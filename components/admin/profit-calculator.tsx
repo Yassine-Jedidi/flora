@@ -186,9 +186,9 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <CardContent className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
           {/* Inputs Section */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             <div className="space-y-2">
               <Label className="text-[#003366] font-bold">
                 Select Product (Optional)
@@ -329,7 +329,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
           </div>
 
           {/* Results Section */}
-          <div className="bg-gradient-to-br from-pink-50/50 to-white p-6 rounded-3xl border border-pink-100 flex flex-col justify-center space-y-6">
+          <div className="bg-gradient-to-br from-pink-50/50 to-white p-4 md:p-6 rounded-3xl border border-pink-100 flex flex-col justify-center space-y-4 md:space-y-6">
             <h3 className="text-lg font-black text-[#003366] text-center mb-2 flex items-center justify-center gap-2">
               <TrendingUp className="w-5 h-5 text-pink-500" /> Results Scenarios
             </h3>
