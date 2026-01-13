@@ -18,8 +18,8 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
     const [sellingPrice, setSellingPrice] = useState<string>("0");
     const [buyingPrice, setBuyingPrice] = useState<string>("0");
     const [packagingCost, setPackagingCost] = useState<string>("2");
-    const [deliveryCost, setDeliveryCost] = useState<string>("5");
-    const [returnCost, setReturnCost] = useState<string>("2");
+    const [deliveryCost, setDeliveryCost] = useState<string>("2");
+    const [returnCost, setReturnCost] = useState<string>("5");
     const [otherCosts, setOtherCosts] = useState<string>("0");
     const [wasReturned, setWasReturned] = useState<boolean>(false);
 
@@ -53,14 +53,20 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
         const previousReturnLoss = wasReturned ? (del + ret) : 0;
 
         // Scenario 1: Successfully Delivered
-        // You pay: Buy + Pack + Del + Other
+        // You pay: Buy + Pack + Del + Ret + Other (accounting for risk)
         // You get: Sell
         // Net Profit = Sell - Cost - PreviousLoss
-        const costDelivered = buy + pack + del + other;
+        const costDelivered = buy + pack + del + ret + other;
         // Calculation logic now subtracts previous loss from profit
         const profitDelivered = sell - costDelivered - previousReturnLoss;
         const roiDelivered = costDelivered > 0 ? (profitDelivered / costDelivered) * 100 : 0;
         const grossProfitMargin = sell > 0 ? (profitDelivered / sell) * 100 : 0;
+
+        // Worst case: if returned once, then redelivered
+        const costRedelivery = buy + pack + del + ret + del + ret + other;
+        const profitRedelivery = sell - costRedelivery;
+        const marginRedelivery = sell > 0 ? (profitRedelivery / sell) * 100 : 0;
+        const worstCaseMarginOk = marginRedelivery >= 20;
 
         // Minimum selling price to achieve $20 profit
         const minimumSellingPrice = buy + pack + del + other + MINIMUM_PROFIT;
@@ -78,10 +84,10 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
         // Net Loss = -(Del + Ret + Other)
         const lossReturned = -(del + ret + other);
 
-        return { profitDelivered, roiDelivered, lossReturned, costDelivered, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus };
+        return { profitDelivered, roiDelivered, lossReturned, costDelivered, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus, marginRedelivery, worstCaseMarginOk };
     };
 
-    const { profitDelivered, roiDelivered, lossReturned, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus } = useMemo(calculate, [
+    const { profitDelivered, roiDelivered, lossReturned, minimumSellingPrice, meetsMinimumProfit, grossProfitMargin, marginStatus, marginRedelivery, worstCaseMarginOk } = useMemo(calculate, [
         sellingPrice,
         buyingPrice,
         packagingCost,
@@ -158,6 +164,26 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                                     onChange={(e) => setSellingPrice(e.target.value)}
                                     className="font-bold text-[#003366]"
                                 />
+                                {buyingPrice && (parseFloat(buyingPrice) > 0) && (!sellingPrice || !worstCaseMarginOk) && (
+                                    <Button
+                                        onClick={() => {
+                                            const buy = parseFloat(buyingPrice);
+                                            const pack = parseFloat(packagingCost) || 0;
+                                            const del = parseFloat(deliveryCost) || 0;
+                                            const ret = parseFloat(returnCost) || 0;
+                                            const other = parseFloat(otherCosts) || 0;
+                                            // Worst case cost
+                                            const worstCaseCost = buy + pack + del + ret + del + ret + other;
+                                            // Minimum selling price for 20% margin
+                                            const minSellingPrice = worstCaseCost / 0.80;
+                                            setSellingPrice(minSellingPrice.toFixed(3));
+                                        }}
+                                        size="sm"
+                                        className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold mt-1"
+                                    >
+                                        Get Best Price
+                                    </Button>
+                                )}
                             </div>
                             <div className="space-y-2">
                                 <Label className="text-[#003366] font-bold flex items-center gap-2">
@@ -172,6 +198,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                                 />
                             </div>
                         </div>
+
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -281,6 +308,9 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                                                 {marginStatus === 'good' ? '(Good)' : marginStatus === 'minimum' ? '(Minimum)' : '(Bad)'}
                                             </span>
                                             <p className="text-[10px] text-gray-400 mt-1">Target: 30% (Good) / 20% (Minimum)</p>
+                                            {!worstCaseMarginOk && (
+                                                <p className="text-[10px] text-red-600 font-bold mt-1">⚠️ Worst case (return + redeliver): {marginRedelivery.toFixed(1)}% margin</p>
+                                            )}
                                         </div>
                                         <div className="h-2 bg-white/60 rounded-full overflow-hidden w-24">
                                             <div
