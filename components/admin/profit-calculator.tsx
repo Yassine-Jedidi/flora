@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Product } from "@/lib/types";
 import {
   Card,
@@ -34,6 +34,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
   const [deliveryCost, setDeliveryCost] = useState<string>("2");
   const [returnCost, setReturnCost] = useState<string>("5");
   const [otherCosts, setOtherCosts] = useState<string>("0");
+  const [isFreeShipping, setIsFreeShipping] = useState<boolean>(false);
   const [wasReturned, setWasReturned] = useState<boolean>(false);
 
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -150,6 +151,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
     setDeliveryCost("5");
     setReturnCost("2");
     setOtherCosts("0");
+    setIsFreeShipping(false);
     setWasReturned(false);
   };
 
@@ -159,6 +161,34 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
       currency: "TND",
     }).format(val);
   };
+
+  // Auto-refresh selling price when free shipping is toggled
+  useEffect(() => {
+    if (buyingPrice && parseFloat(buyingPrice) > 0) {
+      const buy = parseFloat(buyingPrice);
+      const pack = parseFloat(packagingCost) || 0;
+      const del = parseFloat(deliveryCost) || 0;
+      const ret = parseFloat(returnCost) || 0;
+      const other = parseFloat(otherCosts) || 0;
+      const surcharge = isFreeShipping ? 7 : 0;
+      
+      // Cost for successful delivery (includes return risk)
+      const costDelivered = buy + pack + del + ret + other;
+      // Worst case cost (return + redeliver)
+      const worstCaseCost = buy + pack + del + ret + del + ret + other;
+      
+      // Price for 20% worst-case margin
+      const priceForMargin = worstCaseCost / 0.8;
+      
+      // Price for 50% ROI minimum
+      const priceForROI = costDelivered * 1.5;
+      
+      // Use the HIGHER of the two to meet both requirements, then add customer surcharge
+      const bestPrice = Math.max(priceForMargin, priceForROI) + surcharge;
+      
+      setSellingPrice(bestPrice.toFixed(3));
+    }
+  }, [isFreeShipping]);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -227,21 +257,24 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                       const del = parseFloat(deliveryCost) || 0;
                       const ret = parseFloat(returnCost) || 0;
                       const other = parseFloat(otherCosts) || 0;
-                      
+                      const surcharge = isFreeShipping ? 7 : 0;
+
                       // Cost for successful delivery (includes return risk)
                       const costDelivered = buy + pack + del + ret + other;
                       // Worst case cost (return + redeliver)
-                      const worstCaseCost = buy + pack + del + ret + del + ret + other;
-                      
+                      const worstCaseCost =
+                        buy + pack + del + ret + del + ret + other;
+
                       // Price for 20% worst-case margin
                       const priceForMargin = worstCaseCost / 0.8;
-                      
+
                       // Price for 50% ROI minimum
                       const priceForROI = costDelivered * 1.5;
-                      
-                      // Use the HIGHER of the two to meet both requirements
-                      const bestPrice = Math.max(priceForMargin, priceForROI);
-                      
+
+                      // Use the HIGHER of the two to meet both requirements, then add customer surcharge
+                      const bestPrice =
+                        Math.max(priceForMargin, priceForROI) + surcharge;
+
                       setSellingPrice(bestPrice.toFixed(3));
                     }}
                     size="sm"
@@ -288,6 +321,21 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                   onChange={(e) => setDeliveryCost(e.target.value)}
                 />
               </div>
+            </div>
+
+            <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-100">
+              <div className="space-y-0.5">
+                <Label className="text-[#003366] font-bold">
+                  Livraison Gratuite
+                </Label>
+                <p className="text-xs text-gray-500">
+                  Customer pays extra 7dt for free shipping
+                </p>
+              </div>
+              <Switch
+                checked={isFreeShipping}
+                onCheckedChange={setIsFreeShipping}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
