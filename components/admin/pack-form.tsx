@@ -109,10 +109,30 @@ export function PackForm({
         name: "packItems"
     }) || [];
 
-    const watchedItemImages = useWatch({
-        control: form.control,
-        name: "itemImages"
-    }) || {};
+    const images = form.watch("images") || [];
+
+    const { startUpload, isUploading } = useUploadThing("productImage", {
+        onClientUploadComplete: (res: { url: string }[]) => {
+            const urls = res.map((f) => f.url);
+            const updatedImages = [...images, ...urls];
+            form.setValue("images", updatedImages, { shouldValidate: true });
+        },
+        onUploadError: () => {
+            alert("Error uploading images");
+        },
+    });
+
+    const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length > 0) {
+            await startUpload(files);
+        }
+    };
+
+    const removeImage = (urlToRemove: string) => {
+        const updatedImages = images.filter((url) => url !== urlToRemove);
+        form.setValue("images", updatedImages, { shouldValidate: true });
+    };
 
     useEffect(() => {
         if (watchedItems.length === 0) {
@@ -126,16 +146,12 @@ export function PackForm({
             if (current.stock !== 0) {
                 form.setValue("stock", 0, { shouldDirty: false });
             }
-            if (current.images?.length !== 0) {
-                form.setValue("images", [], { shouldDirty: false });
-            }
             return;
         }
 
         let totalShopValueSum = 0;
         let totalMarketValueSum = 0;
         let minStock = Infinity;
-        const packImages: string[] = [];
 
         watchedItems.forEach((item, index) => {
             const product = getProductById(item.itemId);
@@ -151,10 +167,6 @@ export function PackForm({
                 const possiblePacks = Math.floor(product.stock / qty);
                 if (possiblePacks < minStock) minStock = possiblePacks;
 
-                const itemImageUrl = watchedItemImages[index.toString()] || product.images[0]?.url;
-                if (itemImageUrl) {
-                    packImages.push(itemImageUrl);
-                }
             }
         });
 
@@ -185,16 +197,12 @@ export function PackForm({
             form.setValue("stock", finalStock, { shouldDirty: false });
         }
 
-        // Deep comparison for images array
-        if (JSON.stringify(current.images) !== JSON.stringify(packImages)) {
-            form.setValue("images", packImages, { shouldDirty: false });
-        }
 
         const packCategory = categories.find(c => c.slug === "packs");
         if (packCategory && current.categoryId !== packCategory.id) {
             form.setValue("categoryId", packCategory.id, { shouldDirty: false });
         }
-    }, [watchedItems, watchedItemImages, categories, form.setValue, form.getValues, getProductById, isManualPricing]);
+    }, [watchedItems, categories, form.setValue, form.getValues, getProductById, isManualPricing]);
 
     const handleMagicCalculate = () => {
         let totalShopVal = 0;
@@ -257,10 +265,6 @@ export function PackForm({
         append({ itemId: "", quantity: 1 });
     };
 
-    const handleImageSelectForItem = (index: number, url: string) => {
-        const newItemImages = { ...watchedItemImages, [index.toString()]: url };
-        form.setValue("itemImages", newItemImages);
-    };
 
     const currentOriginalPrice = form.watch("originalPrice");
     const currentDiscountedPrice = form.watch("discountedPrice");
@@ -275,12 +279,12 @@ export function PackForm({
                         {initialData ? "Edit Pack ✨" : "Create New Pack"}
                     </CardTitle>
                     <CardDescription>
-                        Bundle multiple products together. Pricing, stock, and images are calculated automatically.
+                        Bundle multiple products together. Pricing and stock are calculated automatically, then you can upload your custom pack images.
                     </CardDescription>
                 </CardHeader>
 
                 <CardContent className="space-y-10">
-                    <div className="grid grid-cols-1 gap-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                         {/* Main Details */}
                         <div className="space-y-6">
                             <div className="space-y-2">
@@ -308,108 +312,189 @@ export function PackForm({
                                 />
                             </div>
 
-                            {/* Auto-calculated Pricing & Stock Summary */}
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col justify-between">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase">Market Value</p>
-                                        <Badge variant="outline" className="text-[9px] bg-white text-gray-400 border-gray-100">ORIGINAL</Badge>
-                                    </div>
-                                    <div className="relative">
-                                        <p className="text-xl font-bold text-gray-400 line-through">
-                                            {marketValue.toFixed(3)}
-                                            <span className="text-xs ml-1">DT</span>
-                                        </p>
-                                    </div>
-                                </div>
+                        </div>
 
-                                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 flex flex-col justify-between">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <p className="text-xs font-bold text-blue-600 uppercase">Shop Value</p>
-                                        <Badge variant="outline" className="text-[9px] bg-white text-blue-500 border-blue-100">AUTO-SUM</Badge>
-                                    </div>
-                                    <div className="relative">
-                                        <p className="text-2xl font-bold text-[#003366]">
-                                            {shopValue.toFixed(3)}
-                                            <span className="text-sm text-blue-400 font-bold ml-1">DT</span>
-                                        </p>
-                                    </div>
-                                </div>
+                        {/* Right Column: Images */}
+                        <div className="space-y-6">
+                            <Label className="text-[#003366] font-bold">
+                                Pack Photography
+                            </Label>
 
-                                <div className="p-4 rounded-2xl bg-green-50 border border-green-100 ring-2 ring-green-500/20 flex flex-col justify-between">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <p className="text-xs font-bold text-green-600 uppercase">Pack Price</p>
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={handleMagicCalculate}
-                                            className="h-6 px-2 text-[10px] bg-white hover:bg-green-100 text-green-600 font-bold border border-green-100"
-                                        >
-                                            <Wand2 className="w-3 h-3 mr-1" /> Magic
-                                        </Button>
-                                    </div>
-                                    <div className="relative">
-                                        <Input
-                                            type="number"
-                                            step="0.001"
-                                            {...form.register("discountedPrice")}
-                                            onChange={(e) => {
-                                                setIsManualPricing(true);
-                                                form.setValue("discountedPrice", Number(e.target.value));
-                                            }}
-                                            className="text-2xl font-bold text-[#003366] bg-transparent border-none p-0 focus-visible:ring-0 h-auto"
+                            <div className="grid grid-cols-2 gap-4">
+                                {images.map((url: string) => (
+                                    <div
+                                        key={url}
+                                        className="relative aspect-square rounded-2xl overflow-hidden border border-pink-100 group shadow-sm"
+                                    >
+                                        <Image
+                                            src={url}
+                                            alt="Pack"
+                                            fill
+                                            className="object-cover transition-transform group-hover:scale-110"
                                         />
-                                        <span className="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-green-400 font-bold">DT</span>
+                                        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeImage(url)}
+                                            className="absolute top-2 right-2 bg-white/90 hover:bg-red-500 hover:text-white p-2 rounded-full transition-all shadow-md transform scale-90 hover:scale-100"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
                                     </div>
-                                </div>
+                                ))}
+                                {images.length < 4 && (
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            id="image-upload"
+                                            className="hidden"
+                                            accept="image/*"
+                                            multiple
+                                            onChange={handleImageSelect}
+                                            disabled={isUploading}
+                                        />
+                                        <label
+                                            htmlFor="image-upload"
+                                            className={`
+                                                aspect-square rounded-3xl border-2 border-dashed border-pink-200
+                                                flex flex-col items-center justify-center p-6 text-center
+                                                cursor-pointer transition-all hover:bg-pink-50/30 hover:border-pink-300
+                                                ${isUploading
+                                                    ? "opacity-50 cursor-not-allowed"
+                                                    : ""
+                                                }
+                                            `}
+                                        >
+                                            <div className="bg-pink-100 p-3 rounded-full mb-3 text-[#FF8BBA] group-hover:scale-110 transition-transform">
+                                                {isUploading ? (
+                                                    <Loader2 className="w-6 h-6 animate-spin" />
+                                                ) : (
+                                                    <Plus className="w-6 h-6" />
+                                                )}
+                                            </div>
+                                            <p className="text-xs font-bold text-[#003366]">
+                                                {isUploading ? "Uploading..." : "Add Photo ✨"}
+                                            </p>
+                                            <p className="text-[10px] text-pink-400 mt-1">
+                                                Max 4MB per image
+                                            </p>
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
+                            {form.formState.errors.images && (
+                                <p className="text-red-500 text-xs text-center">
+                                    {form.formState.errors.images.message}
+                                </p>
+                            )}
+                            <p className="text-[10px] text-gray-400 text-center uppercase tracking-wider font-semibold">
+                                Best results with 1080x1080 square images
+                            </p>
+                        </div>
+                    </div>
 
-                                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex flex-col justify-between">
-                                    <p className="text-xs font-bold text-amber-600 uppercase mb-1">Dynamic Stock</p>
-                                    <p className="text-2xl font-bold text-[#003366] flex items-center gap-2">
-                                        {typeof currentStock === 'number' ? currentStock : 0}
-                                        <Badge variant="outline" className="text-[10px] bg-white text-amber-500 border-amber-100">AUTO</Badge>
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
+                                <div className="space-y-0.5">
+                                    <Label className="text-sm font-bold text-[#003366]">Featured</Label>
+                                    <p className="text-[10px] text-gray-500">Home page visibility</p>
+                                </div>
+                                <Switch
+                                    checked={form.watch("isFeatured")}
+                                    onCheckedChange={(checked) => form.setValue("isFeatured", checked)}
+                                    className="data-[state=checked]:bg-[#FF8BBA]"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
+                                <div className="space-y-0.5">
+                                    <Label className="text-sm font-bold text-[#003366]">Live</Label>
+                                    <p className="text-[10px] text-gray-500">Website visibility</p>
+                                </div>
+                                <Switch
+                                    checked={form.watch("isLive")}
+                                    onCheckedChange={(checked) => form.setValue("isLive", checked)}
+                                    className="data-[state=checked]:bg-[#A78BFA]"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Auto-calculated Pricing & Stock Summary */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col justify-between">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase">Market Value</p>
+                                    <Badge variant="outline" className="text-[9px] bg-white text-gray-400 border-gray-100">ORIGINAL</Badge>
+                                </div>
+                                <div className="relative">
+                                    <p className="text-xl font-bold text-gray-400 line-through">
+                                        {marketValue.toFixed(3)}
+                                        <span className="text-xs ml-1">DT</span>
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
-                                    <div className="space-y-0.5">
-                                        <Label className="text-sm font-bold text-[#003366]">Featured</Label>
-                                        <p className="text-[10px] text-gray-500">Home page visibility</p>
-                                    </div>
-                                    <Switch
-                                        checked={form.watch("isFeatured")}
-                                        onCheckedChange={(checked) => form.setValue("isFeatured", checked)}
-                                        className="data-[state=checked]:bg-[#FF8BBA]"
-                                    />
+                            <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 flex flex-col justify-between">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="text-xs font-bold text-blue-600 uppercase">Shop Value</p>
+                                    <Badge variant="outline" className="text-[9px] bg-white text-blue-500 border-blue-100">AUTO-SUM</Badge>
                                 </div>
+                                <div className="relative">
+                                    <p className="text-2xl font-bold text-[#003366]">
+                                        {shopValue.toFixed(3)}
+                                        <span className="text-sm text-blue-400 font-bold ml-1">DT</span>
+                                    </p>
+                                </div>
+                            </div>
 
-                                <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
-                                    <div className="space-y-0.5">
-                                        <Label className="text-sm font-bold text-[#003366]">Live</Label>
-                                        <p className="text-[10px] text-gray-500">Website visibility</p>
-                                    </div>
-                                    <Switch
-                                        checked={form.watch("isLive")}
-                                        onCheckedChange={(checked) => form.setValue("isLive", checked)}
-                                        className="data-[state=checked]:bg-[#A78BFA]"
-                                    />
+                            <div className="p-4 rounded-2xl bg-green-50 border border-green-100 ring-2 ring-green-500/20 flex flex-col justify-between">
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="text-xs font-bold text-green-600 uppercase">Pack Price</p>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={handleMagicCalculate}
+                                        className="h-6 px-2 text-[10px] bg-white hover:bg-green-100 text-green-600 font-bold border border-green-100"
+                                    >
+                                        <Wand2 className="w-3 h-3 mr-1" /> Magic
+                                    </Button>
                                 </div>
+                                <div className="relative">
+                                    <Input
+                                        type="number"
+                                        step="0.001"
+                                        {...form.register("discountedPrice")}
+                                        onChange={(e) => {
+                                            setIsManualPricing(true);
+                                            form.setValue("discountedPrice", Number(e.target.value));
+                                        }}
+                                        className="text-2xl font-bold text-[#003366] bg-transparent border-none p-0 focus-visible:ring-0 h-auto"
+                                    />
+                                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-green-400 font-bold">DT</span>
+                                </div>
+                            </div>
+
+                            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex flex-col justify-between">
+                                <p className="text-xs font-bold text-amber-600 uppercase mb-1">Dynamic Stock</p>
+                                <p className="text-2xl font-bold text-[#003366] flex items-center gap-2">
+                                    {typeof currentStock === 'number' ? currentStock : 0}
+                                    <Badge variant="outline" className="text-[10px] bg-white text-amber-500 border-amber-100">AUTO</Badge>
+                                </p>
                             </div>
                         </div>
                     </div>
 
                     {/* Pack Items Section */}
-                    <div className="space-y-6">
+                    <div className="pt-10 border-t border-pink-50 space-y-6">
                         <div className="flex items-center justify-between border-b pb-4">
                             <div>
                                 <Label className="text-[#003366] font-bold text-lg">
-                                    📦 Pack Contents & Gallery
+                                    📦 Pack Contents
                                 </Label>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    The pack image will be composed of one image from each selected product.
+                                    Select the products included in this bundle.
                                 </p>
                             </div>
                             <Button
@@ -428,7 +513,6 @@ export function PackForm({
                             {fields.map((field, index) => {
                                 const selectedItemId = form.watch(`packItems.${index}.itemId`);
                                 const product = getProductById(selectedItemId);
-                                const currentThumbnail = watchedItemImages[index.toString()] || product?.images[0]?.url;
 
                                 return (
                                     <div key={field.id} className="relative p-6 rounded-3xl bg-white border border-pink-100 shadow-sm space-y-4">
@@ -500,20 +584,20 @@ export function PackForm({
                                                 )}
                                             </div>
 
-                                            {product && (
-                                                <div className="md:w-64 space-y-2">
-                                                    <Label className="text-xs font-bold text-[#003366] uppercase tracking-wider">Select Pack Image</Label>
-                                                    <div className="flex flex-wrap gap-2 p-2 bg-pink-50/20 rounded-2xl border border-pink-50">
-                                                        {product.images.map((img: { url: string }) => (
-                                                            <button
-                                                                key={img.url}
-                                                                type="button"
-                                                                onClick={() => handleImageSelectForItem(index, img.url)}
-                                                                className={`relative w-12 h-12 rounded-lg overflow-hidden border-2 transition-all ${currentThumbnail === img.url ? "border-pink-500 ring-2 ring-pink-200" : "border-transparent"
-                                                                    }`}
-                                                            >
-                                                                <Image src={img.url} alt="Product" fill className="object-cover" />
-                                                            </button>
+                                            {/* Product Images Preview */}
+                                            {product && product.images && product.images.length > 0 && (
+                                                <div className="flex-none w-full md:w-48 space-y-2">
+                                                    <Label className="text-[10px] font-bold text-[#003366] uppercase tracking-wider">Product Visuals</Label>
+                                                    <div className="flex md:grid md:grid-cols-2 gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+                                                        {product.images.map((img: { url: string }, i: number) => (
+                                                            <div key={i} className="relative w-16 h-16 md:w-full md:aspect-square rounded-xl overflow-hidden border border-pink-100 flex-none bg-[#FDF2F8]">
+                                                                <Image
+                                                                    src={img.url}
+                                                                    alt={`${product.name} ${i + 1}`}
+                                                                    fill
+                                                                    className="object-cover"
+                                                                />
+                                                            </div>
                                                         ))}
                                                     </div>
                                                 </div>

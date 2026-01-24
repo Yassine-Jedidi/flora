@@ -16,7 +16,6 @@ export const PackSchema = z.object({
   categoryId: z.string().min(1, "Category is required"),
   stock: z.coerce.number().int().optional(),
   images: z.array(z.string()).optional(),
-  itemImages: z.record(z.string(), z.string()).optional(),
   isFeatured: z.boolean().default(false),
   isArchived: z.boolean().default(false),
   isLive: z.boolean().default(true),
