@@ -4,12 +4,13 @@ import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/shop/product-card";
 import { CategoryToggle } from "@/components/shop/category-toggle";
 import { SortToggle } from "@/components/shop/sort-toggle";
+import { PaginationControl } from "@/components/ui/pagination-control";
 
 interface CategoryPageProps {
     categorySlug: string;
     title: string;
     subtitle: string;
-    searchParams: Promise<{ sort?: string; category?: string }>;
+    searchParams: Promise<{ sort?: string; category?: string; page?: string }>;
 }
 
 export async function CategoryPage({
@@ -18,9 +19,10 @@ export async function CategoryPage({
     subtitle,
     searchParams
 }: CategoryPageProps) {
-    const { sort, category } = await searchParams;
+    const { sort, category, page } = await searchParams;
+    const currentPage = page ? parseInt(page) : 1;
     const filterCategory = categorySlug === "all" || categorySlug === "packs" ? category : undefined;
-    const products = await getProductsByCategory(categorySlug, sort || "popular", filterCategory);
+    const { products, total, totalPages } = await getProductsByCategory(categorySlug, sort || "popular", filterCategory, currentPage);
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -72,7 +74,7 @@ export async function CategoryPage({
                                 <span className="text-2xl font-black text-[#FF8BBA] tracking-tight">The Flora Gallery</span>
                             </div>
                             <p className="text-[10px] font-black text-[#8B7E84]/60 uppercase tracking-[0.3em]">
-                                {products.length} {products.length === 1 ? 'item' : 'items'}
+                                {total} {total === 1 ? 'item' : 'items'}
                             </p>
                         </div>
 
@@ -95,11 +97,19 @@ export async function CategoryPage({
                             <p className="text-gray-400 font-medium text-center">Check back soon for new treasures! ✨</p>
                         </div>
                     ) : (
-                        <div key={sort || 'popular'} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-                            {products.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
+                        <>
+                            <div key={sort || 'popular'} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+                                {products.map((product) => (
+                                    <ProductCard key={product.id} product={product} />
+                                ))}
+                            </div>
+
+                            <PaginationControl
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                total={total}
+                            />
+                        </>
                     )}
                 </div>
             </main>
