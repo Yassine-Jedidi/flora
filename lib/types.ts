@@ -31,6 +31,9 @@ export interface Product {
     item: Product;
     quantity: number;
   }[];
+  _count?: {
+    packItems: number;
+  };
 }
 
 export interface CartItem {

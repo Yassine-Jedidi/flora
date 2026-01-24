@@ -60,6 +60,9 @@ export async function getProducts(
         include: {
           category: true,
           images: true,
+          _count: {
+            select: { packItems: true }
+          }
         },
         orderBy: {
           createdAt: "desc",
@@ -72,8 +75,10 @@ export async function getProducts(
     // Convert Decimal to number for Client Component serialization
     const mappedProducts = products.map((product) => ({
       ...product,
-      originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      originalPrice: Number(product.originalPrice),
+      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
       isNew:
         new Date(product.createdAt).getTime() >
         Date.now() - 7 * 24 * 60 * 60 * 1000,
@@ -122,8 +127,10 @@ export async function getAllProducts() {
     // Convert Decimal to number for Client Component serialization
     return products.map((product) => ({
       ...product,
-      originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      originalPrice: Number(product.originalPrice),
+      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
       isNew:
         new Date(product.createdAt).getTime() >
         Date.now() - 7 * 24 * 60 * 60 * 1000,
@@ -166,10 +173,14 @@ export async function getProductsByCategory(categorySlug: string, sort?: string)
 
     return products.map((product) => ({
       ...product,
-      originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,      isNew:
+      originalPrice: Number(product.originalPrice),
+      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+      isNew:
         new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,    }));
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+    }));
   } catch (error) {
     console.error(`Error fetching products for category ${categorySlug}:`, error);
     return [];
@@ -201,11 +212,23 @@ export async function getProduct(id: string) {
 
     return {
       ...product,
-      originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      originalPrice: Number(product.originalPrice),
+      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
       isNew:
         new Date(product.createdAt).getTime() >
         Date.now() - 7 * 24 * 60 * 60 * 1000,
+      packItems: product.packItems.map(pi => ({
+        ...pi,
+        item: {
+          ...pi.item,
+          originalPrice: Number(pi.item.originalPrice),
+          discountedPrice: pi.item.discountedPrice ? Number(pi.item.discountedPrice) : null,
+          createdAt: pi.item.createdAt.toISOString(),
+          updatedAt: pi.item.updatedAt.toISOString(),
+        }
+      }))
     };
   } catch (error) {
     console.error(`Error fetching product ${id}:`, error);
@@ -235,10 +258,14 @@ export async function searchProducts(query: string) {
 
     return products.map((product) => ({
       ...product,
-      originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,      isNew:
+      originalPrice: Number(product.originalPrice),
+      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+      isNew:
         new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,    }));
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+    }));
   } catch (error) {
     console.error("Error searching products:", error);
     return [];
@@ -265,8 +292,10 @@ export async function getFeaturedProducts() {
 
     return products.map((product) => ({
       ...product,
-      originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      originalPrice: Number(product.originalPrice),
+      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
       isNew:
         new Date(product.createdAt).getTime() >
         Date.now() - 7 * 24 * 60 * 60 * 1000,
@@ -347,13 +376,15 @@ export async function getSaleProducts(sort?: string, categorySlug?: string) {
     const saleProducts = products.filter(
       (product) =>
         product.discountedPrice !== null &&
-        product.discountedPrice.toNumber() < product.originalPrice.toNumber()
+        Number(product.discountedPrice) < Number(product.originalPrice)
     );
 
     return saleProducts.map((product) => ({
       ...product,
-      originalPrice: product.originalPrice.toNumber(),
-      discountedPrice: product.discountedPrice?.toNumber() ?? null,
+      originalPrice: Number(product.originalPrice),
+      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
       isNew:
         new Date(product.createdAt).getTime() >
         Date.now() - 7 * 24 * 60 * 60 * 1000,

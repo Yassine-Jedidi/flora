@@ -16,7 +16,12 @@ export function AdminNav() {
         },
         {
             href: "/admin/product/new",
-            label: "Add New Product",
+            label: "New Product",
+            icon: PlusCircle,
+        },
+        {
+            href: "/admin/product/new-pack",
+            label: "New Pack",
             icon: PlusCircle,
         },
         {

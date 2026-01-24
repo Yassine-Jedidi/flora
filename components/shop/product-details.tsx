@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ShoppingBag,
   Heart,
@@ -231,21 +232,41 @@ export function ProductDetails({ product }: { product: Product }) {
               <h3 className="text-lg font-black text-[#3E343C]">This Pack Includes:</h3>
               <div className="space-y-3">
                 {product.packItems.map((packItem) => (
-                  <div key={packItem.item.id} className="flex items-center gap-4 p-3 bg-pink-50/30 rounded-2xl border border-pink-50">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0">
+                  <Link
+                    key={packItem.item.id}
+                    href={`/product/${packItem.item.id}`}
+                    className="flex items-center gap-4 p-3 bg-pink-50/30 rounded-2xl border border-pink-50 hover:bg-pink-50 hover:border-pink-100 transition-all group"
+                  >
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0 shadow-sm">
                       {packItem.item.images?.[0]?.url ? (
-                        <Image src={packItem.item.images[0].url} alt={packItem.item.name} fill className="object-cover" />
+                        <Image
+                          src={packItem.item.images[0].url}
+                          alt={packItem.item.name}
+                          fill
+                          className="object-cover transition-transform group-hover:scale-110"
+                        />
                       ) : (
                         <div className="w-full h-full bg-gray-100 flex items-center justify-center">
                           <ShoppingBag className="w-6 h-6 text-gray-300" />
                         </div>
                       )}
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-bold text-[#3E343C]">{packItem.item.name}</p>
-                      <p className="text-xs text-gray-400 font-bold">Qty: {packItem.quantity}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-[#3E343C] group-hover:text-[#FF8BBA] transition-colors truncate">
+                        {packItem.item.name}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                          Qty: {packItem.quantity}
+                        </p>
+                        <Price
+                          price={packItem.item.discountedPrice || packItem.item.originalPrice}
+                          size="xs"
+                          color="text-[#A78BFA]"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>

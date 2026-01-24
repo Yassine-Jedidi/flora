@@ -4,7 +4,11 @@ import { getCategories, seedCategories } from "@/app/actions/product";
 export default async function NewProductPage() {
     // Fetch Categories
     let categories = await getCategories();
-    if (categories.length === 0) {
+    // Core categories we expect
+    const coreSlugs = ["rings", "bracelets", "necklaces", "earrings", "packs"];
+    const hasAllCore = coreSlugs.every(slug => categories.some(c => c.slug === slug));
+
+    if (categories.length === 0 || !hasAllCore) {
         await seedCategories();
         categories = await getCategories();
     }

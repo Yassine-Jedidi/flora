@@ -86,26 +86,15 @@ export async function getCategories() {
 
 // Temporary debug action to create initial categories
 export async function seedCategories() {
-  const categories = [
+  const defaultCategories = [
     { name: "Rings", slug: "rings" },
     { name: "Bracelets", slug: "bracelets" },
     { name: "Necklaces", slug: "necklaces" },
     { name: "Earrings", slug: "earrings" },
+    { name: "Packs", slug: "packs" },
   ];
 
-  const categoryNames = categories.map(c => c.name);
-
-  // 1. Delete categories that are no longer needed
-  await prisma.category.deleteMany({
-    where: {
-      name: {
-        notIn: categoryNames,
-      },
-    },
-  });
-
-  // 2. Upsert the correct ones
-  for (const cat of categories) {
+  for (const cat of defaultCategories) {
     await prisma.category.upsert({
       where: { name: cat.name },
       update: {},
