@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
-import { toast } from "sonner";
 import { useCart } from "@/lib/hooks/use-cart";
 import dynamic from "next/dynamic";
 import { ProductBadge } from "./product-badge";

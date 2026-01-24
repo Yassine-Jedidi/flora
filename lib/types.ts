@@ -28,8 +28,9 @@ export interface Product {
   createdAt: string | Date;
   isNew?: boolean;
   packItems?: {
-    item: Product;
+    itemId: string;
     quantity: number;
+    item: Product;
   }[];
   _count?: {
     packItems: number;

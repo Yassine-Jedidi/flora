@@ -20,7 +20,6 @@ import { useForm, useWatch } from "react-hook-form";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useFavorites } from "@/lib/hooks/use-favorites";
 import dynamic from "next/dynamic";
-import { toast } from "sonner";
 import { ProductBadge } from "./product-badge";
 import { Price } from "./price";
 import { calculateDiscount } from "@/lib/utils";
@@ -215,6 +214,7 @@ export function ProductDetails({ product }: { product: Product }) {
                             <ProductBadge
                               type="discount"
                               content={calculateDiscount(totalMarketValue, currentPrice)}
+                              noRotate
                             />
                           </div>
                         )}
@@ -239,6 +239,7 @@ export function ProductDetails({ product }: { product: Product }) {
                         <ProductBadge
                           type="discount"
                           content={calculateDiscount(product.originalPrice, product.discountedPrice)}
+                          noRotate
                         />
                       </div>
                     )}

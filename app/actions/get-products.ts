@@ -201,6 +201,7 @@ export async function getProduct(id: string) {
             item: {
               include: {
                 images: true,
+                category: true,
               },
             },
           },

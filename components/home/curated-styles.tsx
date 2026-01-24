@@ -30,7 +30,7 @@ export async function CuratedStyles() {
     ];
 
     return (
-        <section className="py-16 px-16">
+        <section className="py-16 px-4 md:px-16">
             <div className="flex justify-between items-end mb-10">
                 <h2 className="text-3xl md:text-4xl font-bold text-slate-800">
                     Shop Curated Styles

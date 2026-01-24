@@ -46,7 +46,6 @@ export function ProductForm({
   categories,
   initialData,
   onCancel,
-  onSuccess,
 }: ProductFormProps) {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);

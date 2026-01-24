@@ -35,8 +35,8 @@ export default function NotFound() {
                         </h1>
 
                         <p className="text-[#8B7E84] text-lg font-medium mb-12 max-w-md mx-auto leading-relaxed">
-                            We couldn't find the page you were looking for. It might have been moved,
-                            or it's hiding in another jewelry box! ✨
+                            We couldn&apos;t find the page you were looking for. It might have been moved,
+                            or it&apos;s hiding in another jewelry box! ✨
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

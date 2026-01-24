@@ -8,9 +8,6 @@ import {
     ShieldCheck,
     Heart,
     MessageSquare,
-    Search,
-    Eye,
-    Settings
 } from "lucide-react";
 import { Metadata } from "next";
 

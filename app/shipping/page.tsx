@@ -13,7 +13,6 @@ import {
     HelpCircle,
     Eye
 } from "lucide-react";
-import Link from "next/link";
 import { Metadata } from "next";
 import { Price } from "@/components/shop/price";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Product } from "@/lib/types";
 import {
   Card,
@@ -56,7 +56,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
 
   const MINIMUM_PROFIT = 20; // 20 DT minimum profit per product
 
-  const calculate = () => {
+  const calculate = useCallback(() => {
     const sell = parseFloat(sellingPrice) || 0;
     const buy = parseFloat(buyingPrice) || 0;
     const pack = parseFloat(packagingCost) || 0;
@@ -68,11 +68,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
     const previousReturnLoss = wasReturned ? del + ret : 0;
 
     // Scenario 1: Successfully Delivered
-    // You pay: Buy + Pack + Del + Ret + Other (accounting for risk)
-    // You get: Sell
-    // Net Profit = Sell - Cost - PreviousLoss
     const costDelivered = buy + pack + del + ret + other;
-    // Calculation logic now subtracts previous loss from profit
     const profitDelivered = sell - costDelivered - previousReturnLoss;
     const roiDelivered =
       costDelivered > 0 ? (profitDelivered / costDelivered) * 100 : 0;
@@ -102,9 +98,6 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
     else roiStatus = "bad";
 
     // Scenario 2: Returned (Failed)
-    // You pay: Del + Return + Other
-    // You get: Item + Packaging back (so Buying Price + Packaging are recovered)
-    // Net Loss = -(Del + Ret + Other)
     const lossReturned = -(del + ret + other);
 
     return {
@@ -120,20 +113,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
       worstCaseMarginOk,
       roiStatus,
     };
-  };
-
-  const {
-    profitDelivered,
-    roiDelivered,
-    lossReturned,
-    minimumSellingPrice,
-    meetsMinimumProfit,
-    grossProfitMargin,
-    marginStatus,
-    marginRedelivery,
-    worstCaseMarginOk,
-    roiStatus,
-  } = useMemo(calculate, [
+  }, [
     sellingPrice,
     buyingPrice,
     packagingCost,
@@ -142,6 +122,17 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
     otherCosts,
     wasReturned,
   ]);
+
+  const {
+    profitDelivered,
+    roiDelivered,
+    lossReturned,
+    grossProfitMargin,
+    marginStatus,
+    marginRedelivery,
+    worstCaseMarginOk,
+    roiStatus,
+  } = useMemo(() => calculate(), [calculate]);
 
   const reset = () => {
     setSelectedProductId("");
@@ -171,24 +162,24 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
       const ret = parseFloat(returnCost) || 0;
       const other = parseFloat(otherCosts) || 0;
       const surcharge = isFreeShipping ? 7 : 0;
-      
+
       // Cost for successful delivery (includes return risk)
       const costDelivered = buy + pack + del + ret + other;
       // Worst case cost (return + redeliver)
       const worstCaseCost = buy + pack + del + ret + del + ret + other;
-      
+
       // Price for 20% worst-case margin
       const priceForMargin = worstCaseCost / 0.8;
-      
+
       // Price for 50% ROI minimum
       const priceForROI = costDelivered * 1.5;
-      
+
       // Use the HIGHER of the two to meet both requirements, then add customer surcharge
       const bestPrice = Math.max(priceForMargin, priceForROI) + surcharge;
-      
-      setSellingPrice(bestPrice.toFixed(3));
+
+      setTimeout(() => setSellingPrice(bestPrice.toFixed(3)), 0);
     }
-  }, [isFreeShipping]);
+  }, [isFreeShipping, buyingPrice, packagingCost, deliveryCost, returnCost, otherCosts]);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -385,33 +376,30 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
             <div className="space-y-4">
               {/* Scenario 1: Delivered */}
               <div
-                className={`p-4 rounded-2xl shadow-sm border text-center transition-all ${
-                  marginStatus === "good"
-                    ? "bg-green-50 border-green-100"
-                    : marginStatus === "minimum"
+                className={`p-4 rounded-2xl shadow-sm border text-center transition-all ${marginStatus === "good"
+                  ? "bg-green-50 border-green-100"
+                  : marginStatus === "minimum"
                     ? "bg-orange-50 border-orange-100"
                     : "bg-red-50 border-red-100"
-                }`}
+                  }`}
               >
                 <p
-                  className={`text-xs uppercase font-bold tracking-wider mb-1 flex items-center justify-center gap-1 ${
-                    marginStatus === "good"
-                      ? "text-green-700"
-                      : marginStatus === "minimum"
+                  className={`text-xs uppercase font-bold tracking-wider mb-1 flex items-center justify-center gap-1 ${marginStatus === "good"
+                    ? "text-green-700"
+                    : marginStatus === "minimum"
                       ? "text-orange-700"
                       : "text-red-700"
-                  }`}
+                    }`}
                 >
                   <Package className="w-3 h-3" /> If Delivered
                 </p>
                 <p
-                  className={`text-3xl font-black ${
-                    marginStatus === "good"
-                      ? "text-green-600"
-                      : marginStatus === "minimum"
+                  className={`text-3xl font-black ${marginStatus === "good"
+                    ? "text-green-600"
+                    : marginStatus === "minimum"
                       ? "text-orange-500"
                       : "text-red-500"
-                  }`}
+                    }`}
                 >
                   {profitDelivered >= 0 ? "+" : ""}
                   {formatCurrency(profitDelivered)}
@@ -423,23 +411,22 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                         ROI {roiDelivered.toFixed(0)}%
                       </span>
                       <span
-                        className={`text-xs font-bold ml-1 ${
-                          roiStatus === "excellent"
-                            ? "text-blue-600"
-                            : roiStatus === "good"
+                        className={`text-xs font-bold ml-1 ${roiStatus === "excellent"
+                          ? "text-blue-600"
+                          : roiStatus === "good"
                             ? "text-green-600"
                             : roiStatus === "minimum"
-                            ? "text-yellow-600"
-                            : "text-red-600"
-                        }`}
+                              ? "text-yellow-600"
+                              : "text-red-600"
+                          }`}
                       >
                         {roiStatus === "excellent"
                           ? "(Excellent)"
                           : roiStatus === "good"
-                          ? "(Good)"
-                          : roiStatus === "minimum"
-                          ? "(Minimum)"
-                          : "(Bad)"}
+                            ? "(Good)"
+                            : roiStatus === "minimum"
+                              ? "(Minimum)"
+                              : "(Bad)"}
                       </span>
                       <p className="text-[10px] text-gray-400 mt-1">
                         Target: 100% (Good) / 50% (Minimum)
@@ -447,15 +434,14 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                     </div>
                     <div className="h-2 bg-white/60 rounded-full overflow-hidden w-24">
                       <div
-                        className={`h-full rounded-full transition-all ${
-                          roiStatus === "excellent"
-                            ? "bg-blue-500"
-                            : roiStatus === "good"
+                        className={`h-full rounded-full transition-all ${roiStatus === "excellent"
+                          ? "bg-blue-500"
+                          : roiStatus === "good"
                             ? "bg-green-500"
                             : roiStatus === "minimum"
-                            ? "bg-yellow-500"
-                            : "bg-red-500"
-                        }`}
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
+                          }`}
                         style={{
                           width: `${Math.min(Math.max(roiDelivered, 0), 100)}%`,
                         }}
@@ -468,19 +454,18 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                         Margin {grossProfitMargin.toFixed(1)}%
                       </span>
                       <span
-                        className={`text-xs font-bold ml-1 ${
-                          marginStatus === "good"
-                            ? "text-green-600"
-                            : marginStatus === "minimum"
+                        className={`text-xs font-bold ml-1 ${marginStatus === "good"
+                          ? "text-green-600"
+                          : marginStatus === "minimum"
                             ? "text-yellow-600"
                             : "text-red-600"
-                        }`}
+                          }`}
                       >
                         {marginStatus === "good"
                           ? "(Good)"
                           : marginStatus === "minimum"
-                          ? "(Minimum)"
-                          : "(Bad)"}
+                            ? "(Minimum)"
+                            : "(Bad)"}
                       </span>
                       <p className="text-[10px] text-gray-400 mt-1">
                         Target: 30% (Good) / 20% (Minimum)
@@ -494,13 +479,12 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                     </div>
                     <div className="h-2 bg-white/60 rounded-full overflow-hidden w-24">
                       <div
-                        className={`h-full rounded-full transition-all ${
-                          marginStatus === "good"
-                            ? "bg-green-500"
-                            : marginStatus === "minimum"
+                        className={`h-full rounded-full transition-all ${marginStatus === "good"
+                          ? "bg-green-500"
+                          : marginStatus === "minimum"
                             ? "bg-yellow-500"
                             : "bg-red-500"
-                        }`}
+                          }`}
                         style={{
                           width: `${Math.min(
                             Math.max(grossProfitMargin, 0),
@@ -537,7 +521,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
         <div>
           <p className="font-bold">Risk vs. Reward:</p>
           <p className="opacity-80">
-            This breakdown helps you decide if shipping is risky. "If Returned"
+            This breakdown helps you decide if shipping is risky. &quot;If Returned&quot;
             shows your cash loss assuming the item is returned to inventory.
           </p>
         </div>

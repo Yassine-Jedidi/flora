@@ -17,7 +17,7 @@ export default async function NewPackPage() {
         <div className="max-w-5xl mx-auto py-10 px-4 md:px-0">
             <PackForm
                 categories={categories}
-                availableProducts={availableProducts as any}
+                availableProducts={availableProducts}
             />
         </div>
     );

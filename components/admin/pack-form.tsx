@@ -39,8 +39,8 @@ import { Badge } from "@/components/ui/badge";
 interface AvailableProduct {
     id: string;
     name: string;
-    discountedPrice: any;
-    originalPrice: any;
+    discountedPrice: number | null;
+    originalPrice: number;
     stock: number;
     images: { url: string }[];
 }
@@ -266,8 +266,6 @@ export function PackForm({
     };
 
 
-    const currentOriginalPrice = form.watch("originalPrice");
-    const currentDiscountedPrice = form.watch("discountedPrice");
     const currentStock = form.watch("stock");
 
     return (
