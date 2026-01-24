@@ -25,7 +25,8 @@ export function SortToggle() {
                 {[
                     { label: "Popular", value: "popular" },
                     { label: "Newest", value: "newest" },
-                    { label: "Price", value: "price" }
+                    { label: "Price: Low to High", value: "price-asc" },
+                    { label: "Price: High to Low", value: "price-desc" }
                 ].map((sort) => (
                     <button
                         key={sort.value}

@@ -25,7 +25,7 @@ export function Footer() {
             <p className="text-sm text-muted-foreground max-w-xs">
               Elevating everyday moments with exquisite adornments.
             </p>
-            <div className="flex items-center gap-4 mt-2">
+            <div className="flex items-center gap-6 mt-2">
               <a
                 href="https://www.instagram.com/flora_.access/"
                 target="_blank"
@@ -33,7 +33,7 @@ export function Footer() {
                 className="text-purple-500 hover:text-purple-600 transition-colors"
                 aria-label="Instagram"
               >
-                <Instagram className="h-5 w-5" />
+                <Instagram className="h-7 w-7" />
               </a>
               <a
                 href="https://www.tiktok.com/@floraaccess"
@@ -44,15 +44,15 @@ export function Footer() {
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="28"
+                  height="28"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-5 w-5"
+                  className="h-7 w-7"
                 >
                   <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
                 </svg>
@@ -64,7 +64,7 @@ export function Footer() {
                 className="text-purple-500 hover:text-purple-600 transition-colors"
                 aria-label="Facebook"
               >
-                <Facebook className="h-5 w-5" />
+                <Facebook className="h-7 w-7" />
               </a>
             </div>
           </div>

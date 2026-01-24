@@ -159,8 +159,10 @@ export async function getProductsByCategory(
       ];
     } else if (sort === "newest") {
       orderBy = { createdAt: "desc" };
-    } else if (sort === "price") {
+    } else if (sort === "price-asc" || sort === "price") {
       orderBy = { originalPrice: "asc" };
+    } else if (sort === "price-desc") {
+      orderBy = { originalPrice: "desc" };
     }
 
     const where: Prisma.ProductWhereInput = {
@@ -386,8 +388,10 @@ export async function getSaleProducts(
       ];
     } else if (sort === "newest") {
       orderBy = { createdAt: "desc" };
-    } else if (sort === "price") {
+    } else if (sort === "price-asc" || sort === "price") {
       orderBy = { originalPrice: "asc" };
+    } else if (sort === "price-desc") {
+      orderBy = { originalPrice: "desc" };
     }
 
     const where: Prisma.ProductWhereInput = {

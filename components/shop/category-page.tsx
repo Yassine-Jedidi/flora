@@ -71,7 +71,7 @@ export async function CategoryPage({
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
                                 <span className="text-xl">🎀</span>
-                                <span className="text-2xl font-black text-[#FF8BBA] tracking-tight">The Flora Gallery</span>
+                                <span className="text-2xl font-black text-[#3E343C] tracking-tight">The Flora Gallery</span>
                             </div>
                             <p className="text-[10px] font-black text-[#8B7E84]/60 uppercase tracking-[0.3em]">
                                 {total} {total === 1 ? 'item' : 'items'}

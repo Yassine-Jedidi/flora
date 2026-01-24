@@ -24,6 +24,8 @@ import { ProductBadge } from "./product-badge";
 import { Price } from "./price";
 import { calculateDiscount } from "@/lib/utils";
 import { Product } from "@/lib/types";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const FavoriteButton = dynamic(() => import("./favorite-button"), {
   ssr: false,
@@ -257,9 +259,27 @@ export function ProductDetails({ product }: { product: Product }) {
         <div className="w-full h-px bg-gradient-to-r from-pink-100 via-pink-50 to-transparent" />
 
         <div className="space-y-4">
-          <p className="text-[#8B7E84] leading-relaxed text-lg">
-            {product.description}
-          </p>
+          <div className="prose prose-sm max-w-none text-[#8B7E84] leading-relaxed">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                p: ({ node, ...props }) => <p className="mb-4 last:mb-0 text-lg" {...props} />,
+                strong: ({ node, ...props }) => <strong className="font-black text-[#3E343C]" {...props} />,
+                ul: ({ node, ...props }) => <ul className="space-y-2 mb-6 ml-4" {...props} />,
+                li: ({ node, ...props }) => (
+                  <li className="flex items-start gap-2 text-base">
+                    <span className="text-[#FF8BBA] mt-1.5">•</span>
+                    <span>{props.children}</span>
+                  </li>
+                ),
+                h1: ({ node, ...props }) => <h1 className="text-2xl font-black text-[#3E343C] mb-4" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-xl font-black text-[#3E343C] mb-3" {...props} />,
+                h3: ({ node, ...props }) => <h3 className="text-lg font-black text-[#3E343C] mb-2" {...props} />,
+              }}
+            >
+              {product.description}
+            </ReactMarkdown>
+          </div>
         </div>
 
         <div className="flex flex-col gap-6 pt-6 border-t border-dotted border-pink-100">
