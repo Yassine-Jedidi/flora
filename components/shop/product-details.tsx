@@ -258,23 +258,27 @@ export function ProductDetails({ product }: { product: Product }) {
 
         <div className="w-full h-px bg-gradient-to-r from-pink-100 via-pink-50 to-transparent" />
 
-        <div className="space-y-4">
-          <div className="prose prose-sm max-w-none text-[#8B7E84] leading-relaxed">
+        <div className="space-y-6">
+          <div className="prose prose-sm max-w-none text-[#5D5056] leading-relaxed font-medium">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                p: ({ node, ...props }) => <p className="mb-4 last:mb-0 text-lg" {...props} />,
-                strong: ({ node, ...props }) => <strong className="font-black text-[#3E343C]" {...props} />,
-                ul: ({ node, ...props }) => <ul className="space-y-2 mb-6 ml-4" {...props} />,
+                p: ({ node, ...props }) => <p className="mb-5 last:mb-0 text-[17px] leading-[1.8]" {...props} />,
+                strong: ({ node, ...props }) => <strong className="font-black text-[#3E343C] tracking-tight" {...props} />,
+                ul: ({ node, ...props }) => <ul className="space-y-3 mb-8 ml-2" {...props} />,
                 li: ({ node, ...props }) => (
-                  <li className="flex items-start gap-2 text-base">
-                    <span className="text-[#FF8BBA] mt-1.5">•</span>
-                    <span>{props.children}</span>
+                  <li className="flex items-start gap-4 text-[16px]">
+                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#FF8BBA] mt-2.5 shadow-[0_0_8px_rgba(255,139,186,0.6)]" />
+                    <span className="flex-1">{props.children}</span>
                   </li>
                 ),
-                h1: ({ node, ...props }) => <h1 className="text-2xl font-black text-[#3E343C] mb-4" {...props} />,
-                h2: ({ node, ...props }) => <h2 className="text-xl font-black text-[#3E343C] mb-3" {...props} />,
-                h3: ({ node, ...props }) => <h3 className="text-lg font-black text-[#3E343C] mb-2" {...props} />,
+                h1: ({ node, ...props }) => <h1 className="text-2xl font-black text-[#3E343C] mb-6 mt-8 border-b-2 border-pink-50 pb-2" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-xl font-black text-[#3E343C] mb-4 mt-8 flex items-center gap-2 group" {...props}>
+                  <div className="w-1 h-5 bg-[#FF8BBA] rounded-full" />
+                  {props.children}
+                </h2>,
+                h3: ({ node, ...props }) => <h3 className="text-lg font-black text-[#3E343C] mb-3 mt-6" {...props} />,
+                hr: ({ node, ...props }) => <hr className="my-10 border-t border-pink-100/50" {...props} />,
               }}
             >
               {product.description}

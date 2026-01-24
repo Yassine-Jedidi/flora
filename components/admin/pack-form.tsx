@@ -10,9 +10,10 @@ import {
 import { createPack, updatePack } from "@/app/actions/pack";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
-import { Loader2, Plus, X, Save, RotateCcw, Trash2, Package, Wand2 } from "lucide-react";
+import { Loader2, Plus, X, Save, RotateCcw, Trash2, Package, Wand2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { enhanceDescription } from "@/app/actions/ai";
 
 import {
     Card,
@@ -62,6 +63,7 @@ export function PackForm({
 }: PackFormProps) {
     const router = useRouter();
     const [isPending, setIsPending] = useState(false);
+    const [isEnhancing, setIsEnhancing] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
     const [isManualPricing, setIsManualPricing] = useState(!!initialData);
     const [marketValue, setMarketValue] = useState(0);
@@ -229,6 +231,29 @@ export function PackForm({
         toast.success("Auto-Pricing Active! ✨ (5% Pack Discount applied on Shop Value)");
     };
 
+    const handleAIByDescription = async () => {
+        const currentDesc = form.getValues("description");
+        if (!currentDesc || currentDesc.length < 10) {
+            toast.error("Please enter a longer description first");
+            return;
+        }
+
+        setIsEnhancing(true);
+        try {
+            const result = await enhanceDescription(currentDesc);
+            if (result.text) {
+                form.setValue("description", result.text);
+                toast.success("Description enhanced! ✨");
+            } else if (result.error) {
+                toast.error(result.error);
+            }
+        } catch (error) {
+            toast.error("AI enhancement failed");
+        } finally {
+            setIsEnhancing(false);
+        }
+    };
+
     const onSubmit = async (values: PackFormValues) => {
         setIsPending(true);
         setSuccess(null);
@@ -298,9 +323,26 @@ export function PackForm({
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description" className="text-[#003366] font-bold">
-                                    Description
-                                </Label>
+                                <div className="flex items-center justify-between">
+                                    <Label htmlFor="description" className="text-[#003366] font-bold">
+                                        Description
+                                    </Label>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={handleAIByDescription}
+                                        disabled={isEnhancing}
+                                        className="h-8 text-[10px] font-black uppercase tracking-tighter text-[#A78BFA] hover:text-[#8B5CF6] hover:bg-purple-50 transition-all gap-1.5"
+                                    >
+                                        {isEnhancing ? (
+                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                        ) : (
+                                            <Sparkles className="w-3 h-3" />
+                                        )}
+                                        {isEnhancing ? "Enhancing..." : "Magic Markdown ✨"}
+                                    </Button>
+                                </div>
                                 <Textarea
                                     id="description"
                                     {...form.register("description")}
