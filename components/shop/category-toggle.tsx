@@ -26,17 +26,26 @@ export function CategoryToggle() {
     };
 
     return (
-        <div className="flex items-center gap-4">
-            <label className="text-sm font-bold text-[#8B7E84]">Category:</label>
-            <div className="bg-[#FDF2F7] p-1 rounded-full flex items-center overflow-x-auto no-scrollbar max-w-full">
+        <div className="flex flex-col gap-3 w-full lg:w-auto">
+            <div className="flex items-center gap-2">
+                <div className="w-1 h-4 bg-[#FF8BBA] rounded-full" />
+                <label className="text-xs font-black text-[#3E343C] uppercase tracking-[0.2em]">
+                    Filter by Category
+                </label>
+            </div>
+            <div className="flex flex-wrap gap-2">
                 {categories.map((cat) => (
                     <button
                         key={cat.slug}
                         onClick={() => handleCategory(cat.slug)}
-                        className={`${currentCategory === cat.slug
-                            ? "bg-white text-[#FF8BBA] shadow-sm"
-                            : "text-[#8B7E84] hover:text-[#FF8BBA]"
-                            } px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap`}
+                        className={`
+                            ${currentCategory === cat.slug
+                                ? "bg-[#FF8BBA] text-white shadow-lg shadow-pink-100 scale-105"
+                                : "bg-white border border-pink-100 text-[#8B7E84] hover:border-[#FF8BBA] hover:text-[#FF8BBA]"
+                            }
+                            px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300
+                            active:scale-95
+                        `}
                     >
                         {cat.label}
                     </button>

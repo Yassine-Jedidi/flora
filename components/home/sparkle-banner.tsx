@@ -16,7 +16,7 @@ export function SparkleBanner() {
     }, []);
 
     return (
-        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden rounded-3xl mx-4 md:mx-16 md:my-4 border border-pink-500/10 shadow-2xl bg-black">
+        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden rounded-3xl w-[95%] max-w-7xl mx-auto md:my-4 border border-pink-500/10 shadow-2xl bg-black">
             <video
                 ref={videoRef}
                 autoPlay
@@ -34,17 +34,17 @@ export function SparkleBanner() {
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/50" />
 
             <div className="relative z-10 container mx-auto px-4 text-center">
-                <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-2 drop-shadow-xl tracking-tight">
+                <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-6 drop-shadow-xl tracking-tight">
                     Sparkle Every Day
                 </h1>
 
-                <div className="flex justify-center items-center gap-1 mb-6 filter drop-shadow-md">
+                <div className="flex justify-center items-center gap-1 mb-8 filter drop-shadow-md">
                     <span className="text-2xl md:text-3xl">✨</span>
                     <span className="text-4xl md:text-5xl -mt-2">✨</span>
                     <span className="text-2xl md:text-3xl">✨</span>
                 </div>
 
-                <p className="text-base md:text-xl text-white font-medium max-w-2xl mx-auto mb-10 drop-shadow-md opacity-90">
+                <p className="text-base md:text-xl text-white font-medium max-w-2xl mx-auto mb-12 drop-shadow-md opacity-90">
                     Discover the cutest accessories to brighten up your daily look.
                 </p>
 

@@ -33,6 +33,7 @@ import {
   Minus,
   Plus,
   Trash2,
+  ShoppingCart,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -323,7 +324,10 @@ export default function CheckoutPage() {
                 <div className="bg-[#A78BFA] rounded-[40px] p-8 text-white shadow-2xl shadow-purple-200/50 overflow-hidden relative">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
 
-                  <h3 className="text-2xl font-black mb-8">Order Summary</h3>
+                  <h3 className="flex items-center gap-3 text-2xl font-black mb-8">
+                    <ShoppingCart className="w-6 h-6 text-white/80" />
+                    Order Summary
+                  </h3>
 
                   <div className="max-h-75 overflow-y-auto pr-2 custom-scrollbar mb-8 space-y-4">
                     {cart.map((item) => (
