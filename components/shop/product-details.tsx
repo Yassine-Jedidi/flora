@@ -201,31 +201,35 @@ export function ProductDetails({ product }: { product: Product }) {
               {/* Special Pricing Logic for Packs */}
               {product.packItems && product.packItems.length > 0 ? (
                 <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2">
-                    {(() => {
-                      const totalMarketValue = product.packItems.reduce(
-                        (acc, pi) => acc + Number(pi.item.originalPrice) * pi.quantity,
-                        0
-                      );
-                      const currentPrice = product.discountedPrice || product.originalPrice;
+                  {(() => {
+                    const totalMarketValue = product.packItems.reduce(
+                      (acc, pi) => acc + Number(pi.item.originalPrice) * pi.quantity,
+                      0
+                    );
+                    const currentPrice = product.discountedPrice || product.originalPrice;
 
-                      return (
-                        <>
-                          <Price
-                            price={currentPrice}
-                            originalPrice={totalMarketValue > currentPrice ? totalMarketValue : undefined}
-                            size="xl"
-                          />
-                          {totalMarketValue > currentPrice && (
+                    return (
+                      <>
+                        {totalMarketValue > currentPrice && (
+                          <div className="flex items-center gap-2 mb-1">
                             <ProductBadge
                               type="discount"
                               content={calculateDiscount(totalMarketValue, currentPrice)}
                             />
-                          )}
-                        </>
-                      );
-                    })()}
-                  </div>
+                          </div>
+                        )}
+                        <Price
+                          price={currentPrice}
+                          originalPrice={
+                            totalMarketValue > currentPrice
+                              ? totalMarketValue
+                              : undefined
+                          }
+                          size="xl"
+                        />
+                      </>
+                    );
+                  })()}
                 </div>
               ) : (
                 <>
@@ -235,7 +239,6 @@ export function ProductDetails({ product }: { product: Product }) {
                         <ProductBadge
                           type="discount"
                           content={calculateDiscount(product.originalPrice, product.discountedPrice)}
-                          className="rotate-0 transition-transform hover:scale-110"
                         />
                       </div>
                     )}

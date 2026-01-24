@@ -7,10 +7,13 @@ interface ProductBadgeProps {
 }
 
 export function ProductBadge({ type, content, className }: ProductBadgeProps) {
+  const baseStyles = "text-[10px] font-black px-3 py-1.5 rounded-xl shadow-md inline-block transition-transform hover:scale-110 cursor-default";
+
   if (type === "new") {
     return (
       <span className={cn(
-        "bg-[#A78BFA] text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md inline-block rotate-3",
+        "bg-[#A78BFA] text-white",
+        baseStyles,
         className
       )}>
         NEW
@@ -21,7 +24,8 @@ export function ProductBadge({ type, content, className }: ProductBadgeProps) {
   if (type === "bestseller") {
     return (
       <span className={cn(
-        "bg-[#FF8BBA] text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md inline-block -rotate-6",
+        "bg-[#FF8BBA] text-white",
+        baseStyles,
         className
       )}>
         BESTSELLER
@@ -32,7 +36,8 @@ export function ProductBadge({ type, content, className }: ProductBadgeProps) {
   if (type === "discount") {
     return (
       <span className={cn(
-        "bg-red-500 text-white text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md inline-block rotate-2",
+        "bg-red-500 text-white",
+        baseStyles,
         className
       )}>
         -{content}%
@@ -43,7 +48,8 @@ export function ProductBadge({ type, content, className }: ProductBadgeProps) {
   if (type === "category") {
     return (
       <span className={cn(
-        "text-[10px] font-black text-[#FF8BBA] bg-pink-50 px-3 py-1 rounded-full uppercase tracking-widest border border-pink-100",
+        "bg-[#FF8BBA] text-white uppercase tracking-wider",
+        baseStyles,
         className
       )}>
         {content}

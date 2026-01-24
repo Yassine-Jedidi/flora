@@ -65,6 +65,7 @@ export function PackForm({
     const [success, setSuccess] = useState<string | null>(null);
     const [isManualPricing, setIsManualPricing] = useState(!!initialData);
     const [marketValue, setMarketValue] = useState(0);
+    const [shopValue, setShopValue] = useState(0);
 
     const form = useForm({
         resolver: zodResolver(PackSchema),
@@ -159,10 +160,11 @@ export function PackForm({
 
         const finalMarketValue = Number(totalMarketValueSum.toFixed(3));
         const finalShopValue = Number(totalShopValueSum.toFixed(3));
-        const finalPackPrice = Number((finalShopValue * 0.95).toFixed(3)); // Default 5% pack discount
+        const finalPackPrice = Number((finalShopValue * 0.95).toFixed(3));
         const finalStock = minStock === Infinity ? 0 : minStock;
 
         setMarketValue(finalMarketValue);
+        setShopValue(finalShopValue);
 
         // CRITICAL: Only update if changed to prevent infinite loops
         const current = form.getValues();
@@ -328,7 +330,7 @@ export function PackForm({
                                     </div>
                                     <div className="relative">
                                         <p className="text-2xl font-bold text-[#003366]">
-                                            {Number(form.watch("originalPrice") || 0).toFixed(3)}
+                                            {shopValue.toFixed(3)}
                                             <span className="text-sm text-blue-400 font-bold ml-1">DT</span>
                                         </p>
                                     </div>
