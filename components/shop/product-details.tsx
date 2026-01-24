@@ -196,23 +196,56 @@ export function ProductDetails({ product }: { product: Product }) {
             {product.name}
           </h1>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4">
             <div className="flex flex-col">
-              {product.discountedPrice &&
-                product.discountedPrice < product.originalPrice && (
-                  <div className="flex items-center gap-2 mb-1">
-                    <ProductBadge
-                      type="discount"
-                      content={calculateDiscount(product.originalPrice, product.discountedPrice)}
-                      className="rotate-0 transition-transform hover:scale-110"
-                    />
+              {/* Special Pricing Logic for Packs */}
+              {product.packItems && product.packItems.length > 0 ? (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    {(() => {
+                      const totalMarketValue = product.packItems.reduce(
+                        (acc, pi) => acc + Number(pi.item.originalPrice) * pi.quantity,
+                        0
+                      );
+                      const currentPrice = product.discountedPrice || product.originalPrice;
+
+                      return (
+                        <>
+                          <Price
+                            price={currentPrice}
+                            originalPrice={totalMarketValue > currentPrice ? totalMarketValue : undefined}
+                            size="xl"
+                          />
+                          {totalMarketValue > currentPrice && (
+                            <ProductBadge
+                              type="discount"
+                              content={calculateDiscount(totalMarketValue, currentPrice)}
+                            />
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
-                )}
-              <Price
-                price={product.discountedPrice || product.originalPrice}
-                originalPrice={product.discountedPrice ? product.originalPrice : undefined}
-                size="xl"
-              />
+                </div>
+              ) : (
+                <>
+                  {product.discountedPrice &&
+                    product.discountedPrice < product.originalPrice && (
+                      <div className="flex items-center gap-2 mb-1">
+                        <ProductBadge
+                          type="discount"
+                          content={calculateDiscount(product.originalPrice, product.discountedPrice)}
+                          className="rotate-0 transition-transform hover:scale-110"
+                        />
+                      </div>
+                    )}
+                  <Price
+                    price={product.discountedPrice || product.originalPrice}
+                    originalPrice={product.discountedPrice ? product.originalPrice : undefined}
+                    size="xl"
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -235,6 +268,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   <Link
                     key={packItem.item.id}
                     href={`/product/${packItem.item.id}`}
+                    target="_blank"
                     className="flex items-center gap-4 p-3 bg-pink-50/30 rounded-2xl border border-pink-50 hover:bg-pink-50 hover:border-pink-100 transition-all group"
                   >
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0 shadow-sm">
@@ -255,14 +289,17 @@ export function ProductDetails({ product }: { product: Product }) {
                       <p className="text-sm font-bold text-[#3E343C] group-hover:text-[#FF8BBA] transition-colors truncate">
                         {packItem.item.name}
                       </p>
-                      <div className="flex items-center gap-3">
-                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none mt-0.5">
                           Qty: {packItem.quantity}
-                        </p>
+                        </span>
+                        <span className="text-gray-300 leading-none">•</span>
                         <Price
                           price={packItem.item.discountedPrice || packItem.item.originalPrice}
+                          originalPrice={packItem.item.discountedPrice ? packItem.item.originalPrice : undefined}
                           size="xs"
-                          color="text-[#A78BFA]"
+                          color="text-[#FF8BBA]"
+                          className="flex-nowrap"
                         />
                       </div>
                     </div>

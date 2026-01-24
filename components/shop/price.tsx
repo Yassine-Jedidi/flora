@@ -10,10 +10,10 @@ interface PriceProps {
   color?: string;
 }
 
-export function Price({ 
-  price, 
-  originalPrice, 
-  className, 
+export function Price({
+  price,
+  originalPrice,
+  className,
   size = "md",
   variant = "horizontal",
   color = "text-[#FF8BBA]"
@@ -23,7 +23,7 @@ export function Price({
   const sizeClasses = {
     xs: {
       current: "text-xs font-bold",
-      original: "text-[10px] font-semibold",
+      original: "text-xs font-bold",
     },
     sm: {
       current: "text-base font-black",
@@ -47,7 +47,7 @@ export function Price({
 
   return (
     <div className={cn(
-      "flex", 
+      "flex",
       variant === "vertical" ? "flex-col" : "items-center gap-2",
       className
     )}>
@@ -56,7 +56,7 @@ export function Price({
       </span>
       {hasDiscount && (
         <span className={cn(
-          "line-through font-medium opacity-70", 
+          "line-through font-medium opacity-70",
           variant === "vertical" ? "text-gray-400" : "text-pink-300",
           currentSize.original
         )}>

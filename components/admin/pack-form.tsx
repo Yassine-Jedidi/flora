@@ -10,7 +10,7 @@ import {
 import { createPack, updatePack } from "@/app/actions/pack";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
-import { Loader2, Plus, X, Save, RotateCcw, Trash2, Package } from "lucide-react";
+import { Loader2, Plus, X, Save, RotateCcw, Trash2, Package, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -63,6 +63,8 @@ export function PackForm({
     const router = useRouter();
     const [isPending, setIsPending] = useState(false);
     const [success, setSuccess] = useState<string | null>(null);
+    const [isManualPricing, setIsManualPricing] = useState(!!initialData);
+    const [marketValue, setMarketValue] = useState(0);
 
     const form = useForm({
         resolver: zodResolver(PackSchema),
@@ -129,8 +131,8 @@ export function PackForm({
             return;
         }
 
-        let totalSalePrice = 0;
-        let totalOrigPrice = 0;
+        let totalShopValueSum = 0;
+        let totalMarketValueSum = 0;
         let minStock = Infinity;
         const packImages: string[] = [];
 
@@ -138,8 +140,12 @@ export function PackForm({
             const product = getProductById(item.itemId);
             if (product) {
                 const qty = Number(item.quantity) || 1;
-                totalSalePrice += Number(product.discountedPrice) * qty;
-                totalOrigPrice += Number(product.originalPrice || product.discountedPrice) * qty;
+                // Level 1: Market Value (always original)
+                totalMarketValueSum += Number(product.originalPrice) * qty;
+
+                // Level 2: Shop Value (current selling price - might already be discounted)
+                const currentItemPrice = Number(product.discountedPrice || product.originalPrice);
+                totalShopValueSum += currentItemPrice * qty;
 
                 const possiblePacks = Math.floor(product.stock / qty);
                 if (possiblePacks < minStock) minStock = possiblePacks;
@@ -151,18 +157,28 @@ export function PackForm({
             }
         });
 
-        const finalSalePrice = Number(totalSalePrice.toFixed(3));
-        const finalOrigPrice = Number(totalOrigPrice.toFixed(3));
+        const finalMarketValue = Number(totalMarketValueSum.toFixed(3));
+        const finalShopValue = Number(totalShopValueSum.toFixed(3));
+        const finalPackPrice = Number((finalShopValue * 0.95).toFixed(3)); // Default 5% pack discount
         const finalStock = minStock === Infinity ? 0 : minStock;
+
+        setMarketValue(finalMarketValue);
 
         // CRITICAL: Only update if changed to prevent infinite loops
         const current = form.getValues();
-        if (current.discountedPrice !== finalSalePrice) {
-            form.setValue("discountedPrice", finalSalePrice, { shouldDirty: false });
+
+        // ALWAYS update originalPrice (Stored as Market Value Sum) automatically
+        if (current.originalPrice !== finalMarketValue) {
+            form.setValue("originalPrice", finalMarketValue, { shouldDirty: true });
         }
-        if (current.originalPrice !== finalOrigPrice) {
-            form.setValue("originalPrice", finalOrigPrice, { shouldDirty: false });
+
+        // Only auto-update discountedPrice (Pack Price) if NOT in manual mode
+        if (!isManualPricing) {
+            if (current.discountedPrice !== finalPackPrice) {
+                form.setValue("discountedPrice", finalPackPrice, { shouldDirty: true });
+            }
         }
+
         if (current.stock !== finalStock) {
             form.setValue("stock", finalStock, { shouldDirty: false });
         }
@@ -176,7 +192,32 @@ export function PackForm({
         if (packCategory && current.categoryId !== packCategory.id) {
             form.setValue("categoryId", packCategory.id, { shouldDirty: false });
         }
-    }, [watchedItems, watchedItemImages, categories, form.setValue, form.getValues, getProductById]);
+    }, [watchedItems, watchedItemImages, categories, form.setValue, form.getValues, getProductById, isManualPricing]);
+
+    const handleMagicCalculate = () => {
+        let totalShopVal = 0;
+        let totalMarketVal = 0;
+        watchedItems.forEach((item) => {
+            const product = getProductById(item.itemId);
+            if (product) {
+                const qty = Number(item.quantity) || 1;
+                totalMarketVal += Number(product.originalPrice) * qty;
+                totalShopVal += Number(product.discountedPrice || product.originalPrice) * qty;
+            }
+        });
+
+        const roundedMarketTotal = Number(totalMarketVal.toFixed(3));
+        const roundedShopTotal = Number(totalShopVal.toFixed(3));
+
+        form.setValue("originalPrice", roundedMarketTotal, { shouldDirty: true });
+
+        // Default discount: 5% off the SHOP value
+        const discounted = Number((roundedShopTotal * 0.95).toFixed(3));
+        form.setValue("discountedPrice", discounted, { shouldDirty: true });
+
+        setIsManualPricing(false);
+        toast.success("Auto-Pricing Active! ✨ (5% Pack Discount applied on Shop Value)");
+    };
 
     const onSubmit = async (values: PackFormValues) => {
         setIsPending(true);
@@ -266,24 +307,66 @@ export function PackForm({
                             </div>
 
                             {/* Auto-calculated Pricing & Stock Summary */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100">
-                                    <p className="text-xs font-bold text-blue-600 uppercase mb-1">Total Value</p>
-                                    <p className="text-2xl font-bold text-[#003366]">
-                                        {Number(currentOriginalPrice || 0).toFixed(3)} <span className="text-sm">DT</span>
-                                    </p>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col justify-between">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase">Market Value</p>
+                                        <Badge variant="outline" className="text-[9px] bg-white text-gray-400 border-gray-100">ORIGINAL</Badge>
+                                    </div>
+                                    <div className="relative">
+                                        <p className="text-xl font-bold text-gray-400 line-through">
+                                            {marketValue.toFixed(3)}
+                                            <span className="text-xs ml-1">DT</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="p-4 rounded-2xl bg-green-50 border border-green-100">
-                                    <p className="text-xs font-bold text-green-600 uppercase mb-1">Pack Price</p>
-                                    <p className="text-2xl font-bold text-[#003366]">
-                                        {Number(currentDiscountedPrice || 0).toFixed(3)} <span className="text-sm">DT</span>
-                                    </p>
+
+                                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 flex flex-col justify-between">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <p className="text-xs font-bold text-blue-600 uppercase">Shop Value</p>
+                                        <Badge variant="outline" className="text-[9px] bg-white text-blue-500 border-blue-100">AUTO-SUM</Badge>
+                                    </div>
+                                    <div className="relative">
+                                        <p className="text-2xl font-bold text-[#003366]">
+                                            {Number(form.watch("originalPrice") || 0).toFixed(3)}
+                                            <span className="text-sm text-blue-400 font-bold ml-1">DT</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100">
+
+                                <div className="p-4 rounded-2xl bg-green-50 border border-green-100 ring-2 ring-green-500/20 flex flex-col justify-between">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <p className="text-xs font-bold text-green-600 uppercase">Pack Price</p>
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={handleMagicCalculate}
+                                            className="h-6 px-2 text-[10px] bg-white hover:bg-green-100 text-green-600 font-bold border border-green-100"
+                                        >
+                                            <Wand2 className="w-3 h-3 mr-1" /> Magic
+                                        </Button>
+                                    </div>
+                                    <div className="relative">
+                                        <Input
+                                            type="number"
+                                            step="0.001"
+                                            {...form.register("discountedPrice")}
+                                            onChange={(e) => {
+                                                setIsManualPricing(true);
+                                                form.setValue("discountedPrice", Number(e.target.value));
+                                            }}
+                                            className="text-2xl font-bold text-[#003366] bg-transparent border-none p-0 focus-visible:ring-0 h-auto"
+                                        />
+                                        <span className="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-green-400 font-bold">DT</span>
+                                    </div>
+                                </div>
+
+                                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex flex-col justify-between">
                                     <p className="text-xs font-bold text-amber-600 uppercase mb-1">Dynamic Stock</p>
                                     <p className="text-2xl font-bold text-[#003366] flex items-center gap-2">
                                         {typeof currentStock === 'number' ? currentStock : 0}
-                                        <Badge variant="outline" className="text-[10px] bg-white">AUTO</Badge>
+                                        <Badge variant="outline" className="text-[10px] bg-white text-amber-500 border-amber-100">AUTO</Badge>
                                     </p>
                                 </div>
                             </div>
