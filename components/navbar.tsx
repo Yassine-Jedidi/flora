@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, ShoppingBag, User, X, Loader2, Menu } from "lucide-react";
+import { Search, ShoppingBag, User, X, Loader2, Menu, Gift, Percent } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -106,6 +106,16 @@ export function Navbar() {
                 {/* Mobile Navigation Links */}
                 <div className="flex flex-col gap-4">
                   <Link
+                    href="/shop"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/shop"
+                      ? "text-[#FF8BBA]"
+                      : "text-[#3E343C] hover:text-[#FF8BBA]"
+                      }`}
+                  >
+                    Shop All
+                  </Link>
+                  <Link
                     href="/rings"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/rings"
@@ -148,22 +158,28 @@ export function Navbar() {
                   <Link
                     href="/packs"
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/packs"
+                    className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 flex items-center gap-2 ${pathname === "/packs"
                       ? "text-[#FF8BBA]"
                       : "text-[#3E343C] hover:text-[#FF8BBA]"
                       }`}
                   >
                     Packs
+                    <span className="bg-[#A78BFA] text-white text-[8px] px-2 py-0.5 rounded-full animate-pulse">
+                      SAVE BIG
+                    </span>
                   </Link>
                   <Link
                     href="/sale"
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/sale"
-                      ? "text-[#FF8BBA]"
+                    className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 flex items-center gap-2 ${pathname === "/sale"
+                      ? "text-red-500"
                       : "text-red-500 hover:text-red-600"
                       }`}
                   >
                     Sale %
+                    <span className="bg-red-500 text-white text-[8px] px-2 py-0.5 rounded-full animate-bounce">
+                      HOT
+                    </span>
                   </Link>
                 </div>
               </div>
@@ -261,6 +277,15 @@ export function Navbar() {
           {/* Desktop Navigation Links */}
           <div className="hidden lg:flex items-center gap-8 shrink-0">
             <Link
+              href="/shop"
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/shop"
+                ? "text-[#FF8BBA]"
+                : "text-[#3E343C] hover:text-[#FF8BBA]"
+                }`}
+            >
+              Shop All
+            </Link>
+            <Link
               href="/rings"
               className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/rings"
                 ? "text-[#FF8BBA]"
@@ -298,21 +323,29 @@ export function Navbar() {
             </Link>
             <Link
               href="/packs"
-              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/packs"
+              className={`relative flex items-center gap-1 text-xs font-bold transition-all uppercase tracking-widest group/packs ${pathname === "/packs"
                 ? "text-[#FF8BBA]"
-                : "text-[#3E343C] hover:text-[#FF8BBA]"
+                : "text-[#3E343C] hover:text-[#A78BFA]"
                 }`}
             >
+              <Gift className={`w-3.5 h-3.5 transition-transform group-hover/packs:scale-110 ${pathname === "/packs" ? "text-[#FF8BBA]" : "text-[#A78BFA]"}`} />
               Packs
+              <span className="absolute -top-4 -right-2 bg-[#A78BFA] text-white text-[7px] font-black px-1.5 py-0.5 rounded-full shadow-sm transition-transform group-hover/packs:-translate-y-1">
+                GIFT
+              </span>
             </Link>
             <Link
               href="/sale"
-              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/sale"
-                ? "text-[#FF8BBA]"
+              className={`relative flex items-center gap-1 text-xs font-bold transition-all uppercase tracking-widest group/sale ${pathname === "/sale"
+                ? "text-red-500"
                 : "text-red-500 hover:text-red-600 font-black"
                 }`}
             >
-              Sale %
+              <Percent className="w-3.5 h-3.5 transition-transform group-hover/sale:rotate-12" />
+              Sale
+              <span className="absolute -top-4 -right-2 bg-red-500 text-white text-[7px] font-black px-1.5 py-0.5 rounded-full shadow-sm transition-transform group-hover/sale:-translate-y-1">
+                HOT
+              </span>
             </Link>
           </div>
 

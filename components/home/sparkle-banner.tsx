@@ -16,7 +16,7 @@ export function SparkleBanner() {
     }, []);
 
     return (
-        <section className="relative min-h-[50vh] md:min-h-[70vh] flex items-center justify-center overflow-hidden rounded-3xl mx-4 md:mx-16 my-8 md:my-4 border border-pink-500/10 shadow-2xl bg-black">
+        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden rounded-3xl mx-4 md:mx-16 md:my-4 border border-pink-500/10 shadow-2xl bg-black">
             <video
                 ref={videoRef}
                 autoPlay
@@ -48,7 +48,7 @@ export function SparkleBanner() {
                     Discover the cutest accessories to brighten up your daily look.
                 </p>
 
-                <Button className="bg-[#FF8BBA] hover:bg-[#FF75AA] text-white rounded-full px-8 md:px-10 py-5 md:py-7 text-base md:text-lg font-semibold shadow-sm transition-all hover:scale-105 border-none">
+                <Button className="bg-[#FF8BBA] hover:bg-[#FF75AA] text-white rounded-full px-8 md:px-10 py-5 md:py-7 text-base md:text-lg font-semibold shadow-lg transition-all hover:scale-105 border-none">
                     Shop New Arrivals <ArrowRight className="ms-2 w-5 h-5 md:w-6 md:h-6" />
                 </Button>
             </div>

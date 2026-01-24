@@ -36,7 +36,7 @@ export function CategoryToggle() {
                         className={`${currentCategory === cat.slug
                             ? "bg-white text-[#FF8BBA] shadow-sm"
                             : "text-[#8B7E84] hover:text-[#FF8BBA]"
-                            } px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap`}
+                            } px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap`}
                     >
                         {cat.label}
                     </button>

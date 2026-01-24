@@ -141,7 +141,7 @@ export async function getAllProducts() {
   }
 }
 
-export async function getProductsByCategory(categorySlug: string, sort?: string) {
+export async function getProductsByCategory(categorySlug: string, sort?: string, filterCategory?: string) {
   try {
     let orderBy: Prisma.ProductOrderByWithRelationInput | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
 
@@ -156,14 +156,24 @@ export async function getProductsByCategory(categorySlug: string, sort?: string)
       orderBy = { originalPrice: "asc" };
     }
 
+    const where: Prisma.ProductWhereInput = {
+      isArchived: false,
+      isLive: true,
+    };
+
+    if (categorySlug !== "all") {
+      where.category = {
+        slug: categorySlug,
+      };
+    } else if (filterCategory && filterCategory !== "all") {
+        // If viewing "all" but filtered by a sub-category
+        where.category = {
+            slug: filterCategory,
+        };
+    }
+
     const products = await prisma.product.findMany({
-      where: {
-        category: {
-          slug: categorySlug,
-        },
-        isArchived: false,
-        isLive: true,
-      },
+      where,
       include: {
         category: true,
         images: true,
