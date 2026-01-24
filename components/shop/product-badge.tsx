@@ -12,7 +12,7 @@ export function ProductBadge({ type, content, className }: ProductBadgeProps) {
   if (type === "new") {
     return (
       <span className={cn(
-        "bg-[#A78BFA] text-white",
+        "bg-[#A78BFA] text-white -rotate-3",
         baseStyles,
         className
       )}>
@@ -24,7 +24,7 @@ export function ProductBadge({ type, content, className }: ProductBadgeProps) {
   if (type === "bestseller") {
     return (
       <span className={cn(
-        "bg-[#FF8BBA] text-white",
+        "bg-[#FF8BBA] text-white rotate-3",
         baseStyles,
         className
       )}>
@@ -36,7 +36,7 @@ export function ProductBadge({ type, content, className }: ProductBadgeProps) {
   if (type === "discount") {
     return (
       <span className={cn(
-        "bg-red-500 text-white",
+        "bg-red-500 text-white -rotate-6",
         baseStyles,
         className
       )}>
@@ -48,7 +48,7 @@ export function ProductBadge({ type, content, className }: ProductBadgeProps) {
   if (type === "category") {
     return (
       <span className={cn(
-        "bg-[#FF8BBA] text-white uppercase tracking-wider",
+        "bg-[#FF8BBA] text-white uppercase tracking-wider rotate-2",
         baseStyles,
         className
       )}>
