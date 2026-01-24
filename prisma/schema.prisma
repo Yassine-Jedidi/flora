@@ -36,11 +36,28 @@ model Product {
   category    Category       @relation(fields: [categoryId], references: [id])
   images      ProductImage[]
   
+  // Pack Relations
+  packItems       PackItem[] @relation("PackToItem")
+  includedInPacks PackItem[] @relation("ItemToPack")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   orderItems OrderItem[]
 
   @@index([categoryId])
+}
+
+model PackItem {
+  id        String  @id @default(cuid())
+  packId    String
+  pack      Product @relation("PackToItem", fields: [packId], references: [id], onDelete: Cascade)
+  itemId    String
+  item      Product @relation("ItemToPack", fields: [itemId], references: [id])
+  quantity  Int     @default(1)
+
+  @@unique([packId, itemId])
+  @@index([packId])
+  @@index([itemId])
 }
 
 model ProductImage {

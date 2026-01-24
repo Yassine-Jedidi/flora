@@ -146,6 +146,16 @@ export function Navbar() {
                     Earrings
                   </Link>
                   <Link
+                    href="/packs"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/packs"
+                      ? "text-[#FF8BBA]"
+                      : "text-[#3E343C] hover:text-[#FF8BBA]"
+                      }`}
+                  >
+                    Packs
+                  </Link>
+                  <Link
                     href="/sale"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/sale"
@@ -285,6 +295,15 @@ export function Navbar() {
                 }`}
             >
               Earrings
+            </Link>
+            <Link
+              href="/packs"
+              className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/packs"
+                ? "text-[#FF8BBA]"
+                : "text-[#3E343C] hover:text-[#FF8BBA]"
+                }`}
+            >
+              Packs
             </Link>
             <Link
               href="/sale"

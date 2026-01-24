@@ -27,6 +27,10 @@ export interface Product {
   isLive: boolean;
   createdAt: string | Date;
   isNew?: boolean;
+  packItems?: {
+    item: Product;
+    quantity: number;
+  }[];
 }
 
 export interface CartItem {

@@ -162,8 +162,8 @@ export function ProductDetails({ product }: { product: Product }) {
                 key={img.url}
                 onClick={() => setSelectedImage(index)}
                 className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === index
-                    ? "border-[#FF8BBA] shadow-md scale-95"
-                    : "border-transparent hover:border-pink-200"
+                  ? "border-[#FF8BBA] shadow-md scale-95"
+                  : "border-transparent hover:border-pink-200"
                   }`}
               >
                 <Image src={img.url} alt="" fill className="object-cover" />
@@ -225,6 +225,32 @@ export function ProductDetails({ product }: { product: Product }) {
         </div>
 
         <div className="flex flex-col gap-6 pt-6 border-t border-dotted border-pink-100">
+          {/* Pack Contents */}
+          {product.packItems && product.packItems.length > 0 && (
+            <div className="space-y-4 pb-6 border-b border-dotted border-pink-100">
+              <h3 className="text-lg font-black text-[#3E343C]">This Pack Includes:</h3>
+              <div className="space-y-3">
+                {product.packItems.map((packItem) => (
+                  <div key={packItem.item.id} className="flex items-center gap-4 p-3 bg-pink-50/30 rounded-2xl border border-pink-50">
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0">
+                      {packItem.item.images?.[0]?.url ? (
+                        <Image src={packItem.item.images[0].url} alt={packItem.item.name} fill className="object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                          <ShoppingBag className="w-6 h-6 text-gray-300" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-bold text-[#3E343C]">{packItem.item.name}</p>
+                      <p className="text-xs text-gray-400 font-bold">Qty: {packItem.quantity}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Quantity Selector */}
           <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 border border-gray-100">
             <div className="flex flex-col">

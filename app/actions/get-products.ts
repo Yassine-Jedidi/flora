@@ -185,6 +185,15 @@ export async function getProduct(id: string) {
       include: {
         category: true,
         images: true,
+        packItems: {
+          include: {
+            item: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
       },
     });
 
