@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -48,6 +48,16 @@ export function ProductDetails({ product }: { product: Product }) {
     name: "quantity",
     defaultValue: 1,
   });
+
+  const rating = useMemo(() => {
+    // Deterministic pseudo-random based on ID string
+    const hash = product.id.split('').reduce((acc, char) => {
+      return ((acc << 5) - acc) + char.charCodeAt(0);
+    }, 0);
+    // Map hash to 0 or 1 for 4.9 or 5.0
+    const val = Math.abs(hash) % 2;
+    return (4.9 + val / 10).toFixed(1);
+  }, [product.id]);
 
   const onAddToCart = () => {
     addItem({
@@ -202,7 +212,7 @@ export function ProductDetails({ product }: { product: Product }) {
                 />
               ))}
               <span className="text-[10px] font-bold text-gray-400 ml-1">
-                (4.9)
+                ({rating})
               </span>
             </div>
           </div>
