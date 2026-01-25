@@ -15,6 +15,11 @@ export const metadata: Metadata = {
   title: "Flora | Explore Unique Treasures",
   description:
     "Discover beautiful jewelry and accessories to brighten your day.",
+  icons: {
+    icon: "logo.png",
+    shortcut: "logo.png",
+    apple: "logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -24,6 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <meta name="apple-mobile-web-app-title" content="FloraAccess" />
       <body className={`${nunito.variable} font-sans antialiased`}>
         <CartProvider>
           <FavoritesProvider>

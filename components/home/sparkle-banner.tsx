@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function SparkleBanner() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -48,9 +49,11 @@ export function SparkleBanner() {
                     Discover the cutest accessories to brighten up your daily look.
                 </p>
 
-                <Button className="bg-[#FF8BBA] hover:bg-[#FF75AA] text-white rounded-full px-8 md:px-10 py-5 md:py-7 text-base md:text-lg font-semibold shadow-lg transition-all hover:scale-105 border-none">
-                    Shop New Arrivals <ArrowRight className="ms-2 w-5 h-5 md:w-6 md:h-6" />
-                </Button>
+                <Link href="/shop">
+                    <Button className="bg-[#1A1A1A]/80 hover:bg-[#3E343C] text-white backdrop-blur-md border border-white/20 rounded-full px-10 py-7 text-lg font-bold tracking-wide shadow-2xl transition-all duration-300 hover:scale-105 hover:border-pink-300 hover:shadow-pink-500/20 group">
+                        Shop New Arrivals <ArrowRight className="ms-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                </Link>
             </div>
         </section>
     );

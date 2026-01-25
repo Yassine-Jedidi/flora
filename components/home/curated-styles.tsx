@@ -43,7 +43,7 @@ export async function CuratedStyles() {
                 </Link>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-10 md:gap-16">
+            <div className="flex flex-wrap justify-center gap-6 md:gap-16">
                 {categories.map((category) => {
                     const imageUrl = categoryImages[category.slug];
 
@@ -51,7 +51,7 @@ export async function CuratedStyles() {
                         <Link
                             key={category.name}
                             href={category.href}
-                            className="group flex flex-col items-center text-center cursor-pointer w-32 sm:w-40 md:w-48"
+                            className="group flex flex-col items-center text-center cursor-pointer w-24 sm:w-40 md:w-48"
                         >
                             <div className="relative w-full aspect-square mb-4 rounded-full overflow-hidden border-4 border-pink-50 transition-transform duration-300 group-hover:scale-105 group-hover:border-pink-100 shadow-sm bg-pink-50/30 flex items-center justify-center">
                                 {imageUrl ? (

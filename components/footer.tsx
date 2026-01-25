@@ -10,9 +10,9 @@ export function Footer() {
   return (
     <footer className="w-full bg-[#FFF5F9] border-t border-pink-100/50 mt-auto">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 items-center text-center md:items-start md:text-left">
           {/* Left Section - Company Information */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 items-center md:items-start">
             <div className="flex items-center gap-2">
               <Image
                 src="/flora sparkle.png"
@@ -72,9 +72,9 @@ export function Footer() {
           {/* Right Section - Navigation Links */}
           <div className="grid grid-cols-2 gap-8 md:col-span-2">
             {/* Shop Column */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 items-center md:items-start">
               <h3 className="text-base font-bold text-foreground">Shop</h3>
-              <ul className="flex flex-col gap-3">
+              <ul className="grid grid-cols-2 gap-x-8 gap-y-2 text-left">
                 <li>
                   <Link
                     href="/rings"
@@ -101,6 +101,30 @@ export function Footer() {
                 </li>
                 <li>
                   <Link
+                    href="/earrings"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Earrings
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/packs"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Packs
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/shop"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    All
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/sale"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
@@ -111,7 +135,7 @@ export function Footer() {
             </div>
 
             {/* Help Column */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 items-center md:items-start">
               <h3 className="text-base font-bold text-foreground">Help</h3>
               <ul className="flex flex-col gap-3">
                 <li>
