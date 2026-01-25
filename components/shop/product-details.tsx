@@ -127,108 +127,110 @@ export function ProductDetails({ product }: { product: Product }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
       {/* Image Gallery */}
-      <div className="relative space-y-8">
-        {/* Background Glow */}
-        <div className="absolute -top-10 -left-10 w-64 h-64 bg-pink-100/50 rounded-full blur-[100px] -z-10" />
-        <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] -z-10" />
+      <div className="lg:sticky lg:top-24 h-fit space-y-8">
+        <div className="relative">
+          {/* Background Glows */}
+          <div className="absolute -top-10 -left-10 w-64 h-64 bg-pink-100/50 rounded-full blur-[100px] -z-10" />
+          <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] -z-10" />
 
-        <div className="relative mx-auto max-w-[550px] aspect-square overflow-hidden rounded-[3rem] bg-[#F9FAFB] border border-pink-50 shadow-sm group">
-          <div className="relative w-full h-full touch-none">
-            <AnimatePresence initial={false} mode="wait">
-              <motion.div
-                key={selectedImage}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.2}
-                onDragEnd={(_, info) => {
-                  if (info.offset.x > 50) {
+          <div className="relative mx-auto max-w-[520px] aspect-square overflow-hidden rounded-[3rem] bg-[#F9FAFB] border border-pink-50 shadow-sm group">
+            <div className="relative w-full h-full touch-none">
+              <AnimatePresence initial={false} mode="wait">
+                <motion.div
+                  key={selectedImage}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={(_, info) => {
+                    if (info.offset.x > 50) {
+                      prevImage();
+                    } else if (info.offset.x < -50) {
+                      nextImage();
+                    }
+                  }}
+                  className="absolute inset-0 cursor-grab active:cursor-grabbing"
+                >
+                  {product.images[selectedImage] ? (
+                    <Image
+                      src={product.images[selectedImage].url}
+                      alt={product.name}
+                      fill
+                      className="object-cover pointer-events-none"
+                      priority
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                      <ShoppingBag className="w-20 h-20 text-gray-200" />
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Navigation Arrows */}
+            {product.images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
                     prevImage();
-                  } else if (info.offset.x < -50) {
+                  }}
+                  className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-[#FF8BBA] hover:scale-110 active:scale-95"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
                     nextImage();
-                  }
-                }}
-                className="absolute inset-0 cursor-grab active:cursor-grabbing"
-              >
-                {product.images[selectedImage] ? (
-                  <Image
-                    src={product.images[selectedImage].url}
-                    alt={product.name}
-                    fill
-                    className="object-cover pointer-events-none"
-                    priority
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                    <ShoppingBag className="w-20 h-20 text-gray-200" />
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
+                  }}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-[#FF8BBA] hover:scale-110 active:scale-95"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+
+            {/* Share/Favorite on image */}
+            <FavoriteButton
+              product={product}
+              className="top-6 right-6 w-12 h-12"
+            />
+
+            {/* Pulse pagination dots */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+              {product.images.map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`h-2 rounded-full transition-all duration-500 ${selectedImage === idx ? "w-8 bg-[#FF8BBA]" : "w-2 bg-pink-200"
+                    }`}
+                />
+              ))}
+            </div>
           </div>
 
-          {/* Navigation Arrows */}
+          {/* Thumbnails */}
           {product.images.length > 1 && (
-            <>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  prevImage();
-                }}
-                className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-[#FF8BBA] hover:scale-110 active:scale-95"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  nextImage();
-                }}
-                className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-[#FF8BBA] hover:scale-110 active:scale-95"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </>
+            <div className="flex justify-center gap-3 md:gap-4 mt-6 overflow-x-auto pb-2 scrollbar-none">
+              {product.images.map((img, index) => (
+                <button
+                  key={img.url}
+                  onClick={() => setSelectedImage(index)}
+                  className={`relative w-18 h-18 md:w-20 md:h-20 rounded-xl md:rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === index
+                    ? "border-[#FF8BBA] shadow-md scale-95"
+                    : "border-transparent hover:border-pink-200"
+                    }`}
+                >
+                  <Image src={img.url} alt="" fill className="object-cover" />
+                </button>
+              ))}
+            </div>
           )}
-
-          {/* Share/Favorite on image */}
-          <FavoriteButton
-            product={product}
-            className="top-6 right-6 w-12 h-12"
-          />
-
-          {/* Pulse pagination dots */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-            {product.images.map((_, idx) => (
-              <div
-                key={idx}
-                className={`h-2 rounded-full transition-all duration-500 ${selectedImage === idx ? "w-8 bg-[#FF8BBA]" : "w-2 bg-pink-200"
-                  }`}
-              />
-            ))}
-          </div>
         </div>
-
-        {/* Thumbnails */}
-        {product.images.length > 1 && (
-          <div className="flex justify-center gap-4 overflow-x-auto pb-2 scrollbar-none">
-            {product.images.map((img, index) => (
-              <button
-                key={img.url}
-                onClick={() => setSelectedImage(index)}
-                className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === index
-                  ? "border-[#FF8BBA] shadow-md scale-95"
-                  : "border-transparent hover:border-pink-200"
-                  }`}
-              >
-                <Image src={img.url} alt="" fill className="object-cover" />
-              </button>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Product Info */}
