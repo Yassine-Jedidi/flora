@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Minus,
   Plus,
+  Timer,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,37 @@ export function ProductDetails({ product }: { product: Product }) {
     // Map hash to 0 or 1 for 4.9 or 5.0
     const val = Math.abs(hash) % 2;
     return (4.9 + val / 10).toFixed(1);
+  }, [product.id]);
+
+  const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number } | null>(null);
+
+  useEffect(() => {
+    const hash = product.id.split('').reduce((acc, char) => {
+      return ((acc << 5) - acc) + char.charCodeAt(0);
+    }, 0);
+
+    // Initial seeded offset between 3 and 9 hours (in seconds)
+    const seededOffset = (Math.abs(hash) % (6 * 3600)) + (3 * 3600);
+
+    const tick = () => {
+      const now = new Date();
+      // Use the current day and product ID to create a stable "target end time"
+      const secondsSinceMidnight = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+
+      // Calculate remaining time based on a cycle of the seeded duration
+      // This ensures it actually counts down but is deterministic for that product/time
+      const remaining = seededOffset - (secondsSinceMidnight % seededOffset);
+
+      const h = Math.floor(remaining / 3600);
+      const m = Math.floor((remaining % 3600) / 60);
+      const s = remaining % 60;
+
+      setTimeLeft({ h, m, s });
+    };
+
+    tick();
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
   }, [product.id]);
 
   const onAddToCart = () => {
@@ -201,6 +233,33 @@ export function ProductDetails({ product }: { product: Product }) {
 
       {/* Product Info */}
       <div className="flex flex-col gap-8">
+        {/* Limited Offer Timer */}
+        {timeLeft && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-4 bg-purple-50/50 border border-purple-100/40 rounded-[1.5rem] p-4 mb-2 shadow-sm"
+          >
+            <div className="relative">
+              <div className="absolute inset-0 bg-purple-400 blur-lg opacity-20 animate-pulse rounded-full" />
+              <div className="w-10 h-10 rounded-xl bg-purple-100/50 flex items-center justify-center text-purple-500 relative z-10">
+                <Timer className="w-5 h-5" />
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em] leading-none mb-1.5 font-sans">
+                Limited Time Offer
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[13px] font-bold text-purple-900/60 leading-none">Ending in:</span>
+                <span className="text-[15px] font-black text-purple-600 font-mono tabular-nums leading-none">
+                  {String(timeLeft.h).padStart(2, '0')}:{String(timeLeft.m).padStart(2, '0')}:{String(timeLeft.s).padStart(2, '0')}
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <ProductBadge type="category" content={product.category.name} />
