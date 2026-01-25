@@ -135,4 +135,17 @@
     scrollbar-width: thin;
     scrollbar-color: #a78bfa transparent;
   }
+
+  @keyframes gradient-slow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+}
+
+@layer utilities {
+  .animate-gradient-slow {
+    animation: gradient-slow 8s linear infinite;
+    background-size: 200% auto;
+  }
 }

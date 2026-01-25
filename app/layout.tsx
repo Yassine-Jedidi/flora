@@ -15,11 +15,6 @@ export const metadata: Metadata = {
   title: "Flora | Explore Unique Treasures",
   description:
     "Discover beautiful jewelry and accessories to brighten your day.",
-  icons: {
-    icon: "logo.png",
-    shortcut: "logo.png",
-    apple: "logo.png",
-  },
 };
 
 export default function RootLayout({

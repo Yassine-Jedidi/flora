@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/shop/product-card";
 import { CategoryToggle } from "@/components/shop/category-toggle";
 import { SortToggle } from "@/components/shop/sort-toggle";
 import { PaginationControl } from "@/components/ui/pagination-control";
+import { CollectionHeader } from "@/components/shop/collection-header";
 
 interface CategoryPageProps {
     categorySlug: string;
@@ -29,41 +30,7 @@ export async function CategoryPage({
             <Navbar />
 
             <main className="flex-1 pt-32">
-                {/* Image-Matched Header */}
-                <div className="relative overflow-hidden bg-[#FFF5F8] pt-40 pb-20">
-                    {/* Dotted Pattern Background */}
-                    <div
-                        className="absolute inset-0 opacity-[0.4]"
-                        style={{
-                            backgroundImage: `radial-gradient(#FF8BBA 0.5px, transparent 0.5px)`,
-                            backgroundSize: '24px 24px'
-                        }}
-                    />
-
-                    {/* Decorative Floating Squares */}
-                    <style>{`
-                        @keyframes bounce-high {
-                            0%, 100% { transform: translateY(-50%) rotate(-6deg); animation-timing-function: cubic-bezier(0.8,0,1,1); }
-                            50% { transform: translateY(50%) rotate(-6deg); animation-timing-function: cubic-bezier(0,0,0.2,1); }
-                        }
-                    `}</style>
-                    <div className="absolute top-1/4 left-[15%] w-10 h-10 bg-gradient-to-br from-white to-[#D2B48C] rotate-12 rounded-sm shadow-sm opacity-60 animate-bounce [animation-duration:3s]" />
-                    <div className="absolute top-1/3 right-[12%] w-8 h-8 bg-gradient-to-tr from-white to-[#BC8F8F] rounded-sm shadow-sm opacity-50 [animation:bounce-high_4s_infinite]" />
-
-                    <div className="container mx-auto px-4 relative z-10">
-                        <div className="flex flex-col items-center text-center space-y-6">
-                            <h1 className="text-5xl md:text-[5.5rem] font-black tracking-tight leading-none">
-                                <span className="text-[#FF8BBA]">{title}</span>{" "}
-                                <span className="text-[#3E343C]">Collection</span>
-                            </h1>
-                            <div className="flex items-center gap-3">
-                                <p className="text-[#8B7E84] text-lg font-medium tracking-wide">
-                                    {subtitle}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <CollectionHeader title={title} subtitle={subtitle} />
 
                 {/* Filter & Count Row */}
                 <div className="container mx-auto px-4 py-10">
