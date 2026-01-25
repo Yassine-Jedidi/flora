@@ -14,6 +14,7 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useForm, useWatch } from "react-hook-form";
@@ -90,28 +91,41 @@ export function ProductDetails({ product }: { product: Product }) {
         <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] -z-10" />
 
         <div className="relative mx-auto max-w-[550px] aspect-square overflow-hidden rounded-[3rem] bg-[#F9FAFB] border border-pink-50 shadow-sm group">
-          <div className="relative w-full h-full">
-            {product.images.map((img, idx) => (
-              <div
-                key={img.url}
-                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${selectedImage === idx ? "opacity-100 z-0" : "opacity-0 -z-10"
-                  }`}
+          <div className="relative w-full h-full touch-none">
+            <AnimatePresence initial={false} mode="wait">
+              <motion.div
+                key={selectedImage}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={(_, info) => {
+                  if (info.offset.x > 50) {
+                    prevImage();
+                  } else if (info.offset.x < -50) {
+                    nextImage();
+                  }
+                }}
+                className="absolute inset-0 cursor-grab active:cursor-grabbing"
               >
-                <Image
-                  src={img.url}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                  priority={idx === 0}
-                />
-              </div>
-            ))}
-
-            {!product.images[0] && (
-              <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                <ShoppingBag className="w-20 h-20 text-gray-200" />
-              </div>
-            )}
+                {product.images[selectedImage] ? (
+                  <Image
+                    src={product.images[selectedImage].url}
+                    alt={product.name}
+                    fill
+                    className="object-cover pointer-events-none"
+                    priority
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                    <ShoppingBag className="w-20 h-20 text-gray-200" />
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Navigation Arrows */}
