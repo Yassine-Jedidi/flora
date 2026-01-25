@@ -129,11 +129,11 @@ export function ProductDetails({ product }: { product: Product }) {
       {/* Image Gallery */}
       <div className="lg:sticky lg:top-24 h-fit space-y-8">
         <div className="relative">
-          {/* Background Glows */}
-          <div className="absolute -top-10 -left-10 w-64 h-64 bg-pink-100/50 rounded-full blur-[100px] -z-10" />
-          <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] -z-10" />
-
           <div className="relative mx-auto max-w-[520px] aspect-square overflow-hidden rounded-[3rem] bg-[#F9FAFB] border border-pink-50 shadow-sm group">
+            {/* Background Glows shifted inside here to prevent horizontal body scroll */}
+            <div className="absolute -top-10 -left-10 w-64 h-64 bg-pink-100/50 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] pointer-events-none" />
+
             <div className="relative w-full h-full touch-none">
               <AnimatePresence initial={false} mode="wait">
                 <motion.div
@@ -215,7 +215,7 @@ export function ProductDetails({ product }: { product: Product }) {
 
           {/* Thumbnails */}
           {product.images.length > 1 && (
-            <div className="flex justify-center gap-3 md:gap-4 mt-6 overflow-x-auto pb-2 scrollbar-none">
+            <div className="flex justify-start md:justify-center gap-3 md:gap-4 mt-6 overflow-x-auto pb-2 scrollbar-none px-4 md:px-0">
               {product.images.map((img, index) => (
                 <button
                   key={img.url}
@@ -278,7 +278,7 @@ export function ProductDetails({ product }: { product: Product }) {
             </div>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-black text-[#3E343C] leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-black text-[#3E343C] leading-tight tracking-tight break-words">
             {product.name}
           </h1>
 
@@ -344,7 +344,7 @@ export function ProductDetails({ product }: { product: Product }) {
         <div className="w-full h-px bg-gradient-to-r from-pink-100 via-pink-50 to-transparent" />
 
         <div className="space-y-4">
-          <div className="prose prose-sm max-w-none text-[#5D5056] leading-relaxed font-medium">
+          <div className="prose prose-sm max-w-none text-[#5D5056] leading-relaxed font-medium break-words">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
