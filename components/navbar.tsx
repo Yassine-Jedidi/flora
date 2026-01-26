@@ -211,6 +211,12 @@ export function Navbar() {
                 placeholder="Find treasures..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchQuery.length >= 2) {
+                    setShowDropdown(false);
+                    router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+                  }
+                }}
                 onFocus={() => searchQuery.length >= 2 && setShowDropdown(true)}
                 className="w-full rounded-full bg-pink-50/50 py-2 pl-9 pr-9 text-xs text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-200 border border-pink-100/50"
               />
@@ -259,11 +265,15 @@ export function Navbar() {
                     </button>
                   ))}
                 </div>
-                <div className="bg-pink-50/30 p-3 border-t border-pink-100/50">
-                  <p className="text-[10px] text-center font-bold text-pink-300 uppercase tracking-widest">
+                <Link
+                  href={`/search?q=${encodeURIComponent(searchQuery)}`}
+                  onClick={() => setShowDropdown(false)}
+                  className="block bg-pink-50/30 p-3 border-t border-pink-100/50 hover:bg-pink-50 transition-colors"
+                >
+                  <p className="text-[10px] text-center font-bold text-[#FF8BBA] uppercase tracking-widest">
                     Press enter to see all results
                   </p>
-                </div>
+                </Link>
               </div>
             )}
 
@@ -381,6 +391,13 @@ export function Navbar() {
                 placeholder="Find treasures..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchQuery.length >= 2) {
+                    setShowDropdown(false);
+                    setMobileSearchOpen(false);
+                    router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+                  }
+                }}
                 onFocus={() => searchQuery.length >= 2 && setShowDropdown(true)}
                 className="w-full rounded-full bg-pink-50/50 py-2 pl-9 pr-9 text-xs text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-200 border border-pink-100/50"
               />

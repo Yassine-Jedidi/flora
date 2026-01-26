@@ -5,9 +5,10 @@ import { motion } from "motion/react";
 interface CollectionHeaderProps {
     title: string;
     subtitle: string;
+    showCollectionWord?: boolean;
 }
 
-export function CollectionHeader({ title, subtitle }: CollectionHeaderProps) {
+export function CollectionHeader({ title, subtitle, showCollectionWord = true }: CollectionHeaderProps) {
     return (
         <div className="relative overflow-hidden bg-white pt-12 pb-12 flex items-center justify-center">
             {/* Simple Dotted Pattern Background */}
@@ -88,14 +89,16 @@ export function CollectionHeader({ title, subtitle }: CollectionHeaderProps) {
                             >
                                 {title}
                             </motion.span>
-                            <motion.span
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8, delay: 0.2 }}
-                                className="text-[#FF8BBA] drop-shadow-sm whitespace-nowrap"
-                            >
-                                Collection
-                            </motion.span>
+                            {showCollectionWord && (
+                                <motion.span
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.8, delay: 0.2 }}
+                                    className="text-[#FF8BBA] drop-shadow-sm whitespace-nowrap"
+                                >
+                                    Collection
+                                </motion.span>
+                            )}
                         </h1>
                     </div>
 

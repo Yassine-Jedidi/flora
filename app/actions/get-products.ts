@@ -315,7 +315,7 @@ export async function getProduct(id: string) {
   }
 }
 
-export async function searchProducts(query: string) {
+export async function searchProducts(query: string, limit: number = 5) {
   if (!query || query.length < 2) return [];
 
   try {
@@ -338,7 +338,7 @@ export async function searchProducts(query: string) {
         category: true,
         images: true,
       },
-      take: 20, // Pool size for ranking
+      take: Math.max(20, limit * 2), // Pool size for ranking
     });
 
     const scoredProducts = products.map((product) => {
@@ -398,10 +398,10 @@ export async function searchProducts(query: string) {
       };
     });
 
-    // Sort by score descending and take top 5
+    // Sort by score descending and take requested limit
     return scoredProducts
       .sort((a, b) => b.searchScore - a.searchScore)
-      .slice(0, 5)
+      .slice(0, limit)
       .map(({ searchScore, ...product }) => product); // Remove the temp score field
   } catch (error) {
     console.error("Error searching products:", error);
