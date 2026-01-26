@@ -6,16 +6,17 @@ interface CollectionHeaderProps {
     title: string;
     subtitle: string;
     showCollectionWord?: boolean;
+    isSale?: boolean;
 }
 
-export function CollectionHeader({ title, subtitle, showCollectionWord = true }: CollectionHeaderProps) {
+export function CollectionHeader({ title, subtitle, showCollectionWord = true, isSale = false }: CollectionHeaderProps) {
     return (
         <div className="relative overflow-hidden bg-white pt-12 pb-12 flex items-center justify-center">
             {/* Simple Dotted Pattern Background */}
             <div
                 className="absolute inset-0 opacity-[0.2]"
                 style={{
-                    backgroundImage: `radial-gradient(var(--primary) 1px, transparent 1px)`,
+                    backgroundImage: `radial-gradient(${isSale ? 'oklch(0.637 0.237 25.331)' : 'var(--primary)'} 1px, transparent 1px)`,
                     backgroundSize: '32px 32px'
                 }}
             />
@@ -31,7 +32,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
                         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                         className="absolute top-0 left-[10%] text-2xl opacity-40"
                     >
-                        ✨
+                        {isSale ? '🔥' : '✨'}
                     </motion.div>
                     <motion.div
                         animate={{
@@ -41,7 +42,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
                         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                         className="absolute bottom-10 right-[15%] text-xl opacity-30"
                     >
-                        🌸
+                        {isSale ? '🏷️' : '🌸'}
                     </motion.div>
                     <motion.div
                         animate={{
@@ -51,7 +52,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
                         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                         className="absolute top-1/4 right-[25%] text-sm"
                     >
-                        ✨
+                        {isSale ? '💥' : '✨'}
                     </motion.div>
                     <motion.div
                         animate={{
@@ -61,7 +62,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
                         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                         className="absolute top-1/2 left-[20%] text-lg opacity-25"
                     >
-                        🎀
+                        {isSale ? '🎈' : '🎀'}
                     </motion.div>
                 </div>
 
@@ -73,8 +74,8 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
                         transition={{ duration: 0.6 }}
                         className="mb-8"
                     >
-                        <span className="px-5 py-1.5 rounded-full bg-pink-50/50 text-primary text-[10px] font-black uppercase tracking-[0.3em] border border-pink-100/30">
-                            Exclusive Treasures
+                        <span className={`px-5 py-1.5 rounded-full ${isSale ? 'bg-red-50 text-red-500 border-red-100' : 'bg-pink-50/50 text-primary border-pink-100/30'} text-[10px] font-black uppercase tracking-[0.3em] border`}>
+                            {isSale ? 'Limited Time Sparkle' : 'Exclusive Treasures'}
                         </span>
                     </motion.div>
 

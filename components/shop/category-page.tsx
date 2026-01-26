@@ -1,4 +1,4 @@
-import { getProductsByCategory } from "@/app/actions/get-products";
+import { getProductsByCategory, getSaleProducts } from "@/app/actions/get-products";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/shop/product-card";
@@ -13,25 +13,30 @@ interface CategoryPageProps {
     title: string;
     subtitle: string;
     searchParams: Promise<{ sort?: string; category?: string; page?: string }>;
+    isSale?: boolean;
 }
 
 export async function CategoryPage({
     categorySlug,
     title,
     subtitle,
-    searchParams
+    searchParams,
+    isSale = false
 }: CategoryPageProps) {
     const { sort, category, page } = await searchParams;
     const currentPage = page ? parseInt(page) : 1;
-    const filterCategory = categorySlug === "all" || categorySlug === "packs" ? category : undefined;
-    const { products, total, totalPages } = await getProductsByCategory(categorySlug, sort || "popular", filterCategory, currentPage);
+    const filterCategory = (categorySlug === "all" || categorySlug === "packs" || isSale) ? category : undefined;
+
+    const { products, total, totalPages } = isSale
+        ? await getSaleProducts(sort || "popular", category, currentPage)
+        : await getProductsByCategory(categorySlug, sort || "popular", filterCategory, currentPage);
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <Navbar />
 
             <main className="flex-1 pt-32">
-                <CollectionHeader title={title} subtitle={subtitle} />
+                <CollectionHeader title={title} subtitle={subtitle} isSale={isSale} />
 
                 {/* Filter & Count Row */}
                 <div className="container mx-auto px-4 py-10">
@@ -51,7 +56,7 @@ export async function CategoryPage({
                         </div>
 
                         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
-                            {(categorySlug === "all" || categorySlug === "packs") && <CategoryToggle />}
+                            {(categorySlug === "all" || categorySlug === "packs" || isSale) && <CategoryToggle />}
                             <SortToggle />
                         </div>
                     </div>
@@ -70,7 +75,7 @@ export async function CategoryPage({
                         </div>
                     ) : (
                         <>
-                            <div key={sort || 'popular'} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+                            <div key={`${sort || 'popular'}-${category || 'all'}`} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
                                 {products.map((product) => (
                                     <ProductCard key={product.id} product={product} />
                                 ))}

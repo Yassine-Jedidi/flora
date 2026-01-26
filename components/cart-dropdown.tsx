@@ -8,36 +8,17 @@ import { useCart } from "@/lib/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Price } from "@/components/shop/price";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-
 
 export function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const [itemToRemove, setItemToRemove] = useState<{ id: string, name: string } | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { cart, totalItems, totalPrice, updateQuantity, removeItem } = useCart();
 
   const handleRemove = (id: string, name: string) => {
-    setItemToRemove({ id, name });
-  };
-
-  const confirmRemove = () => {
-    if (itemToRemove) {
-      removeItem(itemToRemove.id);
-      toast.info("Removed from cart", {
-        description: itemToRemove.name,
-      });
-      setItemToRemove(null);
-    }
+    removeItem(id);
+    toast.info("Removed from cart", {
+      description: name,
+    });
   };
 
   // Close when clicking outside
@@ -128,10 +109,10 @@ export function CartDropdown() {
                         <div className="flex items-center gap-2 bg-white rounded-full border border-gray-100 p-1">
                           <button
                             onClick={() => {
-                              if (item.quantity === 1) {
-                                handleRemove(item.id, item.name);
-                              } else {
+                              if (item.quantity > 1) {
                                 updateQuantity(item.id, item.quantity - 1);
+                              } else {
+                                handleRemove(item.id, item.name);
                               }
                             }}
                             className="w-5 h-5 rounded-full hover:bg-pink-50 flex items-center justify-center text-gray-400"
@@ -186,30 +167,6 @@ export function CartDropdown() {
           )}
         </div>
       </div>
-
-      <AlertDialog open={!!itemToRemove} onOpenChange={(open) => !open && setItemToRemove(null)}>
-        <AlertDialogContent className="rounded-3xl border-pink-100">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-flora-dark font-black text-xl">
-              Remove this treasure? ✨
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-500 font-medium">
-              Are you sure you want to remove <span className="text-primary font-bold">{itemToRemove?.name}</span> from your box?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="gap-3">
-            <AlertDialogCancel className="rounded-full border-pink-100 text-gray-400 hover:bg-pink-50 hover:text-flora-dark font-bold px-6">
-              Keep it
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmRemove}
-              className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold px-6"
-            >
-              Yes, remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }
