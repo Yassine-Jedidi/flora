@@ -17,15 +17,18 @@ export function SparkleBanner() {
     }, []);
 
     return (
-        <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden rounded-3xl w-[95%] max-w-7xl mx-auto md:my-4 border border-pink-500/10 shadow-2xl bg-black">
+        <section
+            className="relative min-h-[70vh] flex items-center justify-center overflow-hidden rounded-3xl w-[95%] max-w-7xl mx-auto md:my-4 border border-pink-500/10 shadow-2xl bg-black isolate"
+            style={{ maskImage: "radial-gradient(white, black)", WebkitMaskImage: "-webkit-radial-gradient(white, black)" }}
+        >
             <video
                 ref={videoRef}
                 autoPlay
                 muted
                 loop
                 playsInline
-                preload="auto"
-                poster="/sparkle-bg.png"
+                preload="metadata"
+                poster="/sparkle-bg.webp"
                 className="absolute inset-0 w-full h-full object-cover object-center scale-105 pointer-events-none"
             >
                 <source src="/bg-video.mp4" type="video/mp4" />
@@ -50,8 +53,8 @@ export function SparkleBanner() {
                 </p>
 
                 <Link href="/shop">
-                    <Button className="bg-[#1A1A1A]/80 hover:bg-flora-dark text-white backdrop-blur-md border border-white/20 rounded-full px-10 py-7 text-lg font-bold tracking-wide shadow-2xl transition-all duration-300 hover:scale-105 hover:border-pink-300 hover:shadow-pink-500/20 group">
-                        Shop New Arrivals <ArrowRight className="ms-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <Button className="bg-[#1A1A1A]/80 hover:bg-flora-dark text-white backdrop-blur-md border border-white/20 rounded-full px-6 py-5 md:px-10 md:py-7 text-base md:text-lg font-bold tracking-wide shadow-2xl transition-all duration-300 hover:scale-105 hover:border-pink-300 hover:shadow-pink-500/20 group">
+                        Shop New Arrivals <ArrowRight className="ms-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                 </Link>
             </div>
