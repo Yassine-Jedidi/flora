@@ -125,21 +125,29 @@ export async function deleteProduct(id: string) {
       return urlParts[urlParts.length - 1];
     });
 
-    // 3. Delete from UploadThing storage
-    if (fileKeys.length > 0) {
-      await utapi.deleteFiles(fileKeys);
-    }
-
-    // 4. Delete from database (Prisma handles ProductImage deletion via Cascade)
+    // 3. Delete from database FIRST (Prisma handles ProductImage deletion via Cascade)
+    // We do this first so if it fails, we don't end up with broken images (ghost records)
     await prisma.product.delete({
       where: { id },
     });
+
+    // 4. Delete from UploadThing storage
+    // If this fails, we just have orphaned files (which is better than broken UI)
+    if (fileKeys.length > 0) {
+      await utapi.deleteFiles(fileKeys);
+    }
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");
     
     return { success: "Product and its images deleted successfully! ✨" };
-  } catch (error) {
+  } catch (error: any) {
+    // Check for Prisma "Foreign Key Constraint" error (P2003)
+    // This happens when the product is linked to Orders or other tables that restrict deletion
+    if (error.code === 'P2003') {
+      return { error: "Cannot delete product with existing Orders. It must remain Archived to preserve sales history." };
+    }
+
     console.error("Error deleting product:", error);
     return { error: "Something went wrong!" };
   }

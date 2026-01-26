@@ -192,19 +192,19 @@ export function ProductList({ products, pagination }: ProductListProps) {
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <div className="flex gap-2">
-                      {!product.isLive ? (
+                      {product.isArchived ? (
+                        <Badge
+                          variant="outline"
+                          className="text-gray-400 border-gray-200 bg-gray-50"
+                        >
+                          Archived
+                        </Badge>
+                      ) : !product.isLive ? (
                         <Badge
                           variant="outline"
                           className="text-amber-600 border-amber-200 bg-amber-50 font-bold"
                         >
                           Paused
-                        </Badge>
-                      ) : product.isArchived ? (
-                        <Badge
-                          variant="outline"
-                          className="text-gray-400 border-gray-200"
-                        >
-                          Archived
                         </Badge>
                       ) : (
                         <Badge className="bg-green-500 hover:bg-green-600">

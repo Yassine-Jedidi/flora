@@ -374,56 +374,58 @@ export function ProductForm({
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="stock" className="text-flora-dark font-bold">
-                  Initial Stock
-                </Label>
-                <Input
-                  id="stock"
-                  {...form.register("stock")}
-                  type="number"
-                  className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-flora-dark font-bold">Category</Label>
-                <Select
-                  onValueChange={(value) =>
-                    form.setValue("categoryId", value, { shouldValidate: true })
-                  }
-                  value={form.watch("categoryId")}
-                >
-                  <SelectTrigger className="rounded-xl border-pink-100 focus:ring-pink-300 bg-white text-left">
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl bg-white border-pink-100 shadow-xl">
-                    {categories.map((cat) => (
-                      <SelectItem
-                        key={cat.id}
-                        value={cat.id}
-                        className="focus:bg-pink-50 cursor-pointer"
-                      >
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {form.formState.errors.categoryId && (
-                  <p className="text-red-500 text-xs">
-                    {form.formState.errors.categoryId.message}
-                  </p>
-                )}
-              </div>
-
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
+                <div className="space-y-2">
+                  <Label htmlFor="stock" className="text-flora-dark font-bold">
+                    Initial Stock
+                  </Label>
+                  <Input
+                    id="stock"
+                    {...form.register("stock")}
+                    type="number"
+                    className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-flora-dark font-bold">Category</Label>
+                  <Select
+                    onValueChange={(value) =>
+                      form.setValue("categoryId", value, { shouldValidate: true })
+                    }
+                    value={form.watch("categoryId")}
+                  >
+                    <SelectTrigger className="w-full rounded-xl border-pink-100 focus:ring-pink-300 bg-white text-left">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl bg-white border-pink-100 shadow-xl">
+                      {categories.map((cat) => (
+                        <SelectItem
+                          key={cat.id}
+                          value={cat.id}
+                          className="focus:bg-pink-50 cursor-pointer"
+                        >
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {form.formState.errors.categoryId && (
+                    <p className="text-red-500 text-xs">
+                      {form.formState.errors.categoryId.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50 hover:bg-pink-50/50 transition-colors">
                   <div className="space-y-0.5">
                     <Label className="text-sm font-bold text-flora-dark">
-                      Featured
+                      ✨ Featured Product
                     </Label>
                     <p className="text-[10px] text-gray-500">
-                      Home page visibility
+                      Show this product in the "Featured" section on the homepage
                     </p>
                   </div>
                   <Switch
@@ -435,13 +437,13 @@ export function ProductForm({
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-purple-50/30 border border-purple-100/50 hover:bg-purple-50/50 transition-colors">
                   <div className="space-y-0.5">
-                    <Label className="text-sm font-bold text-flora-dark">
-                      Live
+                    <Label className="text-sm font-bold text-flora-purple">
+                      🟢 Live Status
                     </Label>
                     <p className="text-[10px] text-gray-500">
-                      Website visibility
+                      Visible to customers (Turn off to hide without archiving)
                     </p>
                   </div>
                   <Switch
@@ -450,6 +452,24 @@ export function ProductForm({
                       form.setValue("isLive", checked)
                     }
                     className="data-[state=checked]:bg-flora-purple"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm font-bold text-gray-700">
+                      📦 Archived
+                    </Label>
+                    <p className="text-[10px] text-gray-500">
+                      Soft-delete this product (Hidden everywhere, but keeps order history)
+                    </p>
+                  </div>
+                  <Switch
+                    checked={form.watch("isArchived")}
+                    onCheckedChange={(checked) =>
+                      form.setValue("isArchived", checked)
+                    }
+                    className="data-[state=checked]:bg-gray-600"
                   />
                 </div>
               </div>
