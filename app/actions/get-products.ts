@@ -150,21 +150,8 @@ export async function getProductsByCategory(
 ) {
   try {
     const skip = (page - 1) * pageSize;
-    let orderBy: Prisma.ProductOrderByWithRelationInput | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
-
-    if (sort === "popular") {
-      orderBy = [
-        { isFeatured: "desc" },
-        { createdAt: "desc" }
-      ];
-    } else if (sort === "newest") {
-      orderBy = { createdAt: "desc" };
-    } else if (sort === "price-asc" || sort === "price") {
-      orderBy = { originalPrice: "asc" };
-    } else if (sort === "price-desc") {
-      orderBy = { originalPrice: "desc" };
-    }
-
+    
+    // We'll build the base WHERE clause for Prisma
     const where: Prisma.ProductWhereInput = {
       isArchived: false,
       isLive: true,
@@ -175,10 +162,72 @@ export async function getProductsByCategory(
         slug: categorySlug,
       };
     } else if (filterCategory && filterCategory !== "all") {
-      // If viewing "all" but filtered by a sub-category
       where.category = {
         slug: filterCategory,
       };
+    }
+
+    // Determine the ORDER BY clause for Prisma or manual sort
+    let orderBy: Prisma.ProductOrderByWithRelationInput | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
+
+    // If sorting by price, we need to handle the effective price (discounted or original)
+    // Since Prisma findMany doesn't support sorting by a calculated field like COALESCE(discountedPrice, originalPrice),
+    // we have two options: Raw query or fetch IDs first. Raw query is most efficient for pagination.
+    if (sort === "price-asc" || sort === "price" || sort === "price-desc") {
+      const direction = sort === "price-desc" ? "DESC" : "ASC";
+      const categoryFilter = categorySlug !== "all" ? categorySlug : (filterCategory && filterCategory !== "all" ? filterCategory : null);
+      
+      // Get IDs using raw SQL to handle the COALESCE sorting across the entire table
+      const orderedProducts: { id: string }[] = await prisma.$queryRaw`
+        SELECT p.id 
+        FROM "Product" p
+        ${categoryFilter ? Prisma.sql`
+          JOIN "Category" c ON p."categoryId" = c.id 
+          WHERE c.slug = ${categoryFilter} AND p."isArchived" = false AND p."isLive" = true
+        ` : Prisma.sql`
+          WHERE p."isArchived" = false AND p."isLive" = true
+        `}
+        ORDER BY COALESCE(p."discountedPrice", p."originalPrice") ${Prisma.raw(direction)}
+        LIMIT ${pageSize} OFFSET ${skip}
+      `;
+
+      const ids = orderedProducts.map(p => p.id);
+      
+      // Now fetch full product details for these IDs, maintaining the order
+      const products = await prisma.product.findMany({
+        where: { id: { in: ids } },
+        include: {
+          category: true,
+          images: true,
+        },
+      });
+
+      // Prisma's IN operator doesn't preserve order, so we re-sort them based on the ID order from raw query
+      const sortedProducts = ids.map(id => products.find(p => p.id === id)!).filter(Boolean);
+      const total = await prisma.product.count({ where });
+
+      const mappedProducts = sortedProducts.map((product) => ({
+        ...product,
+        originalPrice: Number(product.originalPrice),
+        discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt.toISOString(),
+        isNew: new Date(product.createdAt).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000,
+      }));
+
+      return {
+        products: mappedProducts,
+        total,
+        totalPages: Math.ceil(total / pageSize),
+        currentPage: page,
+      };
+    }
+
+    // Default Prisma logic for non-price sorts
+    if (sort === "popular") {
+      orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
+    } else if (sort === "newest") {
+      orderBy = { createdAt: "desc" };
     }
 
     const [total, products] = await prisma.$transaction([
@@ -201,9 +250,7 @@ export async function getProductsByCategory(
       discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
-      isNew:
-        new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
+      isNew: new Date(product.createdAt).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000,
     }));
 
     return {
@@ -214,12 +261,7 @@ export async function getProductsByCategory(
     };
   } catch (error) {
     console.error(`Error fetching products for category ${categorySlug}:`, error);
-    return {
-      products: [],
-      total: 0,
-      totalPages: 0,
-      currentPage: 1,
-    };
+    return { products: [], total: 0, totalPages: 0, currentPage: 1 };
   }
 }
 
@@ -466,12 +508,53 @@ export async function getSaleProducts(
       };
     }
 
-    // We need to fetch and filter in memory for complex price comparisons not easily doable in Prisma where clause directly across DBs (discount < original)
-    // However, for pagination efficiency, we should try to do it in DB if possible.
-    // Assuming discountedPrice is always < originalPrice if it is set in business logic, we trust the 'discountedPrice: { not: null }' check.
-    // If strict check is needed: WHERE discountedPrice < originalPrice. Prisma doesn't support field comparison in where easily without raw query.
-    // We will stick to fetching based on discountedPrice existence for now to support pagination efficiently.
-    
+    // Handle effective price sorting for sale items
+    if (sort === "price-asc" || sort === "price" || sort === "price-desc") {
+      const direction = sort === "price-desc" ? "DESC" : "ASC";
+      
+      const orderedProducts: { id: string }[] = await prisma.$queryRaw`
+        SELECT p.id 
+        FROM "Product" p
+        ${categorySlug && categorySlug !== "all" ? Prisma.sql`
+          JOIN "Category" c ON p."categoryId" = c.id 
+          WHERE c.slug = ${categorySlug} AND p."discountedPrice" IS NOT NULL AND p."isArchived" = false AND p."isLive" = true
+        ` : Prisma.sql`
+          WHERE p."discountedPrice" IS NOT NULL AND p."isArchived" = false AND p."isLive" = true
+        `}
+        ORDER BY COALESCE(p."discountedPrice", p."originalPrice") ${Prisma.raw(direction)}
+        LIMIT ${pageSize} OFFSET ${skip}
+      `;
+
+      const ids = orderedProducts.map(p => p.id);
+      
+      const products = await prisma.product.findMany({
+        where: { id: { in: ids } },
+        include: {
+          category: true,
+          images: true,
+        },
+      });
+
+      const sortedProducts = ids.map(id => products.find(p => p.id === id)!).filter(Boolean);
+      const total = await prisma.product.count({ where });
+
+      const mappedProducts = sortedProducts.map((product) => ({
+        ...product,
+        originalPrice: Number(product.originalPrice),
+        discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt.toISOString(),
+        isNew: new Date(product.createdAt).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000,
+      }));
+
+      return {
+        products: mappedProducts,
+        total,
+        totalPages: Math.ceil(total / pageSize),
+        currentPage: page,
+      };
+    }
+
     const [total, products] = await prisma.$transaction([
       prisma.product.count({ where }),
       prisma.product.findMany({
@@ -492,20 +575,12 @@ export async function getSaleProducts(
       discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
-      isNew:
-        new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
+      isNew: new Date(product.createdAt).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000,
     }));
 
-     // Filter ensuring discount is valid (though this happens after pagination which is slightly inaccurate for total count if data is bad, but generally safe)
-    const validSaleProducts = mappedProducts.filter(p => p.discountedPrice !== null && p.discountedPrice < p.originalPrice);
-
-    // If filtering removed items, the page size might be smaller than requested. 
-    // Ideally we clean data or use raw query, but for now this is acceptable.
-
     return {
-      products: validSaleProducts,
-      total, // Approximate total based on DB query
+      products: mappedProducts,
+      total,
       totalPages: Math.ceil(total / pageSize),
       currentPage: page,
     };

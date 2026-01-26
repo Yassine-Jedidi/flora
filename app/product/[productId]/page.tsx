@@ -48,12 +48,16 @@ export default async function ProductPage({
                     {/* Related Products Section */}
                     {relatedProducts.length > 0 && (
                         <div className="mt-32 pt-16 border-t border-pink-50">
-                            <div className="flex flex-col items-center text-center space-y-4 mb-16">
-                                <div className="flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-[#FF8BBA]" />
-                                    <h2 className="text-3xl font-black text-[#3E343C]">You might also love</h2>
+                            <div className="flex flex-col items-center text-center space-y-4 mb-16 px-4">
+                                <div className="flex items-center justify-center flex-wrap gap-2 md:gap-3">
+                                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-[#FF8BBA] fill-[#FF8BBA]/10" />
+                                    <h2 className="text-3xl md:text-5xl font-black text-[#FF8BBA] tracking-tighter">
+                                        You might also love
+                                    </h2>
                                 </div>
-                                <p className="text-[#8B7E84] font-medium">Discover more handpicked treasures from our collection</p>
+                                <p className="text-[#B08B9B] font-medium max-w-lg">
+                                    Discover more handpicked treasures from our collection
+                                </p>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
