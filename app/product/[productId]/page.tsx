@@ -34,10 +34,10 @@ export default async function ProductPage({
                     <div className="mb-12">
                         <Link
                             href={`/${product.category.slug}`}
-                            className="inline-flex items-center gap-2 text-sm font-bold text-[#8B7E84] hover:text-[#FF8BBA] transition-colors group"
+                            className="inline-flex items-center gap-2 text-sm font-bold text-[#8B7E84] hover:text-primary transition-colors group"
                         >
                             <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-pink-50 transition-colors">
-                                <ChevronLeft className="w-4 h-4 text-[#8B7E84] group-hover:text-[#FF8BBA]" />
+                                <ChevronLeft className="w-4 h-4 text-[#8B7E84] group-hover:text-primary" />
                             </div>
                             Back to {product.category.name}
                         </Link>
@@ -50,8 +50,8 @@ export default async function ProductPage({
                         <div className="mt-32 pt-16 border-t border-pink-50">
                             <div className="flex flex-col items-center text-center space-y-4 mb-16 px-4">
                                 <div className="flex items-center justify-center flex-wrap gap-2 md:gap-3">
-                                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-[#FF8BBA] fill-[#FF8BBA]/10" />
-                                    <h2 className="text-3xl md:text-5xl font-black text-[#FF8BBA] tracking-tighter">
+                                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-primary fill-[#FF8BBA]/10" />
+                                    <h2 className="text-3xl md:text-5xl font-black text-primary tracking-tighter">
                                         You might also love
                                     </h2>
                                 </div>

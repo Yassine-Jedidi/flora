@@ -38,13 +38,13 @@ export async function CategoryPage({
                     <div className="flex flex-col xl:flex-row xl:items-center justify-between border-b border-pink-50 pb-8 gap-8">
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center gap-2">
-                                <div className="w-1 h-4 bg-[#FF8BBA] rounded-full" />
-                                <label className="text-sm font-black text-[#3E343C] uppercase tracking-[0.2em] flex items-center gap-2">
-                                    The Flora Gallery <Bow className="w-4 h-4 text-[#FF8BBA]" />
+                                <div className="w-1 h-4 bg-primary rounded-full" />
+                                <label className="text-sm font-black text-flora-dark uppercase tracking-[0.2em] flex items-center gap-2">
+                                    The Flora Gallery <Bow className="w-4 h-4 text-primary" />
                                 </label>
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                <div className="bg-white border border-pink-100 text-[#FF8BBA] px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
+                                <div className="bg-white border border-pink-100 text-primary px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
                                     {total} Treasures
                                 </div>
                             </div>
@@ -61,7 +61,7 @@ export async function CategoryPage({
                 <div className="container mx-auto px-4 pb-24">
                     {products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-40">
-                            <p className="text-xl font-black text-[#003366] mb-2 text-center">
+                            <p className="text-xl font-black text-flora-dark mb-2 text-center">
                                 {category && category !== "all"
                                     ? `No ${category} found`
                                     : "New collection arriving soon."}

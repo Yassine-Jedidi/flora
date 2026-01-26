@@ -41,9 +41,9 @@ export default function FavoriteButton({
       )}
     >
       {active ? (
-        <Heart className="w-5 h-5 text-[#FF8BBA] fill-[#FF8BBA] group-hover/heart:fill-[#FF6B9A] group-hover/heart:text-[#FF6B9A] transition-colors" />
+        <Heart className="w-5 h-5 text-primary fill-primary group-hover/heart:fill-[#FF6B9A] group-hover/heart:text-[#FF6B9A] transition-colors" />
       ) : (
-        <Heart className="w-5 h-5 text-[#FF8BBA] group-hover/heart:fill-[#FF8BBA]/20 transition-all" />
+        <Heart className="w-5 h-5 text-primary group-hover/heart:fill-primary/20 transition-all" />
       )}
     </button>
   );

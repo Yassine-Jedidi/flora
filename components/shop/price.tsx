@@ -16,7 +16,7 @@ export function Price({
   className,
   size = "md",
   variant = "horizontal",
-  color = "text-[#FF8BBA]"
+  color = "text-primary"
 }: PriceProps) {
   const hasDiscount = originalPrice && originalPrice > price;
 

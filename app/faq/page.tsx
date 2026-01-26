@@ -8,6 +8,7 @@ import {
     ShieldCheck,
     Heart,
     MessageSquare,
+    Instagram,
 } from "lucide-react";
 import { Metadata } from "next";
 
@@ -74,16 +75,16 @@ export default function FAQPage() {
         <div className="min-h-screen bg-white flex flex-col font-sans">
             <Navbar />
 
-            <main className="flex-1 pt-32 pb-20 text-[#003366]">
+            <main className="flex-1 pt-32 pb-20 text-flora-dark">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6">
 
                     {/* Header */}
                     <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
                         <div className="inline-flex items-center justify-center p-3 bg-purple-50 rounded-2xl mb-6">
-                            <HelpCircle className="w-6 h-6 text-[#A78BFA]" />
+                            <HelpCircle className="w-6 h-6 text-flora-purple" />
                         </div>
                         <h1 className="text-4xl md:text-5xl font-black mb-4">
-                            How can we <span className="text-[#FF8BBA]">help you?</span>
+                            How can we <span className="text-primary">help you?</span>
                         </h1>
                         <p className="text-gray-500 font-bold max-w-lg mx-auto leading-relaxed">
                             Find answers to the most common questions about the Flora experience.
@@ -95,7 +96,7 @@ export default function FAQPage() {
                         {faqCategories.map((category, idx) => (
                             <section key={idx} className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
                                 <div className="flex items-center gap-3 mb-8 border-b border-pink-50 pb-4">
-                                    <div className="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center text-[#FF8BBA]">
+                                    <div className="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center text-primary">
                                         {category.icon}
                                     </div>
                                     <h2 className="text-2xl font-black uppercase tracking-tight antialiased">
@@ -109,7 +110,7 @@ export default function FAQPage() {
                                             key={qIdx}
                                             className="group bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm transition-all hover:border-pink-200 hover:shadow-md"
                                         >
-                                            <h3 className="text-lg font-black mb-3 pr-8 relative transition-colors group-hover:text-[#FF8BBA]">
+                                            <h3 className="text-lg font-black mb-3 pr-8 relative transition-colors group-hover:text-primary">
                                                 {item.q}
                                             </h3>
                                             <p className="text-gray-500 font-medium leading-relaxed">
@@ -128,7 +129,7 @@ export default function FAQPage() {
 
                         <div className="relative z-10">
                             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-6">
-                                <MessageSquare className="w-8 h-8 text-[#A78BFA]" />
+                                <MessageSquare className="w-8 h-8 text-flora-purple" />
                             </div>
                             <h2 className="text-3xl font-black mb-4">Still have questions?</h2>
                             <p className="text-gray-500 font-bold mb-8 max-w-md mx-auto">
@@ -139,8 +140,9 @@ export default function FAQPage() {
                                     href="https://www.instagram.com/flora_.access/"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="bg-[#A78BFA] text-white px-10 py-4 rounded-full font-black text-sm shadow-lg shadow-purple-100 hover:bg-[#8B5CF6] transition-all hover:scale-105"
+                                    className="bg-flora-purple text-white px-10 py-4 rounded-full font-black text-sm shadow-lg shadow-purple-100 hover:bg-[#8B5CF6] transition-all hover:scale-105 flex items-center gap-2"
                                 >
+                                    <Instagram className="w-5 h-5" />
                                     Message us on Instagram
                                 </a>
                             </div>
@@ -149,17 +151,16 @@ export default function FAQPage() {
 
                     {/* Trust Badges */}
                     <div className="mt-24 flex flex-wrap items-center justify-center gap-12 grayscale opacity-50">
-                        <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-slate-400">
+                        <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-flora-dark">
                             <ShieldCheck className="w-4 h-4" /> Quality Assured
                         </div>
-                        <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-slate-400">
+                        <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-flora-dark">
                             <Truck className="w-4 h-4" /> Nationwide Delivery
                         </div>
-                        <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-slate-400">
+                        <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-flora-dark">
                             <Heart className="w-4 h-4" /> Made with Love
                         </div>
                     </div>
-
                 </div>
             </main>
 

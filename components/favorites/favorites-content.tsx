@@ -21,7 +21,7 @@ export default function FavoritesContent() {
           <div
             className="absolute inset-0 opacity-[0.4]"
             style={{
-              backgroundImage: `radial-gradient(#FF8BBA 0.5px, transparent 0.5px)`,
+              backgroundImage: `radial-gradient(var(--primary) 0.5px, transparent 0.5px)`,
               backgroundSize: "24px 24px",
             }}
           />
@@ -35,15 +35,15 @@ export default function FavoritesContent() {
             <div className="flex flex-col items-center text-center">
               <button
                 onClick={() => router.back()}
-                className="mb-8 flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-md text-[#A78BFA] font-bold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1 border border-pink-50"
+                className="mb-8 flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-md text-flora-purple font-bold text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1 border border-pink-50"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back to Shop
               </button>
 
               <div className="relative inline-block">
-                <h1 className="text-5xl md:text-7xl font-black text-[#003366] tracking-tight">
-                  Your <span className="text-[#FF8BBA]">Treasures</span>
+                <h1 className="text-5xl md:text-7xl font-black text-flora-dark tracking-tight">
+                  Your <span className="text-primary">Treasures</span>
                 </h1>
               </div>
 
@@ -60,16 +60,16 @@ export default function FavoritesContent() {
           {favorites.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 bg-white/60 backdrop-blur-xl rounded-[3rem] border border-pink-100 shadow-xl text-center px-4">
               <div className="w-32 h-32 rounded-full bg-pink-50 flex items-center justify-center mb-8 relative">
-                <Heart className="w-16 h-16 text-[#FF8BBA] fill-[#FF8BBA]" />
+                <Heart className="w-16 h-16 text-primary fill-primary" />
               </div>
-              <h2 className="text-3xl font-black text-[#003366] mb-4">
+              <h2 className="text-3xl font-black text-flora-dark mb-4">
                 Your box is empty!
               </h2>
               <p className="text-gray-500 max-w-sm mb-10 text-lg leading-relaxed">
                 Find pieces you love and tap the heart to save them here. They&apos;ll be waiting for you!
               </p>
               <Link href="/">
-                <Button className="bg-[#FF8BBA] hover:bg-[#FF75AA] text-white rounded-full font-black px-12 h-16 text-xl shadow-lg hover:shadow-pink-200 transition-all hover:scale-105 active:scale-95">
+                <Button className="bg-primary hover:bg-[#FF75AA] text-white rounded-full font-black px-12 h-16 text-xl shadow-lg hover:shadow-pink-200 transition-all hover:scale-105 active:scale-95">
                   Start Exploring
                 </Button>
               </Link>

@@ -28,8 +28,8 @@ export function CategoryToggle() {
     return (
         <div className="flex flex-col gap-3 w-full lg:w-auto">
             <div className="flex items-center gap-2">
-                <div className="w-1 h-4 bg-[#FF8BBA] rounded-full" />
-                <label className="text-xs font-black text-[#3E343C] uppercase tracking-[0.2em]">
+                <div className="w-1 h-4 bg-primary rounded-full" />
+                <label className="text-xs font-black text-flora-dark uppercase tracking-[0.2em]">
                     Filter by Category
                 </label>
             </div>
@@ -40,8 +40,8 @@ export function CategoryToggle() {
                         onClick={() => handleCategory(cat.slug)}
                         className={`
                             ${currentCategory === cat.slug
-                                ? "bg-[#FF8BBA] text-white shadow-lg shadow-pink-100 scale-105"
-                                : "bg-white border border-pink-100 text-[#8B7E84] hover:border-[#FF8BBA] hover:text-[#FF8BBA]"
+                                ? "bg-primary text-white shadow-lg shadow-pink-100 scale-105"
+                                : "bg-white border border-pink-100 text-[#8B7E84] hover:border-primary hover:text-primary"
                             }
                             px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300
                             active:scale-95

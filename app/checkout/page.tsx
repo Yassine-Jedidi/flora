@@ -39,11 +39,37 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Price } from "@/components/shop/price";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 
 export default function CheckoutPage() {
   const { cart, totalPrice, clearCart, updateQuantity, removeItem } = useCart();
   const [isPending, setIsPending] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState<{ id: string, name: string } | null>(null);
+
+  const handleRemove = (id: string, name: string) => {
+    setItemToRemove({ id, name });
+  };
+
+  const confirmRemove = () => {
+    if (itemToRemove) {
+      removeItem(itemToRemove.id);
+      toast.info("Removed from cart", {
+        description: itemToRemove.name,
+      });
+      setItemToRemove(null);
+    }
+  };
 
   const shippingCost = cart.length > 0 ? 7.0 : 0;
   const finalTotal = totalPrice + shippingCost;
@@ -103,10 +129,10 @@ export default function CheckoutPage() {
         <Navbar />
         <main className="flex-1 flex items-center justify-center p-4 pt-32">
           <div className="max-w-md w-full bg-pink-50/50 rounded-[40px] p-12 text-center border-2 border-dashed border-pink-100 animate-in zoom-in-95 duration-500">
-            <div className="w-20 h-20 bg-[#FF8BBA] rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-pink-200">
+            <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-pink-200">
               <CheckCircle2 className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-black text-[#003366] mb-4">
+            <h1 className="text-3xl font-black text-flora-dark mb-4">
               Order Completed!
             </h1>
             <p className="text-gray-500 font-bold mb-8">
@@ -114,7 +140,7 @@ export default function CheckoutPage() {
               for confirmation.
             </p>
             <Link href="/">
-              <Button className="bg-[#A78BFA] hover:bg-[#8B5CF6] text-white rounded-full px-10 py-6 font-black text-lg transition-all shadow-lg shadow-purple-100">
+              <Button className="bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-full px-10 py-6 font-black text-lg transition-all shadow-lg shadow-purple-100">
                 Back to Shop
               </Button>
             </Link>
@@ -134,7 +160,7 @@ export default function CheckoutPage() {
           {/* Breadcrumbs / Back */}
           <Link
             href="/"
-            className="inline-flex items-center text-gray-400 hover:text-[#FF8BBA] font-bold mb-8 transition-colors group"
+            className="inline-flex items-center text-gray-400 hover:text-primary font-bold mb-8 transition-colors group"
           >
             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
             Back to accessories
@@ -144,7 +170,7 @@ export default function CheckoutPage() {
             {/* Left Side: Form */}
             <div className="lg:col-span-7">
               <div className="mb-10">
-                <h1 className="text-4xl font-black text-[#003366] tracking-tight mb-2">
+                <h1 className="text-4xl font-black text-flora-dark tracking-tight mb-2">
                   Checkout
                 </h1>
                 <p className="text-gray-400 font-bold">
@@ -159,9 +185,9 @@ export default function CheckoutPage() {
                 <div className="p-8 rounded-4xl bg-white border border-pink-50 shadow-sm space-y-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
-                      <ShoppingBag className="w-4 h-4 text-[#FF8BBA]" />
+                      <ShoppingBag className="w-4 h-4 text-primary" />
                     </div>
-                    <h2 className="text-xl font-black text-[#003366]">
+                    <h2 className="text-xl font-black text-flora-dark">
                       Information
                     </h2>
                   </div>
@@ -170,7 +196,7 @@ export default function CheckoutPage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor="fullName"
-                        className="text-[#003366] font-bold ml-1"
+                        className="text-flora-dark font-bold ml-1"
                       >
                         Full Name
                       </Label>
@@ -178,7 +204,7 @@ export default function CheckoutPage() {
                         id="fullName"
                         {...form.register("fullName")}
                         placeholder="Enter your full name"
-                        className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-[#003366] font-medium"
+                        className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
                       />
                       {form.formState.errors.fullName && (
                         <p className="text-red-500 text-xs font-bold mt-1 ml-1">
@@ -190,7 +216,7 @@ export default function CheckoutPage() {
                     <div className="space-y-2">
                       <Label
                         htmlFor="phoneNumber"
-                        className="text-[#003366] font-bold ml-1"
+                        className="text-flora-dark font-bold ml-1"
                       >
                         Phone Number (8 digits)
                       </Label>
@@ -198,7 +224,7 @@ export default function CheckoutPage() {
                         id="phoneNumber"
                         {...form.register("phoneNumber")}
                         placeholder="Example: 20123456"
-                        className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-[#003366] font-medium"
+                        className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
                       />
                       {form.formState.errors.phoneNumber && (
                         <p className="text-red-500 text-xs font-bold mt-1 ml-1">
@@ -210,7 +236,7 @@ export default function CheckoutPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label className="text-[#003366] font-bold ml-1">
+                      <Label className="text-flora-dark font-bold ml-1">
                         Governorate
                       </Label>
                       <Select
@@ -220,7 +246,7 @@ export default function CheckoutPage() {
                           })
                         }
                       >
-                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-[#003366] font-medium">
+                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-flora-dark font-medium">
                           <SelectValue placeholder="Select governorate" />
                         </SelectTrigger>
                         <SelectContent className="rounded-2xl border-pink-100">
@@ -239,7 +265,7 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-[#003366] font-bold ml-1">
+                      <Label className="text-flora-dark font-bold ml-1">
                         City / Delegation
                       </Label>
                       <Select
@@ -248,7 +274,7 @@ export default function CheckoutPage() {
                           form.setValue("city", v, { shouldValidate: true })
                         }
                       >
-                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-[#003366] font-medium">
+                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-flora-dark font-medium">
                           <SelectValue placeholder="Select city" />
                         </SelectTrigger>
                         <SelectContent className="rounded-2xl border-pink-100">
@@ -270,7 +296,7 @@ export default function CheckoutPage() {
                   <div className="space-y-2">
                     <Label
                       htmlFor="detailedAddress"
-                      className="text-[#003366] font-bold ml-1"
+                      className="text-flora-dark font-bold ml-1"
                     >
                       Detailed Address
                     </Label>
@@ -278,7 +304,7 @@ export default function CheckoutPage() {
                       id="detailedAddress"
                       {...form.register("detailedAddress")}
                       placeholder="Street, Building, Apartment..."
-                      className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-[#003366] font-medium"
+                      className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
                     />
                     {form.formState.errors.detailedAddress && (
                       <p className="text-red-500 text-xs font-bold mt-1 ml-1">
@@ -294,7 +320,7 @@ export default function CheckoutPage() {
                       <CreditCard className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-black text-[#003366]">
+                      <h4 className="text-sm font-black text-flora-dark">
                         Cash on Delivery
                       </h4>
                       <p className="text-xs text-purple-400 font-bold uppercase tracking-wider">
@@ -306,7 +332,7 @@ export default function CheckoutPage() {
                   <Button
                     type="submit"
                     disabled={isPending || cart.length === 0}
-                    className="w-full bg-[#FF8BBA] hover:bg-[#FF75AA] text-white rounded-full py-8 font-black text-xl shadow-xl shadow-pink-200 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                    className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-8 font-black text-xl shadow-xl shadow-pink-200 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                   >
                     {isPending ? (
                       <Loader2 className="w-6 h-6 animate-spin" />
@@ -321,7 +347,7 @@ export default function CheckoutPage() {
             {/* Right Side: Order Summary */}
             <div className="lg:col-span-5">
               <div className="sticky top-40 space-y-6">
-                <div className="bg-[#A78BFA] rounded-[40px] p-8 text-white shadow-2xl shadow-purple-200/50 overflow-hidden relative">
+                <div className="bg-flora-purple rounded-[40px] p-8 text-white shadow-2xl shadow-purple-200/50 overflow-hidden relative">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
 
                   <h3 className="flex items-center gap-3 text-2xl font-black mb-8">
@@ -348,7 +374,7 @@ export default function CheckoutPage() {
                               {item.name}
                             </p>
                             <button
-                              onClick={() => removeItem(item.id)}
+                              onClick={() => handleRemove(item.id, item.name)}
                               className="text-white/40 hover:text-white transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -359,9 +385,13 @@ export default function CheckoutPage() {
                             <div className="flex items-center gap-2 bg-white/10 rounded-full p-1 border border-white/10">
                               <button
                                 type="button"
-                                onClick={() =>
-                                  updateQuantity(item.id, item.quantity - 1)
-                                }
+                                onClick={() => {
+                                  if (item.quantity === 1) {
+                                    handleRemove(item.id, item.name);
+                                  } else {
+                                    updateQuantity(item.id, item.quantity - 1);
+                                  }
+                                }}
                                 className="w-5 h-5 rounded-full hover:bg-white/20 flex items-center justify-center text-white transition-all"
                               >
                                 <Minus className="w-3 h-3" />
@@ -419,14 +449,14 @@ export default function CheckoutPage() {
                 {/* Trust Badges */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-3xl bg-gray-50 flex flex-col items-center text-center gap-2 border border-gray-100">
-                    <ShieldCheck className="w-5 h-5 text-[#FF8BBA]" />
-                    <p className="text-[10px] font-black text-[#003366] uppercase tracking-wider text-center">
+                    <ShieldCheck className="w-5 h-5 text-primary" />
+                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider text-center">
                       Quality Guaranteed
                     </p>
                   </div>
                   <div className="p-4 rounded-3xl bg-gray-50 flex flex-col items-center text-center gap-2 border border-gray-100">
-                    <Truck className="w-5 h-5 text-[#A78BFA]" />
-                    <p className="text-[10px] font-black text-[#003366] uppercase tracking-wider text-center">
+                    <Truck className="w-5 h-5 text-flora-purple" />
+                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider text-center">
                       Fast Delivery
                     </p>
                   </div>
@@ -438,6 +468,29 @@ export default function CheckoutPage() {
       </main>
 
       <Footer />
+      <AlertDialog open={!!itemToRemove} onOpenChange={(open) => !open && setItemToRemove(null)}>
+        <AlertDialogContent className="rounded-3xl border-pink-100">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-flora-dark font-black text-xl">
+              Remove this treasure? ✨
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-500 font-medium">
+              Are you sure you want to remove <span className="text-primary font-bold">{itemToRemove?.name}</span> from your order?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-3">
+            <AlertDialogCancel className="rounded-full border-pink-100 text-gray-400 hover:bg-pink-50 hover:text-flora-dark font-bold px-6">
+              Keep it
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemove}
+              className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold px-6"
+            >
+              Yes, remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

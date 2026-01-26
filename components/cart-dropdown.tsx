@@ -8,17 +8,36 @@ import { useCart } from "@/lib/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Price } from "@/components/shop/price";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 
 export function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [itemToRemove, setItemToRemove] = useState<{ id: string, name: string } | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { cart, totalItems, totalPrice, updateQuantity, removeItem } = useCart();
 
   const handleRemove = (id: string, name: string) => {
-    removeItem(id);
-    toast.info("Removed from cart", {
-      description: name,
-    });
+    setItemToRemove({ id, name });
+  };
+
+  const confirmRemove = () => {
+    if (itemToRemove) {
+      removeItem(itemToRemove.id);
+      toast.info("Removed from cart", {
+        description: itemToRemove.name,
+      });
+      setItemToRemove(null);
+    }
   };
 
   // Close when clicking outside
@@ -39,12 +58,12 @@ export function CartDropdown() {
       {/* Trigger Icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`relative rounded-full p-2 transition-all duration-300 ${isOpen ? "bg-pink-100/50 text-[#FF8BBA]" : "hover:bg-pink-50 text-[#3E343C]"
+        className={`relative rounded-full p-2 transition-all duration-300 ${isOpen ? "bg-pink-100/50 text-primary" : "hover:bg-pink-50 text-flora-dark"
           }`}
       >
         <ShoppingBag className="h-5 w-5" />
         {totalItems > 0 && (
-          <span className="absolute right-1 top-1 h-4 w-4 rounded-full bg-[#FF8BBA] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
+          <span className="absolute right-1 top-1 h-4 w-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center shadow-sm">
             {totalItems}
           </span>
         )}
@@ -59,8 +78,8 @@ export function CartDropdown() {
         }`}>
         <div className="w-full md:w-80 bg-white rounded-3xl shadow-2xl border border-pink-50 overflow-hidden">
           <div className="p-6 bg-pink-50/30 border-b border-pink-100 flex items-center justify-between">
-            <h3 className="font-black text-[#003366] text-xl flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-[#FF8BBA]" />
+            <h3 className="font-black text-flora-dark text-xl flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5 text-primary" />
               My Treasures
             </h3>
             <button
@@ -96,7 +115,7 @@ export function CartDropdown() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-black text-[#003366] truncate">{item.name}</h4>
+                      <h4 className="text-sm font-black text-flora-dark truncate">{item.name}</h4>
                       <div className="mt-1">
                         <Price
                           price={item.price}
@@ -108,12 +127,18 @@ export function CartDropdown() {
                       <div className="flex items-center justify-between mt-2">
                         <div className="flex items-center gap-2 bg-white rounded-full border border-gray-100 p-1">
                           <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => {
+                              if (item.quantity === 1) {
+                                handleRemove(item.id, item.name);
+                              } else {
+                                updateQuantity(item.id, item.quantity - 1);
+                              }
+                            }}
                             className="w-5 h-5 rounded-full hover:bg-pink-50 flex items-center justify-center text-gray-400"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="text-xs font-black text-[#003366] w-4 text-center">{item.quantity}</span>
+                          <span className="text-xs font-black text-flora-dark w-4 text-center">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             disabled={item.quantity >= item.stock}
@@ -149,7 +174,7 @@ export function CartDropdown() {
                 className="block w-full"
                 onClick={() => setIsOpen(false)}
               >
-                <Button className="w-full bg-[#A78BFA] hover:bg-[#8B5CF6] text-white rounded-full font-black py-6 shadow-lg shadow-purple-100 transition-all hover:scale-[1.02]">
+                <Button className="w-full bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-full font-black py-6 shadow-lg shadow-purple-100 transition-all hover:scale-[1.02]">
                   Check Out Now
                 </Button>
               </Link>
@@ -161,6 +186,30 @@ export function CartDropdown() {
           )}
         </div>
       </div>
+
+      <AlertDialog open={!!itemToRemove} onOpenChange={(open) => !open && setItemToRemove(null)}>
+        <AlertDialogContent className="rounded-3xl border-pink-100">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-flora-dark font-black text-xl">
+              Remove this treasure? ✨
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-500 font-medium">
+              Are you sure you want to remove <span className="text-primary font-bold">{itemToRemove?.name}</span> from your box?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-3">
+            <AlertDialogCancel className="rounded-full border-pink-100 text-gray-400 hover:bg-pink-50 hover:text-flora-dark font-bold px-6">
+              Keep it
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemove}
+              className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold px-6"
+            >
+              Yes, remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

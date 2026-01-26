@@ -34,10 +34,10 @@ export function FavoritesSheet() {
   const discountPercentage = (product: Product) =>
     hasDiscount(product)
       ? Math.round(
-          ((product.originalPrice - (product.discountedPrice ?? 0)) /
-            product.originalPrice) *
-            100
-        )
+        ((product.originalPrice - (product.discountedPrice ?? 0)) /
+          product.originalPrice) *
+        100
+      )
       : 0;
 
   const displayPrice = (product: Product) =>
@@ -46,10 +46,10 @@ export function FavoritesSheet() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <button className="relative p-2 text-[#003366] transition-colors group/nav-heart">
-          <Heart className="w-5 h-5 text-[#FF8BBA] fill-[#FF8BBA] transition-transform group-hover/nav-heart:scale-110" />
+        <button className="relative p-2 text-flora-dark transition-colors group/nav-heart">
+          <Heart className="w-5 h-5 text-primary fill-primary transition-transform group-hover/nav-heart:scale-110" />
           {favorites.length > 0 && (
-            <span className="absolute top-0 right-0 bg-[#A78BFA] text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm group-hover/nav-heart:-translate-y-1 transition-transform">
+            <span className="absolute top-0 right-0 bg-flora-purple text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm group-hover/nav-heart:-translate-y-1 transition-transform">
               {favorites.length}
             </span>
           )}
@@ -60,22 +60,21 @@ export function FavoritesSheet() {
         className="w-full sm:w-[500px] overflow-y-auto"
       >
         <SheetHeader className="pb-4">
-          <SheetTitle className="text-2xl font-black text-[#003366]">
+          <SheetTitle className="text-2xl font-black text-flora-dark">
             ✨ Your Favorites
           </SheetTitle>
           <SheetDescription>
             {favorites.length === 0
               ? "No favorite items yet. Start adding treasures!"
-              : `${favorites.length} item${
-                  favorites.length > 1 ? "s" : ""
-                } saved`}
+              : `${favorites.length} item${favorites.length > 1 ? "s" : ""
+              } saved`}
           </SheetDescription>
         </SheetHeader>
 
         {favorites.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center mb-4">
-              <Heart className="w-8 h-8 text-[#FF8BBA] fill-[#FF8BBA]" />
+              <Heart className="w-8 h-8 text-primary fill-primary" />
             </div>
             <p className="text-gray-500 font-semibold mb-2">No favorites yet</p>
             <p className="text-sm text-gray-400">
@@ -116,7 +115,7 @@ export function FavoritesSheet() {
                 <div className="flex-1 flex flex-col justify-between min-w-0">
                   <div>
                     <Link href={`/product/${product.id}`}>
-                      <h3 className="font-bold text-[#003366] line-clamp-2 hover:text-[#FF8BBA] transition-colors">
+                      <h3 className="font-bold text-flora-dark line-clamp-2 hover:text-primary transition-colors">
                         {product.name}
                       </h3>
                     </Link>
@@ -132,7 +131,7 @@ export function FavoritesSheet() {
                         {product.originalPrice.toFixed(2)}
                       </span>
                     )}
-                    <span className="font-black text-[#FF8BBA]">
+                    <span className="font-black text-primary">
                       {displayPrice(product).toFixed(2)}
                     </span>
                     <span className="text-xs text-gray-400">DT</span>
@@ -152,7 +151,7 @@ export function FavoritesSheet() {
 
             {/* View All Button */}
             <Link href="/favorites" className="block pt-4">
-              <Button className="w-full bg-[#FF8BBA] hover:bg-[#FF75AA] text-white rounded-full font-bold h-12">
+              <Button className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full font-bold h-12">
                 View All Favorites →
               </Button>
             </Link>

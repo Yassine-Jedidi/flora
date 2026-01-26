@@ -190,7 +190,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
               <Calculator className="w-5 h-5 text-pink-500" />
             </div>
             <div>
-              <CardTitle className="text-[#003366] text-xl">
+              <CardTitle className="text-flora-dark text-xl">
                 Profit & Risk Simulator
               </CardTitle>
               <CardDescription>
@@ -211,7 +211,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
           {/* Inputs Section */}
           <div className="space-y-4 md:space-y-6">
             <div className="space-y-2">
-              <Label className="text-[#003366] font-bold">
+              <Label className="text-flora-dark font-bold">
                 Select Product (Optional)
               </Label>
               <select
@@ -230,7 +230,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-[#003366] font-bold flex items-center gap-2">
+                <Label className="text-flora-dark font-bold flex items-center gap-2">
                   <DollarSign className="w-3 h-3" /> Selling Price
                 </Label>
                 <Input
@@ -238,7 +238,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                   step="0.001"
                   value={sellingPrice}
                   onChange={(e) => setSellingPrice(e.target.value)}
-                  className="font-bold text-[#003366]"
+                  className="font-bold text-flora-dark"
                 />
                 {buyingPrice && parseFloat(buyingPrice) > 0 && (
                   <Button
@@ -276,7 +276,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                 )}
               </div>
               <div className="space-y-2">
-                <Label className="text-[#003366] font-bold flex items-center gap-2">
+                <Label className="text-flora-dark font-bold flex items-center gap-2">
                   <DollarSign className="w-3 h-3" /> Buying Price
                 </Label>
                 <Input
@@ -316,7 +316,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
 
             <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-100">
               <div className="space-y-0.5">
-                <Label className="text-[#003366] font-bold">
+                <Label className="text-flora-dark font-bold">
                   Livraison Gratuite
                 </Label>
                 <p className="text-xs text-gray-500">
@@ -356,7 +356,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
 
             <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-100">
               <div className="space-y-0.5">
-                <Label className="text-[#003366] font-bold">
+                <Label className="text-flora-dark font-bold">
                   Was returned before?
                 </Label>
                 <p className="text-xs text-gray-500">
@@ -369,7 +369,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
 
           {/* Results Section */}
           <div className="bg-gradient-to-br from-pink-50/50 to-white p-4 md:p-6 rounded-3xl border border-pink-100 flex flex-col justify-center space-y-4 md:space-y-6">
-            <h3 className="text-lg font-black text-[#003366] text-center mb-2 flex items-center justify-center gap-2">
+            <h3 className="text-lg font-black text-flora-dark text-center mb-2 flex items-center justify-center gap-2">
               <TrendingUp className="w-5 h-5 text-pink-500" /> Results Scenarios
             </h3>
 
@@ -514,7 +514,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
         </CardContent>
       </Card>
 
-      <div className="bg-purple-50/50 p-4 rounded-xl border border-purple-100 text-sm text-[#003366] flex gap-3">
+      <div className="bg-purple-50/50 p-4 rounded-xl border border-purple-100 text-sm text-flora-dark flex gap-3">
         <div className="p-1 bg-purple-100 rounded-full w-fit h-fit shrink-0">
           <DollarSign className="w-4 h-4 text-purple-600" />
         </div>

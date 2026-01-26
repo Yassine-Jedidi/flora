@@ -84,7 +84,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <button className="lg:hidden rounded-full bg-pink-50 p-2 text-[#3E343C] hover:bg-pink-100 transition-colors">
+              <button className="lg:hidden rounded-full bg-pink-50 p-2 text-flora-dark hover:bg-pink-100 transition-colors">
                 <Menu className="h-4 w-4" />
               </button>
             </SheetTrigger>
@@ -109,8 +109,8 @@ export function Navbar() {
                     href="/shop"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/shop"
-                      ? "text-[#FF8BBA]"
-                      : "text-[#3E343C] hover:text-[#FF8BBA]"
+                      ? "text-primary"
+                      : "text-flora-dark hover:text-primary"
                       }`}
                   >
                     Shop All
@@ -119,8 +119,8 @@ export function Navbar() {
                     href="/rings"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/rings"
-                      ? "text-[#FF8BBA]"
-                      : "text-[#3E343C] hover:text-[#FF8BBA]"
+                      ? "text-primary"
+                      : "text-flora-dark hover:text-primary"
                       }`}
                   >
                     Rings
@@ -129,8 +129,8 @@ export function Navbar() {
                     href="/bracelets"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/bracelets"
-                      ? "text-[#FF8BBA]"
-                      : "text-[#3E343C] hover:text-[#FF8BBA]"
+                      ? "text-primary"
+                      : "text-flora-dark hover:text-primary"
                       }`}
                   >
                     Bracelets
@@ -139,8 +139,8 @@ export function Navbar() {
                     href="/necklaces"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/necklaces"
-                      ? "text-[#FF8BBA]"
-                      : "text-[#3E343C] hover:text-[#FF8BBA]"
+                      ? "text-primary"
+                      : "text-flora-dark hover:text-primary"
                       }`}
                   >
                     Necklaces
@@ -149,8 +149,8 @@ export function Navbar() {
                     href="/earrings"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 ${pathname === "/earrings"
-                      ? "text-[#FF8BBA]"
-                      : "text-[#3E343C] hover:text-[#FF8BBA]"
+                      ? "text-primary"
+                      : "text-flora-dark hover:text-primary"
                       }`}
                   >
                     Earrings
@@ -159,12 +159,12 @@ export function Navbar() {
                     href="/packs"
                     onClick={() => setMobileMenuOpen(false)}
                     className={`text-sm font-bold transition-colors uppercase tracking-widest py-2 flex items-center gap-2 ${pathname === "/packs"
-                      ? "text-[#FF8BBA]"
-                      : "text-[#3E343C] hover:text-[#FF8BBA]"
+                      ? "text-primary"
+                      : "text-flora-dark hover:text-primary"
                       }`}
                   >
                     Packs
-                    <span className="bg-[#A78BFA] text-white text-[8px] px-2 py-0.5 rounded-full animate-pulse">
+                    <span className="bg-flora-purple text-white text-[8px] px-2 py-0.5 rounded-full animate-pulse">
                       SAVE BIG
                     </span>
                   </Link>
@@ -255,10 +255,10 @@ export function Navbar() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-bold text-[#3E343C] truncate group-hover:text-[#FF8BBA] transition-colors">
+                        <h4 className="text-sm font-bold text-flora-dark truncate group-hover:text-primary transition-colors">
                           {product.name}
                         </h4>
-                        <p className="text-xs font-black text-[#FF8BBA]">
+                        <p className="text-xs font-black text-primary">
                           {(product.discountedPrice || product.originalPrice).toFixed(2)} DT
                         </p>
                       </div>
@@ -270,7 +270,7 @@ export function Navbar() {
                   onClick={() => setShowDropdown(false)}
                   className="block bg-pink-50/30 p-3 border-t border-pink-100/50 hover:bg-pink-50 transition-colors"
                 >
-                  <p className="text-[10px] text-center font-bold text-[#FF8BBA] uppercase tracking-widest">
+                  <p className="text-[10px] text-center font-bold text-primary uppercase tracking-widest">
                     Press enter to see all results
                   </p>
                 </Link>
@@ -289,8 +289,8 @@ export function Navbar() {
             <Link
               href="/shop"
               className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/shop"
-                ? "text-[#FF8BBA]"
-                : "text-[#3E343C] hover:text-[#FF8BBA]"
+                ? "text-primary"
+                : "text-flora-dark hover:text-primary"
                 }`}
             >
               Shop All
@@ -298,8 +298,8 @@ export function Navbar() {
             <Link
               href="/rings"
               className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/rings"
-                ? "text-[#FF8BBA]"
-                : "text-[#3E343C] hover:text-[#FF8BBA]"
+                ? "text-primary"
+                : "text-flora-dark hover:text-primary"
                 }`}
             >
               Rings
@@ -307,8 +307,8 @@ export function Navbar() {
             <Link
               href="/bracelets"
               className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/bracelets"
-                ? "text-[#FF8BBA]"
-                : "text-[#3E343C] hover:text-[#FF8BBA]"
+                ? "text-primary"
+                : "text-flora-dark hover:text-primary"
                 }`}
             >
               Bracelets
@@ -316,8 +316,8 @@ export function Navbar() {
             <Link
               href="/necklaces"
               className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/necklaces"
-                ? "text-[#FF8BBA]"
-                : "text-[#3E343C] hover:text-[#FF8BBA]"
+                ? "text-primary"
+                : "text-flora-dark hover:text-primary"
                 }`}
             >
               Necklaces
@@ -325,8 +325,8 @@ export function Navbar() {
             <Link
               href="/earrings"
               className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/earrings"
-                ? "text-[#FF8BBA]"
-                : "text-[#3E343C] hover:text-[#FF8BBA]"
+                ? "text-primary"
+                : "text-flora-dark hover:text-primary"
                 }`}
             >
               Earrings
@@ -334,13 +334,13 @@ export function Navbar() {
             <Link
               href="/packs"
               className={`relative flex items-center gap-1 text-xs font-bold transition-all uppercase tracking-widest group/packs ${pathname === "/packs"
-                ? "text-[#FF8BBA]"
-                : "text-[#3E343C] hover:text-[#A78BFA]"
+                ? "text-primary"
+                : "text-flora-dark hover:text-flora-purple"
                 }`}
             >
-              <Gift className={`w-3.5 h-3.5 transition-transform group-hover/packs:scale-110 ${pathname === "/packs" ? "text-[#FF8BBA]" : "text-[#A78BFA]"}`} />
+              <Gift className={`w-3.5 h-3.5 transition-transform group-hover/packs:scale-110 ${pathname === "/packs" ? "text-primary" : "text-flora-purple"}`} />
               Packs
-              <span className="absolute -top-4 -right-2 bg-[#A78BFA] text-white text-[7px] font-black px-1.5 py-0.5 rounded-full shadow-sm transition-transform group-hover/packs:-translate-y-1">
+              <span className="absolute -top-4 -right-2 bg-flora-purple text-white text-[7px] font-black px-1.5 py-0.5 rounded-full shadow-sm transition-transform group-hover/packs:-translate-y-1">
                 GIFT
               </span>
             </Link>
@@ -364,14 +364,14 @@ export function Navbar() {
             {/* Mobile Search Button */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden rounded-full bg-pink-50 p-2 text-[#3E343C] hover:bg-pink-100 transition-colors"
+              className="md:hidden rounded-full bg-pink-50 p-2 text-flora-dark hover:bg-pink-100 transition-colors"
             >
               <Search className="h-4 w-4" />
             </button>
 
             <CartDropdown />
             <FavoritesSheet />
-            <button className="rounded-full bg-[#3E343C] p-2 text-white hover:bg-[#FF8BBA] transition-all duration-300 shadow-md">
+            <button className="rounded-full bg-[#3E343C] p-2 text-white hover:bg-primary transition-all duration-300 shadow-md">
               <User className="h-4 w-4" />
             </button>
           </div>
@@ -438,10 +438,10 @@ export function Navbar() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-sm font-bold text-[#3E343C] truncate group-hover:text-[#FF8BBA] transition-colors">
+                          <h4 className="text-sm font-bold text-flora-dark truncate group-hover:text-primary transition-colors">
                             {product.name}
                           </h4>
-                          <p className="text-xs font-black text-[#FF8BBA]">
+                          <p className="text-xs font-black text-primary">
                             {(product.discountedPrice || product.originalPrice).toFixed(2)} DT
                           </p>
                         </div>

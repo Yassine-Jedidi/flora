@@ -10,7 +10,7 @@ export function ProductUpload() {
     return (
         <div className="flex flex-col items-center gap-6 p-8 border-2 border-dashed border-pink-200 rounded-2xl bg-pink-50/30">
             <div className="text-center">
-                <h3 className="text-xl font-semibold text-[#003366]">Upload Product Images</h3>
+                <h3 className="text-xl font-semibold text-[#3E343C]">Upload Product Images</h3>
                 <p className="text-sm text-gray-500">Pick the cutest photos of your accessories (up to 4)</p>
             </div>
 
@@ -30,7 +30,7 @@ export function ProductUpload() {
                 appearance={{
                     button: "bg-[#FF8BBA] hover:bg-[#FF75AA] rounded-full px-6 transition-all",
                     allowedContent: "text-pink-400 font-medium",
-                    label: "text-[#003366] font-semibold hover:text-pink-600",
+                    label: "text-[#3E343C] font-semibold hover:text-pink-600",
                     container: "bg-white border-pink-100",
                 }}
             />

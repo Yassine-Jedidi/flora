@@ -297,7 +297,7 @@ export function PackForm({
         <Card className="relative overflow-hidden border-pink-100 shadow-xl shadow-pink-100/20 rounded-3xl">
             <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
                 <CardHeader className="pb-8">
-                    <CardTitle className="text-2xl font-bold text-[#003366] flex items-center gap-2">
+                    <CardTitle className="text-2xl font-bold text-flora-dark flex items-center gap-2">
                         <Package className="w-6 h-6" />
                         {initialData ? "Edit Pack ✨" : "Create New Pack"}
                     </CardTitle>
@@ -311,7 +311,7 @@ export function PackForm({
                         {/* Main Details */}
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <Label htmlFor="name" className="text-[#003366] font-bold">
+                                <Label htmlFor="name" className="text-flora-dark font-bold">
                                     Pack Name
                                 </Label>
                                 <Input
@@ -324,7 +324,7 @@ export function PackForm({
 
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                    <Label htmlFor="description" className="text-[#003366] font-bold">
+                                    <Label htmlFor="description" className="text-flora-dark font-bold">
                                         Description
                                     </Label>
                                     <Button
@@ -333,7 +333,7 @@ export function PackForm({
                                         size="sm"
                                         onClick={handleAIByDescription}
                                         disabled={isEnhancing}
-                                        className="h-8 text-[10px] font-black uppercase tracking-tighter text-[#A78BFA] hover:text-[#8B5CF6] hover:bg-purple-50 transition-all gap-1.5"
+                                        className="h-8 text-[10px] font-black uppercase tracking-tighter text-flora-purple hover:text-[#8B5CF6] hover:bg-purple-50 transition-all gap-1.5"
                                     >
                                         {isEnhancing ? (
                                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -356,7 +356,7 @@ export function PackForm({
 
                         {/* Right Column: Images */}
                         <div className="space-y-6">
-                            <Label className="text-[#003366] font-bold">
+                            <Label className="text-flora-dark font-bold">
                                 Pack Photography
                             </Label>
 
@@ -405,14 +405,14 @@ export function PackForm({
                                                 }
                                             `}
                                         >
-                                            <div className="bg-pink-100 p-3 rounded-full mb-3 text-[#FF8BBA] group-hover:scale-110 transition-transform">
+                                            <div className="bg-pink-100 p-3 rounded-full mb-3 text-primary group-hover:scale-110 transition-transform">
                                                 {isUploading ? (
                                                     <Loader2 className="w-6 h-6 animate-spin" />
                                                 ) : (
                                                     <Plus className="w-6 h-6" />
                                                 )}
                                             </div>
-                                            <p className="text-xs font-bold text-[#003366]">
+                                            <p className="text-xs font-bold text-flora-dark">
                                                 {isUploading ? "Uploading..." : "Add Photo ✨"}
                                             </p>
                                             <p className="text-[10px] text-pink-400 mt-1">
@@ -437,25 +437,25 @@ export function PackForm({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
                                 <div className="space-y-0.5">
-                                    <Label className="text-sm font-bold text-[#003366]">Featured</Label>
+                                    <Label className="text-sm font-bold text-flora-dark">Featured</Label>
                                     <p className="text-[10px] text-gray-500">Home page visibility</p>
                                 </div>
                                 <Switch
                                     checked={form.watch("isFeatured")}
                                     onCheckedChange={(checked) => form.setValue("isFeatured", checked)}
-                                    className="data-[state=checked]:bg-[#FF8BBA]"
+                                    className="data-[state=checked]:bg-primary"
                                 />
                             </div>
 
                             <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
                                 <div className="space-y-0.5">
-                                    <Label className="text-sm font-bold text-[#003366]">Live</Label>
+                                    <Label className="text-sm font-bold text-flora-dark">Live</Label>
                                     <p className="text-[10px] text-gray-500">Website visibility</p>
                                 </div>
                                 <Switch
                                     checked={form.watch("isLive")}
                                     onCheckedChange={(checked) => form.setValue("isLive", checked)}
-                                    className="data-[state=checked]:bg-[#A78BFA]"
+                                    className="data-[state=checked]:bg-flora-purple"
                                 />
                             </div>
                         </div>
@@ -481,7 +481,7 @@ export function PackForm({
                                     <Badge variant="outline" className="text-[9px] bg-white text-blue-500 border-blue-100">AUTO-SUM</Badge>
                                 </div>
                                 <div className="relative">
-                                    <p className="text-2xl font-bold text-[#003366]">
+                                    <p className="text-2xl font-bold text-flora-dark">
                                         {shopValue.toFixed(3)}
                                         <span className="text-sm text-blue-400 font-bold ml-1">DT</span>
                                     </p>
@@ -510,7 +510,7 @@ export function PackForm({
                                             setIsManualPricing(true);
                                             form.setValue("discountedPrice", Number(e.target.value));
                                         }}
-                                        className="text-2xl font-bold text-[#003366] bg-transparent border-none p-0 focus-visible:ring-0 h-auto"
+                                        className="text-2xl font-bold text-flora-dark bg-transparent border-none p-0 focus-visible:ring-0 h-auto"
                                     />
                                     <span className="absolute right-0 top-1/2 -translate-y-1/2 text-sm text-green-400 font-bold">DT</span>
                                 </div>
@@ -518,7 +518,7 @@ export function PackForm({
 
                             <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex flex-col justify-between">
                                 <p className="text-xs font-bold text-amber-600 uppercase mb-1">Dynamic Stock</p>
-                                <p className="text-2xl font-bold text-[#003366] flex items-center gap-2">
+                                <p className="text-2xl font-bold text-flora-dark flex items-center gap-2">
                                     {typeof currentStock === 'number' ? currentStock : 0}
                                     <Badge variant="outline" className="text-[10px] bg-white text-amber-500 border-amber-100">AUTO</Badge>
                                 </p>
@@ -530,7 +530,7 @@ export function PackForm({
                     <div className="pt-10 border-t border-pink-50 space-y-6">
                         <div className="flex items-center justify-between border-b pb-4">
                             <div>
-                                <Label className="text-[#003366] font-bold text-lg">
+                                <Label className="text-flora-dark font-bold text-lg">
                                     📦 Pack Contents
                                 </Label>
                                 <p className="text-xs text-gray-500 mt-1">
@@ -570,7 +570,7 @@ export function PackForm({
                                             <div className="flex-1 space-y-4">
                                                 <div className="grid grid-cols-1 md:grid-cols-[4fr_1fr] gap-4">
                                                     <div className="space-y-2">
-                                                        <Label className="text-xs font-bold text-[#003366] uppercase tracking-wider">Product</Label>
+                                                        <Label className="text-xs font-bold text-flora-dark uppercase tracking-wider">Product</Label>
                                                         <Select
                                                             onValueChange={(value) => {
                                                                 form.setValue(`packItems.${index}.itemId`, value);
@@ -595,7 +595,7 @@ export function PackForm({
                                                         </Select>
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <Label className="text-xs font-bold text-[#003366] uppercase tracking-wider">Qty</Label>
+                                                        <Label className="text-xs font-bold text-flora-dark uppercase tracking-wider">Qty</Label>
                                                         <Input
                                                             type="number"
                                                             min="1"
@@ -618,8 +618,8 @@ export function PackForm({
 
                                                 {product && (
                                                     <div className="flex items-center justify-between text-xs px-2 py-1 bg-gray-50 rounded-lg">
-                                                        <span className="text-gray-500">Unit Price: <span className="font-bold text-[#003366]">{Number(product.discountedPrice).toFixed(3)} DT</span></span>
-                                                        <span className="text-gray-500">Available: <span className="font-bold text-[#003366]">{product.stock}</span></span>
+                                                        <span className="text-gray-500">Unit Price: <span className="font-bold text-flora-dark">{Number(product.discountedPrice).toFixed(3)} DT</span></span>
+                                                        <span className="text-gray-500">Available: <span className="font-bold text-flora-dark">{product.stock}</span></span>
                                                     </div>
                                                 )}
                                             </div>
@@ -627,7 +627,7 @@ export function PackForm({
                                             {/* Product Images Preview */}
                                             {product && product.images && product.images.length > 0 && (
                                                 <div className="flex-none w-full md:w-48 space-y-2">
-                                                    <Label className="text-[10px] font-bold text-[#003366] uppercase tracking-wider">Product Visuals</Label>
+                                                    <Label className="text-[10px] font-bold text-flora-dark uppercase tracking-wider">Product Visuals</Label>
                                                     <div className="flex md:grid md:grid-cols-2 gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
                                                         {product.images.map((img: { url: string }, i: number) => (
                                                             <div key={i} className="relative w-16 h-16 md:w-full md:aspect-square rounded-xl overflow-hidden border border-pink-100 flex-none bg-[#FDF2F8]">
@@ -650,7 +650,7 @@ export function PackForm({
                             {fields.length === 0 && (
                                 <div className="text-center py-12 border-2 border-dashed border-pink-100 rounded-3xl bg-pink-50/10">
                                     <Package className="w-10 h-10 mx-auto text-pink-200 mb-3" />
-                                    <p className="text-sm text-[#003366] font-medium">Add products to build this pack</p>
+                                    <p className="text-sm text-flora-dark font-medium">Add products to build this pack</p>
                                 </div>
                             )}
                         </div>
@@ -662,14 +662,14 @@ export function PackForm({
                         type="button"
                         variant="ghost"
                         onClick={() => onCancel ? onCancel() : router.push("/admin/inventory")}
-                        className="rounded-full text-gray-400 hover:text-[#003366]"
+                        className="rounded-full text-gray-400 hover:text-flora-dark"
                     >
                         <RotateCcw className="w-4 h-4 mr-2" /> Cancel
                     </Button>
                     <Button
                         disabled={isPending || fields.length === 0}
                         type="submit"
-                        className="bg-[#FF8BBA] hover:bg-[#FF75AA] text-white px-10 py-6 rounded-full font-bold shadow-xl shadow-pink-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
+                        className="bg-primary hover:bg-[#FF75AA] text-white px-10 py-6 rounded-full font-bold shadow-xl shadow-pink-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
                     >
                         {isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : initialData ? <Save className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
                         {isPending ? "Saving Pack..." : initialData ? "Update Pack" : "Publish Pack"}

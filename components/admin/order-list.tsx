@@ -44,22 +44,22 @@ export function OrderList({ orders, pagination }: OrderListProps) {
             {/* ... Table Header ... */}
             <TableHeader className="bg-pink-50/50">
               <TableRow className="hover:bg-transparent border-pink-100">
-                <TableHead className="font-bold text-[#003366] text-xs md:text-sm">
+                <TableHead className="font-bold text-flora-dark text-xs md:text-sm">
                   Date & Time
                 </TableHead>
-                <TableHead className="font-bold text-[#003366] text-xs md:text-sm">
+                <TableHead className="font-bold text-flora-dark text-xs md:text-sm">
                   Customer
                 </TableHead>
-                <TableHead className="hidden lg:table-cell font-bold text-[#003366] text-xs md:text-sm">
+                <TableHead className="hidden lg:table-cell font-bold text-flora-dark text-xs md:text-sm">
                   Items (Qty x Price)
                 </TableHead>
-                <TableHead className="font-bold text-[#003366] text-xs md:text-sm">
+                <TableHead className="font-bold text-flora-dark text-xs md:text-sm">
                   Total
                 </TableHead>
-                <TableHead className="hidden md:table-cell font-bold text-[#003366] text-xs md:text-sm">
+                <TableHead className="hidden md:table-cell font-bold text-flora-dark text-xs md:text-sm">
                   Location
                 </TableHead>
-                <TableHead className="font-bold text-[#003366] text-xs md:text-sm">
+                <TableHead className="font-bold text-flora-dark text-xs md:text-sm">
                   Status
                 </TableHead>
               </TableRow>
@@ -92,7 +92,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-bold text-[#003366]">
+                        <span className="font-bold text-flora-dark">
                           {order.fullName}
                         </span>
                         <span className="text-xs text-gray-400">
@@ -117,7 +117,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                         ))}
                       </div>
                     </TableCell>
-                    <TableCell className="font-bold text-[#FF8BBA] text-xs md:text-sm px-2 md:px-4 py-3 md:py-4">
+                    <TableCell className="font-bold text-primary text-xs md:text-sm px-2 md:px-4 py-3 md:py-4">
                       {Number(order.totalPrice).toFixed(2)} DT
                     </TableCell>
                     <TableCell>
@@ -155,14 +155,14 @@ export function OrderList({ orders, pagination }: OrderListProps) {
             size="sm"
             onClick={() => handlePageChange(pagination.currentPage - 1)}
             disabled={pagination.currentPage <= 1}
-            className="rounded-full border-pink-100 text-[#003366] hover:bg-pink-50 hover:text-[#FF8BBA]"
+            className="rounded-full border-pink-100 text-flora-dark hover:bg-pink-50 hover:text-primary"
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
             Previous
           </Button>
           <div className="text-sm font-medium text-gray-500">
             Page{" "}
-            <span className="text-[#003366] font-bold">
+            <span className="text-flora-dark font-bold">
               {pagination.currentPage}
             </span>{" "}
             of {pagination.totalPages}
@@ -172,7 +172,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
             size="sm"
             onClick={() => handlePageChange(pagination.currentPage + 1)}
             disabled={pagination.currentPage >= pagination.totalPages}
-            className="rounded-full border-pink-100 text-[#003366] hover:bg-pink-50 hover:text-[#FF8BBA]"
+            className="rounded-full border-pink-100 text-flora-dark hover:bg-pink-50 hover:text-primary"
           >
             Next
             <ChevronRight className="h-4 w-4 ml-1" />

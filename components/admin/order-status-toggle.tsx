@@ -92,11 +92,11 @@ export function OrderStatusToggle({ orderId, currentStatus }: OrderStatusToggleP
                     <SelectItem
                         key={status}
                         value={status}
-                        className="focus:bg-pink-50 focus:text-[#003366] cursor-pointer py-2 px-4"
+                        className="focus:bg-pink-50 focus:text-[#3E343C] cursor-pointer py-2 px-4"
                     >
                         <div className="flex items-center gap-2">
                             <div className={`w-2 h-2 rounded-full ${config.className.split(' ')[0]}`} />
-                            <span className="text-xs font-bold text-[#003366] uppercase tracking-wider">
+                            <span className="text-xs font-bold text-[#3E343C] uppercase tracking-wider">
                                 {config.label}
                             </span>
                         </div>

@@ -49,8 +49,8 @@ export function AdminNav() {
                             className={cn(
                                 "flex items-center justify-center rounded-full px-3 sm:px-4 md:px-6 h-full transition-all font-bold whitespace-nowrap text-xs sm:text-sm",
                                 isActive
-                                    ? "bg-[#FF8BBA] text-white shadow-md"
-                                    : "text-[#003366] hover:bg-pink-50"
+                                    ? "bg-primary text-white shadow-md"
+                                    : "text-flora-dark hover:bg-pink-50"
                             )}
                         >
                             <item.icon className="w-4 h-4 sm:mr-2" />

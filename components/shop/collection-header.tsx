@@ -15,7 +15,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
             <div
                 className="absolute inset-0 opacity-[0.2]"
                 style={{
-                    backgroundImage: `radial-gradient(#FF8BBA 1px, transparent 1px)`,
+                    backgroundImage: `radial-gradient(var(--primary) 1px, transparent 1px)`,
                     backgroundSize: '32px 32px'
                 }}
             />
@@ -73,7 +73,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
                         transition={{ duration: 0.6 }}
                         className="mb-8"
                     >
-                        <span className="px-5 py-1.5 rounded-full bg-pink-50/50 text-[#FF8BBA] text-[10px] font-black uppercase tracking-[0.3em] border border-pink-100/30">
+                        <span className="px-5 py-1.5 rounded-full bg-pink-50/50 text-primary text-[10px] font-black uppercase tracking-[0.3em] border border-pink-100/30">
                             Exclusive Treasures
                         </span>
                     </motion.div>
@@ -85,7 +85,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, delay: 0.1 }}
-                                className="text-[#3E343C] relative"
+                                className="text-flora-dark relative"
                             >
                                 {title}
                             </motion.span>
@@ -94,7 +94,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true }:
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.8, delay: 0.2 }}
-                                    className="text-[#FF8BBA] drop-shadow-sm whitespace-nowrap"
+                                    className="text-primary drop-shadow-sm whitespace-nowrap"
                                 >
                                     Collection
                                 </motion.span>

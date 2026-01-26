@@ -217,7 +217,7 @@ export function ProductForm({
 
       <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
         <CardHeader className="pb-8">
-          <CardTitle className="text-2xl font-bold text-[#003366]">
+          <CardTitle className="text-2xl font-bold text-flora-dark">
             {initialData ? "Refine Your Treasure ✨" : "Listing Details"}
           </CardTitle>
           <CardDescription>
@@ -232,7 +232,7 @@ export function ProductForm({
             {/* Left Column: Details */}
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-[#003366] font-bold">
+                <Label htmlFor="name" className="text-flora-dark font-bold">
                   Product Name
                 </Label>
                 <Input
@@ -252,7 +252,7 @@ export function ProductForm({
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="description"
-                    className="text-[#003366] font-bold"
+                    className="text-flora-dark font-bold"
                   >
                     Description
                   </Label>
@@ -262,7 +262,7 @@ export function ProductForm({
                     size="sm"
                     onClick={handleAIByDescription}
                     disabled={isEnhancing}
-                    className="h-8 text-[10px] font-black uppercase tracking-tighter text-[#A78BFA] hover:text-[#8B5CF6] hover:bg-purple-50 transition-all gap-1.5"
+                    className="h-8 text-[10px] font-black uppercase tracking-tighter text-flora-purple hover:text-[#8B5CF6] hover:bg-purple-50 transition-all gap-1.5"
                   >
                     {isEnhancing ? (
                       <Loader2 className="w-3 h-3 animate-spin" />
@@ -289,7 +289,7 @@ export function ProductForm({
               {/* Pricing Section with Discount */}
               <div className="space-y-4 p-4 rounded-2xl bg-gradient-to-br from-pink-50/50 to-purple-50/30 border border-pink-100/50">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm font-bold text-[#003366]">
+                  <span className="text-sm font-bold text-flora-dark">
                     💰 Pricing & Discounts
                   </span>
                 </div>
@@ -298,7 +298,7 @@ export function ProductForm({
                   <div className="space-y-2">
                     <Label
                       htmlFor="discountedPrice"
-                      className="text-[#003366] font-bold"
+                      className="text-flora-dark font-bold"
                     >
                       Sale Price (DT){" "}
                       {discountPercent && discountPercent > 0 && (
@@ -328,7 +328,7 @@ export function ProductForm({
                   <div className="space-y-2">
                     <Label
                       htmlFor="discountPercent"
-                      className="text-[#003366] font-bold"
+                      className="text-flora-dark font-bold"
                     >
                       Discount %
                     </Label>
@@ -351,7 +351,7 @@ export function ProductForm({
                 <div className="space-y-2">
                   <Label
                     htmlFor="originalPrice"
-                    className="text-[#003366] font-bold"
+                    className="text-flora-dark font-bold"
                   >
                     Original Price (DT)
                   </Label>
@@ -375,7 +375,7 @@ export function ProductForm({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="stock" className="text-[#003366] font-bold">
+                <Label htmlFor="stock" className="text-flora-dark font-bold">
                   Initial Stock
                 </Label>
                 <Input
@@ -387,7 +387,7 @@ export function ProductForm({
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[#003366] font-bold">Category</Label>
+                <Label className="text-flora-dark font-bold">Category</Label>
                 <Select
                   onValueChange={(value) =>
                     form.setValue("categoryId", value, { shouldValidate: true })
@@ -419,7 +419,7 @@ export function ProductForm({
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
                   <div className="space-y-0.5">
-                    <Label className="text-sm font-bold text-[#003366]">
+                    <Label className="text-sm font-bold text-flora-dark">
                       Featured
                     </Label>
                     <p className="text-[10px] text-gray-500">
@@ -431,13 +431,13 @@ export function ProductForm({
                     onCheckedChange={(checked) =>
                       form.setValue("isFeatured", checked)
                     }
-                    className="data-[state=checked]:bg-[#FF8BBA]"
+                    className="data-[state=checked]:bg-primary"
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
                   <div className="space-y-0.5">
-                    <Label className="text-sm font-bold text-[#003366]">
+                    <Label className="text-sm font-bold text-flora-dark">
                       Live
                     </Label>
                     <p className="text-[10px] text-gray-500">
@@ -449,7 +449,7 @@ export function ProductForm({
                     onCheckedChange={(checked) =>
                       form.setValue("isLive", checked)
                     }
-                    className="data-[state=checked]:bg-[#A78BFA]"
+                    className="data-[state=checked]:bg-flora-purple"
                   />
                 </div>
               </div>
@@ -457,7 +457,7 @@ export function ProductForm({
 
             {/* Right Column: Images */}
             <div className="space-y-6">
-              <Label className="text-[#003366] font-bold">
+              <Label className="text-flora-dark font-bold">
                 Product Photography
               </Label>
 
@@ -506,14 +506,14 @@ export function ProductForm({
                         }
                                             `}
                     >
-                      <div className="bg-pink-100 p-3 rounded-full mb-3 text-[#FF8BBA] group-hover:scale-110 transition-transform">
+                      <div className="bg-pink-100 p-3 rounded-full mb-3 text-primary group-hover:scale-110 transition-transform">
                         {isUploading ? (
                           <Loader2 className="w-6 h-6 animate-spin" />
                         ) : (
                           <Plus className="w-6 h-6" />
                         )}
                       </div>
-                      <p className="text-xs font-bold text-[#003366]">
+                      <p className="text-xs font-bold text-flora-dark">
                         {isUploading ? "Uploading..." : "Add Photo ✨"}
                       </p>
                       <p className="text-[10px] text-pink-400 mt-1">
@@ -552,7 +552,7 @@ export function ProductForm({
             <Button
               disabled={isPending}
               type="submit"
-              className="bg-[#FF8BBA] hover:bg-[#FF75AA] text-white px-8 py-2 rounded-full font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-70 h-auto text-sm"
+              className="bg-primary hover:bg-[#FF75AA] text-white px-8 py-2 rounded-full font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-70 h-auto text-sm"
             >
               {isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />

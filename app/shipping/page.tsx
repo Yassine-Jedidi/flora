@@ -11,7 +11,8 @@ import {
     Calendar,
     MessageSquare,
     HelpCircle,
-    Eye
+    Eye,
+    Instagram
 } from "lucide-react";
 import { Metadata } from "next";
 import { Price } from "@/components/shop/price";
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 export default function ShippingPage() {
     const deliveryFeatures = [
         {
-            icon: <Truck className="w-8 h-8 text-[#FF8BBA]" />,
+            icon: <Truck className="w-8 h-8 text-primary" />,
             title: "Flat Rate Shipping",
             description: (
                 <div className="flex flex-col gap-1">
@@ -35,7 +36,7 @@ export default function ShippingPage() {
             bg: "bg-pink-50"
         },
         {
-            icon: <Clock className="w-8 h-8 text-[#A78BFA]" />,
+            icon: <Clock className="w-8 h-8 text-flora-purple" />,
             title: "Fast Delivery",
             description: "Greater Tunis: 24-48h. Other regions (Sousse, Sfax, Gabes, etc.): 2-4 business days.",
             bg: "bg-purple-50"
@@ -81,16 +82,16 @@ export default function ShippingPage() {
         <div className="min-h-screen bg-white flex flex-col font-sans">
             <Navbar />
 
-            <main className="flex-1 pt-32 pb-20 text-[#003366]">
+            <main className="flex-1 pt-32 pb-20 text-flora-dark">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                     {/* Header Section */}
                     <div className="text-center max-w-3xl mx-auto mb-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
                         <div className="inline-flex items-center justify-center p-3 bg-pink-100/50 rounded-2xl mb-6">
-                            <Truck className="w-6 h-6 text-[#FF8BBA]" />
+                            <Truck className="w-6 h-6 text-primary" />
                         </div>
                         <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
-                            Shipping & <span className="text-[#FF8BBA]">Delivery</span>
+                            Shipping & <span className="text-primary">Delivery</span>
                         </h1>
                         <p className="text-lg text-gray-500 font-medium leading-relaxed">
                             We strive to deliver your Flora treasures as quickly and safely as possible.
@@ -122,7 +123,7 @@ export default function ShippingPage() {
                         <div className="space-y-10">
                             <div>
                                 <h2 className="text-3xl font-black mb-4 flex items-center gap-3">
-                                    <Calendar className="w-8 h-8 text-[#A78BFA]" />
+                                    <Calendar className="w-8 h-8 text-flora-purple" />
                                     Delivery Process
                                 </h2>
                                 <p className="text-gray-500 font-bold">
@@ -133,7 +134,7 @@ export default function ShippingPage() {
                             <div className="space-y-8 relative before:absolute before:left-[27px] before:top-7 before:bottom-7 before:w-0.5 before:bg-pink-100">
                                 {steps.map((step, idx) => (
                                     <div key={idx} className="flex gap-6 relative">
-                                        <div className="w-14 h-14 rounded-full bg-white border-4 border-pink-100 flex items-center justify-center shrink-0 z-10 shadow-sm text-[#FF8BBA]">
+                                        <div className="w-14 h-14 rounded-full bg-white border-4 border-pink-100 flex items-center justify-center shrink-0 z-10 shadow-sm text-primary">
                                             {step.icon}
                                         </div>
                                         <div className="pt-2">
@@ -151,14 +152,14 @@ export default function ShippingPage() {
                         <div className="bg-gray-50/50 rounded-[40px] p-10 border border-gray-100 space-y-8">
                             <div>
                                 <h2 className="text-3xl font-black mb-6 flex items-center gap-3">
-                                    <HelpCircle className="w-8 h-8 text-[#FF8BBA]" />
+                                    <HelpCircle className="w-8 h-8 text-primary" />
                                     Common Questions
                                 </h2>
 
                                 <div className="space-y-6">
                                     <div className="bg-white p-6 rounded-3xl shadow-sm border border-pink-50">
                                         <h4 className="font-black mb-2 flex items-center gap-2">
-                                            <Eye className="w-4 h-4 text-[#FF8BBA]" />
+                                            <Eye className="w-4 h-4 text-primary" />
                                             Can I open the package before paying?
                                         </h4>
                                         <p className="text-sm text-gray-500 font-medium">
@@ -169,7 +170,7 @@ export default function ShippingPage() {
 
                                     <div className="bg-white p-6 rounded-3xl shadow-sm border border-pink-50">
                                         <h4 className="font-black mb-2 flex items-center gap-2">
-                                            <MapPin className="w-4 h-4 text-[#FF8BBA]" />
+                                            <MapPin className="w-4 h-4 text-primary" />
                                             Do you ship to remote areas?
                                         </h4>
                                         <p className="text-sm text-gray-500 font-medium">
@@ -180,7 +181,7 @@ export default function ShippingPage() {
                             </div>
 
                             <div className="pt-6 border-t border-gray-100">
-                                <div className="flex items-center gap-4 bg-[#FF8BBA] p-6 rounded-3xl text-white shadow-lg shadow-pink-200/50 transform transition-transform hover:scale-[1.01]">
+                                <div className="flex items-center gap-4 bg-primary p-6 rounded-3xl text-white shadow-lg shadow-pink-200/50 transform transition-transform hover:scale-[1.01]">
                                     <div className="bg-white/20 p-3 rounded-2xl">
                                         <MessageSquare className="w-6 h-6" />
                                     </div>
@@ -192,8 +193,9 @@ export default function ShippingPage() {
                                         href="https://www.instagram.com/flora_.access/"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="ml-auto bg-white text-[#FF8BBA] px-6 py-2 rounded-full font-black text-xs hover:bg-pink-50 transition-colors"
+                                        className="ml-auto bg-white text-primary px-6 py-2 rounded-full font-black text-xs hover:bg-pink-50 transition-colors flex items-center gap-2"
                                     >
+                                        <Instagram className="w-4 h-4" />
                                         Contact
                                     </a>
                                 </div>
@@ -203,7 +205,7 @@ export default function ShippingPage() {
                     </div>
 
                     {/* Trust Seal */}
-                    <div className="mt-32 p-12 rounded-[50px] bg-[#A78BFA] text-white text-center relative overflow-hidden shadow-2xl shadow-purple-200/50">
+                    <div className="mt-32 p-12 rounded-[50px] bg-flora-purple text-white text-center relative overflow-hidden shadow-2xl shadow-purple-200/50">
                         <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -ml-32 -mt-32 blur-3xl" />
                         <div className="absolute bottom-0 right-0 w-64 h-64 bg-pink-400/20 rounded-full -mr-32 -mb-32 blur-3xl" />
 

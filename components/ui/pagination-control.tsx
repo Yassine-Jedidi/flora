@@ -54,7 +54,7 @@ export function PaginationControl({
                                         key={page}
                                         onClick={() => handlePageChange(page)}
                                         className={`w-10 h-10 rounded-full text-sm font-bold transition-all ${currentPage === page
-                                            ? "bg-[#FF8BBA] text-white shadow-md scale-110"
+                                            ? "bg-primary text-white shadow-md scale-110"
                                             : "bg-[#FFF5F8] text-[#8B7E84] hover:bg-pink-100"
                                             }`}
                                     >

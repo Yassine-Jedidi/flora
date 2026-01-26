@@ -179,7 +179,7 @@ export function ProductDetails({ product }: { product: Product }) {
                     e.preventDefault();
                     prevImage();
                   }}
-                  className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-[#FF8BBA] hover:scale-110 active:scale-95"
+                  className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-primary hover:scale-110 active:scale-95"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
@@ -188,7 +188,7 @@ export function ProductDetails({ product }: { product: Product }) {
                     e.preventDefault();
                     nextImage();
                   }}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-[#FF8BBA] hover:scale-110 active:scale-95"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl opacity-0 group-hover:opacity-100 transition-all z-20 text-primary hover:scale-110 active:scale-95"
                 >
                   <ChevronRight className="w-6 h-6" />
                 </button>
@@ -206,7 +206,7 @@ export function ProductDetails({ product }: { product: Product }) {
               {product.images.map((_, idx) => (
                 <div
                   key={idx}
-                  className={`h-2 rounded-full transition-all duration-500 ${selectedImage === idx ? "w-8 bg-[#FF8BBA]" : "w-2 bg-pink-200"
+                  className={`h-2 rounded-full transition-all duration-500 ${selectedImage === idx ? "w-8 bg-primary" : "w-2 bg-pink-200"
                     }`}
                 />
               ))}
@@ -221,7 +221,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   key={img.url}
                   onClick={() => setSelectedImage(index)}
                   className={`relative w-18 h-18 md:w-20 md:h-20 rounded-xl md:rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === index
-                    ? "border-[#FF8BBA] shadow-md scale-95"
+                    ? "border-primary shadow-md scale-95"
                     : "border-transparent hover:border-pink-200"
                     }`}
                 >
@@ -278,7 +278,7 @@ export function ProductDetails({ product }: { product: Product }) {
             </div>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-black text-[#3E343C] leading-tight tracking-tight break-words">
+          <h1 className="text-4xl md:text-5xl font-black text-flora-dark leading-tight tracking-tight break-words">
             {product.name}
           </h1>
 
@@ -349,20 +349,20 @@ export function ProductDetails({ product }: { product: Product }) {
               remarkPlugins={[remarkGfm]}
               components={{
                 p: ({ node, ...props }) => <p className="mb-3 last:mb-0 text-[17px] leading-[1.8]" {...props} />,
-                strong: ({ node, ...props }) => <strong className="font-black text-[#3E343C] tracking-tight" {...props} />,
+                strong: ({ node, ...props }) => <strong className="font-black text-flora-dark tracking-tight" {...props} />,
                 ul: ({ node, ...props }) => <ul className="space-y-2 mb-4 last:mb-0 ml-2" {...props} />,
                 li: ({ node, ...props }) => (
                   <li className="flex items-start gap-4 text-[16px]">
-                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[#FF8BBA] mt-2.5 shadow-[0_0_8px_rgba(255,139,186,0.6)]" />
+                    <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shadow-[0_0_8px_rgba(255,139,186,0.6)]" />
                     <span className="flex-1">{props.children}</span>
                   </li>
                 ),
-                h1: ({ node, ...props }) => <h1 className="text-2xl font-black text-[#3E343C] mb-4 mt-6 border-b-2 border-pink-50 pb-2" {...props} />,
-                h2: ({ node, ...props }) => <h2 className="text-xl font-black text-[#3E343C] mb-3 mt-6 flex items-center gap-2 group" {...props}>
-                  <div className="w-1 h-5 bg-[#FF8BBA] rounded-full" />
+                h1: ({ node, ...props }) => <h1 className="text-2xl font-black text-flora-dark mb-4 mt-6 border-b-2 border-pink-50 pb-2" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-xl font-black text-flora-dark mb-3 mt-6 flex items-center gap-2 group" {...props}>
+                  <div className="w-1 h-5 bg-primary rounded-full" />
                   {props.children}
                 </h2>,
-                h3: ({ node, ...props }) => <h3 className="text-lg font-black text-[#3E343C] mb-2 mt-4" {...props} />,
+                h3: ({ node, ...props }) => <h3 className="text-lg font-black text-flora-dark mb-2 mt-4" {...props} />,
                 hr: ({ node, ...props }) => <hr className="my-6 border-t border-pink-100/50" {...props} />,
               }}
             >
@@ -375,7 +375,7 @@ export function ProductDetails({ product }: { product: Product }) {
           {/* Pack Contents */}
           {product.packItems && product.packItems.length > 0 && (
             <div className="space-y-4 pb-6 border-b border-dotted border-pink-100">
-              <h3 className="text-lg font-black text-[#3E343C]">This Pack Includes:</h3>
+              <h3 className="text-lg font-black text-flora-dark">This Pack Includes:</h3>
               <div className="space-y-3">
                 {product.packItems.map((packItem) => (
                   <Link
@@ -399,7 +399,7 @@ export function ProductDetails({ product }: { product: Product }) {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-[#3E343C] group-hover:text-[#FF8BBA] transition-colors truncate">
+                      <p className="text-sm font-bold text-flora-dark group-hover:text-primary transition-colors truncate">
                         {packItem.item.name}
                       </p>
                       <div className="flex items-center gap-2">
@@ -411,7 +411,7 @@ export function ProductDetails({ product }: { product: Product }) {
                           price={packItem.item.discountedPrice || packItem.item.originalPrice}
                           originalPrice={packItem.item.discountedPrice ? packItem.item.originalPrice : undefined}
                           size="xs"
-                          color="text-[#FF8BBA]"
+                          color="text-primary"
                           className="flex-nowrap"
                         />
                       </div>
@@ -436,11 +436,11 @@ export function ProductDetails({ product }: { product: Product }) {
                   const current = form.getValues("quantity");
                   if (current > 1) form.setValue("quantity", current - 1);
                 }}
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-pink-50 text-gray-400 hover:text-[#FF8BBA] transition-all active:scale-90"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-pink-50 text-gray-400 hover:text-primary transition-all active:scale-90"
               >
                 <Minus className="w-4 h-4" />
               </button>
-              <span className="w-6 text-center text-lg font-black text-[#A78BFA]">
+              <span className="w-6 text-center text-lg font-black text-flora-purple">
                 {quantity}
               </span>
               <button
@@ -451,7 +451,7 @@ export function ProductDetails({ product }: { product: Product }) {
                     form.setValue("quantity", current + 1);
                   }
                 }}
-                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-pink-50 text-gray-400 hover:text-[#FF8BBA] transition-all active:scale-90"
+                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-pink-50 text-gray-400 hover:text-primary transition-all active:scale-90"
               >
                 <Plus className="w-4 h-4" />
               </button>
@@ -463,7 +463,7 @@ export function ProductDetails({ product }: { product: Product }) {
             <Button
               type="button"
               onClick={onAddToCart}
-              className="h-14 rounded-2xl bg-[#A78BFA] hover:bg-[#8B5CF6] text-white text-base font-black shadow-lg shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight"
+              className="h-14 rounded-2xl bg-flora-purple hover:bg-[#8B5CF6] text-white text-base font-black shadow-lg shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight"
             >
               Add to Cart ✨
             </Button>
@@ -471,10 +471,10 @@ export function ProductDetails({ product }: { product: Product }) {
             <Button
               type="button"
               onClick={() => toggleFavorite(product)}
-              className="h-11 rounded-2xl bg-white border-2 border-pink-100 text-[#FF8BBA] hover:bg-pink-50 text-xs font-black transition-all hover:scale-[1.02] active:scale-95 gap-3"
+              className="h-11 rounded-2xl bg-white border-2 border-pink-100 text-primary hover:bg-pink-50 text-xs font-black transition-all hover:scale-[1.02] active:scale-95 gap-3"
             >
               <Heart
-                className={`w-4 h-4 ${isFavorite(product.id) ? "fill-[#FF8BBA]" : ""
+                className={`w-4 h-4 ${isFavorite(product.id) ? "fill-primary" : ""
                   }`}
               />
               Add to favorites
@@ -485,11 +485,11 @@ export function ProductDetails({ product }: { product: Product }) {
         {/* Trust Badges */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8 border-t border-dotted border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-[#FF8BBA]">
+            <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-primary">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-black text-[#3E343C]">
+              <span className="text-xs font-black text-flora-dark">
                 Quality Guaranteed
               </span>
               <span className="text-[10px] text-gray-400 font-medium">
@@ -498,11 +498,11 @@ export function ProductDetails({ product }: { product: Product }) {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-[#A78BFA]">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-flora-purple">
               <Truck className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xs font-black text-[#3E343C]">
+              <span className="text-xs font-black text-flora-dark">
                 Fast Delivery
               </span>
               <span className="text-[10px] text-gray-400 font-medium flex items-center gap-1">

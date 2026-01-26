@@ -50,7 +50,7 @@ export function SparkleBanner() {
                 </p>
 
                 <Link href="/shop">
-                    <Button className="bg-[#1A1A1A]/80 hover:bg-[#3E343C] text-white backdrop-blur-md border border-white/20 rounded-full px-10 py-7 text-lg font-bold tracking-wide shadow-2xl transition-all duration-300 hover:scale-105 hover:border-pink-300 hover:shadow-pink-500/20 group">
+                    <Button className="bg-[#1A1A1A]/80 hover:bg-flora-dark text-white backdrop-blur-md border border-white/20 rounded-full px-10 py-7 text-lg font-bold tracking-wide shadow-2xl transition-all duration-300 hover:scale-105 hover:border-pink-300 hover:shadow-pink-500/20 group">
                         Shop New Arrivals <ArrowRight className="ms-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                 </Link>

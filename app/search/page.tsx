@@ -30,13 +30,13 @@ export default async function SearchPage({
                     <div className="flex flex-col xl:flex-row xl:items-center justify-between border-b border-pink-50 pb-8 gap-8">
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center gap-2">
-                                <div className="w-1 h-4 bg-[#FF8BBA] rounded-full" />
-                                <label className="text-sm font-black text-[#3E343C] uppercase tracking-[0.2em] flex items-center gap-2">
-                                    Search Gallery <Bow className="w-4 h-4 text-[#FF8BBA]" />
+                                <div className="w-1 h-4 bg-primary rounded-full" />
+                                <label className="text-sm font-black text-flora-dark uppercase tracking-[0.2em] flex items-center gap-2">
+                                    Search Gallery <Bow className="w-4 h-4 text-primary" />
                                 </label>
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                <div className="bg-white border border-pink-100 text-[#FF8BBA] px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
+                                <div className="bg-white border border-pink-100 text-primary px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
                                     {products.length} {products.length === 1 ? 'Treasure' : 'Treasures'} Found
                                 </div>
                             </div>
@@ -49,9 +49,9 @@ export default async function SearchPage({
                     {!query ? (
                         <div className="flex flex-col items-center justify-center py-40">
                             <div className="w-20 h-20 rounded-full bg-pink-50 flex items-center justify-center mb-6">
-                                <Search className="w-10 h-10 text-[#FF8BBA]" />
+                                <Search className="w-10 h-10 text-primary" />
                             </div>
-                            <p className="text-xl font-black text-[#3E343C] mb-2 text-center">
+                            <p className="text-xl font-black text-flora-dark mb-2 text-center">
                                 What are you looking for?
                             </p>
                             <p className="text-[#B08B9B] font-medium text-center">Enter a keyword to start searching for treasures. ✨</p>
@@ -59,9 +59,9 @@ export default async function SearchPage({
                     ) : products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-40">
                             <div className="w-20 h-20 rounded-full bg-pink-50 flex items-center justify-center mb-6">
-                                <Search className="w-10 h-10 text-[#FF8BBA]" />
+                                <Search className="w-10 h-10 text-primary" />
                             </div>
-                            <p className="text-xl font-black text-[#3E343C] mb-2 text-center">
+                            <p className="text-xl font-black text-flora-dark mb-2 text-center">
                                 No treasures found for &quot;{query}&quot;
                             </p>
                             <p className="text-[#B08B9B] font-medium text-center">Try a different keyword or explore our treasures! ✨</p>

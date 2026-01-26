@@ -34,7 +34,7 @@ export default async function SalePage({
                     <div
                         className="absolute inset-0 opacity-[0.4]"
                         style={{
-                            backgroundImage: `radial-gradient(#FF8BBA 0.5px, transparent 0.5px)`,
+                            backgroundImage: `radial-gradient(var(--primary) 0.5px, transparent 0.5px)`,
                             backgroundSize: '24px 24px'
                         }}
                     />
@@ -52,8 +52,8 @@ export default async function SalePage({
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="flex flex-col items-center text-center space-y-6">
                             <h1 className="text-5xl md:text-[5.5rem] font-black tracking-tight leading-none">
-                                <span className="text-[#FF8BBA]">Sale</span>{" "}
-                                <span className="text-[#FF8BBA]">Collection</span>
+                                <span className="text-primary">Sale</span>{" "}
+                                <span className="text-primary">Collection</span>
                             </h1>
 
                             <div className="flex items-center gap-3">
@@ -70,13 +70,13 @@ export default async function SalePage({
                     <div className="flex flex-col xl:flex-row xl:items-center justify-between border-b border-pink-50 pb-8 gap-8">
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center gap-2">
-                                <div className="w-1 h-4 bg-[#FF8BBA] rounded-full" />
-                                <label className="text-xs font-black text-[#3E343C] uppercase tracking-[0.2em] flex items-center gap-2">
-                                    The Flora Gallery <Bow className="w-4 h-4 text-[#FF8BBA]" />
+                                <div className="w-1 h-4 bg-primary rounded-full" />
+                                <label className="text-xs font-black text-flora-dark uppercase tracking-[0.2em] flex items-center gap-2">
+                                    The Flora Gallery <Bow className="w-4 h-4 text-primary" />
                                 </label>
                             </div>
                             <div className="flex flex-wrap gap-2">
-                                <div className="bg-white border border-pink-100 text-[#FF8BBA] px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
+                                <div className="bg-white border border-pink-100 text-primary px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
                                     {total} Treasures
                                 </div>
                             </div>
@@ -93,7 +93,7 @@ export default async function SalePage({
                 <div className="container mx-auto px-4 pb-24">
                     {products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-40">
-                            <p className="text-xl font-black text-[#003366] mb-2 text-center">
+                            <p className="text-xl font-black text-flora-dark mb-2 text-center">
                                 {category && category !== "all"
                                     ? `No ${category} on sale right now`
                                     : "No items on sale at the moment"}

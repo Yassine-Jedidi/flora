@@ -33,12 +33,12 @@ export async function CuratedStyles() {
         <section className="py-24 w-[95%] max-w-7xl mx-auto">
             <div className="flex flex-col mb-16 gap-4">
                 <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6">
-                    <h2 className="text-4xl md:text-6xl font-black text-[#FF8BBA] tracking-tighter flex items-center gap-3">
-                        Explore Styles <Gem className="w-8 h-8 md:w-12 md:h-12 text-[#FF8BBA]" />
+                    <h2 className="text-4xl md:text-6xl font-black text-primary tracking-tighter flex items-center gap-3">
+                        Explore Styles <Gem className="w-8 h-8 md:w-12 md:h-12 text-primary" />
                     </h2>
                     <Link
                         href="/shop"
-                        className="group flex items-center gap-2 px-6 py-3 md:py-4 rounded-full bg-[#A78BFA] text-white font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-[#8B5CF6] transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-[#A78BFA]/20 shrink-0"
+                        className="group flex items-center gap-2 px-6 py-3 md:py-4 rounded-full bg-flora-purple text-white font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-[#8B5CF6] transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-flora-purple/20 shrink-0"
                     >
                         Explore All Collections <ChevronRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
@@ -79,7 +79,7 @@ export async function CuratedStyles() {
                             </div>
 
                             {/* Subtly Light Gradient Overlay */}
-                            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#FF8BBA]/30 via-transparent to-transparent group-hover:from-[#FF8BBA]/40 transition-all duration-500" />
+                            <div className="absolute inset-0 z-10 bg-gradient-to-t from-primary/30 via-transparent to-transparent group-hover:from-primary/40 transition-all duration-500" />
 
                             {/* Content */}
                             <div className="absolute inset-0 z-20 p-8 flex flex-col justify-end">

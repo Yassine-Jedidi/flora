@@ -87,7 +87,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
     <>
       <Card className="border-pink-100 shadow-xl shadow-pink-100/10 rounded-3xl overflow-hidden">
         <CardHeader className="bg-pink-50/30 border-b border-pink-100/50 py-4">
-          <CardTitle className="text-lg font-bold text-[#003366]">
+          <CardTitle className="text-lg font-bold text-flora-dark">
             Recent Inventory
           </CardTitle>
         </CardHeader>
@@ -95,22 +95,22 @@ export function ProductList({ products, pagination }: ProductListProps) {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-pink-50">
-                <TableHead className="px-2 md:px-6 font-bold text-[#003366]">
+                <TableHead className="px-2 md:px-6 font-bold text-flora-dark">
                   Product
                 </TableHead>
-                <TableHead className="hidden md:table-cell px-6 font-bold text-[#003366]">
+                <TableHead className="hidden md:table-cell px-6 font-bold text-flora-dark">
                   Category
                 </TableHead>
-                <TableHead className="px-2 md:px-6 font-bold text-[#003366]">
+                <TableHead className="px-2 md:px-6 font-bold text-flora-dark">
                   Price
                 </TableHead>
-                <TableHead className="hidden sm:table-cell px-2 md:px-6 font-bold text-[#003366]">
+                <TableHead className="hidden sm:table-cell px-2 md:px-6 font-bold text-flora-dark">
                   Stock
                 </TableHead>
-                <TableHead className="hidden lg:table-cell px-6 font-bold text-[#003366]">
+                <TableHead className="hidden lg:table-cell px-6 font-bold text-flora-dark">
                   Status
                 </TableHead>
-                <TableHead className="px-2 md:px-6 font-bold text-[#003366] text-right">
+                <TableHead className="px-2 md:px-6 font-bold text-flora-dark text-right">
                   Actions
                 </TableHead>
               </TableRow>
@@ -135,7 +135,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
                           <div className="w-full h-full bg-pink-100" />
                         )}
                       </div>
-                      <span className="font-bold text-[#003366] text-sm md:text-base flex items-center gap-2">
+                      <span className="font-bold text-flora-dark text-sm md:text-base flex items-center gap-2">
                         {product.name}
                         {product._count && product._count.packItems > 0 && (
                           <Badge variant="outline" className="text-[10px] bg-purple-50 text-purple-600 border-purple-200 py-0 h-5">
@@ -212,7 +212,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
                         </Badge>
                       )}
                       {product.isFeatured && (
-                        <Badge className="bg-[#FF8BBA] hover:bg-[#FF75AA]">
+                        <Badge className="bg-primary hover:bg-[#FF75AA]">
                           Featured
                         </Badge>
                       )}
@@ -223,7 +223,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-gray-400 hover:text-[#003366] hover:bg-pink-50 rounded-full"
+                        className="h-8 w-8 text-gray-400 hover:text-flora-dark hover:bg-pink-50 rounded-full"
                         asChild
                       >
                         <Link href={product._count && product._count.packItems > 0
@@ -250,7 +250,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
                         </AlertDialogTrigger>
                         <AlertDialogContent className="rounded-3xl border-pink-100">
                           <AlertDialogHeader>
-                            <AlertDialogTitle className="text-[#003366] font-bold text-xl">
+                            <AlertDialogTitle className="text-flora-dark font-bold text-xl">
                               Are you absolutely sure? ✨
                             </AlertDialogTitle>
                             <AlertDialogDescription className="text-gray-500">
@@ -292,14 +292,14 @@ export function ProductList({ products, pagination }: ProductListProps) {
             size="sm"
             onClick={() => handlePageChange(pagination.currentPage - 1)}
             disabled={pagination.currentPage <= 1}
-            className="rounded-full border-pink-100 text-[#003366] hover:bg-pink-50 hover:text-[#FF8BBA]"
+            className="rounded-full border-pink-100 text-flora-dark hover:bg-pink-50 hover:text-primary"
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
             Previous
           </Button>
           <div className="text-sm font-medium text-gray-500">
             Page{" "}
-            <span className="text-[#003366] font-bold">
+            <span className="text-flora-dark font-bold">
               {pagination.currentPage}
             </span>{" "}
             of {pagination.totalPages}
@@ -309,7 +309,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
             size="sm"
             onClick={() => handlePageChange(pagination.currentPage + 1)}
             disabled={pagination.currentPage >= pagination.totalPages}
-            className="rounded-full border-pink-100 text-[#003366] hover:bg-pink-50 hover:text-[#FF8BBA]"
+            className="rounded-full border-pink-100 text-flora-dark hover:bg-pink-50 hover:text-primary"
           >
             Next
             <ChevronRight className="h-4 w-4 ml-1" />
