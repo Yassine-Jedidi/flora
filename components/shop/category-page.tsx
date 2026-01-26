@@ -6,6 +6,7 @@ import { CategoryToggle } from "@/components/shop/category-toggle";
 import { SortToggle } from "@/components/shop/sort-toggle";
 import { PaginationControl } from "@/components/ui/pagination-control";
 import { CollectionHeader } from "@/components/shop/collection-header";
+import { Bow } from "@/components/icons/bow";
 
 interface CategoryPageProps {
     categorySlug: string;
@@ -35,14 +36,18 @@ export async function CategoryPage({
                 {/* Filter & Count Row */}
                 <div className="container mx-auto px-4 py-10">
                     <div className="flex flex-col xl:flex-row xl:items-center justify-between border-b border-pink-50 pb-8 gap-8">
-                        <div className="flex flex-col gap-1">
+                        <div className="flex flex-col gap-3">
                             <div className="flex items-center gap-2">
-                                <span className="text-xl">🎀</span>
-                                <span className="text-2xl font-black text-[#3E343C] tracking-tight">The Flora Gallery</span>
+                                <div className="w-1 h-4 bg-[#FF8BBA] rounded-full" />
+                                <label className="text-sm font-black text-[#3E343C] uppercase tracking-[0.2em] flex items-center gap-2">
+                                    The Flora Gallery <Bow className="w-4 h-4 text-[#FF8BBA]" />
+                                </label>
                             </div>
-                            <p className="text-[10px] font-black text-[#8B7E84]/60 uppercase tracking-[0.3em]">
-                                {total} {total === 1 ? 'item' : 'items'}
-                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                <div className="bg-white border border-pink-100 text-[#FF8BBA] px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
+                                    {total} Treasures
+                                </div>
+                            </div>
                         </div>
 
                         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">

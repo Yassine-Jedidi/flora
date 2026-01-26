@@ -92,7 +92,7 @@ export function CollectionHeader({ title, subtitle }: CollectionHeaderProps) {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, delay: 0.2 }}
-                                className="text-[#FFC0D9] drop-shadow-sm whitespace-nowrap"
+                                className="text-[#FF8BBA] drop-shadow-sm whitespace-nowrap"
                             >
                                 Collection
                             </motion.span>
