@@ -38,9 +38,9 @@ export async function CuratedStyles() {
                     </h2>
                     <Link
                         href="/shop"
-                        className="group flex items-center gap-2 px-6 py-4 rounded-full bg-[#A78BFA] text-white font-black text-xs uppercase tracking-widest hover:bg-[#8B5CF6] transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-[#A78BFA]/20 shrink-0"
+                        className="group flex items-center gap-2 px-6 py-3 md:py-4 rounded-full bg-[#A78BFA] text-white font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-[#8B5CF6] transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-[#A78BFA]/20 shrink-0"
                     >
-                        Explore All Collections <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        Explore All Collections <ChevronRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
                 <div className="text-center md:text-left">

@@ -18,9 +18,9 @@ export async function FeaturedSection() {
                             Trending Now
                         </span>
                     </div>
-                    <h2 className="text-4xl md:text-6xl font-black text-[#FF8BBA] tracking-tighter drop-shadow-sm flex items-center gap-3">
-                        Featured Treasures
-                        <Bow className="w-10 h-10 md:w-14 md:h-14 text-[#FF8BBA]" />
+                    <h2 className="text-4xl md:text-6xl font-black text-[#FF8BBA] tracking-tighter drop-shadow-sm flex items-center justify-center flex-wrap gap-2 md:gap-3 px-4">
+                        <span>Featured Treasures</span>
+                        <Bow className="w-8 h-8 md:w-14 md:h-14 text-[#FF8BBA] shrink-0" />
                     </h2>
                     <p className="text-[#B08B9B] max-w-lg text-lg font-medium opacity-90">
                         Discover our most loved pieces, handpicked just for you.

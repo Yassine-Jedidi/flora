@@ -277,11 +277,17 @@ export async function searchProducts(query: string) {
   if (!query || query.length < 2) return [];
 
   try {
+    const normalizedQuery = query.toLowerCase().trim();
+    const singularQuery = normalizedQuery.endsWith('s') ? normalizedQuery.slice(0, -1) : normalizedQuery;
+    
+    // Fetch a larger pool of potential matches to rank them in memory
     const products = await prisma.product.findMany({
       where: {
         OR: [
-          { name: { contains: query, mode: "insensitive" } },
-          { description: { contains: query, mode: "insensitive" } },
+          { name: { contains: normalizedQuery, mode: "insensitive" } },
+          { description: { contains: normalizedQuery, mode: "insensitive" } },
+          { category: { name: { contains: normalizedQuery, mode: "insensitive" } } },
+          { category: { slug: { contains: normalizedQuery, mode: "insensitive" } } },
         ],
         isArchived: false,
         isLive: true,
@@ -290,19 +296,71 @@ export async function searchProducts(query: string) {
         category: true,
         images: true,
       },
-      take: 5,
+      take: 20, // Pool size for ranking
     });
 
-    return products.map((product) => ({
-      ...product,
-      originalPrice: Number(product.originalPrice),
-      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
-      isNew:
-        new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
-    }));
+    const scoredProducts = products.map((product) => {
+      let score = 0;
+      const name = product.name.toLowerCase();
+      const description = product.description.toLowerCase();
+      const categoryName = product.category.name.toLowerCase();
+      const categorySlug = product.category.slug.toLowerCase();
+
+      // 1. Category matches (High priority)
+      if (categoryName === normalizedQuery || categorySlug === normalizedQuery || 
+          categoryName === singularQuery || categorySlug === singularQuery) {
+        score += 100;
+      }
+
+      // 2. Exact name match
+      if (name === normalizedQuery) {
+        score += 150;
+      }
+
+      // 3. Standalone word match in name
+      const nameWords = name.split(/\s+/);
+      if (nameWords.includes(normalizedQuery) || nameWords.includes(singularQuery)) {
+        score += 80;
+      }
+
+      // 4. Starts with match
+      if (name.startsWith(normalizedQuery)) {
+        score += 40;
+      }
+
+      // 5. Basic contains in name
+      if (name.includes(normalizedQuery)) {
+        score += 20;
+      }
+
+      // 6. Contains in description
+      if (description.includes(normalizedQuery)) {
+        score += 5;
+      }
+
+      // 7. Featured boost
+      if (product.isFeatured) {
+        score += 10;
+      }
+
+      return {
+        ...product,
+        searchScore: score,
+        originalPrice: Number(product.originalPrice),
+        discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt.toISOString(),
+        isNew:
+          new Date(product.createdAt).getTime() >
+          Date.now() - 7 * 24 * 60 * 60 * 1000,
+      };
+    });
+
+    // Sort by score descending and take top 5
+    return scoredProducts
+      .sort((a, b) => b.searchScore - a.searchScore)
+      .slice(0, 5)
+      .map(({ searchScore, ...product }) => product); // Remove the temp score field
   } catch (error) {
     console.error("Error searching products:", error);
     return [];
