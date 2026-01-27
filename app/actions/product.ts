@@ -230,3 +230,17 @@ export async function updateProduct(id: string, values: ProductFormValues) {
     return { error: "Something went wrong!" };
   }
 }
+
+export async function deleteProductImage(url: string) {
+  try {
+    const fileKey = url.split("/").pop();
+    if (!fileKey) return { error: "Invalid URL" };
+
+    // utapi is defined globally in this file (lines 107)
+    await utapi.deleteFiles(fileKey);
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting image file:", error);
+    return { error: "Failed to delete image file" };
+  }
+}

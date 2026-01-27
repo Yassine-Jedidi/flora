@@ -51,6 +51,7 @@ export function ProductForm({
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
 
   const form = useForm({
@@ -158,6 +159,15 @@ export function ProductForm({
     setIsPending(true);
     setSuccess(null);
     try {
+      if (isUploading) {
+        toast.error("Please wait for images to finish uploading");
+        return;
+      }
+      if (isDeleting) {
+        toast.error("Please wait for images to finish deleting");
+        return;
+      }
+
       console.log("Form Values:", values);
       const result = initialData
         ? await updateProduct(initialData.id, values)
@@ -196,9 +206,23 @@ export function ProductForm({
     }
   };
 
-  const removeImage = (urlToRemove: string) => {
+  const removeImage = async (urlToRemove: string) => {
+    setIsDeleting(true);
+    // Optimistically update UI
     const updatedImages = images.filter((url) => url !== urlToRemove);
     form.setValue("images", updatedImages, { shouldValidate: true });
+
+    // Delete from storage in background
+    try {
+      // Import this from actions if not already imported
+      const { deleteProductImage } = await import("@/app/actions/product");
+      await deleteProductImage(urlToRemove);
+      toast.success("Image deleted from storage");
+    } catch (error) {
+      toast.error("Failed to delete image file");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const onInvalid = (errors: unknown) => {
@@ -570,18 +594,20 @@ export function ProductForm({
               {initialData ? "Back to Inventory" : "Cancel"}
             </Button>
             <Button
-              disabled={isPending}
+              disabled={isPending || isUploading || isDeleting}
               type="submit"
               className="bg-primary hover:bg-[#FF75AA] text-white px-8 py-2 rounded-full font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-70 h-auto text-sm"
             >
-              {isPending ? (
+              {(isUploading || isDeleting) ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
               ) : initialData ? (
                 <Save className="w-4 h-4 mr-2" />
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              {isPending ? "Saving..." : initialData ? "Save Changes" : "List This Accessory"}
+              {isUploading ? "Uploading Images..." : isDeleting ? "Deleting Image..." : isPending ? "Saving..." : initialData ? "Save Changes" : "List This Accessory"}
             </Button>
           </div>
         </CardFooter>
