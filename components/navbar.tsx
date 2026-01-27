@@ -60,16 +60,20 @@ export function Navbar() {
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
-      const outsideDesktop = searchRef.current && !searchRef.current.contains(target);
-      const outsideMobile = mobileSearchRef.current && !mobileSearchRef.current.contains(target);
+
+      // If ref is null (not rendered), consider it "outside"
+      const outsideDesktop = !searchRef.current || !searchRef.current.contains(target);
+      const outsideMobile = !mobileSearchRef.current || !mobileSearchRef.current.contains(target);
 
       if (outsideDesktop && outsideMobile) {
         setShowDropdown(false);
+        // Only close mobile search if it's actually open
+        if (mobileSearchOpen) setMobileSearchOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [mobileSearchOpen]);
 
   const handleProductClick = (id: string) => {
     setShowDropdown(false);
@@ -399,16 +403,31 @@ export function Navbar() {
                   }
                 }}
                 onFocus={() => searchQuery.length >= 2 && setShowDropdown(true)}
-                className="w-full rounded-full bg-pink-50/50 py-2 pl-9 pr-9 text-xs text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-200 border border-pink-100/50"
+                className="w-full rounded-full bg-pink-50/50 py-2 pl-9 pr-14 text-xs text-foreground placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-200 border border-pink-100/50"
               />
-              {searchQuery && (
+
+              <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="p-1 text-gray-400 hover:text-pink-400 transition-colors"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
                 <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-400 transition-colors"
+                  onClick={() => {
+                    if (searchQuery.length >= 2) {
+                      setShowDropdown(false);
+                      setMobileSearchOpen(false);
+                      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+                    }
+                  }}
+                  className="p-1.5 bg-primary text-white rounded-full hover:bg-pink-400 transition-colors shadow-sm"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <Search className="h-3 w-3" />
                 </button>
-              )}
+              </div>
 
               {/* Mobile Search Results */}
               {showDropdown && searchResults.length > 0 && (
