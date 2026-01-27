@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useLayoutEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,6 +15,7 @@ import {
   Plus,
   Timer,
 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -37,6 +38,14 @@ export function ProductDetails({ product }: { product: Product }) {
   const { addItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const [selectedImage, setSelectedImage] = useState(0);
+
+  // Scroll to top IMMEDIATELY on mount (before paint)
+  // We use useLayoutEffect to ensure this happens before the visual update
+  const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+  useIsomorphicLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
 
   const form = useForm({
     defaultValues: {
@@ -154,6 +163,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   }}
                   className="absolute inset-0 cursor-grab active:cursor-grabbing"
                 >
+                  <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
                   {product.images[selectedImage] ? (
                     <Image
                       src={product.images[selectedImage].url}
@@ -225,6 +235,7 @@ export function ProductDetails({ product }: { product: Product }) {
                     : "border-transparent hover:border-pink-200"
                     }`}
                 >
+                  <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
                   <Image src={img.url} alt="" fill className="object-cover" />
                 </button>
               ))}

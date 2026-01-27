@@ -3,6 +3,7 @@ import { Nunito } from "next/font/google";
 import "./globals.css";
 import { FavoritesProvider } from "@/lib/hooks/use-favorites";
 import { CartProvider } from "@/lib/hooks/use-cart";
+import { ScrollToTop } from "@/components/scroll-to-top";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body className={`${nunito.variable} font-sans antialiased`}>
         <CartProvider>
           <FavoritesProvider>
+            <ScrollToTop />
             {children}
             <Toaster />
           </FavoritesProvider>
