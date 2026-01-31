@@ -41,7 +41,7 @@ import {
 } from "@/app/actions/address";
 import { updateProfile, getUserSessions, revokeSession, deleteUploadedFile } from "@/app/actions/user";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
     Dialog,
     DialogContent,
@@ -76,6 +76,16 @@ export default function ProfilePage() {
     const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
     const [isUploadingImage, setIsUploadingImage] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+
+    const currentTab = searchParams.get("tab") || "addresses";
+
+    const handleTabChange = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("tab", value);
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    };
 
     // Sessions State
     const [sessions, setSessions] = useState<any[]>([]);
@@ -327,7 +337,8 @@ export default function ProfilePage() {
                     </div>
 
                     {/* Profile Tabs */}
-                    <Tabs defaultValue="addresses" className="space-y-12">
+                    {/* Profile Tabs */}
+                    <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-12">
                         <div className="flex justify-center">
                             <TabsList className="bg-gray-100/50 p-1 rounded-full h-16 border border-gray-100">
                                 <TabsTrigger
