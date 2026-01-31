@@ -1,5 +1,7 @@
 "use client";
 
+import React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
@@ -28,6 +30,31 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const { addItem } = useCart();
 
+  // Track scroll/drag to prevent accidental navigation
+  const [isDragging, setIsDragging] = React.useState(false);
+  const [startPos, setStartPos] = React.useState({ x: 0, y: 0 });
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setStartPos({ x: e.clientX, y: e.clientY });
+    setIsDragging(false);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    const deltaX = Math.abs(e.clientX - startPos.x);
+    const deltaY = Math.abs(e.clientY - startPos.y);
+    // If moved more than 10px, consider it a drag/scroll
+    if (deltaX > 10 || deltaY > 10) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (isDragging) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     addItem({
@@ -48,6 +75,9 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link
         href={`/product/${product.id}`}
         className="relative aspect-square overflow-hidden rounded-[2rem] bg-[#F9FAFB]"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onClick={handleClick}
       >
         {product.images[0] ? (
           <Image
@@ -86,7 +116,12 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Content Section */}
       <div className="mt-6 flex flex-col gap-3 px-2">
-        <Link href={`/product/${product.id}`}>
+        <Link
+          href={`/product/${product.id}`}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onClick={handleClick}
+        >
           <h3 className="text-xl font-black text-flora-dark group-hover:text-pink-500 transition-colors line-clamp-1">
             {product.name}
           </h3>
