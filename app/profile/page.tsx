@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useSession, changePassword } from "@/lib/auth-client";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import Link from "next/link";
@@ -75,6 +75,16 @@ export default function ProfilePage() {
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
     const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+    // Change Password State
+    const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+    const [passwordForm, setPasswordForm] = useState({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+    });
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
+
     const router = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -254,6 +264,50 @@ export default function ProfilePage() {
             toast.error("Failed to update profile");
         } finally {
             setIsUpdatingProfile(false);
+        }
+    };
+
+    const handlePasswordChange = async () => {
+        if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+            toast.error("Please fill in all fields.");
+            return;
+        }
+
+        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+            toast.error("New passwords do not match.");
+            return;
+        }
+
+        if (passwordForm.newPassword.length < 8) {
+            toast.error("Password must be at least 8 characters long.");
+            return;
+        }
+
+        if (passwordForm.newPassword === passwordForm.currentPassword) {
+            toast.error("New password cannot be the same as the old password.");
+            return;
+        }
+
+        setIsChangingPassword(true);
+        try {
+            await changePassword({
+                newPassword: passwordForm.newPassword,
+                currentPassword: passwordForm.currentPassword,
+                revokeOtherSessions: true,
+            }, {
+                onSuccess: () => {
+                    toast.success("Password changed successfully! 🔒");
+                    setIsChangePasswordModalOpen(false);
+                    setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+                },
+                onError: (ctx) => {
+                    toast.error(ctx.error.message || "Failed to change password.");
+                }
+            });
+        } catch (error) {
+            toast.error("An error occurred.");
+        } finally {
+            setIsChangingPassword(false);
         }
     };
 
@@ -526,7 +580,7 @@ export default function ProfilePage() {
                                                     </div>
                                                     <div>
                                                         <p className="font-black text-flora-dark text-sm">
-                                                            {new Date(session.user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                                                            {new Date(session.user.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                                                         </p>
                                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Joined Flora</p>
                                                     </div>
@@ -582,9 +636,7 @@ export default function ProfilePage() {
                         <TabsContent value="security" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="bg-white rounded-[40px] border border-pink-50 shadow-sm p-8 max-w-2xl mx-auto space-y-8">
                                 <div className="text-center space-y-4">
-                                    <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto">
-                                        <Shield className="w-10 h-10 text-green-500" />
-                                    </div>
+
                                     <div>
                                         <h3 className="text-2xl font-black text-flora-dark mb-2">Security & Privacy</h3>
                                         <p className="text-gray-400 font-bold">Manage your account security and active devices.</p>
@@ -646,7 +698,11 @@ export default function ProfilePage() {
                                         </div>
                                     </div>
 
-                                    <Button variant="outline" className="w-full rounded-2xl py-8 border-gray-100 text-flora-dark font-bold hover:bg-gray-50 flex items-center justify-between px-8 group">
+                                    <Button
+                                        onClick={() => setIsChangePasswordModalOpen(true)}
+                                        variant="outline"
+                                        className="w-full rounded-2xl py-8 border-gray-100 text-flora-dark font-bold hover:bg-gray-50 flex items-center justify-between px-8 group"
+                                    >
                                         Change Password
                                         <ChevronRight className="w-5 h-5 opacity-30 group-hover:translate-x-1 transition-all" />
                                     </Button>
@@ -865,6 +921,73 @@ export default function ProfilePage() {
                                     </div>
                                 ) : (
                                     "Save Changes"
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Change Password Modal */}
+            <Dialog open={isChangePasswordModalOpen} onOpenChange={setIsChangePasswordModalOpen}>
+                <DialogContent className="rounded-[40px] border-none shadow-2xl p-0 overflow-hidden max-w-md">
+                    <div className="p-6 lg:p-8 space-y-6">
+                        <DialogHeader>
+                            <DialogTitle className="text-3xl font-black text-flora-dark text-center flex items-center justify-center gap-2">
+                                Change Password
+                                <Shield className="w-8 h-8 text-purple-500" />
+                            </DialogTitle>
+                            <DialogDescription className="text-center font-bold text-gray-400">
+                                Secure your account with a new password.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Current Password</Label>
+                                <Input
+                                    type="password"
+                                    placeholder="Enter your current password"
+                                    className="rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-7 px-5 font-bold text-lg text-flora-dark placeholder:text-purple-200"
+                                    value={passwordForm.currentPassword}
+                                    onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">New Password</Label>
+                                <Input
+                                    type="password"
+                                    placeholder="Enter new password"
+                                    className="rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-7 px-5 font-bold text-lg text-flora-dark placeholder:text-purple-200"
+                                    value={passwordForm.newPassword}
+                                    onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Confirm New Password</Label>
+                                <Input
+                                    type="password"
+                                    placeholder="Confirm new password"
+                                    className="rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-7 px-5 font-bold text-lg text-flora-dark placeholder:text-purple-200"
+                                    value={passwordForm.confirmPassword}
+                                    onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                                />
+                            </div>
+
+                            <Button
+                                onClick={handlePasswordChange}
+                                disabled={isChangingPassword}
+                                className="w-full bg-purple-500 hover:bg-purple-600 text-white rounded-full py-8 font-black text-xl shadow-xl shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                            >
+                                {isChangingPassword ? (
+                                    <div className="flex items-center gap-2">
+                                        <Loader2 className="w-7 h-7 animate-spin" />
+                                        <span>Updating...</span>
+                                    </div>
+                                ) : (
+                                    "Update Password"
                                 )}
                             </Button>
                         </div>
