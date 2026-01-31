@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { Bow } from "@/components/icons/bow";
 import { toast } from "sonner";
+import { signInEmailAction } from "@/app/actions/auth";
+import { signIn } from "@/lib/auth-client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,13 +45,35 @@ export default function SignInPage() {
 
     const onSubmit = async (values: SignInValues) => {
         setIsLoading(true);
-        // Logic will be implemented later
-        console.log("Sign in values:", values);
-        setTimeout(() => setIsLoading(false), 1000);
+        try {
+            const result = await signInEmailAction(values);
+
+            if (result.success) {
+                toast.success("Welcome back to Flora! 🎀");
+                router.push("/");
+                router.refresh(); // Refresh to update navbar session
+            } else {
+                toast.error(result.error);
+            }
+        } catch (err: any) {
+            toast.error("An unexpected error occurred. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleSocialSignIn = async (provider: "google" | "facebook") => {
-        toast.info(`Redirecting to ${provider}...`);
+        setIsLoading(true);
+        try {
+            await signIn.social({
+                provider,
+                callbackURL: "/",
+            });
+        } catch (err: any) {
+            toast.error(`Failed to sign in with ${provider}`);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
