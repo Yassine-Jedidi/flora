@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";

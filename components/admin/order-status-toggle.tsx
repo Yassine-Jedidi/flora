@@ -7,7 +7,6 @@ import {
     SelectContent,
     SelectItem,
     SelectTrigger,
-    SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { updateOrderStatus } from "@/app/actions/order";
@@ -57,7 +56,7 @@ export function OrderStatusToggle({ orderId, currentStatus }: OrderStatusToggleP
             } else {
                 toast.error(result.error || "Failed to update status");
             }
-        } catch (error) {
+        } catch {
             toast.error("Something went wrong");
         } finally {
             setIsLoading(false);

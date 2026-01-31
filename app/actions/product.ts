@@ -9,37 +9,55 @@ export async function createProduct(values: ProductFormValues) {
     const validatedFields = ProductSchema.safeParse(values);
 
     if (!validatedFields.success) {
-      console.error("Create Product - Validation error:", validatedFields.error.flatten().fieldErrors);
-      return { error: "Invalid fields! " + Object.keys(validatedFields.error.flatten().fieldErrors).join(", ") };
+      console.error(
+        "Create Product - Validation error:",
+        validatedFields.error.flatten().fieldErrors,
+      );
+      return {
+        error:
+          "Invalid fields! " +
+          Object.keys(validatedFields.error.flatten().fieldErrors).join(", "),
+      };
     }
 
-    const { 
-      name, 
-      description, 
+    const {
+      name,
+      description,
       originalPrice: rawOriginalPrice,
-      discountedPrice: rawDiscountedPrice, 
-      categoryId, 
-      stock, 
-      images, 
-      isFeatured, 
+      discountedPrice: rawDiscountedPrice,
+      categoryId,
+      stock,
+      images,
+      isFeatured,
       isArchived,
-      isLive
+      isLive,
     } = validatedFields.data;
 
     // Manual refinement check
-    if (rawOriginalPrice && rawDiscountedPrice && rawOriginalPrice <= rawDiscountedPrice) {
-      return { error: "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty." };
+    if (
+      rawOriginalPrice &&
+      rawDiscountedPrice &&
+      rawOriginalPrice <= rawDiscountedPrice
+    ) {
+      return {
+        error:
+          "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty.",
+      };
     }
 
     // Logic for optional discount:
     // If originalPrice is empty or 0, then the sale price is the actual original price, and there's no discount record.
-    const finalOriginalPrice = rawOriginalPrice && rawOriginalPrice > 0 
-      ? rawOriginalPrice 
-      : rawDiscountedPrice;
-    
-    const finalDiscountedPrice = (rawOriginalPrice && rawOriginalPrice > 0 && rawOriginalPrice > rawDiscountedPrice)
-      ? rawDiscountedPrice 
-      : null;
+    const finalOriginalPrice =
+      rawOriginalPrice && rawOriginalPrice > 0
+        ? rawOriginalPrice
+        : rawDiscountedPrice;
+
+    const finalDiscountedPrice =
+      rawOriginalPrice &&
+      rawOriginalPrice > 0 &&
+      rawOriginalPrice > rawDiscountedPrice
+        ? rawDiscountedPrice
+        : null;
 
     const product = await prisma.product.create({
       data: {
@@ -111,7 +129,7 @@ export async function deleteProduct(id: string) {
     // 1. Find the product and its images first
     const product = await prisma.product.findUnique({
       where: { id },
-      include: { images: true }
+      include: { images: true },
     });
 
     if (!product) {
@@ -139,13 +157,19 @@ export async function deleteProduct(id: string) {
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");
-    
+
     return { success: "Product and its images deleted successfully! ✨" };
-  } catch (error: any) {
+  } catch (error) {
     // Check for Prisma "Foreign Key Constraint" error (P2003)
     // This happens when the product is linked to Orders or other tables that restrict deletion
-    if (error.code === 'P2003') {
-      return { error: "Cannot delete product with existing Orders. It must remain Archived to preserve sales history." };
+    if (
+      error instanceof Error &&
+      (error as { code?: unknown }).code === "P2003"
+    ) {
+      return {
+        error:
+          "Cannot delete product with existing Orders. It must remain Archived to preserve sales history.",
+      };
     }
 
     console.error("Error deleting product:", error);
@@ -157,36 +181,54 @@ export async function updateProduct(id: string, values: ProductFormValues) {
     const validatedFields = ProductSchema.safeParse(values);
 
     if (!validatedFields.success) {
-      console.error("Update Product - Validation error:", validatedFields.error.flatten().fieldErrors);
-      return { error: "Invalid fields! " + Object.keys(validatedFields.error.flatten().fieldErrors).join(", ") };
+      console.error(
+        "Update Product - Validation error:",
+        validatedFields.error.flatten().fieldErrors,
+      );
+      return {
+        error:
+          "Invalid fields! " +
+          Object.keys(validatedFields.error.flatten().fieldErrors).join(", "),
+      };
     }
 
-    const { 
-      name, 
-      description, 
+    const {
+      name,
+      description,
       originalPrice: rawOriginalPrice,
-      discountedPrice: rawDiscountedPrice, 
-      categoryId, 
-      stock, 
-      images, 
-      isFeatured, 
+      discountedPrice: rawDiscountedPrice,
+      categoryId,
+      stock,
+      images,
+      isFeatured,
       isArchived,
-      isLive
+      isLive,
     } = validatedFields.data;
 
     // Manual refinement check
-    if (rawOriginalPrice && rawDiscountedPrice && rawOriginalPrice <= rawDiscountedPrice) {
-      return { error: "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty." };
+    if (
+      rawOriginalPrice &&
+      rawDiscountedPrice &&
+      rawOriginalPrice <= rawDiscountedPrice
+    ) {
+      return {
+        error:
+          "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty.",
+      };
     }
 
     // Logic for optional discount:
-    const finalOriginalPrice = rawOriginalPrice && rawOriginalPrice > 0 
-      ? rawOriginalPrice 
-      : rawDiscountedPrice;
-    
-    const finalDiscountedPrice = (rawOriginalPrice && rawOriginalPrice > 0 && rawOriginalPrice > rawDiscountedPrice)
-      ? rawDiscountedPrice 
-      : null;
+    const finalOriginalPrice =
+      rawOriginalPrice && rawOriginalPrice > 0
+        ? rawOriginalPrice
+        : rawDiscountedPrice;
+
+    const finalDiscountedPrice =
+      rawOriginalPrice &&
+      rawOriginalPrice > 0 &&
+      rawOriginalPrice > rawDiscountedPrice
+        ? rawDiscountedPrice
+        : null;
 
     // We do a transaction to ensure everything updates correctly
     await prisma.$transaction(async (tx) => {
@@ -223,7 +265,7 @@ export async function updateProduct(id: string, values: ProductFormValues) {
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");
-    
+
     return { success: "Product updated successfully! ✨" };
   } catch (error) {
     console.error("Error updating product:", error);

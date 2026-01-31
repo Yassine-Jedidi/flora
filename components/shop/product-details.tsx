@@ -16,7 +16,7 @@ import {
   Timer,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useForm, useWatch } from "react-hook-form";
@@ -416,24 +416,25 @@ export function ProductDetails({ product }: { product: Product }) {
         <div className="space-y-4">
           <div className="prose prose-sm max-w-none text-[#5D5056] leading-relaxed font-medium break-words">
             <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              remarkPlugins={[remarkGfm as any]}
               components={{
-                p: ({ node, ...props }) => <p className="mb-3 last:mb-0 text-[17px] leading-[1.8]" {...props} />,
-                strong: ({ node, ...props }) => <strong className="font-black text-flora-dark tracking-tight" {...props} />,
-                ul: ({ node, ...props }) => <ul className="space-y-2 mb-4 last:mb-0 ml-2" {...props} />,
-                li: ({ node, ...props }) => (
+                p: ({ ...props }) => <p className="mb-3 last:mb-0 text-[17px] leading-[1.8]" {...props} />,
+                strong: ({ ...props }) => <strong className="font-black text-flora-dark tracking-tight" {...props} />,
+                ul: ({ ...props }) => <ul className="space-y-2 mb-4 last:mb-0 ml-2" {...props} />,
+                li: ({ ...props }) => (
                   <li className="flex items-start gap-4 text-[16px]">
                     <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-primary mt-2.5 shadow-[0_0_8px_rgba(255,139,186,0.6)]" />
                     <span className="flex-1">{props.children}</span>
                   </li>
                 ),
-                h1: ({ node, ...props }) => <h1 className="text-2xl font-black text-flora-dark mb-4 mt-6 border-b-2 border-pink-50 pb-2" {...props} />,
-                h2: ({ node, ...props }) => <h2 className="text-xl font-black text-flora-dark mb-3 mt-6 flex items-center gap-2 group" {...props}>
+                h1: ({ ...props }) => <h1 className="text-2xl font-black text-flora-dark mb-4 mt-6 border-b-2 border-pink-50 pb-2" {...props} />,
+                h2: ({ ...props }) => <h2 className="text-xl font-black text-flora-dark mb-3 mt-6 flex items-center gap-2 group" {...props}>
                   <div className="w-1 h-5 bg-primary rounded-full" />
                   {props.children}
                 </h2>,
-                h3: ({ node, ...props }) => <h3 className="text-lg font-black text-flora-dark mb-2 mt-4" {...props} />,
-                hr: ({ node, ...props }) => <hr className="my-6 border-t border-pink-100/50" {...props} />,
+                h3: ({ ...props }) => <h3 className="text-lg font-black text-flora-dark mb-2 mt-4" {...props} />,
+                hr: ({ ...props }) => <hr className="my-6 border-t border-pink-100/50" {...props} />,
               }}
             >
               {product.description}

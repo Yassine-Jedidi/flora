@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -10,7 +10,7 @@ import {
 import { createPack, updatePack } from "@/app/actions/pack";
 import { useUploadThing } from "@/lib/uploadthing";
 import Image from "next/image";
-import { Loader2, Plus, X, Save, RotateCcw, Trash2, Package, Wand2, Sparkles } from "lucide-react";
+import { Loader2, Plus, X, Save, RotateCcw, Package, Wand2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { enhanceDescription } from "@/app/actions/ai";
@@ -59,12 +59,10 @@ export function PackForm({
     availableProducts,
     initialData,
     onCancel,
-    onSuccess,
 }: PackFormProps) {
     const router = useRouter();
     const [isPending, setIsPending] = useState(false);
     const [isEnhancing, setIsEnhancing] = useState(false);
-    const [success, setSuccess] = useState<string | null>(null);
     const [isManualPricing, setIsManualPricing] = useState(!!initialData);
     const [marketValue, setMarketValue] = useState(0);
     const [shopValue, setShopValue] = useState(0);
@@ -106,10 +104,11 @@ export function PackForm({
     }, [availableProducts]);
 
     // Use useWatch for better performance and to avoid some re-render loops
-    const watchedItems = useWatch({
+    const rawWatchedItems = useWatch({
         control: form.control,
         name: "packItems"
-    }) || [];
+    });
+    const watchedItems = useMemo(() => rawWatchedItems || [], [rawWatchedItems]);
 
     const images = form.watch("images") || [];
 
@@ -155,7 +154,7 @@ export function PackForm({
         let totalMarketValueSum = 0;
         let minStock = Infinity;
 
-        watchedItems.forEach((item, index) => {
+        watchedItems.forEach((item: { itemId: string; quantity: unknown }) => {
             const product = getProductById(item.itemId);
             if (product) {
                 const qty = Number(item.quantity) || 1;
@@ -204,12 +203,12 @@ export function PackForm({
         if (packCategory && current.categoryId !== packCategory.id) {
             form.setValue("categoryId", packCategory.id, { shouldDirty: false });
         }
-    }, [watchedItems, categories, form.setValue, form.getValues, getProductById, isManualPricing]);
+    }, [watchedItems, categories, form, getProductById, isManualPricing]);
 
     const handleMagicCalculate = () => {
         let totalShopVal = 0;
         let totalMarketVal = 0;
-        watchedItems.forEach((item) => {
+        watchedItems.forEach((item: { itemId: string; quantity: unknown }) => {
             const product = getProductById(item.itemId);
             if (product) {
                 const qty = Number(item.quantity) || 1;
@@ -247,7 +246,7 @@ export function PackForm({
             } else if (result.error) {
                 toast.error(result.error);
             }
-        } catch (error) {
+        } catch {
             toast.error("AI enhancement failed");
         } finally {
             setIsEnhancing(false);
@@ -256,7 +255,6 @@ export function PackForm({
 
     const onSubmit = async (values: PackFormValues) => {
         setIsPending(true);
-        setSuccess(null);
         try {
             // Ensure category is set if missing
             if (!values.categoryId) {

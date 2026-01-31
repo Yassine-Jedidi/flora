@@ -148,7 +148,7 @@ export function ProductForm({
       } else if (result.error) {
         toast.error(result.error);
       }
-    } catch (error) {
+    } catch {
       toast.error("AI enhancement failed");
     } finally {
       setIsEnhancing(false);
@@ -218,7 +218,7 @@ export function ProductForm({
       const { deleteProductImage } = await import("@/app/actions/product");
       await deleteProductImage(urlToRemove);
       toast.success("Image deleted from storage");
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete image file");
     } finally {
       setIsDeleting(false);
@@ -449,7 +449,7 @@ export function ProductForm({
                       ✨ Featured Product
                     </Label>
                     <p className="text-[10px] text-gray-500">
-                      Show this product in the "Featured" section on the homepage
+                      Show this product in the &quot;Featured&quot; section on the homepage
                     </p>
                   </div>
                   <Switch

@@ -37,7 +37,7 @@ export function IOSCompatibilityChecker() {
                     localStorage.setItem('__test__', 'test');
                     localStorage.removeItem('__test__');
                     return true;
-                } catch (e) {
+                } catch {
                     return false;
                 }
             })(),
@@ -53,9 +53,10 @@ export function IOSCompatibilityChecker() {
                             return false;
                         }
                     }) as AddEventListenerOptions;
-                    window.addEventListener('testPassive' as any, null as any, options);
-                    window.removeEventListener('testPassive' as any, null as any, options);
-                } catch (err) {
+                    const noop = () => { };
+                    window.addEventListener('testPassive', noop, options);
+                    window.removeEventListener('testPassive', noop, options);
+                } catch {
                     passiveSupported = false;
                 }
                 return passiveSupported;
@@ -78,8 +79,8 @@ export function IOSCompatibilityChecker() {
 
         // Monitor for regex errors
         const originalError = console.error;
-        console.error = function (...args: any[]) {
-            const message = args.join(' ');
+        console.error = function (...args: unknown[]) {
+            const message = args.map(arg => String(arg)).join(' ');
             if (message.includes('Invalid regular expression') || message.includes('group specifier')) {
                 console.error('%c🚨 REGEX ERROR DETECTED - Check iOS_COMPATIBILITY.md for solutions', 'background: #FF3B30; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold;');
             }
