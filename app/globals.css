@@ -58,8 +58,8 @@
   --border: #ffe4e1;
   --input: #ffe4e1;
   --ring: #ffb6c1;
-  --flora-dark: #3E343C;
-  --flora-purple: #A78BFA;
+  --flora-dark: #3e343c;
+  --flora-purple: #a78bfa;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -141,9 +141,15 @@
   }
 
   @keyframes gradient-slow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }
 
@@ -151,5 +157,12 @@
   .animate-gradient-slow {
     animation: gradient-slow 8s linear infinite;
     background-size: 200% auto;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
   }
 }

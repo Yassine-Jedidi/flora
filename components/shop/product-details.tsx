@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useLayoutEffect } from "react";
+import { useState, useEffect, useCallback, useMemo, useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -113,19 +113,45 @@ export function ProductDetails({ product }: { product: Product }) {
     });
   };
 
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  const scrollToImage = useCallback((index: number) => {
+    if (carouselRef.current) {
+      const container = carouselRef.current;
+      const width = container.offsetWidth;
+      container.scrollTo({
+        left: width * index,
+        behavior: "smooth"
+      });
+      setSelectedImage(index);
+    }
+  }, []);
+
   const nextImage = useCallback(() => {
     if (product.images.length > 0) {
-      setSelectedImage((prev) => (prev + 1) % product.images.length);
+      const nextIndex = (selectedImage + 1) % product.images.length;
+      scrollToImage(nextIndex);
     }
-  }, [product.images.length]);
+  }, [product.images.length, selectedImage, scrollToImage]);
 
   const prevImage = useCallback(() => {
     if (product.images.length > 0) {
-      setSelectedImage(
-        (prev) => (prev - 1 + product.images.length) % product.images.length
-      );
+      const prevIndex = (selectedImage - 1 + product.images.length) % product.images.length;
+      scrollToImage(prevIndex);
     }
-  }, [product.images.length]);
+  }, [product.images.length, selectedImage, scrollToImage]);
+
+  const handleScroll = useCallback(() => {
+    if (carouselRef.current) {
+      const container = carouselRef.current;
+      const scrollLeft = container.scrollLeft;
+      const width = container.offsetWidth;
+      const index = Math.round(scrollLeft / width);
+      if (index !== selectedImage) {
+        setSelectedImage(index);
+      }
+    }
+  }, [selectedImage]);
 
   useEffect(() => {
     if (product.images.length <= 1) return;
@@ -150,48 +176,33 @@ export function ProductDetails({ product }: { product: Product }) {
             <div className="absolute -top-10 -left-10 w-64 h-64 bg-pink-100/50 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] pointer-events-none" />
 
-            <div className="relative w-full h-full touch-none">
-              <AnimatePresence initial={false}>
-                <motion.div
-                  key={selectedImage}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.1}
-                  onDragEnd={(_, info) => {
-                    if (info.offset.x > 30) {
-                      prevImage();
-                    } else if (info.offset.x < -30) {
-                      nextImage();
-                    }
-                  }}
-                  className="absolute inset-0 cursor-grab active:cursor-grabbing"
-                  style={{ willChange: "opacity, transform" }}
-                >
+            <div
+              ref={carouselRef}
+              onScroll={handleScroll}
+              className="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-none touch-pan-x"
+            >
+              {product.images.map((img, idx) => (
+                <div key={img.url} className="relative w-full h-full shrink-0 snap-center">
                   <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
-                  {product.images[selectedImage] ? (
-                    <Image
-                      src={product.images[selectedImage].url}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 520px"
-                      quality={70}
-                      className="object-cover pointer-events-none"
-                      style={{
-                        borderRadius: 'inherit',
-                      }}
-                      priority
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                      <ShoppingBag className="w-20 h-20 text-gray-200" />
-                    </div>
-                  )}
-                </motion.div>
-              </AnimatePresence>
+                  <Image
+                    src={img.url}
+                    alt={`${product.name} - Image ${idx + 1}`}
+                    fill
+                    sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 520px"
+                    quality={70}
+                    className="object-cover pointer-events-none"
+                    style={{
+                      borderRadius: 'inherit',
+                    }}
+                    priority={idx === 0}
+                  />
+                </div>
+              ))}
+              {product.images.length === 0 && (
+                <div className="relative w-full h-full shrink-0 snap-center flex items-center justify-center bg-gray-50">
+                  <ShoppingBag className="w-20 h-20 text-gray-200" />
+                </div>
+              )}
             </div>
 
             {/* Hidden Preloader for next/prev images to make carousel feel instant */}
@@ -264,7 +275,7 @@ export function ProductDetails({ product }: { product: Product }) {
               {product.images.map((img, index) => (
                 <button
                   key={img.url}
-                  onClick={() => setSelectedImage(index)}
+                  onClick={() => scrollToImage(index)}
                   className={`relative w-18 h-18 md:w-20 md:h-20 rounded-xl md:rounded-2xl overflow-hidden border-2 transition-all shrink-0 isolate ${selectedImage === index
                     ? "border-primary shadow-md scale-95"
                     : "border-transparent hover:border-pink-200"
