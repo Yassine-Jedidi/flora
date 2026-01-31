@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { Bow } from "@/components/icons/bow";
 import { toast } from "sonner";
-import { signInEmailAction } from "@/app/actions/auth";
 import { signIn } from "@/lib/auth-client";
 
 import { Button } from "@/components/ui/button";
@@ -46,14 +45,18 @@ export default function SignInPage() {
     const onSubmit = async (values: SignInValues) => {
         setIsLoading(true);
         try {
-            const result = await signInEmailAction(values);
+            const { data, error } = await signIn.email({
+                email: values.email,
+                password: values.password,
+                callbackURL: "/",
+            });
 
-            if (result.success) {
+            if (error) {
+                toast.error(error.message || "Invalid email or password");
+            } else {
                 toast.success("Welcome back to Flora! 🎀");
                 router.push("/");
-                router.refresh(); // Refresh to update navbar session
-            } else {
-                toast.error(result.error);
+                router.refresh();
             }
         } catch (err: any) {
             toast.error("An unexpected error occurred. Please try again.");

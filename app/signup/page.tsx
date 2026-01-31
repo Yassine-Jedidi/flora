@@ -23,8 +23,6 @@ import { Footer } from "@/components/footer";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 
-import { signUpEmailAction } from "@/app/actions/auth";
-
 const signUpSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Invalid email address"),
@@ -48,13 +46,19 @@ export default function SignUpPage() {
     const onSubmit = async (values: SignUpValues) => {
         setIsLoading(true);
         try {
-            const result = await signUpEmailAction(values);
+            const { data, error } = await signUp.email({
+                email: values.email,
+                password: values.password,
+                name: values.name,
+                callbackURL: "/",
+            });
 
-            if (result.success) {
+            if (error) {
+                toast.error(error.message || "Failed to create account");
+            } else {
                 toast.success("Account created! Welcome to Flora 🎀");
                 router.push("/");
-            } else {
-                toast.error(result.error);
+                router.refresh();
             }
         } catch (err: any) {
             toast.error("Something went wrong. Please try again.");
@@ -87,7 +91,7 @@ export default function SignUpPage() {
 
             <main className="flex-1 flex items-center justify-center pt-32 pb-20 px-4 relative">
                 {/* Minimalist Background Element */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-pink-50/50 to-transparent -z-10" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-purple-50/50 to-transparent -z-10" />
 
                 <motion.div
                     initial={{ opacity: 0, scale: 0.98 }}
@@ -102,7 +106,7 @@ export default function SignUpPage() {
                                 Create Account
                             </h1>
                             <p className="text-gray-400 text-sm font-medium flex items-center justify-center gap-2">
-                                Join the Flora family today <Bow className="w-4 h-4 text-primary shrink-0" />
+                                Join the Flora family today <Bow className="w-4 h-4 text-flora-purple shrink-0" />
                             </p>
                         </div>
 
@@ -112,7 +116,7 @@ export default function SignUpPage() {
                                 variant="outline"
                                 type="button"
                                 onClick={() => handleSocialSignUp("google")}
-                                className="h-12 rounded-2xl border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-all hover:border-primary/30 flex items-center justify-center gap-3"
+                                className="h-12 rounded-2xl border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-all hover:border-flora-purple/30 flex items-center justify-center gap-3"
                             >
                                 <FcGoogle className="w-5 h-5" />
                                 Continue with Google
@@ -121,7 +125,7 @@ export default function SignUpPage() {
                                 variant="outline"
                                 type="button"
                                 onClick={() => handleSocialSignUp("facebook")}
-                                className="h-12 rounded-2xl border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-all hover:border-primary/30 flex items-center justify-center gap-3"
+                                className="h-12 rounded-2xl border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-all hover:border-flora-purple/30 flex items-center justify-center gap-3"
                             >
                                 <FaFacebook className="w-5 h-5 text-[#1877F2]" />
                                 Continue with Facebook
@@ -148,7 +152,7 @@ export default function SignUpPage() {
                                         id="name"
                                         {...register("name")}
                                         placeholder="Flora Beauty"
-                                        className="h-12 rounded-xl border-gray-100 focus:ring-primary/20 focus:border-primary transition-all font-medium text-sm"
+                                        className="h-12 rounded-xl border-purple-100 bg-transparent focus:ring-flora-purple/20 focus:border-flora-purple placeholder:text-purple-300 selection:bg-flora-purple shadow-[0_2px_10px_rgba(167,139,250,0.05)] transition-all font-medium text-sm"
                                     />
                                 </div>
                                 {errors.name && (
@@ -169,7 +173,7 @@ export default function SignUpPage() {
                                         type="email"
                                         {...register("email")}
                                         placeholder="hello@flora.tn"
-                                        className="h-12 rounded-xl border-gray-100 focus:ring-primary/20 focus:border-primary transition-all font-medium text-sm"
+                                        className="h-12 rounded-xl border-purple-100 bg-transparent focus:ring-flora-purple/20 focus:border-flora-purple placeholder:text-purple-300 selection:bg-flora-purple shadow-[0_2px_10px_rgba(167,139,250,0.05)] transition-all font-medium text-sm"
                                     />
                                 </div>
                                 {errors.email && (
@@ -190,7 +194,7 @@ export default function SignUpPage() {
                                         type="password"
                                         {...register("password")}
                                         placeholder="••••••••••••"
-                                        className="h-12 rounded-xl border-gray-100 focus:ring-primary/20 focus:border-primary transition-all font-medium text-sm"
+                                        className="h-12 rounded-xl border-purple-100 bg-transparent focus:ring-flora-purple/20 focus:border-flora-purple placeholder:text-purple-300 selection:bg-flora-purple shadow-[0_2px_10px_rgba(167,139,250,0.05)] transition-all font-medium text-sm"
                                     />
                                 </div>
                                 {errors.password && (
@@ -204,7 +208,7 @@ export default function SignUpPage() {
                                 <Button
                                     disabled={isLoading}
                                     type="submit"
-                                    className="w-full h-12 bg-primary hover:bg-[#FF75AA] text-white rounded-xl font-bold text-sm shadow-sm transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
+                                    className="w-full h-12 bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-xl font-bold text-sm shadow-sm transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-50"
                                 >
                                     {isLoading ? (
                                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -222,7 +226,7 @@ export default function SignUpPage() {
                                 Already have an account?{" "}
                                 <Link
                                     href="/signin"
-                                    className="text-primary hover:text-primary/80 transition-colors font-bold ml-1"
+                                    className="text-flora-purple hover:text-flora-purple/80 transition-colors font-bold ml-1"
                                 >
                                     Sign In
                                 </Link>
