@@ -39,7 +39,7 @@ import {
     updateAddress,
     deleteAddress
 } from "@/app/actions/address";
-import { updateProfile, getUserSessions, revokeSession } from "@/app/actions/user";
+import { updateProfile, getUserSessions, revokeSession, deleteUploadedFile } from "@/app/actions/user";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -59,6 +59,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { TUNISIA_GOVERNORATES, TUNISIA_LOCATIONS } from "@/lib/constants/tunisia";
+import { UploadButton } from "@/lib/uploadthing";
 
 export default function ProfilePage() {
     const { data: session, isPending: isSessionPending } = useSession();
@@ -71,7 +72,9 @@ export default function ProfilePage() {
     // Profile Update State
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const [profileName, setProfileName] = useState("");
+    const [profileImage, setProfileImage] = useState<string | null>(null);
     const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
     const router = useRouter();
 
     // Sessions State
@@ -224,11 +227,16 @@ export default function ProfilePage() {
 
         setIsUpdatingProfile(true);
         try {
-            const result = await updateProfile({ name: profileName });
+            const result = await updateProfile({
+                name: profileName,
+                image: profileImage || undefined
+            });
             if (result.success) {
                 toast.success("Profile updated! ✨");
                 setIsProfileModalOpen(false);
-                router.refresh();
+                router.refresh(); // This will refresh the server components
+                // Force a reload to ensure the new image is fetched fresh if needed
+                window.location.reload();
             } else {
                 toast.error(result.error);
             }
@@ -308,6 +316,7 @@ export default function ProfilePage() {
                             <Button
                                 onClick={() => {
                                     setProfileName(session.user.name);
+                                    setProfileImage(session.user.image || null);
                                     setIsProfileModalOpen(true);
                                 }}
                                 className="bg-white hover:bg-pink-50 text-flora-dark border border-pink-100 rounded-full px-8 py-6 font-bold flex items-center gap-2 shadow-sm transition-all hover:scale-105"
@@ -469,6 +478,7 @@ export default function ProfilePage() {
                                             <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Your Name</Label>
                                             <div className="relative group/input cursor-pointer" onClick={() => {
                                                 setProfileName(session.user.name);
+                                                setProfileImage(session.user.image || null);
                                                 setIsProfileModalOpen(true);
                                             }}>
                                                 <Input
@@ -684,7 +694,7 @@ export default function ProfilePage() {
                                 <div className="space-y-2">
                                     <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Phone Number</Label>
                                     <Input
-                                        placeholder="8-digit mobile number"
+                                        placeholder="Mobile number"
                                         className="rounded-2xl border-pink-100 focus:ring-pink-200 py-7 px-5 font-bold text-flora-dark"
                                         value={addressForm.phoneNumber}
                                         onChange={(e) => setAddressForm({ ...addressForm, phoneNumber: e.target.value })}
@@ -772,6 +782,52 @@ export default function ProfilePage() {
 
                         <div className="space-y-4">
                             <div className="space-y-2">
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Profile Picture</Label>
+                                <div className="bg-gray-50/50 border border-gray-100 rounded-3xl p-6 flex flex-col items-center gap-4">
+                                    <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white group">
+                                        {profileImage ? (
+                                            <img
+                                                src={profileImage}
+                                                alt="Profile"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                                                <User className="w-12 h-12 text-gray-300" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <UploadButton
+                                        endpoint="profileImage"
+                                        onUploadBegin={() => {
+                                            setIsUploadingImage(true);
+                                            toast.info("Uploading image...", { duration: 2000 });
+                                        }}
+                                        onClientUploadComplete={async (res) => {
+                                            if (res && res[0]) {
+                                                // If we have a previous un-saved upload, delete it
+                                                if (profileImage && profileImage !== session?.user?.image) {
+                                                    await deleteUploadedFile(profileImage);
+                                                }
+
+                                                setProfileImage(res[0].url);
+                                                setIsUploadingImage(false);
+                                                toast.success("Image uploaded! Don't forget to save. 📸");
+                                            }
+                                        }}
+                                        onUploadError={(error: Error) => {
+                                            setIsUploadingImage(false);
+                                            toast.error(`Error uploading: ${error.message}`);
+                                        }}
+                                        appearance={{
+                                            button: `text-xs font-bold px-4 py-2 h-auto rounded-xl ${isUploadingImage ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-[#FF75AA]'}`,
+                                            allowedContent: "text-[10px] text-gray-400 font-bold"
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
                                 <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Full Name</Label>
                                 <Input
                                     placeholder="Your full name"
@@ -783,11 +839,19 @@ export default function ProfilePage() {
 
                             <Button
                                 onClick={handleUpdateProfile}
-                                disabled={isUpdatingProfile}
-                                className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-8 font-black text-xl shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                                disabled={isUpdatingProfile || isUploadingImage}
+                                className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-8 font-black text-xl shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isUpdatingProfile ? (
-                                    <Loader2 className="w-7 h-7 animate-spin" />
+                                    <div className="flex items-center gap-2">
+                                        <Loader2 className="w-7 h-7 animate-spin" />
+                                        <span>Saving...</span>
+                                    </div>
+                                ) : isUploadingImage ? (
+                                    <div className="flex items-center gap-2">
+                                        <Loader2 className="w-7 h-7 animate-spin" />
+                                        <span>Uploading Image...</span>
+                                    </div>
                                 ) : (
                                     "Save Changes"
                                 )}

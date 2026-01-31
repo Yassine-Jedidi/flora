@@ -406,7 +406,7 @@ export function Navbar() {
             ) : session ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="rounded-full bg-[#3E343C] p-0.5 text-white hover:bg-primary transition-all duration-300 shadow-md overflow-hidden outline-none ring-offset-2 focus:ring-2 focus:ring-pink-200 group">
+                  <button className="rounded-full bg-white p-0 text-flora-dark border-2 border-white hover:border-pink-50 transition-all duration-300 shadow-md overflow-hidden outline-none ring-offset-2 focus:ring-2 focus:ring-pink-200 group">
                     {session.user.image ? (
                       <div className="relative w-7 h-7 rounded-full overflow-hidden">
                         <Image

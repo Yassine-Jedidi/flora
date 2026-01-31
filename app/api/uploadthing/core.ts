@@ -1,6 +1,10 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { auth } from "@/lib/auth";
+import db from "@/lib/db";
+import { UTApi } from "uploadthing/server";
 
 const f = createUploadthing();
+const utapi = new UTApi();
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -19,7 +23,7 @@ export const ourFileRouter = {
     .middleware(async () => {
       // This code runs on your server before upload
       // Here you can check if the user is an admin
-      
+
       // For now, we return a fake user ID
       return { userId: "admin" };
     })
@@ -29,6 +33,26 @@ export const ourFileRouter = {
       console.log("file url", file.url);
 
       // !!! Whatever is returned here is sent to the clientside onUploadComplete callback
+      return { uploadedBy: metadata.userId };
+    }),
+
+  profileImage: f({
+    image: {
+      maxFileSize: "2MB",
+      maxFileCount: 1,
+    },
+  })
+    .middleware(async ({ req }) => {
+      const session = await auth.api.getSession({
+        headers: req.headers,
+      });
+
+      if (!session) throw new Error("Unauthorized");
+      return { userId: session.user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Profile Upload complete for userId:", metadata.userId);
+      console.log("file url", file.url);
       return { uploadedBy: metadata.userId };
     }),
 } satisfies FileRouter;
