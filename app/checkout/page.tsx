@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OrderSchema, type OrderFormValues } from "@/lib/validations/order";
 import { createOrder } from "@/app/actions/order";
+import { getAddresses } from "@/app/actions/address";
+import { useSession } from "@/lib/auth-client";
+import { Bow } from "@/components/icons/bow";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   TUNISIA_GOVERNORATES,
   TUNISIA_LOCATIONS,
@@ -34,6 +38,7 @@ import {
   Plus,
   Trash2,
   ShoppingCart,
+  MapPin,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -53,9 +58,65 @@ import {
 
 export default function CheckoutPage() {
   const { cart, totalPrice, clearCart, updateQuantity, removeItem } = useCart();
+  const { data: session } = useSession();
+
   const [isPending, setIsPending] = useState(false);
   const [success, setSuccess] = useState(false);
   const [itemToRemove, setItemToRemove] = useState<{ id: string, name: string } | null>(null);
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
+
+  const form = useForm<OrderFormValues>({
+    resolver: zodResolver(OrderSchema),
+    defaultValues: {
+      fullName: "",
+      phoneNumber: "",
+      governorate: "",
+      city: "",
+      detailedAddress: "",
+      saveAddress: true,
+    },
+  });
+
+  // Load addresses if logged in
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      if (session) {
+        setIsLoadingAddresses(true);
+        const result = await getAddresses();
+        if (result.success && result.data) {
+          setSavedAddresses(result.data);
+          // Auto-select default address
+          const defaultAddr = result.data.find((a: any) => a.isDefault) || result.data[0];
+          if (defaultAddr) {
+            setSelectedAddressId(defaultAddr.id);
+            // Pre-fill form with selected address
+            form.reset({
+              fullName: defaultAddr.fullName || session.user.name || "",
+              phoneNumber: defaultAddr.phoneNumber,
+              governorate: defaultAddr.governorate,
+              city: defaultAddr.city,
+              detailedAddress: defaultAddr.detailedAddress,
+              saveAddress: false,
+            });
+          } else {
+            setIsAddingNewAddress(true);
+            form.setValue("fullName", session.user.name || "");
+          }
+        } else {
+          setIsAddingNewAddress(true);
+          form.setValue("fullName", session.user.name || "");
+        }
+        setIsLoadingAddresses(false);
+      } else {
+        setIsLoadingAddresses(false);
+        setIsAddingNewAddress(true);
+      }
+    };
+    fetchAddresses();
+  }, [session, form]);
 
   const handleRemove = (id: string, name: string) => {
     setItemToRemove({ id, name });
@@ -73,17 +134,6 @@ export default function CheckoutPage() {
 
   const shippingCost = cart.length > 0 ? 7.0 : 0;
   const finalTotal = totalPrice + shippingCost;
-
-  const form = useForm<OrderFormValues>({
-    resolver: zodResolver(OrderSchema),
-    defaultValues: {
-      fullName: "",
-      phoneNumber: "",
-      governorate: "",
-      city: "",
-      detailedAddress: "",
-    },
-  });
 
   const selectedGov = form.watch("governorate");
   const availableCities = selectedGov
@@ -188,130 +238,255 @@ export default function CheckoutPage() {
                       <ShoppingBag className="w-4 h-4 text-primary" />
                     </div>
                     <h2 className="text-xl font-black text-flora-dark">
-                      Information
+                      Shipping Information
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="fullName"
-                        className="text-flora-dark font-bold ml-1"
-                      >
-                        Full Name
-                      </Label>
-                      <Input
-                        id="fullName"
-                        {...form.register("fullName")}
-                        placeholder="Enter your full name"
-                        className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
-                      />
-                      {form.formState.errors.fullName && (
-                        <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                          {form.formState.errors.fullName.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="phoneNumber"
-                        className="text-flora-dark font-bold ml-1"
-                      >
-                        Phone Number (8 digits)
-                      </Label>
-                      <Input
-                        id="phoneNumber"
-                        {...form.register("phoneNumber")}
-                        placeholder="Example: 20123456"
-                        className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
-                      />
-                      {form.formState.errors.phoneNumber && (
-                        <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                          {form.formState.errors.phoneNumber.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label className="text-flora-dark font-bold ml-1">
-                        Governorate
-                      </Label>
-                      <Select
-                        onValueChange={(v) =>
-                          form.setValue("governorate", v, {
-                            shouldValidate: true,
-                          })
-                        }
-                      >
-                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-flora-dark font-medium">
-                          <SelectValue placeholder="Select governorate" />
-                        </SelectTrigger>
-                        <SelectContent className="rounded-2xl border-pink-100">
-                          {TUNISIA_GOVERNORATES.map((gov) => (
-                            <SelectItem key={gov} value={gov}>
-                              {gov}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {form.formState.errors.governorate && (
-                        <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                          {form.formState.errors.governorate.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label className="text-flora-dark font-bold ml-1">
-                        City / Delegation
-                      </Label>
-                      <Select
-                        disabled={!selectedGov}
-                        onValueChange={(v) =>
-                          form.setValue("city", v, { shouldValidate: true })
-                        }
-                      >
-                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-flora-dark font-medium">
-                          <SelectValue placeholder="Select city" />
-                        </SelectTrigger>
-                        <SelectContent className="rounded-2xl border-pink-100">
-                          {availableCities.map((city) => (
-                            <SelectItem key={city} value={city}>
-                              {city}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {form.formState.errors.city && (
-                        <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                          {form.formState.errors.city.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="detailedAddress"
-                      className="text-flora-dark font-bold ml-1"
-                    >
-                      Detailed Address
-                    </Label>
-                    <Input
-                      id="detailedAddress"
-                      {...form.register("detailedAddress")}
-                      placeholder="Street, Building, Apartment..."
-                      className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
-                    />
-                    {form.formState.errors.detailedAddress && (
-                      <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                        {form.formState.errors.detailedAddress.message}
+                  {/* Saved Addresses Selection */}
+                  {session && savedAddresses.length > 0 && !isAddingNewAddress && (
+                    <div className="space-y-4 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
+                      <p className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
+                        Select a saved address
                       </p>
-                    )}
-                  </div>
+                      <div className="grid grid-cols-1 gap-4">
+                        {savedAddresses.map((addr) => (
+                          <button
+                            key={addr.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedAddressId(addr.id);
+                              form.reset({
+                                fullName: addr.fullName,
+                                phoneNumber: addr.phoneNumber,
+                                governorate: addr.governorate,
+                                city: addr.city,
+                                detailedAddress: addr.detailedAddress,
+                                saveAddress: false,
+                              });
+                            }}
+                            className={`p-6 rounded-3xl border-2 text-left transition-all duration-300 relative group overflow-hidden ${selectedAddressId === addr.id
+                              ? "border-primary bg-pink-50/30 shadow-md shadow-pink-100/50"
+                              : "border-gray-100 hover:border-pink-100 bg-white"
+                              }`}
+                          >
+                            {selectedAddressId === addr.id && (
+                              <div className="absolute top-0 right-0 p-2">
+                                <CheckCircle2 className="w-5 h-5 text-primary animate-in zoom-in-50 duration-300" />
+                              </div>
+                            )}
+                            <div className="flex flex-col gap-1">
+                              <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 flex items-center gap-1">
+                                <MapPin className="w-3 h-3" />
+                                {addr.name}
+                              </span>
+                              <p className="font-black text-flora-dark">{addr.fullName}</p>
+                              <p className="text-sm text-gray-400 font-bold">{addr.phoneNumber}</p>
+                              <p className="text-sm text-gray-400 font-bold mt-2">
+                                {addr.detailedAddress}, {addr.city}, {addr.governorate}
+                              </p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => {
+                          setIsAddingNewAddress(true);
+                          setSelectedAddressId(null);
+                          form.reset({
+                            fullName: session?.user?.name || "",
+                            phoneNumber: "",
+                            governorate: "",
+                            city: "",
+                            detailedAddress: "",
+                            saveAddress: true,
+                          });
+                        }}
+                        className="w-full rounded-2xl border-2 border-dashed border-pink-100 text-primary hover:bg-pink-50/50 font-bold py-8 transition-all"
+                      >
+                        + Ship to a new address
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Address Form Fields */}
+                  {(isAddingNewAddress || !session || savedAddresses.length === 0) && (
+                    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+                      {session && savedAddresses.length > 0 && (
+                        <div className="flex justify-between items-center mb-2">
+                          <p className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
+                            New shipping details
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsAddingNewAddress(false);
+                              const defaultAddr = savedAddresses.find((a: any) => a.isDefault) || savedAddresses[0];
+                              setSelectedAddressId(defaultAddr.id);
+                              form.reset({
+                                fullName: defaultAddr.fullName || session?.user?.name || "",
+                                phoneNumber: defaultAddr.phoneNumber,
+                                governorate: defaultAddr.governorate,
+                                city: defaultAddr.city,
+                                detailedAddress: defaultAddr.detailedAddress,
+                                saveAddress: false,
+                              });
+                            }}
+                            className="text-primary text-xs font-black hover:underline"
+                          >
+                            Back to saved addresses
+                          </button>
+                        </div>
+                      )}
+
+                      <div className={`grid grid-cols-1 ${!session ? "md:grid-cols-2" : ""} gap-6`}>
+                        {!session && (
+                          <div className="space-y-2 animate-in fade-in duration-300">
+                            <Label
+                              htmlFor="fullName"
+                              className="text-flora-dark font-bold ml-1"
+                            >
+                              Full Name
+                            </Label>
+                            <Input
+                              id="fullName"
+                              {...form.register("fullName")}
+                              placeholder="Enter your full name"
+                              className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
+                            />
+                            {form.formState.errors.fullName && (
+                              <p className="text-red-500 text-xs font-bold mt-1 ml-1">
+                                {form.formState.errors.fullName.message}
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="space-y-2">
+                          <Label
+                            htmlFor="phoneNumber"
+                            className="text-flora-dark font-bold ml-1"
+                          >
+                            Phone Number (8 digits)
+                          </Label>
+                          <Input
+                            id="phoneNumber"
+                            {...form.register("phoneNumber")}
+                            placeholder="Example: 20123456"
+                            className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
+                          />
+                          {form.formState.errors.phoneNumber && (
+                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">
+                              {form.formState.errors.phoneNumber.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label className="text-flora-dark font-bold ml-1">
+                            Governorate
+                          </Label>
+                          <Select
+                            value={form.watch("governorate")}
+                            onValueChange={(v) =>
+                              form.setValue("governorate", v, {
+                                shouldValidate: true,
+                              })
+                            }
+                          >
+                            <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-flora-dark font-medium">
+                              <SelectValue placeholder="Select governorate" />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-2xl border-pink-100">
+                              {TUNISIA_GOVERNORATES.map((gov) => (
+                                <SelectItem key={gov} value={gov}>
+                                  {gov}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {form.formState.errors.governorate && (
+                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">
+                              {form.formState.errors.governorate.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-flora-dark font-bold ml-1">
+                            City / Delegation
+                          </Label>
+                          <Select
+                            disabled={!selectedGov}
+                            value={form.watch("city")}
+                            onValueChange={(v) =>
+                              form.setValue("city", v, { shouldValidate: true })
+                            }
+                          >
+                            <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-flora-dark font-medium">
+                              <SelectValue placeholder="Select city" />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-2xl border-pink-100">
+                              {availableCities.map((city) => (
+                                <SelectItem key={city} value={city}>
+                                  {city}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {form.formState.errors.city && (
+                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">
+                              {form.formState.errors.city.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="detailedAddress"
+                          className="text-flora-dark font-bold ml-1"
+                        >
+                          Detailed Address
+                        </Label>
+                        <Input
+                          id="detailedAddress"
+                          {...form.register("detailedAddress")}
+                          placeholder="Street, Building, Apartment..."
+                          className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
+                        />
+                        {form.formState.errors.detailedAddress && (
+                          <p className="text-red-500 text-xs font-bold mt-1 ml-1">
+                            {form.formState.errors.detailedAddress.message}
+                          </p>
+                        )}
+                      </div>
+
+                      {session && (
+                        <div className="flex items-center space-x-3 pt-2">
+                          <Checkbox
+                            id="saveAddress"
+                            checked={form.watch("saveAddress")}
+                            onCheckedChange={(checked) => {
+                              form.setValue("saveAddress", checked === true);
+                            }}
+                            className="w-5 h-5 border-pink-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary text-white rounded-lg transition-all duration-300"
+                          />
+                          <Label
+                            htmlFor="saveAddress"
+                            className="text-sm font-bold text-gray-500 cursor-pointer select-none flex items-center gap-1.5"
+                          >
+                            Save this address for a 1-click checkout next time
+                            <Bow className="w-4 h-4 text-primary" />
+                          </Label>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-4">
@@ -456,7 +631,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="p-4 rounded-3xl bg-gray-50 flex flex-col items-center text-center gap-2 border border-gray-100">
                     <Truck className="w-5 h-5 text-flora-purple" />
-                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider text-center">
+                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider text-center" >
                       Fast Delivery
                     </p>
                   </div>
