@@ -180,17 +180,18 @@ export function ProductDetails({ product }: { product: Product }) {
             <div
               ref={carouselRef}
               onScroll={handleScroll}
-              className="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-none touch-pan-x"
+              className="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory scrollbar-none touch-pan-y"
             >
               {product.images.map((img, idx) => (
-                <div key={img.url} className="relative w-full h-full shrink-0 snap-center">
+                <div key={img.url} className="relative w-full h-full shrink-0 snap-center touch-pan-y">
                   <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
                   <Image
                     src={img.url}
                     alt={`${product.name} - Image ${idx + 1}`}
                     fill
                     sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 520px"
-                    className="object-cover pointer-events-none"
+                    className="object-cover"
+                    draggable={false}
                     style={{
                       borderRadius: 'inherit',
                     }}
