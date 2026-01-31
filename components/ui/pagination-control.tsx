@@ -8,12 +8,14 @@ interface PaginationControlProps {
     total: number;
     totalPages: number;
     currentPage: number;
+    showSinglePage?: boolean;
 }
 
 export function PaginationControl({
     total,
     totalPages,
     currentPage,
+    showSinglePage = false,
 }: PaginationControlProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -25,7 +27,7 @@ export function PaginationControl({
         router.push(`${pathname}?${params.toString()}`);
     };
 
-    if (total === 0 || totalPages <= 1) return null;
+    if (total === 0 || (totalPages <= 1 && !showSinglePage)) return null;
 
     return (
         <div className="flex flex-col items-center gap-4 mt-12 pb-8">

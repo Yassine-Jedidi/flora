@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { formatPrice } from "@/lib/utils";
+import { useSearchParams } from "next/navigation";
+import { PaginationControl } from "@/components/ui/pagination-control";
 
 const statusConfig = {
     PENDING: {
@@ -52,19 +54,28 @@ const statusConfig = {
 };
 
 export default function OrdersPage() {
+    const searchParams = useSearchParams();
+    const page = Number(searchParams.get("page")) || 1;
     const [orders, setOrders] = useState<any[]>([]);
+    const [pagination, setPagination] = useState<{
+        total: number;
+        totalPages: number;
+        currentPage: number;
+    } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchOrders = async () => {
-            const result = await getUserOrders();
-            if (result.success) {
+            setIsLoading(true);
+            const result = await getUserOrders(page);
+            if (result.success && result.orders && result.pagination) {
                 setOrders(result.orders);
+                setPagination(result.pagination);
             }
             setIsLoading(false);
         };
         fetchOrders();
-    }, []);
+    }, [page]);
 
     return (
         <div className="min-h-screen bg-white flex flex-col font-sans">
@@ -82,11 +93,16 @@ export default function OrdersPage() {
                             Back to shop
                         </Link>
 
-                        <div className="flex items-end gap-3 mb-2">
+                        <div className="flex items-center gap-3 mb-2">
                             <h1 className="text-4xl font-black text-flora-dark tracking-tight">
                                 My Orders
                             </h1>
-                            <Bow className="w-8 h-8 text-primary mb-1 animate-bounce-slow" />
+                            <Bow className="w-8 h-8 text-primary animate-bounce-slow" />
+                            {pagination && (
+                                <Badge variant="secondary" className="rounded-full px-3 py-1 h-8 text-sm font-black bg-pink-50 text-pink-500 border border-pink-100">
+                                    {pagination.total} Orders
+                                </Badge>
+                            )}
                         </div>
                         <p className="text-gray-400 font-bold">
                             Review and track your Flora treasures.
@@ -213,11 +229,23 @@ export default function OrdersPage() {
                                 );
                             })}
                         </div>
+
+                    )}
+
+                    {pagination && !isLoading && (
+                        <div className="mt-8">
+                            <PaginationControl
+                                total={pagination.total}
+                                totalPages={pagination.totalPages}
+                                currentPage={pagination.currentPage}
+                                showSinglePage={true}
+                            />
+                        </div>
                     )}
                 </div>
-            </main>
+            </main >
 
             <Footer />
-        </div>
+        </div >
     );
 }

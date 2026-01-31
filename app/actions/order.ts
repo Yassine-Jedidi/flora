@@ -92,7 +92,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   }
 }
 
-export async function getUserOrders() {
+export async function getUserOrders(page: number = 1, pageSize: number = 10) {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -102,25 +102,36 @@ export async function getUserOrders() {
       return { error: "Not authenticated" };
     }
 
-    const orders = await prisma.order.findMany({
-      where: {
-        userId: session.user.id,
-      },
-      include: {
-        items: {
-          include: {
-            product: {
-              include: {
-                images: true,
+    const skip = (page - 1) * pageSize;
+
+    const [total, orders] = await prisma.$transaction([
+      prisma.order.count({
+        where: {
+          userId: session.user.id,
+        },
+      }),
+      prisma.order.findMany({
+        where: {
+          userId: session.user.id,
+        },
+        include: {
+          items: {
+            include: {
+              product: {
+                include: {
+                  images: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: pageSize,
+        skip: skip,
+      }),
+    ]);
 
     return {
       success: true,
@@ -137,6 +148,11 @@ export async function getUserOrders() {
           },
         })),
       })),
+      pagination: {
+        total,
+        totalPages: Math.ceil(total / pageSize),
+        currentPage: page,
+      },
     };
   } catch (error) {
     console.error("Fetch User Orders error:", error);

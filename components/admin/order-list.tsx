@@ -9,31 +9,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Order } from "@/lib/types";
 import { OrderStatusToggle } from "./order-status-toggle";
 import { OrderStatus } from "@prisma/client";
+import { PaginationControl } from "@/components/ui/pagination-control";
 
 interface OrderListProps {
   orders: Order[];
   pagination?: {
     currentPage: number;
     totalPages: number;
+    total: number;
   };
 }
 
 export function OrderList({ orders, pagination }: OrderListProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", newPage.toString());
-    router.push(`${pathname}?${params.toString()}`);
-  };
 
   return (
     <div className="space-y-4">
@@ -148,36 +138,14 @@ export function OrderList({ orders, pagination }: OrderListProps) {
 
       {/* Pagination Controls */}
       {pagination && (
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(pagination.currentPage - 1)}
-            disabled={pagination.currentPage <= 1}
-            className="rounded-full border-pink-100 text-flora-dark hover:bg-pink-50 hover:text-primary"
-          >
-            <ChevronLeft className="h-4 w-4 mr-1" />
-            Previous
-          </Button>
-          <div className="text-sm font-medium text-gray-500">
-            Page{" "}
-            <span className="text-flora-dark font-bold">
-              {pagination.currentPage}
-            </span>{" "}
-            of {pagination.totalPages}
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(pagination.currentPage + 1)}
-            disabled={pagination.currentPage >= pagination.totalPages}
-            className="rounded-full border-pink-100 text-flora-dark hover:bg-pink-50 hover:text-primary"
-          >
-            Next
-            <ChevronRight className="h-4 w-4 ml-1" />
-          </Button>
-        </div>
+        <PaginationControl
+          total={pagination.total}
+          totalPages={pagination.totalPages}
+          currentPage={pagination.currentPage}
+          showSinglePage={true}
+        />
       )}
     </div>
   );
 }
+
