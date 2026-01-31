@@ -589,23 +589,23 @@ export default function ProfilePage() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Account Status</Label>
+                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Phone Number</Label>
                                             <div className="relative">
                                                 <div className="rounded-2xl border border-gray-100 bg-gray-50/50 py-4 px-5 flex items-center gap-3">
-                                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${session.user.emailVerified ? 'bg-green-50 text-green-500' : 'bg-yellow-50 text-yellow-500'}`}>
-                                                        {session.user.emailVerified ? <CheckCircle2 className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
+                                                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-400">
+                                                        <Phone className="w-5 h-5" />
                                                     </div>
                                                     <div>
                                                         <p className="font-black text-flora-dark text-sm">
-                                                            {session.user.emailVerified ? 'Verified Account' : 'Unverified'}
+                                                            {addresses.find((a: any) => a.isDefault)?.phoneNumber || addresses[0]?.phoneNumber || "No phone added"}
                                                         </p>
-                                                        <p className={`text-[10px] font-bold uppercase tracking-widest ${session.user.emailVerified ? 'text-green-400' : 'text-yellow-400'}`}>
-                                                            {session.user.emailVerified ? 'Active & Secure' : 'Action Required'}
-                                                        </p>
+                                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Contact</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+
+
                                     </div>
 
                                     <div className="p-6 rounded-[30px] bg-purple-50/50 border border-purple-100 space-y-4">
