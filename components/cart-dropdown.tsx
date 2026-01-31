@@ -84,7 +84,14 @@ export function CartDropdown() {
               <div className="space-y-4">
                 {cart.map((item) => (
                   <div key={item.id} className="flex gap-4 p-2 rounded-2xl hover:bg-gray-50 transition-colors group/item">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                    <div
+                      className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0 isolate"
+                      style={{
+                        WebkitBackfaceVisibility: 'hidden',
+                        WebkitTransform: 'translateZ(0)',
+                        transform: 'translateZ(0)',
+                      }}
+                    >
                       {item.image && (
                         <Image
                           src={item.image}
@@ -93,6 +100,7 @@ export function CartDropdown() {
                           sizes="64px"
                           quality={50}
                           className="object-cover"
+                          style={{ borderRadius: 'inherit' }}
                         />
                       )}
                     </div>

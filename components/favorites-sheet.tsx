@@ -90,7 +90,14 @@ export function FavoritesSheet() {
               >
                 {/* Product Image */}
                 <Link href={`/product/${product.id}`} className="shrink-0">
-                  <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-pink-100">
+                  <div
+                    className="relative w-24 h-24 rounded-xl overflow-hidden border border-pink-100 isolate"
+                    style={{
+                      WebkitBackfaceVisibility: 'hidden',
+                      WebkitTransform: 'translateZ(0)',
+                      transform: 'translateZ(0)',
+                    }}
+                  >
                     {product.images[0] ? (
                       <Image
                         src={product.images[0].url}
@@ -99,6 +106,7 @@ export function FavoritesSheet() {
                         sizes="96px"
                         quality={50}
                         className="object-cover group-hover:scale-110 transition-transform"
+                        style={{ borderRadius: 'inherit' }}
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center">

@@ -151,24 +151,25 @@ export function ProductDetails({ product }: { product: Product }) {
             <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="relative w-full h-full touch-none">
-              <AnimatePresence initial={false} mode="wait">
+              <AnimatePresence initial={false}>
                 <motion.div
                   key={selectedImage}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
                   drag="x"
                   dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.2}
+                  dragElastic={0.1}
                   onDragEnd={(_, info) => {
-                    if (info.offset.x > 50) {
+                    if (info.offset.x > 30) {
                       prevImage();
-                    } else if (info.offset.x < -50) {
+                    } else if (info.offset.x < -30) {
                       nextImage();
                     }
                   }}
                   className="absolute inset-0 cursor-grab active:cursor-grabbing"
+                  style={{ willChange: "opacity, transform" }}
                 >
                   <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
                   {product.images[selectedImage] ? (
@@ -191,6 +192,28 @@ export function ProductDetails({ product }: { product: Product }) {
                   )}
                 </motion.div>
               </AnimatePresence>
+            </div>
+
+            {/* Hidden Preloader for next/prev images to make carousel feel instant */}
+            <div className="hidden">
+              {product.images.map((img, i) => {
+                // Preload current + next + prev
+                const isNext = i === (selectedImage + 1) % product.images.length;
+                const isPrev = i === (selectedImage - 1 + product.images.length) % product.images.length;
+                if (isNext || isPrev) {
+                  return (
+                    <Image
+                      key={img.url}
+                      src={img.url}
+                      alt=""
+                      width={10}
+                      height={10}
+                      priority
+                    />
+                  );
+                }
+                return null;
+              })}
             </div>
 
             {/* Navigation Arrows */}
@@ -242,13 +265,26 @@ export function ProductDetails({ product }: { product: Product }) {
                 <button
                   key={img.url}
                   onClick={() => setSelectedImage(index)}
-                  className={`relative w-18 h-18 md:w-20 md:h-20 rounded-xl md:rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedImage === index
+                  className={`relative w-18 h-18 md:w-20 md:h-20 rounded-xl md:rounded-2xl overflow-hidden border-2 transition-all shrink-0 isolate ${selectedImage === index
                     ? "border-primary shadow-md scale-95"
                     : "border-transparent hover:border-pink-200"
                     }`}
+                  style={{
+                    WebkitBackfaceVisibility: 'hidden',
+                    WebkitTransform: 'translateZ(0)',
+                    transform: 'translateZ(0)',
+                  }}
                 >
                   <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
-                  <Image src={img.url} alt="" fill sizes="80px" quality={50} className="object-cover" />
+                  <Image
+                    src={img.url}
+                    alt=""
+                    fill
+                    sizes="80px"
+                    quality={50}
+                    className="object-cover"
+                    style={{ borderRadius: 'inherit' }}
+                  />
                 </button>
               ))}
             </div>
@@ -407,7 +443,14 @@ export function ProductDetails({ product }: { product: Product }) {
                     target="_blank"
                     className="flex items-center gap-4 p-3 bg-pink-50/30 rounded-2xl border border-pink-50 hover:bg-pink-50 hover:border-pink-100 transition-all group"
                   >
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0 shadow-sm">
+                    <div
+                      className="relative w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0 shadow-sm isolate"
+                      style={{
+                        WebkitBackfaceVisibility: 'hidden',
+                        WebkitTransform: 'translateZ(0)',
+                        transform: 'translateZ(0)',
+                      }}
+                    >
                       {packItem.item.images?.[0]?.url ? (
                         <Image
                           src={packItem.item.images[0].url}
@@ -416,6 +459,7 @@ export function ProductDetails({ product }: { product: Product }) {
                           sizes="64px"
                           quality={50}
                           className="object-cover transition-transform group-hover:scale-110"
+                          style={{ borderRadius: 'inherit' }}
                         />
                       ) : (
                         <div className="w-full h-full bg-gray-100 flex items-center justify-center">

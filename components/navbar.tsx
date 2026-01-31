@@ -244,7 +244,14 @@ export function Navbar() {
                       onClick={() => handleProductClick(product.id)}
                       className="w-full flex items-center gap-3 p-3 hover:bg-pink-50/50 rounded-2xl transition-colors text-left group"
                     >
-                      <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                      <div
+                        className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0 isolate"
+                        style={{
+                          WebkitBackfaceVisibility: 'hidden',
+                          WebkitTransform: 'translateZ(0)',
+                          transform: 'translateZ(0)',
+                        }}
+                      >
                         {product.images?.[0]?.url ? (
                           <Image
                             src={product.images[0].url}
@@ -253,6 +260,7 @@ export function Navbar() {
                             sizes="48px"
                             quality={50}
                             className="object-cover group-hover:scale-110 transition-transform duration-300"
+                            style={{ borderRadius: 'inherit' }}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
@@ -444,7 +452,14 @@ export function Navbar() {
                         }}
                         className="w-full flex items-center gap-3 p-3 hover:bg-pink-50/50 rounded-2xl transition-colors text-left group"
                       >
-                        <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                        <div
+                          className="relative w-12 h-12 rounded-xl overflow-hidden bg-gray-50 shrink-0 isolate"
+                          style={{
+                            WebkitBackfaceVisibility: 'hidden',
+                            WebkitTransform: 'translateZ(0)',
+                            transform: 'translateZ(0)',
+                          }}
+                        >
                           {product.images?.[0]?.url ? (
                             <Image
                               src={product.images[0].url}
@@ -453,6 +468,7 @@ export function Navbar() {
                               sizes="48px"
                               quality={50}
                               className="object-cover group-hover:scale-110 transition-transform duration-300"
+                              style={{ borderRadius: 'inherit' }}
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
