@@ -16,12 +16,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signUp } from "@/lib/auth-client";
+import { signUp, signIn } from "@/lib/auth-client";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
+
+import { signUpEmailAction } from "@/app/actions/auth";
 
 const signUpSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -46,18 +48,13 @@ export default function SignUpPage() {
     const onSubmit = async (values: SignUpValues) => {
         setIsLoading(true);
         try {
-            const { data, error } = await signUp.email({
-                email: values.email,
-                password: values.password,
-                name: values.name,
-                callbackURL: "/",
-            });
+            const result = await signUpEmailAction(values);
 
-            if (error) {
-                toast.error(error.message || "Failed to create account");
-            } else {
-                toast.success("Account created! Welcome to Flora ✨");
+            if (result.success) {
+                toast.success("Account created! Welcome to Flora 🎀");
                 router.push("/");
+            } else {
+                toast.error(result.error);
             }
         } catch (err: any) {
             toast.error("Something went wrong. Please try again.");
@@ -67,8 +64,21 @@ export default function SignUpPage() {
     };
 
     const handleSocialSignUp = async (provider: "google" | "facebook") => {
-        toast.info(`Redirecting to ${provider}...`);
-        // Social sign up logic will be implemented here via better-auth
+        setIsLoading(true);
+        try {
+            const { data, error } = await signIn.social({
+                provider,
+                callbackURL: "/",
+            });
+
+            if (error) {
+                toast.error(error.message || `Failed to sign in with ${provider}`);
+            }
+        } catch (err: any) {
+            toast.error("An unexpected error occurred. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
