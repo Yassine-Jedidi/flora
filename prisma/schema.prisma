@@ -83,7 +83,11 @@ enum OrderStatus {
 model Order {
   id              String      @id @default(cuid())
   
-  // Guest Information
+  // Relation to User (optional for guest checkout)
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  
+  // Snapshot of Shipping Information at time of order
   fullName        String
   phoneNumber     String
   governorate     String
@@ -97,6 +101,8 @@ model Order {
   
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
 }
 
 model OrderItem {
@@ -122,6 +128,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  addresses     Address[]
+  orders        Order[]
 
   @@map("user")
 }
@@ -168,4 +176,23 @@ model Verification {
   updatedAt  DateTime @updatedAt
 
   @@map("verification")
+}
+
+model Address {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name            String    // Label for the address (e.g., "Home", "Office")
+  fullName        String
+  phoneNumber     String
+  governorate     String
+  city            String    // Delegation
+  detailedAddress String
+  isDefault       Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
 }
