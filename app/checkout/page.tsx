@@ -168,7 +168,7 @@ export default function CheckoutPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
             {/* Left Side: Form */}
-            <div className="lg:col-span-7">
+            <div className="lg:col-span-7 order-2 lg:order-1">
               <div className="mb-10">
                 <h1 className="text-4xl font-black text-flora-dark tracking-tight mb-2">
                   Checkout
@@ -345,8 +345,8 @@ export default function CheckoutPage() {
             </div>
 
             {/* Right Side: Order Summary */}
-            <div className="lg:col-span-5">
-              <div className="sticky top-40 space-y-6">
+            <div className="lg:col-span-5 order-1 lg:order-2">
+              <div className="lg:sticky lg:top-40 space-y-6">
                 <div className="bg-flora-purple rounded-[40px] p-8 text-white shadow-2xl shadow-purple-200/50 overflow-hidden relative">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
 
