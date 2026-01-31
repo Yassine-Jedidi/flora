@@ -5,6 +5,7 @@ import { FavoritesProvider } from "@/lib/hooks/use-favorites";
 import { CartProvider } from "@/lib/hooks/use-cart";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { MobileDebug } from "@/components/mobile-debug";
+import { IOSCompatibilityChecker } from "@/components/ios-compatibility-checker";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <meta name="apple-mobile-web-app-title" content="FloraAccess" />
       <body className={`${nunito.variable} font-sans antialiased`}>
         <MobileDebug />
+        <IOSCompatibilityChecker />
         <CartProvider>
           <FavoritesProvider>
             <ScrollToTop />
