@@ -176,7 +176,8 @@ export function ProductDetails({ product }: { product: Product }) {
                       src={product.images[selectedImage].url}
                       alt={product.name}
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 520px"
+                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 520px"
+                      quality={70}
                       className="object-cover pointer-events-none"
                       style={{
                         borderRadius: 'inherit',
@@ -247,7 +248,7 @@ export function ProductDetails({ product }: { product: Product }) {
                     }`}
                 >
                   <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
-                  <Image src={img.url} alt="" fill sizes="80px" className="object-cover" />
+                  <Image src={img.url} alt="" fill sizes="80px" quality={50} className="object-cover" />
                 </button>
               ))}
             </div>
@@ -413,6 +414,7 @@ export function ProductDetails({ product }: { product: Product }) {
                           alt={packItem.item.name}
                           fill
                           sizes="64px"
+                          quality={50}
                           className="object-cover transition-transform group-hover:scale-110"
                         />
                       ) : (

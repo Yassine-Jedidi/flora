@@ -91,6 +91,7 @@ export function CartDropdown() {
                           alt={item.name}
                           fill
                           sizes="64px"
+                          quality={50}
                           className="object-cover"
                         />
                       )}

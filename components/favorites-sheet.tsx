@@ -97,6 +97,7 @@ export function FavoritesSheet() {
                         alt={product.name}
                         fill
                         sizes="96px"
+                        quality={50}
                         className="object-cover group-hover:scale-110 transition-transform"
                       />
                     ) : (

@@ -251,6 +251,7 @@ export function Navbar() {
                             alt={product.name}
                             fill
                             sizes="48px"
+                            quality={50}
                             className="object-cover group-hover:scale-110 transition-transform duration-300"
                           />
                         ) : (
@@ -450,6 +451,7 @@ export function Navbar() {
                               alt={product.name}
                               fill
                               sizes="48px"
+                              quality={50}
                               className="object-cover group-hover:scale-110 transition-transform duration-300"
                             />
                           ) : (
