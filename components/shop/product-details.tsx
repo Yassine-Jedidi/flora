@@ -138,7 +138,14 @@ export function ProductDetails({ product }: { product: Product }) {
       {/* Image Gallery */}
       <div className="lg:sticky lg:top-24 h-fit space-y-8">
         <div className="relative">
-          <div className="relative mx-auto max-w-[520px] aspect-square overflow-hidden rounded-[3rem] bg-[#F9FAFB] border border-pink-50 shadow-sm group">
+          <div
+            className="relative mx-auto max-w-[520px] aspect-square overflow-hidden rounded-[3rem] bg-[#F9FAFB] border border-pink-50 shadow-sm group isolate"
+            style={{
+              WebkitBackfaceVisibility: 'hidden',
+              WebkitTransform: 'translateZ(0)',
+              transform: 'translateZ(0)',
+            }}
+          >
             {/* Background Glows shifted inside here to prevent horizontal body scroll */}
             <div className="absolute -top-10 -left-10 w-64 h-64 bg-pink-100/50 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-pink-50/50 rounded-full blur-[100px] pointer-events-none" />
@@ -169,7 +176,11 @@ export function ProductDetails({ product }: { product: Product }) {
                       src={product.images[selectedImage].url}
                       alt={product.name}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 520px"
                       className="object-cover pointer-events-none"
+                      style={{
+                        borderRadius: 'inherit',
+                      }}
                       priority
                     />
                   ) : (
@@ -236,7 +247,7 @@ export function ProductDetails({ product }: { product: Product }) {
                     }`}
                 >
                   <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
-                  <Image src={img.url} alt="" fill className="object-cover" />
+                  <Image src={img.url} alt="" fill sizes="80px" className="object-cover" />
                 </button>
               ))}
             </div>
@@ -401,6 +412,7 @@ export function ProductDetails({ product }: { product: Product }) {
                           src={packItem.item.images[0].url}
                           alt={packItem.item.name}
                           fill
+                          sizes="64px"
                           className="object-cover transition-transform group-hover:scale-110"
                         />
                       ) : (
@@ -523,6 +535,7 @@ export function ProductDetails({ product }: { product: Product }) {
                     src="https://flagcdn.com/tn.svg"
                     alt="Tunisia Flag"
                     fill
+                    sizes="16px"
                     className="object-cover"
                   />
                 </div>

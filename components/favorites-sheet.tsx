@@ -96,6 +96,7 @@ export function FavoritesSheet() {
                         src={product.images[0].url}
                         alt={product.name}
                         fill
+                        sizes="96px"
                         className="object-cover group-hover:scale-110 transition-transform"
                       />
                     ) : (

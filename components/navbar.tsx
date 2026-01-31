@@ -250,6 +250,7 @@ export function Navbar() {
                             src={product.images[0].url}
                             alt={product.name}
                             fill
+                            sizes="48px"
                             className="object-cover group-hover:scale-110 transition-transform duration-300"
                           />
                         ) : (
@@ -448,6 +449,7 @@ export function Navbar() {
                               src={product.images[0].url}
                               alt={product.name}
                               fill
+                              sizes="48px"
                               className="object-cover group-hover:scale-110 transition-transform duration-300"
                             />
                           ) : (

@@ -74,7 +74,12 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Image Container */}
       <Link
         href={`/product/${product.id}`}
-        className="relative aspect-square overflow-hidden rounded-[2rem] bg-[#F9FAFB]"
+        className="relative aspect-square overflow-hidden rounded-[2rem] bg-[#F9FAFB] isolate"
+        style={{
+          WebkitBackfaceVisibility: 'hidden',
+          WebkitTransform: 'translateZ(0)',
+          transform: 'translateZ(0)',
+        }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onClick={handleClick}
@@ -84,7 +89,11 @@ export function ProductCard({ product }: ProductCardProps) {
             src={product.images[0].url}
             alt={product.name}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
+            style={{
+              borderRadius: 'inherit',
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-50">
