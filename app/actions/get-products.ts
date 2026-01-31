@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
+import { Product } from "@/lib/types";
 
 interface ProductFilters {
   search?: string;
@@ -293,21 +294,125 @@ export async function getProductsByCategory(
   }
 }
 
-export async function getProduct(id: string) {
+export async function getRelatedProducts(
+  categoryId: string,
+  excludeProductId: string,
+): Promise<Product[]> {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        categoryId,
+        id: { not: excludeProductId },
+        isArchived: false,
+        isLive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        originalPrice: true,
+        discountedPrice: true,
+        stock: true,
+        isFeatured: true,
+        isArchived: true,
+        isLive: true,
+        categoryId: true,
+        description: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        images: {
+          take: 1,
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+        createdAt: true,
+      },
+      take: 4,
+      orderBy: { createdAt: "desc" },
+    });
+
+    return products.map((product) => ({
+      ...product,
+      originalPrice: Number(product.originalPrice),
+      discountedPrice: product.discountedPrice
+        ? Number(product.discountedPrice)
+        : null,
+      createdAt: product.createdAt.toISOString(),
+      isNew:
+        new Date(product.createdAt).getTime() >
+        Date.now() - 7 * 24 * 60 * 60 * 1000,
+    }));
+  } catch (error) {
+    console.error("Error fetching related products:", error);
+    return [];
+  }
+}
+
+export async function getProduct(id: string): Promise<Product | null> {
   try {
     const product = await prisma.product.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        category: true,
-        images: true,
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        originalPrice: true,
+        discountedPrice: true,
+        stock: true,
+        isFeatured: true,
+        isArchived: true,
+        isLive: true,
+        categoryId: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        images: {
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+        createdAt: true,
         packItems: {
-          include: {
+          select: {
+            id: true,
+            quantity: true,
             item: {
-              include: {
-                images: true,
-                category: true,
+              select: {
+                id: true,
+                name: true,
+                originalPrice: true,
+                discountedPrice: true,
+                categoryId: true,
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+                images: {
+                  take: 1,
+                  select: {
+                    id: true,
+                    url: true,
+                  },
+                },
+                description: true,
+                stock: true,
+                isFeatured: true,
+                isArchived: true,
+                isLive: true,
+                createdAt: true,
               },
             },
           },
@@ -324,20 +429,18 @@ export async function getProduct(id: string) {
         ? Number(product.discountedPrice)
         : null,
       createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
       isNew:
         new Date(product.createdAt).getTime() >
         Date.now() - 7 * 24 * 60 * 60 * 1000,
       packItems: product.packItems.map((pi) => ({
         ...pi,
+        itemId: pi.item.id,
         item: {
           ...pi.item,
           originalPrice: Number(pi.item.originalPrice),
           discountedPrice: pi.item.discountedPrice
             ? Number(pi.item.discountedPrice)
             : null,
-          createdAt: pi.item.createdAt.toISOString(),
-          updatedAt: pi.item.updatedAt.toISOString(),
         },
       })),
     };
@@ -463,7 +566,7 @@ export async function searchProducts(query: string, limit: number = 5) {
   }
 }
 
-export async function getFeaturedProducts() {
+export async function getFeaturedProducts(): Promise<Product[]> {
   try {
     const products = await prisma.product.findMany({
       where: {
@@ -471,9 +574,32 @@ export async function getFeaturedProducts() {
         isArchived: false,
         isLive: true,
       },
-      include: {
-        category: true,
-        images: true,
+      select: {
+        id: true,
+        name: true,
+        originalPrice: true,
+        discountedPrice: true,
+        stock: true,
+        isFeatured: true,
+        isArchived: true,
+        isLive: true,
+        categoryId: true,
+        description: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        images: {
+          take: 1,
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+        createdAt: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -488,7 +614,6 @@ export async function getFeaturedProducts() {
         ? Number(product.discountedPrice)
         : null,
       createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
       isNew:
         new Date(product.createdAt).getTime() >
         Date.now() - 7 * 24 * 60 * 60 * 1000,

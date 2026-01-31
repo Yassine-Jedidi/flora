@@ -29,6 +29,7 @@ import { calculateDiscount } from "@/lib/utils";
 import { Product } from "@/lib/types";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 const FavoriteButton = dynamic(() => import("./favorite-button"), {
   ssr: false,
@@ -109,7 +110,7 @@ export function ProductDetails({ product }: { product: Product }) {
       discountedPrice: product.discountedPrice,
       image: product.images[0]?.url || "",
       quantity,
-      stock: product.stock,
+      stock: product.stock ?? 0,
     });
   };
 
@@ -189,7 +190,6 @@ export function ProductDetails({ product }: { product: Product }) {
                     alt={`${product.name} - Image ${idx + 1}`}
                     fill
                     sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 520px"
-                    quality={70}
                     className="object-cover pointer-events-none"
                     style={{
                       borderRadius: 'inherit',
@@ -219,7 +219,6 @@ export function ProductDetails({ product }: { product: Product }) {
                       alt=""
                       width={10}
                       height={10}
-                      priority
                     />
                   );
                 }
@@ -292,7 +291,6 @@ export function ProductDetails({ product }: { product: Product }) {
                     alt=""
                     fill
                     sizes="80px"
-                    quality={50}
                     className="object-cover"
                     style={{ borderRadius: 'inherit' }}
                   />
@@ -528,7 +526,7 @@ export function ProductDetails({ product }: { product: Product }) {
                 type="button"
                 onClick={() => {
                   const current = form.getValues("quantity");
-                  if (current < product.stock) {
+                  if (current < (product.stock ?? 0)) {
                     form.setValue("quantity", current + 1);
                   }
                 }}

@@ -20,6 +20,7 @@ export interface Product {
   category: {
     id: string;
     name: string;
+    slug?: string;
   };
   images: ProductImage[];
   isFeatured: boolean;

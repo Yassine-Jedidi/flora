@@ -16,6 +16,7 @@ const FavoriteButton = dynamic(() => import("./favorite-button"), {
 
 import { calculateDiscount } from "@/lib/utils";
 import { Product } from "@/lib/types";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 interface ProductCardProps {
   product: Product;
@@ -65,7 +66,7 @@ export function ProductCard({ product }: ProductCardProps) {
       discountedPrice: product.discountedPrice,
       image: product.images[0]?.url || "",
       quantity: 1,
-      stock: product.stock,
+      stock: product.stock ?? 0,
     });
   };
 
@@ -90,7 +91,6 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            quality={60}
             className="object-cover transition-transform duration-700 group-hover:scale-105"
             style={{
               borderRadius: 'inherit',

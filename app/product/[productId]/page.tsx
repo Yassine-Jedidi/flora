@@ -1,11 +1,13 @@
-import { getProduct, getProductsByCategory } from "@/app/actions/get-products";
+import { getProduct } from "@/app/actions/get-products";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ProductDetails } from "@/components/shop/product-details";
-import { ProductCard } from "@/components/shop/product-card";
+import { RelatedProducts } from "@/components/shop/related-products";
+import { RelatedProductsSkeleton } from "@/components/shop/related-products-skeleton";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Sparkles } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import { Suspense } from "react";
 
 export default async function ProductPage({
     params
@@ -13,16 +15,13 @@ export default async function ProductPage({
     params: Promise<{ productId: string }>
 }) {
     const { productId } = await params;
+
+    // We only await the main product data
     const product = await getProduct(productId);
 
     if (!product || !product.isLive) {
         return notFound();
     }
-
-    const { products } = await getProductsByCategory(product.category.slug);
-    const relatedProducts = products
-        .filter(p => p.id !== productId)
-        .slice(0, 4);
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -45,28 +44,10 @@ export default async function ProductPage({
 
                     <ProductDetails product={product} />
 
-                    {/* Related Products Section */}
-                    {relatedProducts.length > 0 && (
-                        <div className="mt-32 pt-16 border-t border-pink-50">
-                            <div className="flex flex-col items-center text-center space-y-4 mb-16 px-4">
-                                <div className="flex items-center justify-center flex-wrap gap-2 md:gap-3">
-                                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-primary fill-[#FF8BBA]/10" />
-                                    <h2 className="text-3xl md:text-5xl font-black text-primary tracking-tighter">
-                                        You might also love
-                                    </h2>
-                                </div>
-                                <p className="text-[#B08B9B] font-medium max-w-lg">
-                                    Discover more handpicked treasures from our collection
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {relatedProducts.map((p) => (
-                                    <ProductCard key={p.id} product={p} />
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                    {/* Related Products Section wrapped in Suspense */}
+                    <Suspense fallback={<RelatedProductsSkeleton />}>
+                        <RelatedProducts categoryId={product.categoryId} productId={product.id} />
+                    </Suspense>
                 </div>
             </main>
 

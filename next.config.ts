@@ -8,9 +8,9 @@ const nextConfig: NextConfig = {
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200], // Optimized for most mobile/desktop screens
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384], // Small thumbnails/icons
-    qualities: [50, 60, 70, 75], // Allow custom quality levels
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60,
+    qualities: [50, 60, 70, 75],
+    formats: ["image/webp"],
+    minimumCacheTTL: 3600, // Increase cache TTL to 1 hour
     remotePatterns: [
       {
         protocol: "https",

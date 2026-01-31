@@ -27,7 +27,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <meta name="apple-mobile-web-app-title" content="FloraAccess" />
+      <head>
+        <link rel="preconnect" href="https://utfs.io" />
+        <link rel="dns-prefetch" href="https://utfs.io" />
+        <link rel="preconnect" href="https://img.utfs.io" />
+        <link rel="dns-prefetch" href="https://img.utfs.io" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <meta name="apple-mobile-web-app-title" content="FloraAccess" />
+      </head>
       <body className={`${nunito.variable} font-sans antialiased`}>
         <MobileDebug />
         <IOSCompatibilityChecker />
