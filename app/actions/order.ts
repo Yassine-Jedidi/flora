@@ -91,3 +91,55 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
     return { error: "An error occurred while updating the order status." };
   }
 }
+
+export async function getUserOrders() {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { error: "Not authenticated" };
+    }
+
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: session.user.id,
+      },
+      include: {
+        items: {
+          include: {
+            product: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return {
+      success: true,
+      orders: orders.map((order) => ({
+        ...order,
+        totalPrice: order.totalPrice.toNumber(),
+        items: order.items.map((item) => ({
+          ...item,
+          price: item.price.toNumber(),
+          product: {
+            ...item.product,
+            originalPrice: item.product.originalPrice.toNumber(),
+            discountedPrice: item.product.discountedPrice?.toNumber() || null,
+          },
+        })),
+      })),
+    };
+  } catch (error) {
+    console.error("Fetch User Orders error:", error);
+    return { error: "An error occurred while fetching your orders." };
+  }
+}
