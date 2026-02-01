@@ -221,3 +221,29 @@ export async function setUserPassword(password: string) {
     };
   }
 }
+
+export async function getUserAccounts() {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const accounts = await db.account.findMany({
+      where: { userId: session.user.id },
+      select: {
+        id: true,
+        providerId: true,
+        createdAt: true,
+      },
+    });
+
+    return { success: true, data: accounts };
+  } catch (error) {
+    console.error("Get accounts error:", error);
+    return { success: false, error: "Failed to fetch accounts" };
+  }
+}
