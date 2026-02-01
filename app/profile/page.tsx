@@ -162,6 +162,10 @@ export default function ProfilePage() {
                 detailedAddress: address.detailedAddress,
             });
         } else {
+            if (addresses.length >= 4) {
+                toast.error("You have reached the limit of 4 addresses. Please remove an existing address to add a new one.");
+                return;
+            }
             setEditingAddress(null);
             setAddressForm({
                 name: "",

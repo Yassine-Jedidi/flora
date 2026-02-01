@@ -61,6 +61,14 @@ export async function createAddress(values: {
       where: { userId: session.user.id },
     });
 
+    if (addressCount >= 4) {
+      return {
+        success: false,
+        error:
+          "Address limit reached. You can only have up to 4 addresses. Please remove one to add another.",
+      };
+    }
+
     const address = await db.address.create({
       data: {
         ...values,
