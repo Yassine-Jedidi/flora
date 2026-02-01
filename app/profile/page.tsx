@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSession, changePassword, signOut } from "@/lib/auth-client";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     User,
     MapPin,
-    Bell,
     Shield,
     Plus,
     Pencil,
@@ -22,15 +21,12 @@ import {
     Briefcase,
     Phone,
     Mail,
-    Globe,
     ChevronRight,
     Loader2,
     Laptop,
     Smartphone,
-    LogOut,
     Calendar,
     CheckCircle2,
-    Fingerprint
 } from "lucide-react";
 import { Bow } from "@/components/icons/bow";
 import {
@@ -46,10 +42,8 @@ import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
     DialogClose,
 } from "@/components/ui/dialog";
 import {
@@ -62,7 +56,7 @@ import {
 import { TUNISIA_GOVERNORATES, TUNISIA_LOCATIONS } from "@/lib/constants/tunisia";
 import { UploadButton } from "@/lib/uploadthing";
 
-export default function ProfilePage() {
+function ProfileContent() {
     const { data: session, isPending: isSessionPending } = useSession();
     const [addresses, setAddresses] = useState<any[]>([]);
     const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
@@ -447,10 +441,11 @@ export default function ProfilePage() {
                                 <div className="absolute -inset-1.5 bg-gradient-to-br from-primary to-flora-purple rounded-full blur opacity-25 group-hover:opacity-40 transition duration-500" />
                                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white">
                                     {session.user.image ? (
-                                        <img
+                                        <Image
                                             src={session.user.image}
                                             alt={session.user.name}
-                                            className="w-full h-full object-cover"
+                                            fill
+                                            className="object-cover"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center bg-gray-50 text-flora-dark">
@@ -541,7 +536,7 @@ export default function ProfilePage() {
                                                 <MapPin className="w-8 h-8 text-pink-200" />
                                             </div>
                                             <h3 className="text-xl font-black text-flora-dark mb-2">No addresses yet</h3>
-                                            <p className="text-gray-400 font-bold mb-6">You haven't saved any shipping addresses yet.</p>
+                                            <p className="text-gray-400 font-bold mb-6">You haven&apos;t saved any shipping addresses yet.</p>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -1021,10 +1016,11 @@ export default function ProfilePage() {
                                 <div className="bg-gray-50/50 border border-gray-100 rounded-3xl p-6 flex flex-col items-center gap-4">
                                     <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white group">
                                         {profileImage ? (
-                                            <img
+                                            <Image
                                                 src={profileImage}
                                                 alt="Profile"
-                                                className="w-full h-full object-cover"
+                                                fill
+                                                className="object-cover"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-gray-50">
@@ -1165,6 +1161,18 @@ export default function ProfilePage() {
                 </DialogContent>
             </Dialog>
         </div >
+    );
+}
+
+export default function ProfilePage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            </div>
+        }>
+            <ProfileContent />
+        </Suspense>
     );
 }
 

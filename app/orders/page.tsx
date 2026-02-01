@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { getUserOrders } from "@/app/actions/order";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -14,14 +14,14 @@ import {
     XCircle,
     ChevronRight,
     Calendar,
-    ArrowLeft
+    ArrowLeft,
+    Loader2
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { formatPrice } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/pagination-control";
 
@@ -53,7 +53,7 @@ const statusConfig = {
     },
 };
 
-export default function OrdersPage() {
+function OrdersContent() {
     const searchParams = useSearchParams();
     const page = Number(searchParams.get("page")) || 1;
     const [orders, setOrders] = useState<any[]>([]);
@@ -247,5 +247,17 @@ export default function OrdersPage() {
 
             <Footer />
         </div >
+    );
+}
+
+export default function OrdersPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            </div>
+        }>
+            <OrdersContent />
+        </Suspense>
     );
 }

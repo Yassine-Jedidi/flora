@@ -29,7 +29,6 @@ import { calculateDiscount } from "@/lib/utils";
 import { Product } from "@/lib/types";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 const FavoriteButton = dynamic(() => import("./favorite-button"), {
   ssr: false,

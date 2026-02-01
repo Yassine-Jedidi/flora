@@ -33,7 +33,7 @@ export async function checkRateLimit(config: RateLimitConfig) {
     });
 
     if (!record) {
-      const newRecord = await tx.rateLimit.create({
+      await tx.rateLimit.create({
         data: {
           id: rateLimitKey,
           key: rateLimitKey,
