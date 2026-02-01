@@ -35,6 +35,7 @@ model Product {
   categoryId  String
   category    Category       @relation(fields: [categoryId], references: [id])
   images      ProductImage[]
+  wishlists   Wishlist[]
   
   // Pack Relations
   packItems       PackItem[] @relation("PackToItem")
@@ -130,6 +131,7 @@ model User {
   accounts      Account[]
   addresses     Address[]
   orders        Order[]
+  wishlists     Wishlist[]
 
   @@map("user")
 }
@@ -195,4 +197,19 @@ model Address {
   updatedAt       DateTime  @updatedAt
 
   @@index([userId])
+}
+
+model Wishlist {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete: Cascade)
+  productId String
+  product Product @relation(fields:[productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
 }

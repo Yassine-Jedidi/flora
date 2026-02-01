@@ -469,7 +469,7 @@ export function Navbar() {
                           },
                         });
                       }}
-                      className="rounded-xl px-3 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 transition-colors cursor-pointer group"
+                      className="rounded-xl px-3 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 focus:bg-red-50 focus:text-red-500 transition-colors cursor-pointer group"
                     >
                       <LogOut className="mr-3 h-4 w-4 text-red-300 group-hover:text-red-500 transition-colors" />
                       <span>Sign Out</span>
