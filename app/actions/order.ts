@@ -9,51 +9,49 @@ import { headers } from "next/headers";
 
 import { checkRateLimit } from "@/lib/rate-limit";
 
-export async function createOrder(
-  values: OrderFormValues & {
-    items: { productId: string; quantity: number; price: number }[];
-    totalPrice: number;
-  },
-) {
-  const rateLimit = await checkRateLimit({
-    key: "order-creation",
-    window: 60 * 10, // 10 minutes
-    max: 3, // 3 orders every 10 minutes
-  });
-
-  if (!rateLimit.success) {
-    return {
-      error: `Too many orders. Please try again in ${rateLimit.message}.`,
-    };
-  }
-
+export async function createOrder(values: OrderFormValues) {
   try {
+    // Check rate limit inside try block for unified error handling
+    const rateLimit = await checkRateLimit({
+      key: "order-creation",
+      window: 60 * 10, // 10 minutes
+      max: 3, // 3 orders every 10 minutes
+    });
+
+    if (!rateLimit.success) {
+      return {
+        error: `Too many orders. Please try again in ${rateLimit.message}.`,
+      };
+    }
+
     const session = await auth.api.getSession({
       headers: await headers(),
     });
 
+    // Validate all fields including items and totalPrice
     const validatedFields = OrderSchema.safeParse(values);
 
     if (!validatedFields.success) {
-      return { error: "Invalid data." };
+      return {
+        error:
+          "Invalid order data. Please check your cart and shipping details.",
+      };
     }
 
-    if (!values.items || values.items.length === 0) {
-      return { error: "Your cart is empty." };
-    }
+    const validatedData = validatedFields.data;
 
     const order = await prisma.order.create({
       data: {
         userId: session?.user?.id,
-        fullName: values.fullName,
-        phoneNumber: values.phoneNumber,
-        governorate: values.governorate,
-        city: values.city,
-        detailedAddress: values.detailedAddress,
-        totalPrice: values.totalPrice,
+        fullName: validatedData.fullName,
+        phoneNumber: validatedData.phoneNumber,
+        governorate: validatedData.governorate,
+        city: validatedData.city,
+        detailedAddress: validatedData.detailedAddress,
+        totalPrice: validatedData.totalPrice,
         status: "PENDING",
         items: {
-          create: values.items.map((item) => ({
+          create: validatedData.items.map((item) => ({
             productId: item.productId,
             quantity: item.quantity,
             price: item.price,
@@ -63,7 +61,7 @@ export async function createOrder(
     });
 
     // If user is logged in and wants to save the address
-    if (session && values.saveAddress) {
+    if (session && validatedData.saveAddress) {
       // Check if address already exists for this user to avoid duplicates if possible,
       // but for simplicity we'll just create a new one with a default label
       const addressCount = await prisma.address.count({
@@ -74,11 +72,11 @@ export async function createOrder(
         data: {
           userId: session.user.id,
           name: `Address ${addressCount + 1}`,
-          fullName: values.fullName,
-          phoneNumber: values.phoneNumber,
-          governorate: values.governorate,
-          city: values.city,
-          detailedAddress: values.detailedAddress,
+          fullName: validatedData.fullName,
+          phoneNumber: validatedData.phoneNumber,
+          governorate: validatedData.governorate,
+          city: validatedData.city,
+          detailedAddress: validatedData.detailedAddress,
           isDefault: addressCount === 0,
         },
       });

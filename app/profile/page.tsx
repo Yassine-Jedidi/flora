@@ -273,8 +273,8 @@ function ProfileContent() {
 
     const handleSetDefaultAddress = async (address: any) => {
         try {
+            // Only update the isDefault field, not the entire address
             const result = await updateAddress(address.id, {
-                ...address,
                 isDefault: true
             });
 

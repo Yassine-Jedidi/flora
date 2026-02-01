@@ -59,14 +59,22 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         if (localItems.length > 0) {
           try {
             const ids = localItems.map((p) => p.id);
-            await syncWishlist(ids);
-            // Clear local storage after sync
-            if (typeof window !== "undefined") {
-              window.localStorage.removeItem(FAVORITES_KEY);
+            const syncResult = await syncWishlist(ids);
+
+            // Only clear local storage and show success if sync succeeded
+            if (syncResult.success) {
+              if (typeof window !== "undefined") {
+                window.localStorage.removeItem(FAVORITES_KEY);
+              }
+              toast.success("Favorites synced to your account!");
+            } else {
+              // Sync failed - keep local storage intact and log the error
+              console.error("Failed to sync favorites:", syncResult.error);
+              toast.error("Failed to sync favorites. Your items are saved locally.");
             }
-            toast.success("Favorites synced to your account!");
           } catch (error) {
             console.error("Failed to sync favorites", error);
+            toast.error("Failed to sync favorites. Your items are saved locally.");
           }
         }
 
@@ -107,69 +115,117 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
 
   const addFavorite = useCallback(async (product: Product) => {
     if (session) {
-      // Optimistic update
-      setFavorites((prev) => [...prev, product]);
+      // Store previous state for potential revert
+      const prevFavorites = [...favorites];
+
+      // Optimistic update - add product (check for duplicates)
+      setFavorites((prev) => {
+        if (prev.some((p) => p.id === product.id)) return prev;
+        return [...prev, product];
+      });
+
       const result = await toggleWishlistProduct(product.id);
+
       if (!result.success) {
         // Revert on failure
-        setFavorites((prev) => prev.filter((p) => p.id !== product.id));
+        setFavorites(prevFavorites);
         if (result.error) toast.error(result.error);
-      } else if (result.action === 'removed') {
-        // Should not happen in 'add', but strictly technically toggle returns removed if it existed.
-        // Since we are adding, we expect it to be added.
-        // If it was removed, it means it was already there?
-        // Let's just trust getWishlist or handle specific error.
-        // For now, simpler to just use toggle logic for DB.
-        // But here, let's just assume success or error.
+      } else {
+        // Reconcile based on actual API result
+        if (result.action === 'added') {
+          // Confirm addition - ensure it exists once (deduplicate)
+          setFavorites((prev) => {
+            const filtered = prev.filter((p) => p.id !== product.id);
+            return [...filtered, product];
+          });
+        } else if (result.action === 'removed') {
+          // Item was already in wishlist and got removed - update state
+          setFavorites((prev) => prev.filter((p) => p.id !== product.id));
+        }
       }
     } else {
+      // Guest user - simple local state update with deduplication
       setFavorites((prev) => {
         if (prev.some((fav) => fav.id === product.id)) return prev;
         return [...prev, product];
       });
     }
-  }, [session]);
+  }, [favorites, session]);
 
   const removeFavorite = useCallback(async (productId: string) => {
     if (session) {
-      // Optimistic
+      // Store previous state for potential revert
       const prevFavorites = [...favorites];
+
+      // Optimistic update
       setFavorites((prev) => prev.filter((p) => p.id !== productId));
 
       const result = await toggleWishlistProduct(productId);
+
       if (!result.success) {
+        // Revert on failure
         setFavorites(prevFavorites);
         toast.error(result.error || "Failed to remove from wishlist");
-      } else if (result.action === 'added') {
-        // Should not happen for remove
+      } else {
+        // Reconcile based on actual API result
+        if (result.action === 'removed') {
+          // Confirm removal - ensure it's not in the list
+          setFavorites((prev) => prev.filter((p) => p.id !== productId));
+        } else if (result.action === 'added') {
+          // Item wasn't in wishlist and got added - find and add it back
+          const productToAdd = prevFavorites.find((p) => p.id === productId);
+          if (productToAdd) {
+            setFavorites((prev) => {
+              const filtered = prev.filter((p) => p.id !== productId);
+              return [...filtered, productToAdd];
+            });
+          }
+        }
       }
     } else {
+      // Guest user - simple local state update
       setFavorites((prev) => prev.filter((fav) => fav.id !== productId));
     }
-  }, [favorites, session]); // Added favorites dependency for optimistic revert
+  }, [favorites, session]);
 
   const toggleFavorite = useCallback(async (product: Product) => {
     const isFav = favorites.some((fav) => fav.id === product.id);
 
     if (session) {
-      // Optimistic
+      // Store previous state for potential revert
+      const prevFavorites = [...favorites];
+
+      // Optimistic update
       if (isFav) {
         setFavorites(prev => prev.filter(p => p.id !== product.id));
       } else {
-        setFavorites(prev => [...prev, product]);
+        setFavorites(prev => {
+          const filtered = prev.filter(p => p.id !== product.id);
+          return [...filtered, product];
+        });
       }
 
       const result = await toggleWishlistProduct(product.id);
+
       if (!result.success) {
-        // Revert
-        if (isFav) {
-          setFavorites(prev => [...prev, product]);
-        } else {
-          setFavorites(prev => prev.filter(p => p.id !== product.id));
-        }
+        // Revert on failure
+        setFavorites(prevFavorites);
         toast.error(result.error || "Failed to update wishlist");
+      } else {
+        // Reconcile based on actual API result
+        if (result.action === 'added') {
+          // Ensure product exists once in favorites
+          setFavorites((prev) => {
+            const filtered = prev.filter((p) => p.id !== product.id);
+            return [...filtered, product];
+          });
+        } else if (result.action === 'removed') {
+          // Ensure product is removed from favorites
+          setFavorites((prev) => prev.filter((p) => p.id !== product.id));
+        }
       }
     } else {
+      // Guest user - simple toggle
       if (isFav) {
         setFavorites((prev) => prev.filter((fav) => fav.id !== product.id));
       } else {

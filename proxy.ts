@@ -90,4 +90,5 @@ export const config = {
     "/admin",
     "/admin/:path*",
   ],
+  runtime: "nodejs", // Required for Prisma-based rate limiting
 };

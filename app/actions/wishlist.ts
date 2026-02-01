@@ -76,31 +76,49 @@ export async function toggleWishlistProduct(productId: string) {
       revalidatePath("/profile");
       return { success: true, action: "removed" };
     } else {
-      // Check limit
-      const count = await db.wishlist.count({
-        where: {
-          userId: session.user.id,
-        },
+      // Use transaction to atomically check count and create to prevent race conditions
+      const result = await db.$transaction(async (tx) => {
+        // Check limit within transaction
+        const count = await tx.wishlist.count({
+          where: {
+            userId: session.user.id,
+          },
+        });
+
+        if (count >= 20) {
+          throw new Error(
+            "Wishlist limit reached. You can only save up to 20 items.",
+          );
+        }
+
+        // Create wishlist item within same transaction
+        await tx.wishlist.create({
+          data: {
+            userId: session.user.id,
+            productId,
+          },
+        });
+
+        return { success: true, action: "added" };
       });
 
-      if (count >= 20) {
-        return {
-          success: false,
-          error: "Wishlist limit reached. You can only save up to 20 items.",
-        };
-      }
-
-      await db.wishlist.create({
-        data: {
-          userId: session.user.id,
-          productId,
-        },
-      });
       revalidatePath("/profile");
-      return { success: true, action: "added" };
+      return result;
     }
   } catch (error) {
     console.error("[TOGGLE_WISHLIST]", error);
+
+    // Check if it's our custom limit error
+    if (
+      error instanceof Error &&
+      error.message.includes("Wishlist limit reached")
+    ) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+
     return { success: false, error: "Failed to update wishlist" };
   }
 }

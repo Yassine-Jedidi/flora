@@ -53,9 +53,21 @@ const statusConfig = {
     },
 };
 
+// Default fallback for unknown status values
+const defaultStatusConfig = {
+    label: "Unknown",
+    icon: Clock,
+    className: "bg-gray-50 text-gray-600 border-gray-100",
+};
+
 function OrdersContent() {
     const searchParams = useSearchParams();
-    const page = Number(searchParams.get("page")) || 1;
+
+    // Safely parse and validate page number
+    const pageParam = searchParams.get("page");
+    const parsedPage = parseInt(pageParam || "1", 10);
+    const page = Number.isFinite(parsedPage) ? Math.max(1, parsedPage) : 1;
+
     const [orders, setOrders] = useState<any[]>([]);
     const [pagination, setPagination] = useState<{
         total: number;
@@ -63,16 +75,34 @@ function OrdersContent() {
         currentPage: number;
     } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchOrders = async () => {
             setIsLoading(true);
-            const result = await getUserOrders(page);
-            if (result.success && result.orders && result.pagination) {
-                setOrders(result.orders);
-                setPagination(result.pagination);
+            setError(null); // Clear previous errors
+
+            try {
+                const result = await getUserOrders(page);
+
+                if (result.success && result.orders && result.pagination) {
+                    setOrders(result.orders);
+                    setPagination(result.pagination);
+                    setError(null);
+                } else {
+                    // Handle API error response
+                    setOrders([]);
+                    setPagination(null);
+                    setError(result.error || "Failed to load orders");
+                }
+            } catch (err) {
+                console.error("[FETCH_ORDERS_ERROR]", err);
+                setOrders([]);
+                setPagination(null);
+                setError("An unexpected error occurred. Please try again later.");
+            } finally {
+                setIsLoading(false);
             }
-            setIsLoading(false);
         };
         fetchOrders();
     }, [page]);
@@ -115,6 +145,22 @@ function OrdersContent() {
                                 <div key={i} className="h-48 w-full bg-gray-50 rounded-[40px] animate-pulse" />
                             ))}
                         </div>
+                    ) : error ? (
+                        <div className="text-center py-20 bg-red-50/30 rounded-[40px] border-2 border-dashed border-red-100">
+                            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                                <XCircle className="w-10 h-10 text-red-300" />
+                            </div>
+                            <h2 className="text-2xl font-black text-flora-dark mb-2">Oops! Something went wrong</h2>
+                            <p className="text-gray-400 font-bold mb-8">
+                                {error}
+                            </p>
+                            <Button
+                                onClick={() => window.location.reload()}
+                                className="bg-primary hover:bg-[#FF75AA] text-white rounded-full px-10 py-6 font-black text-lg transition-all shadow-lg shadow-pink-100"
+                            >
+                                Try Again
+                            </Button>
+                        </div>
                     ) : orders.length === 0 ? (
                         <div className="text-center py-20 bg-pink-50/30 rounded-[40px] border-2 border-dashed border-pink-100">
                             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
@@ -133,7 +179,8 @@ function OrdersContent() {
                     ) : (
                         <div className="space-y-8">
                             {orders.map((order) => {
-                                const config = statusConfig[order.status as keyof typeof statusConfig];
+                                // Safe fallback for unknown status values
+                                const config = statusConfig[order.status as keyof typeof statusConfig] ?? defaultStatusConfig;
                                 const StatusIcon = config.icon;
 
                                 return (

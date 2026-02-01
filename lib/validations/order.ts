@@ -22,6 +22,19 @@ export const OrderSchema = z.object({
     message: "Address must be more detailed.",
   }),
   saveAddress: z.boolean().optional(),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().min(1, { message: "Product ID is required." }),
+        quantity: z
+          .number()
+          .int()
+          .positive({ message: "Quantity must be at least 1." }),
+        price: z.number().positive({ message: "Price must be positive." }),
+      }),
+    )
+    .min(1, { message: "Cart cannot be empty." }),
+  totalPrice: z.number().positive({ message: "Total price must be positive." }),
 });
 
 export type OrderFormValues = z.infer<typeof OrderSchema>;
