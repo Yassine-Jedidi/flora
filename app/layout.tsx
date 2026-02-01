@@ -16,8 +16,14 @@ const nunito = Nunito({
 
 export const metadata: Metadata = {
   title: "Flora | Explore Unique Treasures",
-  description:
-    "Discover beautiful jewelry and accessories to brighten your day.",
+  description: "Discover beautiful jewelry and accessories to brighten your day.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
+  appleWebApp: {
+    title: "FloraAccess",
+  },
 };
 
 export default function RootLayout({
@@ -34,7 +40,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://img.utfs.io" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <meta name="apple-mobile-web-app-title" content="FloraAccess" />
       </head>
       <body className={`${nunito.variable} font-sans antialiased`}>
         <MobileDebug />

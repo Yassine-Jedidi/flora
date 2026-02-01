@@ -16,7 +16,6 @@ const FavoriteButton = dynamic(() => import("./favorite-button"), {
 
 import { calculateDiscount } from "@/lib/utils";
 import { Product } from "@/lib/types";
-import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 interface ProductCardProps {
   product: Product;

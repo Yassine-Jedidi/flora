@@ -35,6 +35,7 @@ model Product {
   categoryId  String
   category    Category       @relation(fields: [categoryId], references: [id])
   images      ProductImage[]
+  wishlists   Wishlist[]
   
   // Pack Relations
   packItems       PackItem[] @relation("PackToItem")
@@ -83,7 +84,11 @@ enum OrderStatus {
 model Order {
   id              String      @id @default(cuid())
   
-  // Guest Information
+  // Relation to User (optional for guest checkout)
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // Snapshot of Shipping Information at time of order
   fullName        String
   phoneNumber     String
   governorate     String
@@ -97,6 +102,8 @@ model Order {
   
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
 }
 
 model OrderItem {
@@ -110,4 +117,109 @@ model OrderItem {
 
   @@index([orderId])
   @@index([productId])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  addresses     Address[]
+  orders        Order[]
+  wishlists     Wishlist[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@unique([providerId, accountId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
+model Address {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name            String    // Label for the address (e.g., "Home", "Office")
+  fullName        String
+  phoneNumber     String
+  governorate     String
+  city            String    // Delegation
+  detailedAddress String
+  isDefault       Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Wishlist {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete: Cascade)
+  productId String
+  product Product @relation(fields:[productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+}
+
+model rateLimit {
+  id          String   @id @default(cuid())
+  key         String
+  count       Int
+  lastRequest BigInt
+
+  @@map("rateLimit")
 }

@@ -8,7 +8,19 @@ import dynamic from "next/dynamic";
 import { useState, useEffect, useRef } from "react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { Button } from "@/components/ui/button";
+import { Bow } from "@/components/icons/bow";
 import { searchProducts } from "@/app/actions/get-products";
+import { useSession, signOut } from "@/lib/auth-client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOut, ShoppingBasket, Heart } from "lucide-react";
 
 const FavoritesSheet = dynamic(
   () => import("@/components/favorites-sheet").then((m) => m.FavoritesSheet),
@@ -34,18 +46,26 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const { data: session, isPending: isSessionPending } = useSession();
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchQuery.length >= 2) {
         setIsSearching(true);
-        const results = await searchProducts(searchQuery);
-        setSearchResults(results);
+        setSearchError(null);
+        const result = await searchProducts(searchQuery);
+        if (result.success) {
+          setSearchResults(result.data || []);
+        } else {
+          setSearchResults([]);
+          setSearchError(result.error || "Search failed");
+        }
         setIsSearching(false);
         setShowDropdown(true);
       } else {
@@ -293,7 +313,9 @@ export function Navbar() {
 
             {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-6 text-center z-110 animate-in fade-in slide-in-from-top-2 duration-200">
-                <p className="text-sm font-bold text-gray-400">No treasures found matching &quot;{searchQuery}&quot;</p>
+                <p className="text-sm font-bold text-gray-400">
+                  {searchError || `No treasures found matching "${searchQuery}"`}
+                </p>
               </div>
             )}
           </div>
@@ -385,9 +407,106 @@ export function Navbar() {
 
             <CartDropdown />
             <FavoritesSheet />
-            <button className="rounded-full bg-[#3E343C] p-2 text-white hover:bg-primary transition-all duration-300 shadow-md">
-              <User className="h-4 w-4" />
-            </button>
+
+            {isSessionPending ? (
+              <div className="w-8 h-8 rounded-full bg-pink-50 animate-pulse flex items-center justify-center">
+                <Loader2 className="h-4 w-4 text-pink-200 animate-spin" />
+              </div>
+            ) : session ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-full bg-white p-0 text-flora-dark border-2 border-white hover:border-pink-50 transition-all duration-300 shadow-md overflow-hidden outline-none ring-offset-2 focus:ring-2 focus:ring-pink-200 group">
+                    {session.user.image ? (
+                      <div className="relative w-7 h-7 rounded-full overflow-hidden">
+                        <Image
+                          src={session.user.image}
+                          alt={session.user.name}
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-7 h-7 flex items-center justify-center">
+                        <User className="h-4 w-4" />
+                      </div>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 mt-2 rounded-[24px] p-2 border-pink-50 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                  <DropdownMenuLabel className="px-3 py-3">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-black text-flora-dark leading-none">{session.user.name}</p>
+                      <p className="text-[10px] font-medium text-gray-400 leading-none">{session.user.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-pink-50 mx-2" />
+                  <div className="p-1">
+                    <DropdownMenuItem asChild className="rounded-xl px-3 py-2.5 text-xs font-bold text-flora-dark hover:bg-pink-50 transition-colors cursor-pointer group">
+                      <Link href="/profile" className="flex items-center w-full">
+                        <User className="mr-3 h-4 w-4 text-pink-300 group-hover:text-primary transition-colors" />
+                        <span>My Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="rounded-xl px-3 py-2.5 text-xs font-bold text-flora-dark hover:bg-pink-50 transition-colors cursor-pointer group">
+                      <Link href="/orders" className="flex items-center w-full">
+                        <ShoppingBasket className="mr-3 h-4 w-4 text-pink-300 group-hover:text-primary transition-colors" />
+                        <span>My Orders</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="rounded-xl px-3 py-2.5 text-xs font-bold text-flora-dark hover:bg-pink-50 transition-colors cursor-pointer group">
+                      <Link href="/favorites" className="flex items-center w-full">
+                        <Heart className="mr-3 h-4 w-4 text-pink-300 group-hover:text-primary transition-colors" />
+                        <span>Wishlist</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </div>
+                  <DropdownMenuSeparator className="bg-pink-50 mx-2" />
+                  <div className="p-1">
+                    <DropdownMenuItem
+                      onClick={async () => {
+                        await signOut({
+                          fetchOptions: {
+                            onSuccess: () => {
+                              router.push("/");
+                              router.refresh();
+                            },
+                          },
+                        });
+                      }}
+                      className="rounded-xl px-3 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 focus:bg-red-50 focus:text-red-500 transition-colors cursor-pointer group"
+                    >
+                      <LogOut className="mr-3 h-4 w-4 text-red-300 group-hover:text-red-500 transition-colors" />
+                      <span>Sign Out</span>
+                    </DropdownMenuItem>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-full bg-[#3E343C] p-2 text-white hover:bg-primary transition-all duration-300 shadow-md outline-none focus:ring-2 focus:ring-pink-200">
+                    <User className="h-4 w-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 mt-2 rounded-[24px] p-2 border-pink-50 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                  <DropdownMenuLabel className="px-4 py-3">
+                    <div className="flex items-center justify-center gap-2">
+                      <p className="text-xs font-black text-flora-dark uppercase tracking-widest leading-none">Welcome to Flora</p>
+                      <Bow className="w-3.5 h-3.5 text-primary shrink-0 transition-transform group-hover:rotate-12" />
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-pink-50 mx-2" />
+                  <div className="p-2 space-y-2">
+                    <Button asChild className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-xl h-11 font-bold text-xs shadow-sm">
+                      <Link href="/signin">Sign In</Link>
+                    </Button>
+                    <Button asChild className="w-full bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-xl h-11 font-bold text-xs shadow-sm shadow-purple-100">
+                      <Link href="/signup">Create Account</Link>
+                    </Button>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
 
@@ -492,7 +611,9 @@ export function Navbar() {
 
               {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-4 text-center z-110">
-                  <p className="text-sm font-bold text-gray-400">No treasures found matching &quot;{searchQuery}&quot;</p>
+                  <p className="text-sm font-bold text-gray-400">
+                    {searchError || `No treasures found matching "${searchQuery}"`}
+                  </p>
                 </div>
               )}
             </div>

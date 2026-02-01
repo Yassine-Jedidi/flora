@@ -12,7 +12,11 @@ export default async function SearchPage({
     searchParams: Promise<{ q?: string }>
 }) {
     const { q: query } = await searchParams;
-    const products = query ? await searchProducts(query, 40) : [];
+    const searchResult = query ? await searchProducts(query, 40) : { success: true as const, data: [] };
+
+    // Explicitly handle results to satisfy TypeScript
+    const products = (searchResult.success ? (searchResult as any).data : []) || [];
+    const searchError = (!searchResult.success ? (searchResult as any).error : null) || null;
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -56,6 +60,16 @@ export default async function SearchPage({
                             </p>
                             <p className="text-[#B08B9B] font-medium text-center">Enter a keyword to start searching for treasures. ✨</p>
                         </div>
+                    ) : searchError ? (
+                        <div className="flex flex-col items-center justify-center py-40">
+                            <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mb-6">
+                                <Search className="w-10 h-10 text-red-500" />
+                            </div>
+                            <p className="text-xl font-black text-flora-dark mb-2 text-center">
+                                {searchError}
+                            </p>
+                            <p className="text-[#B08B9B] font-medium text-center tracking-tight">Try again later or search for something else! ⏳</p>
+                        </div>
                     ) : products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-40">
                             <div className="w-20 h-20 rounded-full bg-pink-50 flex items-center justify-center mb-6">
@@ -68,7 +82,7 @@ export default async function SearchPage({
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-                            {products.map((product) => (
+                            {products.map((product: any) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
                         </div>

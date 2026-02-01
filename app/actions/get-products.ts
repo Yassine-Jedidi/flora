@@ -3,6 +3,7 @@
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { Product } from "@/lib/types";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 interface ProductFilters {
   search?: string;
@@ -451,7 +452,20 @@ export async function getProduct(id: string): Promise<Product | null> {
 }
 
 export async function searchProducts(query: string, limit: number = 5) {
-  if (!query || query.length < 2) return [];
+  if (!query || query.length < 2) return { success: true, data: [] };
+
+  const rateLimit = await checkRateLimit({
+    key: "product-search",
+    window: 60,
+    max: 30,
+  });
+
+  if (!rateLimit.success) {
+    return {
+      success: false,
+      error: `Too many searches. Please try again in ${rateLimit.message}.`,
+    };
+  }
 
   try {
     const normalizedQuery = query.toLowerCase().trim();
@@ -553,16 +567,19 @@ export async function searchProducts(query: string, limit: number = 5) {
     });
 
     // Sort by score descending and take requested limit
-    return (
-      scoredProducts
-        .sort((a, b) => b.searchScore - a.searchScore)
-        .slice(0, limit)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .map(({ searchScore, ...product }) => product)
-    ); // Remove the temp score field
+    const finalResults = scoredProducts
+      .sort((a, b) => b.searchScore - a.searchScore)
+      .slice(0, limit)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .map(({ searchScore, ...product }) => product);
+
+    return { success: true, data: finalResults };
   } catch (error) {
     console.error("Error searching products:", error);
-    return [];
+    return {
+      success: false,
+      error: "Something went wrong. Please try again later.",
+    };
   }
 }
 

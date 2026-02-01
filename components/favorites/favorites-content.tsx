@@ -1,16 +1,38 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { Heart, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFavorites } from "@/lib/hooks/use-favorites";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/shop/product-card";
 import { Footer } from "@/components/footer";
+import { PaginationControl } from "@/components/ui/pagination-control";
+
+const ITEMS_PER_PAGE = 9;
 
 export default function FavoritesContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { favorites } = useFavorites();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const totalPages = Math.ceil(favorites.length / ITEMS_PER_PAGE);
+
+  // Automatically redirect to previous page if current page becomes empty
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", totalPages.toString());
+      router.replace(`?${params.toString()}`);
+    }
+  }, [currentPage, totalPages, router, searchParams]);
+
+  const paginatedFavorites = favorites.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="min-h-screen bg-[#FFF8FA] flex flex-col">
@@ -75,11 +97,20 @@ export default function FavoritesContent() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {favorites.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {paginatedFavorites.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+
+              <PaginationControl
+                total={favorites.length}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                showSinglePage={true}
+              />
+            </>
           )}
         </div>
       </div>
@@ -87,3 +118,4 @@ export default function FavoritesContent() {
     </div>
   );
 }
+

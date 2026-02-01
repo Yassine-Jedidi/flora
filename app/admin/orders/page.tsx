@@ -3,7 +3,7 @@ import { OrderList } from "@/components/admin/order-list";
 import { OrderFilters } from "@/components/admin/order-filters";
 
 interface OrdersPageProps {
-    searchParams: Promise<{ 
+    searchParams: Promise<{
         page?: string;
         search?: string;
         status?: string;
@@ -15,7 +15,7 @@ interface OrdersPageProps {
 export default async function OrdersPage({ searchParams }: OrdersPageProps) {
     const params = await searchParams;
     const page = Number(params?.page) || 1;
-    
+
     const filters = {
         search: params?.search,
         status: params?.status as "all" | "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | undefined,
@@ -36,6 +36,7 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
                 pagination={{
                     currentPage: ordersData.currentPage,
                     totalPages: ordersData.totalPages,
+                    total: ordersData.total,
                 }}
             />
         </div>
