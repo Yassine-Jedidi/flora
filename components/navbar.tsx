@@ -464,6 +464,7 @@ export function Navbar() {
                         await signOut({
                           fetchOptions: {
                             onSuccess: () => {
+                              router.push("/");
                               router.refresh();
                             },
                           },

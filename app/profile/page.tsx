@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession, changePassword } from "@/lib/auth-client";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -362,21 +362,31 @@ export default function ProfilePage() {
         );
     }
 
+    // Track if user was previously logged in to differentiate between "Sign Out" and "Direct Access"
+    const wasLoggedIn = useRef(false);
+
+    useEffect(() => {
+        if (session) {
+            wasLoggedIn.current = true;
+        }
+    }, [session]);
+
+    useEffect(() => {
+        if (!isSessionPending && !session) {
+            if (wasLoggedIn.current) {
+                // User was logged in and now is not (Sign Out) -> Go Home
+                router.push("/");
+            } else {
+                // User was never logged in (Direct Access) -> Go Sign In
+                router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`);
+            }
+        }
+    }, [isSessionPending, session, router, pathname]);
+
     if (!session) {
         return (
-            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
-                <Navbar />
-                <div className="max-w-md w-full text-center space-y-6">
-                    <div className="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Lock className="w-10 h-10 text-primary" />
-                    </div>
-                    <h1 className="text-3xl font-black text-flora-dark">Not Signed In</h1>
-                    <p className="text-gray-500 font-bold">Please sign in to view your profile and manage your addresses.</p>
-                    <Button asChild className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-6 font-black text-lg shadow-xl shadow-pink-100">
-                        <Link href="/signin">Sign In Now</Link>
-                    </Button>
-                </div>
-                <Footer />
+            <div className="min-h-screen bg-white flex flex-col justify-center items-center">
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
             </div>
         );
     }
