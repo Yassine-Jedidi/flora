@@ -80,6 +80,10 @@ export const auth = betterAuth({
         window: 60 * 60, // 1 hour
         max: 5, // 5 attempts per hour
       },
+      "/send-verification-email": {
+        window: 60 * 60, // 1 hour
+        max: 3, // 3 attempts per hour
+      },
     },
   },
   socialProviders: {

@@ -46,6 +46,7 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -57,8 +58,14 @@ export function Navbar() {
     const delayDebounceFn = setTimeout(async () => {
       if (searchQuery.length >= 2) {
         setIsSearching(true);
-        const results = await searchProducts(searchQuery);
-        setSearchResults(results);
+        setSearchError(null);
+        const result = await searchProducts(searchQuery);
+        if (result.success) {
+          setSearchResults(result.data || []);
+        } else {
+          setSearchResults([]);
+          setSearchError(result.error || "Search failed");
+        }
         setIsSearching(false);
         setShowDropdown(true);
       } else {
@@ -306,7 +313,9 @@ export function Navbar() {
 
             {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-6 text-center z-110 animate-in fade-in slide-in-from-top-2 duration-200">
-                <p className="text-sm font-bold text-gray-400">No treasures found matching &quot;{searchQuery}&quot;</p>
+                <p className="text-sm font-bold text-gray-400">
+                  {searchError || `No treasures found matching "${searchQuery}"`}
+                </p>
               </div>
             )}
           </div>
@@ -608,7 +617,9 @@ export function Navbar() {
 
               {showDropdown && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-2xl border border-pink-50 p-4 text-center z-110">
-                  <p className="text-sm font-bold text-gray-400">No treasures found matching &quot;{searchQuery}&quot;</p>
+                  <p className="text-sm font-bold text-gray-400">
+                    {searchError || `No treasures found matching "${searchQuery}"`}
+                  </p>
                 </div>
               )}
             </div>

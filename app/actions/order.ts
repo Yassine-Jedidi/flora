@@ -7,12 +7,26 @@ import { OrderStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
+import { checkRateLimit } from "@/lib/rate-limit";
+
 export async function createOrder(
   values: OrderFormValues & {
     items: { productId: string; quantity: number; price: number }[];
     totalPrice: number;
   },
 ) {
+  const rateLimit = await checkRateLimit({
+    key: "order-creation",
+    window: 60 * 10, // 10 minutes
+    max: 3, // 3 orders every 10 minutes
+  });
+
+  if (!rateLimit.success) {
+    return {
+      error: `Too many orders. Please try again in ${rateLimit.message}.`,
+    };
+  }
+
   try {
     const session = await auth.api.getSession({
       headers: await headers(),

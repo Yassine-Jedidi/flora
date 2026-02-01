@@ -1,6 +1,5 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { auth } from "@/lib/auth";
-import db from "@/lib/db";
 import { UTApi } from "uploadthing/server";
 
 const f = createUploadthing();

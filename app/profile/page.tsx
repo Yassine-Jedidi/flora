@@ -134,6 +134,27 @@ export default function ProfilePage() {
         }
     }, [session]);
 
+    // Track if user was previously logged in to differentiate between "Sign Out" and "Direct Access"
+    const wasLoggedIn = useRef(false);
+
+    useEffect(() => {
+        if (session) {
+            wasLoggedIn.current = true;
+        }
+    }, [session]);
+
+    useEffect(() => {
+        if (!isSessionPending && !session) {
+            if (wasLoggedIn.current) {
+                // User was logged in and now is not (Sign Out) -> Go Home
+                router.push("/");
+            } else {
+                // User was never logged in (Direct Access) -> Go Sign In
+                router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`);
+            }
+        }
+    }, [isSessionPending, session, router, pathname]);
+
     const loadSessions = async () => {
 
         setIsLoadingSessions(true);
@@ -375,27 +396,6 @@ export default function ProfilePage() {
             </div>
         );
     }
-
-    // Track if user was previously logged in to differentiate between "Sign Out" and "Direct Access"
-    const wasLoggedIn = useRef(false);
-
-    useEffect(() => {
-        if (session) {
-            wasLoggedIn.current = true;
-        }
-    }, [session]);
-
-    useEffect(() => {
-        if (!isSessionPending && !session) {
-            if (wasLoggedIn.current) {
-                // User was logged in and now is not (Sign Out) -> Go Home
-                router.push("/");
-            } else {
-                // User was never logged in (Direct Access) -> Go Sign In
-                router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`);
-            }
-        }
-    }, [isSessionPending, session, router, pathname]);
 
     if (!session) {
         return (

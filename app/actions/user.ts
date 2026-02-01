@@ -5,10 +5,24 @@ import { headers } from "next/headers";
 import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { UTApi } from "uploadthing/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const utapi = new UTApi();
 
 export async function updateProfile(values: { name: string; image?: string }) {
+  const rateLimit = await checkRateLimit({
+    key: "profile-update",
+    window: 3600, // 1 hour
+    max: 10, // 10 updates per hour
+  });
+
+  if (!rateLimit.success) {
+    return {
+      success: false,
+      error: `Too many profile updates. Please try again in ${rateLimit.message}.`,
+    };
+  }
+
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -61,6 +75,19 @@ export async function updateProfile(values: { name: string; image?: string }) {
 }
 
 export async function deleteUploadedFile(fileUrl: string) {
+  const rateLimit = await checkRateLimit({
+    key: "file-delete",
+    window: 3600, // 1 hour
+    max: 20, // 20 deletions per hour
+  });
+
+  if (!rateLimit.success) {
+    return {
+      success: false,
+      error: `Too many deletions. Please try again in ${rateLimit.message}.`,
+    };
+  }
+
   try {
     const session = await auth.api.getSession({
       headers: await headers(),

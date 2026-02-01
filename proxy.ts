@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
-export default function middleware(request: NextRequest) {
-  return proxy(request);
+export default async function middleware(request: NextRequest) {
+  return await proxy(request);
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Normalize pathname to remove trailing slashes for consistent matching
@@ -50,15 +51,28 @@ export function proxy(request: NextRequest) {
       return NextResponse.next();
     }
 
-    if (queryKey === adminKey && adminKey !== undefined) {
-      const response = NextResponse.redirect(new URL("/admin", request.url));
-      response.cookies.set("flora_admin_auth", adminKey, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 30,
+    if (queryKey !== null) {
+      // If someone is trying a key, rate limit them
+      const rateLimit = await checkRateLimit({
+        key: "admin-key-attempt",
+        window: 60 * 60 * 24 * 7, // 7 days
+        max: 3, // 3 attempts per 7 days
       });
-      return response;
+
+      if (!rateLimit.success) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+
+      if (queryKey === adminKey && adminKey !== undefined) {
+        const response = NextResponse.redirect(new URL("/admin", request.url));
+        response.cookies.set("flora_admin_auth", adminKey, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 60 * 60 * 24 * 30,
+        });
+        return response;
+      }
     }
 
     return NextResponse.redirect(new URL("/", request.url));
