@@ -156,3 +156,68 @@ export async function revokeSession(sessionId: string) {
     return { success: false, error: "Failed to revoke session" };
   }
 }
+
+export async function checkUserHasPassword() {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      include: { accounts: true },
+    });
+
+    // Check if any account has a password set
+    const hasPassword = user?.accounts.some((a: any) => !!a.password);
+
+    return { success: true, hasPassword };
+  } catch (error) {
+    console.error("Check password error:", error);
+    return { success: false, error: "Failed to check password status" };
+  }
+}
+
+export async function setUserPassword(password: string) {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    // Safety check for method existence
+    if (!(auth.api as any).setPassword) {
+      console.error("auth.api.setPassword is not available");
+      return {
+        success: false,
+        error: "System configuration error: Password setting not available",
+      };
+    }
+
+    await (auth.api as any).setPassword({
+      body: {
+        newPassword: password,
+      },
+      headers: await headers(),
+    });
+
+    revalidatePath("/profile");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Set password error:", error);
+    return {
+      success: false,
+      error:
+        error.message?.body?.message ||
+        error.message ||
+        "Failed to set password",
+    };
+  }
+}

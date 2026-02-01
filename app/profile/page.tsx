@@ -39,7 +39,7 @@ import {
     updateAddress,
     deleteAddress
 } from "@/app/actions/address";
-import { updateProfile, getUserSessions, revokeSession, deleteUploadedFile } from "@/app/actions/user";
+import { updateProfile, getUserSessions, revokeSession, deleteUploadedFile, checkUserHasPassword, setUserPassword } from "@/app/actions/user";
 import { toast } from "sonner";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
@@ -84,6 +84,7 @@ export default function ProfilePage() {
         confirmPassword: ""
     });
     const [isChangingPassword, setIsChangingPassword] = useState(false);
+    const [hasPassword, setHasPassword] = useState<boolean>(true);
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -118,7 +119,18 @@ export default function ProfilePage() {
         }
     }, [session]);
 
+    useEffect(() => {
+        if (session) {
+            checkUserHasPassword().then((res) => {
+                if (res.success) {
+                    setHasPassword(res.hasPassword ?? false);
+                }
+            });
+        }
+    }, [session]);
+
     const loadSessions = async () => {
+
         setIsLoadingSessions(true);
         const result = await getUserSessions();
         if (result.success) {
@@ -272,7 +284,7 @@ export default function ProfilePage() {
     };
 
     const handlePasswordChange = async () => {
-        if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+        if ((hasPassword && !passwordForm.currentPassword) || !passwordForm.newPassword || !passwordForm.confirmPassword) {
             toast.error("Please fill in all fields.");
             return;
         }
@@ -287,12 +299,36 @@ export default function ProfilePage() {
             return;
         }
 
-        if (passwordForm.newPassword === passwordForm.currentPassword) {
+        if (hasPassword && passwordForm.newPassword === passwordForm.currentPassword) {
             toast.error("New password cannot be the same as the old password.");
             return;
         }
 
         setIsChangingPassword(true);
+        if (!hasPassword) {
+            // Set password for the first time
+            try {
+                const result = await setUserPassword(passwordForm.newPassword);
+                if (result.success) {
+                    toast.success("Password set successfully! 🔒");
+                    setIsChangePasswordModalOpen(false);
+                    setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+                    setHasPassword(true);
+
+                    // Optional: Try to silently sign in to refresh credential token specifically,
+                    // but usually session refresh is enough.
+                    router.refresh();
+                } else {
+                    toast.error(result.error || "Failed to set password.");
+                }
+            } catch (error) {
+                toast.error("An error occurred while setting password.");
+            }
+            setIsChangingPassword(false);
+            return;
+        }
+
+        // Change existing password
         try {
             await changePassword({
                 newPassword: passwordForm.newPassword,
@@ -707,7 +743,7 @@ export default function ProfilePage() {
                                         variant="outline"
                                         className="w-full rounded-2xl py-8 border-gray-100 text-flora-dark font-bold hover:bg-gray-50 flex items-center justify-between px-8 group"
                                     >
-                                        Change Password
+                                        {hasPassword ? "Change Password" : "Set Password"}
                                         <ChevronRight className="w-5 h-5 opacity-30 group-hover:translate-x-1 transition-all" />
                                     </Button>
 
@@ -938,25 +974,27 @@ export default function ProfilePage() {
                     <div className="p-6 lg:p-8 space-y-6">
                         <DialogHeader>
                             <DialogTitle className="text-3xl font-black text-flora-dark text-center flex items-center justify-center gap-2">
-                                Change Password
+                                {hasPassword ? "Change Password" : "Set Password"}
                                 <Shield className="w-8 h-8 text-purple-500" />
                             </DialogTitle>
                             <DialogDescription className="text-center font-bold text-gray-400">
-                                Secure your account with a new password.
+                                {hasPassword ? "Secure your account with a new password." : "Set a password to login with email."}
                             </DialogDescription>
                         </DialogHeader>
 
                         <div className="space-y-4">
-                            <div className="space-y-2">
-                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Current Password</Label>
-                                <Input
-                                    type="password"
-                                    placeholder="Enter your current password"
-                                    className="rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-7 px-5 font-bold text-lg text-flora-dark placeholder:text-purple-200"
-                                    value={passwordForm.currentPassword}
-                                    onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                                />
-                            </div>
+                            {hasPassword && (
+                                <div className="space-y-2">
+                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Current Password</Label>
+                                    <Input
+                                        type="password"
+                                        placeholder="Enter your current password"
+                                        className="rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-7 px-5 font-bold text-lg text-flora-dark placeholder:text-purple-200"
+                                        value={passwordForm.currentPassword}
+                                        onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                                    />
+                                </div>
+                            )}
 
                             <div className="space-y-2">
                                 <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">New Password</Label>
@@ -991,7 +1029,7 @@ export default function ProfilePage() {
                                         <span>Updating...</span>
                                     </div>
                                 ) : (
-                                    "Update Password"
+                                    hasPassword ? "Update Password" : "Set Password"
                                 )}
                             </Button>
                         </div>
