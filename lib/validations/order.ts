@@ -37,4 +37,11 @@ export const OrderSchema = z.object({
   totalPrice: z.number().positive({ message: "Total price must be positive." }),
 });
 
+// Schema for the checkout form (excludes derived cart data)
+export const CheckoutFormSchema = OrderSchema.omit({
+  items: true,
+  totalPrice: true,
+});
+
 export type OrderFormValues = z.infer<typeof OrderSchema>;
+export type CheckoutFormValues = z.infer<typeof CheckoutFormSchema>;

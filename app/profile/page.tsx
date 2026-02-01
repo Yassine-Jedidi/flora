@@ -431,20 +431,21 @@ function ProfileContent() {
         <div className="min-h-screen bg-white flex flex-col font-sans">
             <Navbar />
 
-            <main className="flex-1 pt-32 pb-20">
+            <main className="flex-1 pt-24 pb-12 md:pt-32 md:pb-20">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Hero Section */}
-                    <div className="relative mb-12 rounded-[40px] bg-gradient-to-br from-flora-purple/10 via-pink-50/50 to-white p-8 lg:p-12 overflow-hidden border border-pink-50">
+                    <div className="relative mb-8 md:mb-12 rounded-3xl md:rounded-[40px] bg-gradient-to-br from-flora-purple/10 via-pink-50/50 to-white p-6 md:p-8 lg:p-12 overflow-hidden border border-pink-50">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl animate-pulse" />
-                        <div className="relative flex flex-col md:flex-row items-center gap-8">
+                        <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8">
                             <div className="relative group">
                                 <div className="absolute -inset-1.5 bg-gradient-to-br from-primary to-flora-purple rounded-full blur opacity-25 group-hover:opacity-40 transition duration-500" />
-                                <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white">
+                                <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white">
                                     {session.user.image ? (
                                         <Image
                                             src={session.user.image}
                                             alt={session.user.name}
                                             fill
+                                            sizes="(max-width: 768px) 96px, 128px"
                                             className="object-cover"
                                         />
                                     ) : (
@@ -455,9 +456,9 @@ function ProfileContent() {
                                 </div>
                             </div>
                             <div className="text-center md:text-left flex-1">
-                                <h1 className="text-4xl lg:text-5xl font-black text-flora-dark tracking-tight mb-2 flex items-center justify-center md:justify-start gap-3">
+                                <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-flora-dark tracking-tight mb-2 flex items-center justify-center md:justify-start gap-3">
                                     Hello, {session.user.name.split(' ')[0]}!
-                                    <Bow className="w-8 h-8 text-primary animate-bounce-slow" />
+                                    <Bow className="w-6 h-6 md:w-8 md:h-8 text-primary animate-bounce-slow" />
                                 </h1>
                                 <p className="text-gray-500 font-bold flex items-center justify-center md:justify-start gap-2">
                                     <Mail className="w-4 h-4 text-pink-300" />
@@ -470,7 +471,7 @@ function ProfileContent() {
                                     setProfileImage(session.user.image || null);
                                     setIsProfileModalOpen(true);
                                 }}
-                                className="bg-white hover:bg-pink-50 text-flora-dark border border-pink-100 rounded-full px-8 py-6 font-bold flex items-center gap-2 shadow-sm transition-all hover:scale-105"
+                                className="bg-white hover:bg-pink-50 text-flora-dark border border-pink-100 rounded-full px-6 py-4 md:px-8 md:py-6 text-sm md:text-base font-bold flex items-center gap-2 shadow-sm transition-all hover:scale-105"
                             >
                                 Edit Profile
                             </Button>
@@ -479,44 +480,44 @@ function ProfileContent() {
 
                     {/* Profile Tabs */}
                     {/* Profile Tabs */}
-                    <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-12">
+                    <Tabs value={currentTab} onValueChange={handleTabChange} className="space-y-8 md:space-y-12">
                         <div className="flex justify-center">
-                            <TabsList className="bg-gray-100/50 p-1 rounded-full h-16 border border-gray-100">
+                            <TabsList className="bg-gray-100/50 p-1 rounded-full h-12 md:h-16 border border-gray-100">
                                 <TabsTrigger
                                     value="addresses"
-                                    className="rounded-full px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-xs uppercase tracking-widest transition-all h-full"
+                                    className="rounded-full px-4 md:px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-[10px] md:text-xs uppercase tracking-widest transition-all h-full"
                                 >
-                                    <MapPin className="w-4 h-4 mr-2" />
-                                    Addresses
+                                    <MapPin className="w-4 h-4 min-[400px]:mr-2" />
+                                    <span className="hidden min-[400px]:inline">Addresses</span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="account"
-                                    className="rounded-full px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-xs uppercase tracking-widest transition-all h-full"
+                                    className="rounded-full px-4 md:px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-[10px] md:text-xs uppercase tracking-widest transition-all h-full"
                                 >
-                                    <User className="w-4 h-4 mr-2" />
-                                    Account
+                                    <User className="w-4 h-4 min-[400px]:mr-2" />
+                                    <span className="hidden min-[400px]:inline">Account</span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="security"
-                                    className="rounded-full px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-xs uppercase tracking-widest transition-all h-full"
+                                    className="rounded-full px-4 md:px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-[10px] md:text-xs uppercase tracking-widest transition-all h-full"
                                 >
-                                    <Shield className="w-4 h-4 mr-2" />
-                                    Security
+                                    <Shield className="w-4 h-4 min-[400px]:mr-2" />
+                                    <span className="hidden min-[400px]:inline">Security</span>
                                 </TabsTrigger>
                             </TabsList>
                         </div>
 
                         {/* Addresses Content */}
                         <TabsContent value="addresses" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
                                 <div className="lg:col-span-4 space-y-4">
-                                    <h2 className="text-2xl font-black text-flora-dark">Saved Addresses</h2>
+                                    <h2 className="text-xl md:text-2xl font-black text-flora-dark">Saved Addresses</h2>
                                     <p className="text-gray-400 font-bold leading-relaxed">
                                         Manage your shipping locations for a faster, seamless checkout experience across all your devices.
                                     </p>
                                     <Button
                                         onClick={() => handleOpenAddressModal()}
-                                        className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-2xl py-8 font-black text-lg shadow-lg shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2"
+                                        className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-xl md:rounded-2xl py-6 md:py-8 font-black text-base md:text-lg shadow-lg shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2"
                                     >
                                         <Plus className="w-5 h-5" />
                                         Add New Address
@@ -531,7 +532,7 @@ function ProfileContent() {
                                             ))}
                                         </div>
                                     ) : addresses.length === 0 ? (
-                                        <div className="bg-pink-50/20 rounded-[40px] border-2 border-dashed border-pink-100 p-12 text-center">
+                                        <div className="bg-pink-50/20 rounded-3xl md:rounded-[40px] border-2 border-dashed border-pink-100 p-8 md:p-12 text-center">
                                             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
                                                 <MapPin className="w-8 h-8 text-pink-200" />
                                             </div>
@@ -543,7 +544,7 @@ function ProfileContent() {
                                             {addresses.map((addr) => (
                                                 <div
                                                     key={addr.id}
-                                                    className={`group relative bg-white p-8 rounded-[40px] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-pink-100/30 ${addr.isDefault ? "border-primary bg-pink-50/5" : "border-pink-50 hover:border-pink-100"
+                                                    className={`group relative bg-white p-5 md:p-8 rounded-3xl md:rounded-[40px] border-2 transition-all duration-300 hover:shadow-xl hover:shadow-pink-100/30 ${addr.isDefault ? "border-primary bg-pink-50/5" : "border-pink-50 hover:border-pink-100"
                                                         }`}
                                                 >
                                                     {addr.isDefault && (
@@ -577,7 +578,7 @@ function ProfileContent() {
                                                         <div className="flex items-center gap-3 pt-4 border-t border-pink-50">
                                                             <button
                                                                 onClick={() => handleOpenAddressModal(addr)}
-                                                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-gray-50 text-gray-500 font-bold text-xs hover:bg-pink-50 hover:text-primary transition-all group/btn"
+                                                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl md:rounded-2xl bg-gray-50 text-gray-500 font-bold text-xs hover:bg-pink-50 hover:text-primary transition-all group/btn"
                                                             >
                                                                 <Pencil className="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110" />
                                                                 Edit
@@ -606,7 +607,7 @@ function ProfileContent() {
                                                             )}
                                                             <button
                                                                 onClick={() => handleDeleteAddress(addr.id, addr.name)}
-                                                                className="w-12 flex items-center justify-center py-2.5 rounded-2xl bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all group/del"
+                                                                className="w-12 flex items-center justify-center py-2.5 rounded-xl md:rounded-2xl bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all group/del"
                                                             >
                                                                 <Trash2 className="w-4 h-4 transition-transform group-hover/del:scale-110" />
                                                             </button>
@@ -622,8 +623,8 @@ function ProfileContent() {
 
                         {/* Other content placeholders */}
                         <TabsContent value="account" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="bg-white rounded-[40px] border border-pink-50 shadow-sm p-8 max-w-2xl mx-auto">
-                                <h3 className="text-2xl font-black text-flora-dark mb-8">Personal Information</h3>
+                            <div className="bg-white rounded-3xl md:rounded-[40px] border border-pink-50 shadow-sm p-5 md:p-8 max-w-2xl mx-auto">
+                                <h3 className="text-xl md:text-2xl font-black text-flora-dark mb-6 md:mb-8">Personal Information</h3>
                                 <div className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
@@ -636,7 +637,7 @@ function ProfileContent() {
                                                 <Input
                                                     value={session.user.name}
                                                     readOnly
-                                                    className="rounded-2xl border-gray-100 bg-gray-50/50 py-7 px-5 font-bold text-flora-dark text-lg cursor-pointer group-hover/input:bg-pink-50/50 group-hover/input:border-pink-100 transition-all"
+                                                    className="rounded-xl md:rounded-2xl border-gray-100 bg-gray-50/50 py-4 md:py-7 px-5 font-bold text-flora-dark text-base md:text-lg cursor-pointer group-hover/input:bg-pink-50/50 group-hover/input:border-pink-100 transition-all"
                                                 />
                                                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
                                                     <Pencil className="w-4 h-4 text-gray-300 group-hover/input:text-primary transition-colors" />
@@ -649,7 +650,7 @@ function ProfileContent() {
                                                 <Input
                                                     value={session.user.email}
                                                     disabled
-                                                    className="rounded-2xl border-gray-100 bg-gray-50/50 py-7 px-5 font-bold text-flora-dark text-lg"
+                                                    className="rounded-xl md:rounded-2xl border-gray-100 bg-gray-50/50 py-4 md:py-7 px-5 font-bold text-flora-dark text-base md:text-lg"
                                                 />
                                                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
                                                     <Mail className="w-5 h-5 text-gray-300" />
@@ -661,7 +662,7 @@ function ProfileContent() {
                                         <div className="space-y-2">
                                             <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Member Since</Label>
                                             <div className="relative">
-                                                <div className="rounded-2xl border border-gray-100 bg-gray-50/50 py-4 px-5 flex items-center gap-3">
+                                                <div className="rounded-xl md:rounded-2xl border border-gray-100 bg-gray-50/50 py-4 px-5 flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-400">
                                                         <Calendar className="w-5 h-5" />
                                                     </div>
@@ -678,7 +679,7 @@ function ProfileContent() {
                                         <div className="space-y-2">
                                             <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Phone Number</Label>
                                             <div className="relative">
-                                                <div className="rounded-2xl border border-gray-100 bg-gray-50/50 py-4 px-5 flex items-center gap-3">
+                                                <div className="rounded-xl md:rounded-2xl border border-gray-100 bg-gray-50/50 py-4 px-5 flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-400">
                                                         <Phone className="w-5 h-5" />
                                                     </div>
@@ -743,7 +744,7 @@ function ProfileContent() {
                         </TabsContent>
 
                         <TabsContent value="security" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="bg-white rounded-[40px] border border-pink-50 shadow-sm p-8 max-w-2xl mx-auto space-y-8">
+                            <div className="bg-white rounded-3xl md:rounded-[40px] border border-pink-50 shadow-sm p-5 md:p-8 max-w-2xl mx-auto space-y-8">
                                 <div className="text-center space-y-4">
 
                                     <div>
@@ -783,7 +784,7 @@ function ProfileContent() {
                                                                                 sess.userAgent.toLowerCase().includes("android") ? "Android Device" : "Unknown Device"}
                                                                 </p>
                                                                 <p className="text-xs text-gray-400 font-medium">
-                                                                    {sess.ipAddress} • {new Date(sess.createdAt).toLocaleDateString()}
+                                                                    {(sess.ipAddress === "::1" || sess.ipAddress === "127.0.0.1" || sess.ipAddress === "0000:0000:0000:0000:0000:0000:0000:0000") ? "Localhost" : sess.ipAddress} • {new Date(sess.createdAt).toLocaleDateString()}
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -810,7 +811,7 @@ function ProfileContent() {
                                     <Button
                                         onClick={() => setIsChangePasswordModalOpen(true)}
                                         variant="outline"
-                                        className="w-full rounded-2xl py-8 border-gray-100 text-flora-dark font-bold hover:bg-gray-50 flex items-center justify-between px-8 group"
+                                        className="w-full rounded-xl md:rounded-2xl py-6 md:py-8 border-gray-100 text-flora-dark font-bold hover:bg-gray-50 flex items-center justify-between px-5 md:px-8 group"
                                     >
                                         {hasPassword ? "Change Password" : "Set Password"}
                                         <ChevronRight className="w-5 h-5 opacity-30 group-hover:translate-x-1 transition-all" />
@@ -819,7 +820,7 @@ function ProfileContent() {
                                     <Button
                                         onClick={() => setIsDeleteModalOpen(true)}
                                         variant="outline"
-                                        className="w-full rounded-2xl py-8 border-red-50 text-red-500 font-bold hover:bg-red-50 hover:text-red-600 flex items-center justify-between px-8 group mt-4 transition-all"
+                                        className="w-full rounded-xl md:rounded-2xl py-6 md:py-8 border-red-50 text-red-500 font-bold hover:bg-red-50 hover:text-red-600 flex items-center justify-between px-5 md:px-8 group mt-4 transition-all"
                                     >
                                         <div className="flex items-center gap-3">
                                             <Trash2 className="w-5 h-5 opacity-50 group-hover:text-red-500 transition-colors" />
@@ -836,19 +837,19 @@ function ProfileContent() {
 
             {/* Account Deletion Confirmation */}
             <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
-                <DialogContent className="rounded-[40px] border-none shadow-3xl p-0 overflow-hidden max-w-md bg-white">
-                    <div className="p-8 space-y-5">
+                <DialogContent className="rounded-3xl md:rounded-[40px] border-none shadow-3xl p-0 overflow-hidden max-w-xs md:max-w-md bg-white">
+                    <div className="p-5 md:p-8 space-y-4 md:space-y-5">
                         <DialogHeader className="space-y-2">
-                            <DialogTitle className="text-2xl font-black text-flora-dark text-center tracking-tight">
+                            <DialogTitle className="text-xl md:text-2xl font-black text-flora-dark text-center tracking-tight">
                                 Saying Goodbye?
                             </DialogTitle>
-                            <DialogDescription className="text-gray-500 font-bold text-sm leading-relaxed text-center px-4">
+                            <DialogDescription className="text-gray-500 font-bold text-xs md:text-sm leading-relaxed text-center px-2 md:px-4">
                                 This action is permanent. All your treasures (addresses, wishlist, and profile) will be deleted forever.
                             </DialogDescription>
                         </DialogHeader>
 
-                        <div className="bg-red-50/50 border border-red-100/50 rounded-3xl p-5 flex items-start gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center flex-shrink-0">
+                        <div className="bg-red-50/50 border border-red-100/50 rounded-2xl md:rounded-3xl p-4 md:p-5 flex items-start gap-3">
+                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white shadow-sm flex items-center justify-center flex-shrink-0">
                                 <Shield className="w-5 h-5 text-red-400" />
                             </div>
                             <div>
@@ -863,7 +864,7 @@ function ProfileContent() {
                             <Button
                                 onClick={handleDeleteAccount}
                                 disabled={isDeletingAccount}
-                                className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full py-6 font-black text-base shadow-xl shadow-red-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                                className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full py-4 md:py-6 font-black text-sm md:text-base shadow-xl shadow-red-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                             >
                                 {isDeletingAccount ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -872,7 +873,7 @@ function ProfileContent() {
                                 )}
                             </Button>
                             <DialogClose asChild>
-                                <Button variant="ghost" className="w-full rounded-full py-7 text-gray-400 font-black uppercase tracking-widest text-[10px] border border-gray-100 shadow-sm hover:bg-gray-50 hover:shadow-md transition-all active:scale-95">
+                                <Button variant="ghost" className="w-full rounded-full py-4 md:py-7 text-gray-400 font-black uppercase tracking-widest text-[10px] border border-gray-100 shadow-sm hover:bg-gray-50 hover:shadow-md transition-all active:scale-95">
                                     Actually, I want to stay <Bow className="w-3.5 h-3.5 text-primary ml-1 inline-block" />
                                 </Button>
                             </DialogClose>
@@ -885,12 +886,12 @@ function ProfileContent() {
 
             {/* Address Modal */}
             <Dialog open={isAddressModalOpen} onOpenChange={setIsAddressModalOpen}>
-                <DialogContent className="rounded-[40px] border-none shadow-2xl p-0 overflow-hidden max-w-xl">
-                    <div className="p-6 lg:p-8 space-y-6 max-h-[85vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+                <DialogContent className="rounded-3xl md:rounded-[40px] border-none shadow-2xl p-0 overflow-hidden max-w-xl">
+                    <div className="p-5 md:p-6 lg:p-8 space-y-6 max-h-[85vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                         <DialogHeader>
-                            <DialogTitle className="text-3xl font-black text-flora-dark text-center flex items-center justify-center">
+                            <DialogTitle className="text-2xl md:text-3xl font-black text-flora-dark text-center flex items-center justify-center">
                                 {editingAddress ? "Update Address" : "New Address"}
-                                <MapPin className="ml-2 w-8 h-8 text-primary" />
+                                <MapPin className="ml-2 w-6 h-6 md:w-8 md:h-8 text-primary" />
                             </DialogTitle>
                             <DialogDescription className="text-center font-bold text-gray-400">
                                 {editingAddress ? "Refine your shipping location details." : "Add a new treasure delivery destination."}
@@ -903,8 +904,8 @@ function ProfileContent() {
                                 <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Address Name (e.g., Home, Office)</Label>
                                 <div className="relative">
                                     <Input
-                                        placeholder="Give your address a nickname"
-                                        className="rounded-2xl border-pink-100 focus:ring-pink-200 py-7 px-5 font-bold text-lg text-flora-dark"
+                                        placeholder="e.g. Home, Work"
+                                        className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-base md:text-lg text-flora-dark"
                                         value={addressForm.name}
                                         onChange={(e) => setAddressForm({ ...addressForm, name: e.target.value })}
                                     />
@@ -916,7 +917,7 @@ function ProfileContent() {
                                     <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Full Name</Label>
                                     <Input
                                         placeholder="Who's receiving the package?"
-                                        className="rounded-2xl border-pink-100 focus:ring-pink-200 py-7 px-5 font-bold text-flora-dark"
+                                        className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-flora-dark"
                                         value={addressForm.fullName}
                                         onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })}
                                     />
@@ -925,7 +926,7 @@ function ProfileContent() {
                                     <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Phone Number</Label>
                                     <Input
                                         placeholder="Mobile number"
-                                        className="rounded-2xl border-pink-100 focus:ring-pink-200 py-7 px-5 font-bold text-flora-dark"
+                                        className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-flora-dark"
                                         value={addressForm.phoneNumber}
                                         onChange={(e) => setAddressForm({ ...addressForm, phoneNumber: e.target.value })}
                                     />
@@ -939,7 +940,7 @@ function ProfileContent() {
                                         value={addressForm.governorate}
                                         onValueChange={(v) => setAddressForm({ ...addressForm, governorate: v, city: "" })}
                                     >
-                                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-200 h-14 font-bold text-flora-dark bg-white">
+                                        <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 h-12 md:h-14 font-bold text-flora-dark bg-white">
                                             <SelectValue placeholder="Select" />
                                         </SelectTrigger>
                                         <SelectContent className="rounded-2xl border-pink-100 shadow-xl max-h-60">
@@ -956,7 +957,7 @@ function ProfileContent() {
                                         value={addressForm.city}
                                         onValueChange={(v) => setAddressForm({ ...addressForm, city: v })}
                                     >
-                                        <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-200 h-14 font-bold text-flora-dark bg-white">
+                                        <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 h-12 md:h-14 font-bold text-flora-dark bg-white">
                                             <SelectValue placeholder="Select" />
                                         </SelectTrigger>
                                         <SelectContent className="rounded-2xl border-pink-100 shadow-xl max-h-60">
@@ -972,7 +973,7 @@ function ProfileContent() {
                                 <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Detailed Address</Label>
                                 <Input
                                     placeholder="Street name, building, apartment..."
-                                    className="rounded-2xl border-pink-100 focus:ring-pink-200 py-7 px-5 font-bold text-flora-dark"
+                                    className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-flora-dark"
                                     value={addressForm.detailedAddress}
                                     onChange={(e) => setAddressForm({ ...addressForm, detailedAddress: e.target.value })}
                                 />
@@ -983,7 +984,7 @@ function ProfileContent() {
                             <Button
                                 onClick={handleSaveAddress}
                                 disabled={isSavingAddress}
-                                className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-8 font-black text-xl shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                                className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-4 md:py-8 font-black text-lg md:text-xl shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center"
                             >
                                 {isSavingAddress ? (
                                     <Loader2 className="w-7 h-7 animate-spin" />
@@ -998,12 +999,12 @@ function ProfileContent() {
 
             {/* Profile Update Modal */}
             <Dialog open={isProfileModalOpen} onOpenChange={setIsProfileModalOpen}>
-                <DialogContent className="rounded-[40px] border-none shadow-2xl p-0 overflow-hidden max-w-md">
-                    <div className="p-6 lg:p-8 space-y-6">
+                <DialogContent className="rounded-3xl md:rounded-[40px] border-none shadow-2xl p-0 overflow-hidden max-w-md">
+                    <div className="p-5 md:p-6 lg:p-8 space-y-6">
                         <DialogHeader>
-                            <DialogTitle className="text-3xl font-black text-flora-dark text-center flex items-center justify-center gap-2">
+                            <DialogTitle className="text-2xl md:text-3xl font-black text-flora-dark text-center flex items-center justify-center gap-2">
                                 Edit Profile
-                                <User className="w-8 h-8 text-primary" />
+                                <User className="w-6 h-6 md:w-8 md:h-8 text-primary" />
                             </DialogTitle>
                             <DialogDescription className="text-center font-bold text-gray-400">
                                 Update your personal information.
@@ -1020,6 +1021,7 @@ function ProfileContent() {
                                                 src={profileImage}
                                                 alt="Profile"
                                                 fill
+                                                sizes="128px"
                                                 className="object-cover"
                                             />
                                         ) : (
@@ -1062,7 +1064,7 @@ function ProfileContent() {
                                 <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Full Name</Label>
                                 <Input
                                     placeholder="Your full name"
-                                    className="rounded-2xl border-pink-100 focus:ring-pink-200 py-7 px-5 font-bold text-lg text-flora-dark"
+                                    className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-base md:text-lg text-flora-dark"
                                     value={profileName}
                                     onChange={(e) => setProfileName(e.target.value)}
                                 />
@@ -1071,7 +1073,7 @@ function ProfileContent() {
                             <Button
                                 onClick={handleUpdateProfile}
                                 disabled={isUpdatingProfile || isUploadingImage}
-                                className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-8 font-black text-xl shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-4 md:py-8 font-black text-lg md:text-xl shadow-xl shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isUpdatingProfile ? (
                                     <div className="flex items-center gap-2">
@@ -1094,12 +1096,12 @@ function ProfileContent() {
 
             {/* Change Password Modal */}
             <Dialog open={isChangePasswordModalOpen} onOpenChange={setIsChangePasswordModalOpen}>
-                <DialogContent className="rounded-[40px] border-none shadow-2xl p-0 overflow-hidden max-w-md">
-                    <div className="p-6 lg:p-8 space-y-6">
+                <DialogContent className="rounded-3xl md:rounded-[40px] border-none shadow-2xl p-0 overflow-hidden max-w-md">
+                    <div className="p-5 md:p-6 lg:p-8 space-y-6">
                         <DialogHeader>
-                            <DialogTitle className="text-3xl font-black text-flora-dark text-center flex items-center justify-center gap-2">
+                            <DialogTitle className="text-2xl md:text-3xl font-black text-flora-dark text-center flex items-center justify-center gap-2">
                                 {hasPassword ? "Change Password" : "Set Password"}
-                                <Shield className="w-8 h-8 text-purple-500" />
+                                <Shield className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
                             </DialogTitle>
                             <DialogDescription className="text-center font-bold text-gray-400">
                                 {hasPassword ? "Secure your account with a new password." : "Set a password to login with email."}
@@ -1113,7 +1115,7 @@ function ProfileContent() {
                                     <Input
                                         type="password"
                                         placeholder="Enter your current password"
-                                        className="rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-7 px-5 font-bold text-lg text-flora-dark placeholder:text-purple-200"
+                                        className="rounded-xl md:rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-4 md:py-7 px-5 font-bold text-base md:text-lg text-flora-dark placeholder:text-purple-200"
                                         value={passwordForm.currentPassword}
                                         onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
                                     />
@@ -1145,7 +1147,7 @@ function ProfileContent() {
                             <Button
                                 onClick={handlePasswordChange}
                                 disabled={isChangingPassword}
-                                className="w-full bg-purple-500 hover:bg-purple-600 text-white rounded-full py-8 font-black text-xl shadow-xl shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                                className="w-full bg-purple-500 hover:bg-purple-600 text-white rounded-full py-4 md:py-8 font-black text-lg md:text-xl shadow-xl shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                             >
                                 {isChangingPassword ? (
                                     <div className="flex items-center gap-2">

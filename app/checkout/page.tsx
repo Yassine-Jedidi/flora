@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { OrderSchema, type OrderFormValues } from "@/lib/validations/order";
+import { CheckoutFormSchema, type CheckoutFormValues } from "@/lib/validations/order";
 import { createOrder } from "@/app/actions/order";
 import { getAddresses } from "@/app/actions/address";
 import { useSession } from "@/lib/auth-client";
@@ -55,7 +55,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-
 export default function CheckoutPage() {
   const { cart, totalPrice, clearCart, updateQuantity, removeItem } = useCart();
   const { data: session } = useSession();
@@ -68,8 +67,8 @@ export default function CheckoutPage() {
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
 
-  const form = useForm<OrderFormValues>({
-    resolver: zodResolver(OrderSchema),
+  const form = useForm<CheckoutFormValues>({
+    resolver: zodResolver(CheckoutFormSchema),
     defaultValues: {
       fullName: "",
       phoneNumber: "",
@@ -140,8 +139,11 @@ export default function CheckoutPage() {
     ? TUNISIA_LOCATIONS[selectedGov] || []
     : [];
 
-  const onSubmit = async (values: OrderFormValues) => {
-    if (cart.length === 0) return;
+  const onSubmit = async (values: CheckoutFormValues) => {
+    if (cart.length === 0) {
+      toast.error("Your cart is empty!");
+      return;
+    }
 
     setIsPending(true);
     try {
@@ -177,20 +179,20 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         <Navbar />
-        <main className="flex-1 flex items-center justify-center p-4 pt-32">
-          <div className="max-w-md w-full bg-pink-50/50 rounded-[40px] p-12 text-center border-2 border-dashed border-pink-100 animate-in zoom-in-95 duration-500">
-            <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-pink-200">
-              <CheckCircle2 className="w-10 h-10 text-white" />
+        <main className="flex-1 flex items-center justify-center p-6 pt-28 md:pt-32">
+          <div className="max-w-md w-full bg-pink-50/50 rounded-3xl md:rounded-[40px] p-8 md:p-12 text-center border-2 border-dashed border-pink-100 animate-in zoom-in-95 duration-500">
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-pink-200">
+              <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-black text-flora-dark mb-4">
+            <h1 className="text-2xl md:text-3xl font-black text-flora-dark mb-4">
               Order Completed!
             </h1>
-            <p className="text-gray-500 font-bold mb-8">
+            <p className="text-sm md:text-base text-gray-500 font-bold mb-8">
               Your order has been placed successfully. We&apos;ll contact you soon
               for confirmation.
             </p>
             <Link href="/">
-              <Button className="bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-full px-10 py-6 font-black text-lg transition-all shadow-lg shadow-purple-100">
+              <Button className="bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-full px-8 py-4 md:px-10 md:py-6 font-black text-base md:text-lg transition-all shadow-lg shadow-purple-100">
                 Back to Shop
               </Button>
             </Link>
@@ -205,44 +207,38 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-white flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 pt-32 pb-20">
+      <main className="flex-1 pt-28 md:pt-32 pb-12 md:pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumbs / Back */}
           <Link
             href="/"
-            className="inline-flex items-center text-gray-400 hover:text-primary font-bold mb-8 transition-colors group"
+            className="inline-flex items-center text-gray-400 hover:text-primary font-bold mb-6 md:mb-8 transition-colors group text-sm md:text-base"
           >
             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
             Back to accessories
           </Link>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-            {/* Left Side: Form */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
             <div className="lg:col-span-7 order-2 lg:order-1">
-              <div className="mb-10">
-                <h1 className="text-4xl font-black text-flora-dark tracking-tight mb-2">
+              <div className="mb-8 md:mb-10 px-1">
+                <h1 className="text-2xl md:text-4xl font-black text-flora-dark tracking-tight mb-2">
                   Checkout
                 </h1>
-                <p className="text-gray-400 font-bold">
+                <p className="text-sm md:text-base text-gray-400 font-bold">
                   Complete your purchase by providing your shipping details.
                 </p>
               </div>
 
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                <div className="p-8 rounded-4xl bg-white border border-pink-50 shadow-sm space-y-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div className="p-6 md:p-8 rounded-[2rem] md:rounded-4xl bg-white border border-pink-50 shadow-sm space-y-6">
+                  <div className="flex items-center gap-2 mb-2 md:mb-4">
+                    <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center shrink-0">
                       <ShoppingBag className="w-4 h-4 text-primary" />
                     </div>
-                    <h2 className="text-xl font-black text-flora-dark">
+                    <h2 className="text-lg md:text-xl font-black text-flora-dark">
                       Shipping Information
                     </h2>
                   </div>
 
-                  {/* Saved Addresses Selection */}
                   {session && savedAddresses.length > 0 && !isAddingNewAddress && (
                     <div className="space-y-4 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
                       <p className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
@@ -264,24 +260,24 @@ export default function CheckoutPage() {
                                 saveAddress: false,
                               });
                             }}
-                            className={`p-6 rounded-3xl border-2 text-left transition-all duration-300 relative group overflow-hidden ${selectedAddressId === addr.id
+                            className={`p-5 md:p-6 rounded-[1.5rem] md:rounded-3xl border-2 text-left transition-all duration-300 relative group overflow-hidden ${selectedAddressId === addr.id
                               ? "border-primary bg-pink-50/30 shadow-md shadow-pink-100/50"
                               : "border-gray-100 hover:border-pink-100 bg-white"
                               }`}
                           >
                             {selectedAddressId === addr.id && (
                               <div className="absolute top-0 right-0 p-2">
-                                <CheckCircle2 className="w-5 h-5 text-primary animate-in zoom-in-50 duration-300" />
+                                <CheckCircle2 className="w-4 h-4 md:w-5 md:h-5 text-primary animate-in zoom-in-50 duration-300" />
                               </div>
                             )}
                             <div className="flex flex-col gap-1">
-                              <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 flex items-center gap-1">
+                              <span className="text-[9px] md:text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1 flex items-center gap-1">
                                 <MapPin className="w-3 h-3" />
                                 {addr.name}
                               </span>
-                              <p className="font-black text-flora-dark">{addr.fullName}</p>
-                              <p className="text-sm text-gray-400 font-bold">{addr.phoneNumber}</p>
-                              <p className="text-sm text-gray-400 font-bold mt-2">
+                              <p className="text-sm md:text-base font-black text-flora-dark">{addr.fullName}</p>
+                              <p className="text-xs md:text-sm text-gray-400 font-bold">{addr.phoneNumber}</p>
+                              <p className="text-xs md:text-sm text-gray-400 font-bold mt-1 md:mt-2">
                                 {addr.detailedAddress}, {addr.city}, {addr.governorate}
                               </p>
                             </div>
@@ -304,14 +300,13 @@ export default function CheckoutPage() {
                             saveAddress: true,
                           });
                         }}
-                        className="w-full rounded-2xl border-2 border-dashed border-pink-100 text-primary hover:bg-pink-50/50 font-bold py-8 transition-all"
+                        className="w-full rounded-2xl border-2 border-dashed border-pink-100 text-primary hover:bg-pink-50/50 font-bold py-6 md:py-8 transition-all text-xs md:text-sm"
                       >
                         + Ship to a new address
                       </Button>
                     </div>
                   )}
 
-                  {/* Address Form Fields */}
                   {(isAddingNewAddress || !session || savedAddresses.length === 0) && (
                     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
                       {session && savedAddresses.length > 0 && (
@@ -343,126 +338,87 @@ export default function CheckoutPage() {
 
                       <div className={`grid grid-cols-1 ${!session ? "md:grid-cols-2" : ""} gap-6`}>
                         {!session && (
-                          <div className="space-y-2 animate-in fade-in duration-300">
-                            <Label
-                              htmlFor="fullName"
-                              className="text-flora-dark font-bold ml-1"
-                            >
-                              Full Name
-                            </Label>
+                          <div className="space-y-2">
+                            <Label htmlFor="fullName" className="text-flora-dark font-bold ml-1">Full Name</Label>
                             <Input
                               id="fullName"
                               {...form.register("fullName")}
                               placeholder="Enter your full name"
-                              className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
+                              className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 py-5 md:py-6 text-flora-dark font-medium text-sm md:text-base"
                             />
                             {form.formState.errors.fullName && (
-                              <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                                {form.formState.errors.fullName.message}
-                              </p>
+                              <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form.formState.errors.fullName.message}</p>
                             )}
                           </div>
                         )}
 
                         <div className="space-y-2">
-                          <Label
-                            htmlFor="phoneNumber"
-                            className="text-flora-dark font-bold ml-1"
-                          >
-                            Phone Number (8 digits)
-                          </Label>
+                          <Label htmlFor="phoneNumber" className="text-flora-dark font-bold ml-1">Phone Number (8 digits)</Label>
                           <Input
                             id="phoneNumber"
                             {...form.register("phoneNumber")}
                             placeholder="Example: 20123456"
-                            className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
+                            className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 py-5 md:py-6 text-flora-dark font-medium text-sm md:text-base"
                           />
                           {form.formState.errors.phoneNumber && (
-                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                              {form.formState.errors.phoneNumber.message}
-                            </p>
+                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form.formState.errors.phoneNumber.message}</p>
                           )}
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <Label className="text-flora-dark font-bold ml-1">
-                            Governorate
-                          </Label>
+                          <Label className="text-flora-dark font-bold ml-1">Governorate</Label>
                           <Select
                             value={form.watch("governorate")}
-                            onValueChange={(v) =>
-                              form.setValue("governorate", v, {
-                                shouldValidate: true,
-                              })
-                            }
+                            onValueChange={(v) => form.setValue("governorate", v, { shouldValidate: true })}
                           >
-                            <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-flora-dark font-medium">
+                            <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 h-11 md:h-13 text-flora-dark font-medium text-sm md:text-base">
                               <SelectValue placeholder="Select governorate" />
                             </SelectTrigger>
-                            <SelectContent className="rounded-2xl border-pink-100">
+                            <SelectContent className="rounded-xl md:rounded-2xl border-pink-100">
                               {TUNISIA_GOVERNORATES.map((gov) => (
-                                <SelectItem key={gov} value={gov}>
-                                  {gov}
-                                </SelectItem>
+                                <SelectItem key={gov} value={gov}>{gov}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
                           {form.formState.errors.governorate && (
-                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                              {form.formState.errors.governorate.message}
-                            </p>
+                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form.formState.errors.governorate.message}</p>
                           )}
                         </div>
 
                         <div className="space-y-2">
-                          <Label className="text-flora-dark font-bold ml-1">
-                            City / Delegation
-                          </Label>
+                          <Label className="text-flora-dark font-bold ml-1">City / Delegation</Label>
                           <Select
                             disabled={!selectedGov}
                             value={form.watch("city")}
-                            onValueChange={(v) =>
-                              form.setValue("city", v, { shouldValidate: true })
-                            }
+                            onValueChange={(v) => form.setValue("city", v, { shouldValidate: true })}
                           >
-                            <SelectTrigger className="w-full rounded-2xl border-pink-100 focus:ring-pink-300 h-13 text-flora-dark font-medium">
+                            <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 h-11 md:h-13 text-flora-dark font-medium text-sm md:text-base">
                               <SelectValue placeholder="Select city" />
                             </SelectTrigger>
-                            <SelectContent className="rounded-2xl border-pink-100">
+                            <SelectContent className="rounded-xl md:rounded-2xl border-pink-100">
                               {availableCities.map((city) => (
-                                <SelectItem key={city} value={city}>
-                                  {city}
-                                </SelectItem>
+                                <SelectItem key={city} value={city}>{city}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
                           {form.formState.errors.city && (
-                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                              {form.formState.errors.city.message}
-                            </p>
+                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form.formState.errors.city.message}</p>
                           )}
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <Label
-                          htmlFor="detailedAddress"
-                          className="text-flora-dark font-bold ml-1"
-                        >
-                          Detailed Address
-                        </Label>
+                        <Label htmlFor="detailedAddress" className="text-flora-dark font-bold ml-1">Detailed Address</Label>
                         <Input
                           id="detailedAddress"
                           {...form.register("detailedAddress")}
                           placeholder="Street, Building, Apartment..."
-                          className="rounded-2xl border-pink-100 focus:ring-pink-300 py-6 text-flora-dark font-medium"
+                          className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 py-5 md:py-6 text-flora-dark font-medium text-sm md:text-base"
                         />
                         {form.formState.errors.detailedAddress && (
-                          <p className="text-red-500 text-xs font-bold mt-1 ml-1">
-                            {form.formState.errors.detailedAddress.message}
-                          </p>
+                          <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form.formState.errors.detailedAddress.message}</p>
                         )}
                       </div>
 
@@ -471,16 +427,11 @@ export default function CheckoutPage() {
                           <Checkbox
                             id="saveAddress"
                             checked={form.watch("saveAddress")}
-                            onCheckedChange={(checked) => {
-                              form.setValue("saveAddress", checked === true);
-                            }}
+                            onCheckedChange={(checked) => form.setValue("saveAddress", checked === true)}
                             className="w-5 h-5 border-pink-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary text-white rounded-lg transition-all duration-300"
                           />
-                          <Label
-                            htmlFor="saveAddress"
-                            className="text-sm font-bold text-gray-500 cursor-pointer select-none flex items-center gap-1.5"
-                          >
-                            Save this address for a 1-click checkout next time
+                          <Label htmlFor="saveAddress" className="text-sm font-bold text-gray-500 cursor-pointer select-none flex items-center gap-1.5">
+                            Save this address for 1-click checkout
                             <Bow className="w-4 h-4 text-primary" />
                           </Label>
                         </div>
@@ -490,95 +441,64 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-4 p-4 rounded-4xl bg-purple-50/50 border border-purple-100">
-                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-purple-500 shadow-sm">
+                  <div className="flex items-center gap-4 p-4 rounded-[2rem] bg-purple-50/50 border border-purple-100">
+                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-purple-500 shadow-sm shrink-0">
                       <CreditCard className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-black text-flora-dark">
-                        Cash on Delivery
-                      </h4>
-                      <p className="text-xs text-purple-400 font-bold uppercase tracking-wider">
-                        Pay when you receive your treasure
-                      </p>
+                      <h4 className="text-sm font-black text-flora-dark">Cash on Delivery</h4>
+                      <p className="text-[10px] md:text-xs text-purple-400 font-bold uppercase tracking-wider">Pay when you receive your treasure</p>
                     </div>
                   </div>
 
                   <Button
                     type="submit"
                     disabled={isPending || cart.length === 0}
-                    className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-8 font-black text-xl shadow-xl shadow-pink-200 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                    className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-6 md:py-8 font-black text-lg md:text-xl shadow-xl shadow-pink-200 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                   >
-                    {isPending ? (
-                      <Loader2 className="w-6 h-6 animate-spin" />
-                    ) : (
-                      "Complete Purchase"
-                    )}
+                    {isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : "Complete Purchase"}
                   </Button>
                 </div>
               </form>
             </div>
 
-            {/* Right Side: Order Summary */}
             <div className="lg:col-span-5 order-1 lg:order-2">
-              <div className="lg:sticky lg:top-40 space-y-6">
-                <div className="bg-flora-purple rounded-[40px] p-8 text-white shadow-2xl shadow-purple-200/50 overflow-hidden relative">
+              <div className="lg:sticky lg:top-40 space-y-4 md:space-y-6">
+                <div className="bg-flora-purple rounded-3xl md:rounded-[40px] p-6 md:p-8 text-white shadow-2xl shadow-purple-200/50 overflow-hidden relative">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
 
-                  <h3 className="flex items-center gap-3 text-2xl font-black mb-8">
-                    <ShoppingCart className="w-6 h-6 text-white/80" />
+                  <h3 className="flex items-center gap-3 text-xl md:text-2xl font-black mb-6 md:mb-8">
+                    <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-white/80" />
                     Order Summary
                   </h3>
 
-                  <div className="max-h-75 overflow-y-auto pr-2 custom-scrollbar mb-8 space-y-4">
+                  <div className="max-h-75 overflow-y-auto pr-2 custom-scrollbar mb-6 md:mb-8 space-y-4">
                     {cart.map((item) => (
-                      <div key={item.id} className="flex gap-4">
-                        <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white/10 shrink-0 border border-white/5">
-                          {item.image && (
-                            <Image
-                              src={item.image}
-                              alt={item.name}
-                              fill
-                              className="object-cover"
-                            />
-                          )}
+                      <div key={item.id} className="flex gap-3 md:gap-4">
+                        <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-lg md:rounded-xl overflow-hidden bg-white/10 shrink-0 border border-white/5">
+                          {item.image && <Image src={item.image} alt={item.name} fill className="object-cover" />}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start gap-2">
-                            <p className="text-sm font-black text-white truncate">
-                              {item.name}
-                            </p>
-                            <button
-                              onClick={() => handleRemove(item.id, item.name)}
-                              className="text-white/40 hover:text-white transition-colors"
-                            >
-                              <Trash2 className="w-4 h-4" />
+                            <p className="text-xs md:text-sm font-black text-white truncate">{item.name}</p>
+                            <button onClick={() => handleRemove(item.id, item.name)} className="text-white/40 hover:text-white transition-colors shrink-0">
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
 
-                          <div className="flex items-center gap-3 mt-2">
-                            <div className="flex items-center gap-2 bg-white/10 rounded-full p-1 border border-white/10">
+                          <div className="flex items-center gap-2 md:gap-3 mt-1.5 md:mt-2">
+                            <div className="flex items-center gap-1.5 md:gap-2 bg-white/10 rounded-full p-0.5 md:p-1 border border-white/10">
                               <button
                                 type="button"
-                                onClick={() => {
-                                  if (item.quantity === 1) {
-                                    handleRemove(item.id, item.name);
-                                  } else {
-                                    updateQuantity(item.id, item.quantity - 1);
-                                  }
-                                }}
+                                onClick={() => item.quantity === 1 ? handleRemove(item.id, item.name) : updateQuantity(item.id, item.quantity - 1)}
                                 className="w-5 h-5 rounded-full hover:bg-white/20 flex items-center justify-center text-white transition-all"
                               >
                                 <Minus className="w-3 h-3" />
                               </button>
-                              <span className="text-xs font-black text-white w-4 text-center">
-                                {item.quantity}
-                              </span>
+                              <span className="text-[10px] md:text-xs font-black text-white w-3 md:w-4 text-center">{item.quantity}</span>
                               <button
                                 type="button"
-                                onClick={() =>
-                                  updateQuantity(item.id, item.quantity + 1)
-                                }
+                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                 disabled={item.quantity >= item.stock}
                                 className="w-5 h-5 rounded-full hover:bg-white/20 flex items-center justify-center text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                               >
@@ -589,9 +509,9 @@ export default function CheckoutPage() {
                               <Price
                                 price={item.price * item.quantity}
                                 originalPrice={item.originalPrice ? item.originalPrice * item.quantity : undefined}
-                                size="sm"
+                                size="xs"
                                 color="text-white"
-                                className="justify-end"
+                                className="justify-end scale-90 md:scale-100 origin-right"
                               />
                             </div>
                           </div>
@@ -600,40 +520,33 @@ export default function CheckoutPage() {
                     ))}
                   </div>
 
-                  <div className="space-y-4 pt-6 border-t border-white/20">
-                    <div className="flex justify-between items-center text-purple-50 font-bold">
+                  <div className="space-y-3 md:space-y-4 pt-5 md:pt-6 border-t border-white/20">
+                    <div className="flex justify-between items-center text-purple-50 font-bold text-xs md:text-sm">
                       <span>Subtotal</span>
-                      <Price price={totalPrice} size="sm" color="text-white" />
+                      <Price price={totalPrice} size="xs" color="text-white" />
                     </div>
-                    <div className="flex justify-between items-center text-purple-50 font-bold">
+                    <div className="flex justify-between items-center text-purple-50 font-bold text-xs md:text-sm">
                       <span>Shipping</span>
-                      <Price price={7.00} size="sm" color="text-white" />
+                      <Price price={7.00} size="xs" color="text-white" />
                     </div>
-                    <div className="h-px bg-white/20 my-4" />
+                    <div className="h-px bg-white/20 my-3 md:my-4" />
                     <div className="flex justify-between items-end">
                       <div>
-                        <p className="text-purple-50 text-[10px] font-black uppercase tracking-widest">
-                          Total to pay
-                        </p>
-                        <Price price={finalTotal} size="xl" color="text-white" />
+                        <p className="text-purple-50 text-[9px] md:text-[10px] font-black uppercase tracking-widest">Total to pay</p>
+                        <Price price={finalTotal} size="lg" color="text-white" />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Trust Badges */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-3xl bg-gray-50 flex flex-col items-center text-center gap-2 border border-gray-100">
                     <ShieldCheck className="w-5 h-5 text-primary" />
-                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider text-center">
-                      Quality Guaranteed
-                    </p>
+                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider">Quality Guaranteed</p>
                   </div>
                   <div className="p-4 rounded-3xl bg-gray-50 flex flex-col items-center text-center gap-2 border border-gray-100">
                     <Truck className="w-5 h-5 text-flora-purple" />
-                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider text-center" >
-                      Fast Delivery
-                    </p>
+                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider">Fast Delivery</p>
                   </div>
                 </div>
               </div>
@@ -643,26 +556,18 @@ export default function CheckoutPage() {
       </main>
 
       <Footer />
+
       <AlertDialog open={!!itemToRemove} onOpenChange={(open) => !open && setItemToRemove(null)}>
         <AlertDialogContent className="rounded-3xl border-pink-100">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-flora-dark font-black text-xl">
-              Remove this treasure? ✨
-            </AlertDialogTitle>
+            <AlertDialogTitle className="text-flora-dark font-black text-xl">Remove this treasure? ✨</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-500 font-medium">
               Are you sure you want to remove <span className="text-primary font-bold">{itemToRemove?.name}</span> from your order?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-3">
-            <AlertDialogCancel className="rounded-full border-pink-100 text-gray-400 hover:bg-pink-50 hover:text-flora-dark font-bold px-6">
-              Keep it
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmRemove}
-              className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold px-6"
-            >
-              Yes, remove
-            </AlertDialogAction>
+            <AlertDialogCancel className="rounded-full border-pink-100 text-gray-400 hover:bg-pink-50 font-bold px-6">Keep it</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRemove} className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold px-6">Yes, remove</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

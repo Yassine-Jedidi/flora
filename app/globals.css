@@ -36,6 +36,8 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-flora-dark: var(--flora-dark);
   --color-flora-purple: var(--flora-purple);
+
+  --breakpoint-xs: 480px;
 }
 
 :root {
