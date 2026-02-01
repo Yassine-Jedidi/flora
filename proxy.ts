@@ -1,44 +1,79 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function proxy(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl;
+export default function middleware(request: NextRequest) {
+  return proxy(request);
+}
 
-  // Protect all routes starting with /admin
-  if (pathname.startsWith("/admin")) {
+export function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Normalize pathname to remove trailing slashes for consistent matching
+  const path =
+    pathname.endsWith("/") && pathname.length > 1
+      ? pathname.slice(0, -1)
+      : pathname;
+
+  // 1. Session Detection
+  const allCookies = request.cookies.getAll();
+
+  // Broad session detection: any cookie that looks like a better-auth session
+  const hasSessionToken = allCookies.some(
+    (c) => c.name.includes("session-token") || c.name.includes("better-auth"),
+  );
+
+  const authRoutes = [
+    "/signin",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+  ];
+
+  // Check if current path is an auth route
+  const isAuthRoute = authRoutes.includes(path);
+
+  // DEBUG: Useful for the user to see in their terminal logs
+  // console.log(`[Proxy] ${path} | Session: ${hasSessionToken} | Cookies: ${allCookies.length}`);
+
+  if (hasSessionToken && isAuthRoute) {
+    // console.log(`[Proxy] Redirecting authenticated user from ${path} to /`);
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // 2. Admin Route Protection
+  if (path.startsWith("/admin")) {
     const adminKey = process.env.ADMIN_KEY;
     const authCookie = request.cookies.get("flora_admin_auth")?.value;
-    const queryKey = searchParams.get("key");
+    const queryKey = request.nextUrl.searchParams.get("key");
 
-    // 1. Check if the user is already authenticated via cookie
     if (authCookie === adminKey && adminKey !== undefined) {
       return NextResponse.next();
     }
 
-    // 2. Check if the user is providing the key via URL
     if (queryKey === adminKey && adminKey !== undefined) {
-      // Create a response that redirects to /admin to clean the URL
       const response = NextResponse.redirect(new URL("/admin", request.url));
-
-      // Set a secure, long-lived cookie
       response.cookies.set("flora_admin_auth", adminKey, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 30, // 30 days
+        maxAge: 60 * 60 * 24 * 30,
       });
-
       return response;
     }
 
-    // 3. If no valid auth is found, redirect to home page
     return NextResponse.redirect(new URL("/", request.url));
   }
 
   return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/admin", "/admin/:path*"],
+  matcher: [
+    "/signin",
+    "/signup",
+    "/forgot-password",
+    "/reset-password",
+    "/admin",
+    "/admin/:path*",
+  ],
 };
