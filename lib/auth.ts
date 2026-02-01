@@ -60,6 +60,28 @@ export const auth = betterAuth({
       }
     },
   },
+  rateLimit: {
+    enabled: true,
+    storage: "database",
+    customRules: {
+      "/request-password-reset": {
+        window: 60 * 60, // 1 hour
+        max: 3, // 3 attempts per hour
+      },
+      "/sign-up/email": {
+        window: 60 * 60, // 1 hour
+        max: 3, // 3 attempts per hour
+      },
+      "/sign-in/email": {
+        window: 60 * 5, // 5 minutes
+        max: 5, // 5 attempts
+      },
+      "/change-password": {
+        window: 60 * 60, // 1 hour
+        max: 5, // 5 attempts per hour
+      },
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
