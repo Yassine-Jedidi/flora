@@ -86,7 +86,7 @@ model Order {
   
   // Relation to User (optional for guest checkout)
   userId          String?
-  user            User?       @relation(fields: [userId], references: [id])
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   
   // Snapshot of Shipping Information at time of order
   fullName        String

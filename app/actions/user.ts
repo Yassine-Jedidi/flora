@@ -274,3 +274,41 @@ export async function getUserAccounts() {
     return { success: false, error: "Failed to fetch accounts" };
   }
 }
+
+export async function deleteUserAccount() {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { success: false, error: "Not authenticated" };
+    }
+
+    const userId = session.user.id;
+
+    // 1. Delete image from UploadThing if it exists
+    if (session.user.image && session.user.image.includes("utfs.io")) {
+      try {
+        const fileKey = session.user.image.split("/f/")[1];
+        if (fileKey) {
+          await utapi.deleteFiles(fileKey);
+        }
+      } catch (error) {
+        console.warn("Could not delete profile image from UploadThing:", error);
+      }
+    }
+
+    // 2. Delete the user
+    // Cascading is handled by DB: Session, Account, Address, Wishlist
+    // Orders will be set to NULL due to onDelete: SetNull (schema update)
+    await db.user.delete({
+      where: { id: userId },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Delete account error:", error);
+    return { success: false, error: "Failed to delete account" };
+  }
+}

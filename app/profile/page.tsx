@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useSession, changePassword } from "@/lib/auth-client";
+import { useSession, changePassword, signOut } from "@/lib/auth-client";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import Link from "next/link";
@@ -39,7 +39,7 @@ import {
     updateAddress,
     deleteAddress
 } from "@/app/actions/address";
-import { updateProfile, getUserSessions, revokeSession, deleteUploadedFile, checkUserHasPassword, setUserPassword, getUserAccounts } from "@/app/actions/user";
+import { updateProfile, getUserSessions, revokeSession, deleteUploadedFile, checkUserHasPassword, setUserPassword, getUserAccounts, deleteUserAccount } from "@/app/actions/user";
 import { toast } from "sonner";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import {
@@ -50,6 +50,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogClose,
 } from "@/components/ui/dialog";
 import {
     Select,
@@ -85,6 +86,10 @@ export default function ProfilePage() {
     });
     const [isChangingPassword, setIsChangingPassword] = useState(false);
     const [hasPassword, setHasPassword] = useState<boolean>(true);
+
+    // Delete Account State
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -383,6 +388,29 @@ export default function ProfilePage() {
             toast.error("An error occurred.");
         } finally {
             setIsChangingPassword(false);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        setIsDeletingAccount(true);
+        try {
+            const result = await deleteUserAccount();
+            if (result.success) {
+                toast.success("Account deleted successfully. We're sorry to see you go. 🎀");
+                await signOut({
+                    fetchOptions: {
+                        onSuccess: () => {
+                            router.push("/");
+                        }
+                    }
+                });
+            } else {
+                toast.error(result.error || "Failed to delete account.");
+                setIsDeletingAccount(false);
+            }
+        } catch (error) {
+            toast.error("An error occurred during account deletion.");
+            setIsDeletingAccount(false);
         }
     };
 
@@ -793,9 +821,16 @@ export default function ProfilePage() {
                                         <ChevronRight className="w-5 h-5 opacity-30 group-hover:translate-x-1 transition-all" />
                                     </Button>
 
-                                    <Button variant="outline" className="w-full rounded-2xl py-8 border-red-50 text-red-500 font-bold hover:bg-red-50 hover:text-red-600 flex items-center justify-between px-8 group mt-4">
-                                        Delete Account
-                                        <LogOut className="w-5 h-5 opacity-30 group-hover:scale-110 transition-all" />
+                                    <Button
+                                        onClick={() => setIsDeleteModalOpen(true)}
+                                        variant="outline"
+                                        className="w-full rounded-2xl py-8 border-red-50 text-red-500 font-bold hover:bg-red-50 hover:text-red-600 flex items-center justify-between px-8 group mt-4 transition-all"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <Trash2 className="w-5 h-5 opacity-50 group-hover:text-red-500 transition-colors" />
+                                            Delete Account
+                                        </div>
+                                        <ChevronRight className="w-5 h-5 opacity-20 group-hover:translate-x-1 transition-all" />
                                     </Button>
                                 </div>
                             </div>
@@ -803,6 +838,53 @@ export default function ProfilePage() {
                     </Tabs>
                 </div>
             </main>
+
+            {/* Account Deletion Confirmation */}
+            <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+                <DialogContent className="rounded-[40px] border-none shadow-3xl p-0 overflow-hidden max-w-md bg-white">
+                    <div className="p-8 space-y-5">
+                        <DialogHeader className="space-y-2">
+                            <DialogTitle className="text-2xl font-black text-flora-dark text-center tracking-tight">
+                                Saying Goodbye?
+                            </DialogTitle>
+                            <DialogDescription className="text-gray-500 font-bold text-sm leading-relaxed text-center px-4">
+                                This action is permanent. All your treasures (addresses, wishlist, and profile) will be deleted forever.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="bg-red-50/50 border border-red-100/50 rounded-3xl p-5 flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center flex-shrink-0">
+                                <Shield className="w-5 h-5 text-red-400" />
+                            </div>
+                            <div>
+                                <p className="text-[9px] font-black text-red-500 uppercase tracking-widest mb-1">Privacy Notice</p>
+                                <p className="text-[11px] font-bold text-red-700/70 leading-relaxed">
+                                    We keep order records for business accounting, but they will be completely unlinked from your email.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-2 pt-1">
+                            <Button
+                                onClick={handleDeleteAccount}
+                                disabled={isDeletingAccount}
+                                className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full py-6 font-black text-base shadow-xl shadow-red-100 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                            >
+                                {isDeletingAccount ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    "Delete My Account"
+                                )}
+                            </Button>
+                            <DialogClose asChild>
+                                <Button variant="ghost" className="w-full rounded-full py-7 text-gray-400 font-black uppercase tracking-widest text-[10px] border border-gray-100 shadow-sm hover:bg-gray-50 hover:shadow-md transition-all active:scale-95">
+                                    Actually, I want to stay <Bow className="w-3.5 h-3.5 text-primary ml-1 inline-block" />
+                                </Button>
+                            </DialogClose>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
 
             <Footer />
 

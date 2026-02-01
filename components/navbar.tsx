@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, LogOut, ShoppingBasket, Heart } from "lucide-react";
+import { LogOut, ShoppingBasket, Heart } from "lucide-react";
 
 const FavoritesSheet = dynamic(
   () => import("@/components/favorites-sheet").then((m) => m.FavoritesSheet),
@@ -457,12 +457,6 @@ export function Navbar() {
                       <Link href="/favorites" className="flex items-center w-full">
                         <Heart className="mr-3 h-4 w-4 text-pink-300 group-hover:text-primary transition-colors" />
                         <span>Wishlist</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild className="rounded-xl px-3 py-2.5 text-xs font-bold text-flora-dark hover:bg-pink-50 transition-colors cursor-pointer group">
-                      <Link href="/settings" className="flex items-center w-full">
-                        <Settings className="mr-3 h-4 w-4 text-pink-300 group-hover:text-primary transition-colors" />
-                        <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
                   </div>
