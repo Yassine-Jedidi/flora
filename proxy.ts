@@ -19,8 +19,9 @@ export async function proxy(request: NextRequest) {
   const allCookies = request.cookies.getAll();
 
   // Broad session detection: any cookie that looks like a better-auth session
+  // FIXED: Be more specific to avoid matching CSRF/PKCE cookies (like better-auth.csrf_token) which persist after logout
   const hasSessionToken = allCookies.some(
-    (c) => c.name.includes("session-token") || c.name.includes("better-auth"),
+    (c) => c.name.includes("session_token") || c.name.includes("session-token"),
   );
 
   const authRoutes = [
