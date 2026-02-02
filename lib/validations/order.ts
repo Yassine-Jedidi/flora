@@ -1,6 +1,7 @@
 import * as z from "zod";
 
-export const OrderSchema = z.object({
+// Base address fields used in the form UI
+export const AddressSchema = z.object({
   fullName: z.string().min(3, {
     message: "Name must contain at least 3 characters.",
   }),
@@ -22,6 +23,10 @@ export const OrderSchema = z.object({
     message: "Address must be more detailed.",
   }),
   saveAddress: z.boolean().optional(),
+});
+
+// Full order schema including cart items and total (for the server action)
+export const OrderSchema = AddressSchema.extend({
   items: z
     .array(
       z.object({
@@ -37,4 +42,5 @@ export const OrderSchema = z.object({
   totalPrice: z.number().positive({ message: "Total price must be positive." }),
 });
 
-export type OrderFormValues = z.infer<typeof OrderSchema>;
+export type AddressValues = z.infer<typeof AddressSchema>;
+export type OrderValues = z.infer<typeof OrderSchema>;

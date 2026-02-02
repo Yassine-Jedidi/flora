@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/db";
-import { OrderSchema, type OrderFormValues } from "@/lib/validations/order";
+import { OrderSchema, type OrderValues } from "@/lib/validations/order";
 import { revalidatePath } from "next/cache";
 import { OrderStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
@@ -9,7 +9,7 @@ import { headers } from "next/headers";
 
 import { checkRateLimit } from "@/lib/rate-limit";
 
-export async function createOrder(values: OrderFormValues) {
+export async function createOrder(values: OrderValues) {
   try {
     // Check rate limit inside try block for unified error handling
     const rateLimit = await checkRateLimit({
@@ -60,10 +60,54 @@ export async function createOrder(values: OrderFormValues) {
       },
     });
 
+    // Send order confirmation email if user is logged in
+    if (session?.user?.email) {
+      try {
+        // Fetch product names for the email summary
+        const productIds = validatedData.items.map((item) => item.productId);
+        const products = await prisma.product.findMany({
+          where: { id: { in: productIds } },
+          select: { id: true, name: true },
+        });
+
+        // Map product names to order items
+        const emailItems = validatedData.items.map((item) => {
+          const product = products.find((p) => p.id === item.productId);
+          return {
+            name: product?.name || "Product Item",
+            quantity: item.quantity,
+            price: item.price,
+          };
+        });
+
+        const { sendOrderConfirmationEmail } = await import("@/lib/mail");
+
+        // We don't await this to avoid blocking the UI, but it will run in the background
+        sendOrderConfirmationEmail({
+          orderId: order.id,
+          userEmail: session.user.email,
+          userName: session.user.name,
+          totalPrice: validatedData.totalPrice,
+          items: emailItems,
+          shippingAddress: {
+            fullName: validatedData.fullName,
+            governorate: validatedData.governorate,
+            city: validatedData.city,
+            detailedAddress: validatedData.detailedAddress,
+          },
+        }).catch((err) => console.error("Email background error:", err));
+      } catch (emailError) {
+        console.error(
+          "Failed to initiate order confirmation email:",
+          emailError,
+        );
+        // We don't return an error here because the order was already successfully created
+      }
+    }
+
     // If user is logged in and wants to save the address
     if (session && validatedData.saveAddress) {
-      // Check if address already exists for this user to avoid duplicates if possible,
-      // but for simplicity we'll just create a new one with a default label
+      // ... existing address logic ...
       const addressCount = await prisma.address.count({
         where: { userId: session.user.id },
       });

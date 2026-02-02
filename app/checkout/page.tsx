@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { OrderSchema, type OrderFormValues } from "@/lib/validations/order";
+import { AddressSchema, type AddressValues } from "@/lib/validations/order";
 import { createOrder } from "@/app/actions/order";
 import { getAddresses } from "@/app/actions/address";
 import { useSession } from "@/lib/auth-client";
@@ -68,8 +68,8 @@ export default function CheckoutPage() {
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
 
-  const form = useForm<OrderFormValues>({
-    resolver: zodResolver(OrderSchema),
+  const form = useForm<AddressValues>({
+    resolver: zodResolver(AddressSchema),
     defaultValues: {
       fullName: "",
       phoneNumber: "",
@@ -140,7 +140,7 @@ export default function CheckoutPage() {
     ? TUNISIA_LOCATIONS[selectedGov] || []
     : [];
 
-  const onSubmit = async (values: OrderFormValues) => {
+  const onSubmit = async (values: AddressValues) => {
     if (cart.length === 0) return;
 
     setIsPending(true);
@@ -229,7 +229,16 @@ export default function CheckoutPage() {
               </div>
 
               <form
-                onSubmit={form.handleSubmit(onSubmit)}
+                onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                  console.error("Form Validation Errors:", errors);
+                  // Find the first error to show in toast
+                  const errorMessages = Object.values(errors);
+                  if (errorMessages.length > 0) {
+                    toast.error("Please check your shipping details", {
+                      description: (errorMessages[0]?.message as string) || "Some fields are invalid.",
+                    });
+                  }
+                })}
                 className="space-y-8"
               >
                 <div className="p-8 rounded-4xl bg-white border border-pink-50 shadow-sm space-y-6">

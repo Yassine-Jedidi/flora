@@ -135,7 +135,18 @@ export default function SignInPage() {
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                        <form
+                            onSubmit={handleSubmit(onSubmit, (errors) => {
+                                console.error("Sign In Validation Errors:", errors);
+                                const errorMessages = Object.values(errors);
+                                if (errorMessages.length > 0) {
+                                    toast.error("Sign in failed", {
+                                        description: (errorMessages[0]?.message as string) || "Please check your email and password.",
+                                    });
+                                }
+                            })}
+                            className="space-y-5"
+                        >
                             {/* Email Field */}
                             <div className="space-y-1.5">
                                 <Label htmlFor="email" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">
