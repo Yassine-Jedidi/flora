@@ -33,7 +33,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
   const mailOptions = {
     from: `"Flora Access" <${process.env.SMTP_USER}>`,
     to: data.userEmail,
-    subject: `Order Confirmed! #${data.orderId.slice(-6).toUpperCase()}`,
+    subject: `Order Received! #${data.orderId.slice(-6).toUpperCase()}`,
     html: `
       <div style="background-color: #fafafa; padding: 40px 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a;">
         <div style="max-width: 520px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #f0f0f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
@@ -42,8 +42,8 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
             <div style="margin-bottom: 24px;">
               <span style="font-size: 40px;">🌸</span>
             </div>
-            <h1 style="font-size: 26px; font-weight: 800; margin: 0 0 8px; color: #000;">Thank you for your order!</h1>
-            <p style="font-size: 16px; color: #666; margin: 0;">We've received your order and we're getting it ready.</p>
+            <h1 style="font-size: 26px; font-weight: 800; margin: 0 0 8px; color: #000;">Order Received!</h1>
+            <p style="font-size: 16px; color: #666; margin: 0;">We&apos;ve received your order and we&apos;re getting it ready.</p>
             <p style="font-size: 14px; color: #FF5A96; font-weight: 700; margin-top: 12px; font-style: italic;">
               ✨ We will call you soon for confirmation! ✨ 
             </p>
@@ -58,8 +58,8 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
                   <p style="font-size: 16px; font-weight: 700; margin: 0;">#${data.orderId.slice(-6).toUpperCase()}</p>
                 </td>
                 <td align="right">
-                  <p style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 4px;">Total Amount</p>
-                  <p style="font-size: 16px; font-weight: 700; color: #FF5A96; margin: 0;">${data.totalPrice.toFixed(3)} TND</p>
+                    <p style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 4px;">Date</p>
+                    <p style="font-size: 16px; font-weight: 700; color: #333; margin: 0;">${new Date().toLocaleDateString("en-GB")}</p>
                 </td>
               </tr>
             </table>
@@ -126,8 +126,8 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
 
           <!-- Footer Action -->
           <div style="padding: 0 40px 40px; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/orders" style="display: inline-block; background-color: #FF5A96; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(255, 90, 150, 0.2);">
-              View Order Status
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/orders/${data.orderId}" style="display: inline-block; background-color: #FF5A96; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(255, 90, 150, 0.2);">
+              View Order Details
             </a>
           </div>
 
@@ -180,8 +180,8 @@ export async function sendOrderDeliveredEmail(data: {
               Thank you for choosing Flora Access.
             </p>
             
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/orders" style="display: inline-block; background-color: #FF5A96; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(255, 90, 150, 0.2);">
-              View My Order
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/orders/${data.orderId}" style="display: inline-block; background-color: #FF5A96; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(255, 90, 150, 0.2);">
+              View Order Details
             </a>
           </div>
 

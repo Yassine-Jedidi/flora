@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/pagination-control";
+import { motion } from "motion/react";
 
 const statusConfig = {
     PENDING: {
@@ -193,7 +194,9 @@ function OrdersContent() {
                                             <div className="flex items-center gap-4">
                                                 <div className="flex flex-col">
                                                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Order ID</span>
-                                                    <span className="font-black text-flora-dark">#{order.id.slice(-8).toUpperCase()}</span>
+                                                    <Link href={`/orders/${order.id}`} className="font-black text-flora-dark hover:text-primary transition-colors hover:underline decoration-wavy underline-offset-4">
+                                                        #{order.id.slice(-8).toUpperCase()}
+                                                    </Link>
                                                 </div>
                                                 <div className="w-px h-8 bg-pink-100 mx-2" />
                                                 <div className="flex flex-col">
@@ -270,6 +273,34 @@ function OrdersContent() {
                                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total amount</p>
                                                     <Price price={order.totalPrice} size="xl" color="text-flora-purple font-black" />
                                                 </div>
+                                            </div>
+
+                                            <div className="mt-4 flex justify-end">
+                                                <Link href={`/orders/${order.id}`}>
+                                                    <motion.button
+                                                        whileHover="hover"
+                                                        whileTap="tap"
+                                                        initial="initial"
+                                                        className="relative"
+                                                    >
+                                                        <Button asChild variant="outline" className="text-flora-dark border-pink-100 bg-white hover:bg-pink-50 hover:text-flora-dark hover:border-pink-200 rounded-full font-bold text-xs h-10 px-6 transition-all shadow-sm">
+                                                            <span>
+                                                                View Full Details
+                                                                <motion.span
+                                                                    className="inline-flex ml-1"
+                                                                    variants={{
+                                                                        initial: { x: 0 },
+                                                                        hover: { x: 4 },
+                                                                        tap: { x: 0 }
+                                                                    }}
+                                                                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                                                                >
+                                                                    <ChevronRight className="w-3 h-3" />
+                                                                </motion.span>
+                                                            </span>
+                                                        </Button>
+                                                    </motion.button>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>

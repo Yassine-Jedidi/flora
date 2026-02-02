@@ -236,3 +236,57 @@ export async function getUserOrders(page: number = 1, pageSize: number = 10) {
     return { error: "An error occurred while fetching your orders." };
   }
 }
+
+export async function getOrderById(orderId: string) {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { error: "Not authenticated" };
+    }
+
+    const order = await prisma.order.findUnique({
+      where: {
+        id: orderId,
+        userId: session.user.id, // Security: Ensure this order belongs to the user
+      },
+      include: {
+        items: {
+          include: {
+            product: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      return { error: "Order not found" };
+    }
+
+    return {
+      success: true,
+      order: {
+        ...order,
+        totalPrice: order.totalPrice.toNumber(),
+        items: order.items.map((item) => ({
+          ...item,
+          price: item.price.toNumber(),
+          product: {
+            ...item.product,
+            originalPrice: item.product.originalPrice.toNumber(),
+            discountedPrice: item.product.discountedPrice?.toNumber() || null,
+          },
+        })),
+      },
+    };
+  } catch (error) {
+    console.error("Fetch Order error:", error);
+    return { error: "An error occurred while fetching the order." };
+  }
+}
