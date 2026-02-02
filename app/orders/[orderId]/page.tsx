@@ -40,7 +40,7 @@ const statusConfig = {
         label: "Shipped",
         icon: Truck,
         className: "bg-purple-50 text-purple-600 border-purple-100",
-        description: "Your treasures are the way! They'll be with you shortly.",
+        description: "Your treasures are on the way! They'll be with you shortly.",
     },
     DELIVERED: {
         label: "Delivered",
