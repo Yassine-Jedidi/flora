@@ -135,10 +135,31 @@ export async function createOrder(values: OrderValues) {
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   try {
-    await prisma.order.update({
+    const order = await prisma.order.update({
       where: { id: orderId },
       data: { status },
+      include: {
+        user: true,
+      },
     });
+
+    // Send order delivered email if status is DELIVERED and user is logged in
+    if (status === "DELIVERED" && order.user?.email) {
+      try {
+        const { sendOrderDeliveredEmail } = await import("@/lib/mail");
+
+        // Background task
+        sendOrderDeliveredEmail({
+          orderId: order.id,
+          userEmail: order.user.email,
+          userName: order.user.name,
+        }).catch((err) =>
+          console.error("Delivered Email background error:", err),
+        );
+      } catch (emailError) {
+        console.error("Failed to initiate order delivered email:", emailError);
+      }
+    }
 
     revalidatePath("/admin/orders");
     return { success: true };

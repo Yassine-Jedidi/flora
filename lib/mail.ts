@@ -151,3 +151,64 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
     console.error("Error sending order confirmation email:", error);
   }
 }
+
+export async function sendOrderDeliveredEmail(data: {
+  orderId: string;
+  userEmail: string;
+  userName: string;
+}) {
+  const mailOptions = {
+    from: `"Flora Access" <${process.env.SMTP_USER}>`,
+    to: data.userEmail,
+    subject: `Your Flora treasure has arrived! 🌸`,
+    html: `
+      <div style="background-color: #fafafa; padding: 40px 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a;">
+        <div style="max-width: 520px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #f0f0f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+          <!-- Header -->
+          <div style="padding: 40px 40px 20px; text-align: center;">
+            <div style="margin-bottom: 24px;">
+              <span style="font-size: 40px;">🎁</span>
+            </div>
+            <h1 style="font-size: 26px; font-weight: 800; margin: 0 0 8px; color: #000;">It&apos;s Here!</h1>
+            <p style="font-size: 16px; color: #666; margin: 0;">Hi ${data.userName}, your order <b>#${data.orderId.slice(-6).toUpperCase()}</b> has been delivered.</p>
+          </div>
+
+          <!-- Message -->
+          <div style="padding: 20px 40px; text-align: center;">
+            <p style="font-size: 15px; line-height: 1.6; color: #333; margin-bottom: 24px;">
+              We hope your new treasures bring a little extra sparkle to your day! ✨ <br>
+              Thank you for choosing Flora Access.
+            </p>
+            
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/orders" style="display: inline-block; background-color: #FF5A96; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(255, 90, 150, 0.2);">
+              View My Order
+            </a>
+          </div>
+
+          <!-- Help Section -->
+          <div style="padding: 30px 40px; text-align: center; background-color: #fdfdfd; border-top: 1px solid #f0f0f0;">
+            <p style="font-size: 13px; color: #999; margin: 0;">
+              Something not right? <a href="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BETTER_AUTH_URL}/faq" style="color: #FF5A96; text-decoration: none; font-weight: 700;">Visit our FAQ</a> or reply to this email.
+            </p>
+          </div>
+
+          <!-- Branding -->
+          <div style="background-color: #fafafa; padding: 24px; text-align: center; border-top: 1px solid #f0f0f0;">
+            <p style="font-size: 12px; font-weight: 700; color: #bbb; text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">
+              Sent with love from Flora
+            </p>
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(
+      `Order delivered email sent to ${data.userEmail} for order ${data.orderId}`,
+    );
+  } catch (error) {
+    console.error("Error sending order delivered email:", error);
+  }
+}
