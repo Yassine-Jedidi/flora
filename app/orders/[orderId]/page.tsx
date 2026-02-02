@@ -22,6 +22,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
 
 const statusConfig = {
     PENDING: {
@@ -63,11 +64,14 @@ const defaultStatusConfig = {
     description: "We are processing your order.",
 };
 
+const ORDER_STATUS_SEQUENCE = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'] as const;
+const ORDER_STATUS_WITH_CANCELLED = [...ORDER_STATUS_SEQUENCE, 'CANCELLED'] as const;
+
 export default function OrderDetailsPage({ params }: { params: Promise<{ orderId: string }> }) {
     const resolvedParams = use(params);
     const orderId = resolvedParams.orderId;
 
-    const [order, setOrder] = useState<any>(null);
+    const [order, setOrder] = useState<Awaited<ReturnType<typeof getOrderById>>["order"] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -120,7 +124,6 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
 
     const config = statusConfig[order.status as keyof typeof statusConfig] ?? defaultStatusConfig;
     const StatusIcon = config.icon;
-    const shippingCost = 7.0;
 
     return (
         <div className="min-h-screen bg-[#fafafa] flex flex-col font-sans">
@@ -171,10 +174,9 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
 
                                 {/* Simple Progress Bar */}
                                 <div className="mt-8 flex items-center gap-2">
-                                    {['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'].map((s, idx) => {
-                                        const statusOrder = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
-                                        const currentIdx = statusOrder.indexOf(order.status);
-                                        const thisIdx = statusOrder.indexOf(s);
+                                    {ORDER_STATUS_SEQUENCE.map((s) => {
+                                        const currentIdx = ORDER_STATUS_WITH_CANCELLED.indexOf(order.status);
+                                        const thisIdx = ORDER_STATUS_WITH_CANCELLED.indexOf(s);
                                         const isCompleted = thisIdx <= currentIdx && order.status !== 'CANCELLED';
 
                                         return (
@@ -198,7 +200,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                                     </h3>
                                 </div>
                                 <div className="p-4 space-y-4">
-                                    {order.items.map((item: any) => (
+                                    {order.items.map((item) => (
                                         <div
                                             key={item.id}
                                             className="flex gap-6 p-4 rounded-3xl hover:bg-pink-50/20 transition-all border border-transparent hover:border-pink-50"
@@ -234,11 +236,11 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                                 <div className="p-8 bg-gray-50/50 border-t border-pink-50 space-y-3">
                                     <div className="flex justify-between items-center text-sm font-bold text-gray-500">
                                         <span>Items Subtotal</span>
-                                        <span>{(order.totalPrice - shippingCost).toFixed(3)} TND</span>
+                                        <span>{(order.totalPrice - SHIPPING_COST).toFixed(3)} TND</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm font-bold text-gray-500">
                                         <span>Shipping Cost</span>
-                                        <span>{shippingCost.toFixed(3)} TND</span>
+                                        <span>{SHIPPING_COST.toFixed(3)} TND</span>
                                     </div>
                                     <div className="h-px bg-pink-100 my-2" />
                                     <div className="flex justify-between items-center">

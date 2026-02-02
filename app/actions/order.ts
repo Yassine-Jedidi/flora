@@ -82,11 +82,13 @@ export async function createOrder(values: OrderValues) {
 
         const { sendOrderConfirmationEmail } = await import("@/lib/mail");
 
-        // We don't await this to avoid blocking the UI, but it will run in the background
+        // Fire-and-forget pattern: We intentionally don't await to avoid blocking the UI.
+        // The catch handler is properly attached and will log any email sending errors.
+        // Email failures won't affect order creation success since the order is already saved.
         sendOrderConfirmationEmail({
           orderId: order.id,
           userEmail: session.user.email,
-          userName: session.user.name,
+          userName: session.user.name ?? validatedData.fullName,
           totalPrice: validatedData.totalPrice,
           items: emailItems,
           shippingAddress: {
@@ -148,11 +150,12 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
       try {
         const { sendOrderDeliveredEmail } = await import("@/lib/mail");
 
-        // Background task
+        // Fire-and-forget pattern: Email sending happens in the background.
+        // Errors are logged but don't affect the order status update success.
         sendOrderDeliveredEmail({
           orderId: order.id,
           userEmail: order.user.email,
-          userName: order.user.name,
+          userName: order.user.name ?? "there",
         }).catch((err) =>
           console.error("Delivered Email background error:", err),
         );

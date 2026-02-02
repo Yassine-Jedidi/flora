@@ -44,6 +44,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Price } from "@/components/shop/price";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -131,7 +132,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const shippingCost = cart.length > 0 ? 7.0 : 0;
+  const shippingCost = cart.length > 0 ? SHIPPING_COST : 0;
   const finalTotal = totalPrice + shippingCost;
 
   const selectedGov = form.watch("governorate");

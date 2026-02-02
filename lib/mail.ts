@@ -1,10 +1,24 @@
 import nodemailer from "nodemailer";
+import { escapeHtml } from "@/lib/utils";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
+
+// Validate SMTP configuration at startup
+// This will intentionally crash the app if email credentials are missing,
+// as email notifications are core functionality for this e-commerce application.
+const smtpUser = process.env.SMTP_USER;
+const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+
+if (!smtpUser || !gmailAppPassword) {
+  throw new Error(
+    "SMTP configuration error: SMTP_USER and GMAIL_APP_PASSWORD environment variables must be defined.",
+  );
+}
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
+    user: smtpUser,
+    pass: gmailAppPassword,
   },
 });
 
@@ -27,8 +41,7 @@ interface OrderEmailData {
 }
 
 export async function sendOrderConfirmationEmail(data: OrderEmailData) {
-  const shippingCost = 7.0;
-  const itemsSubtotal = data.totalPrice - shippingCost;
+  const itemsSubtotal = data.totalPrice - SHIPPING_COST;
 
   const mailOptions = {
     from: `"Flora Access" <${process.env.SMTP_USER}>`,
@@ -76,7 +89,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
                 <tr>
                   <td style="padding-bottom: 12px;">
                     <div style="font-size: 15px; color: #333;">
-                      <span style="font-weight: 700;">${item.quantity}x</span> ${item.name}
+                      <span style="font-weight: 700;">${item.quantity}x</span> ${escapeHtml(item.name)}
                     </div>
                   </td>
                   <td align="right" style="padding-bottom: 12px; font-size: 15px; color: #666;">
@@ -101,7 +114,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
               <!-- Shipping -->
               <tr>
                 <td style="padding-bottom: 8px; font-size: 14px; color: #999;">Shipping Cost</td>
-                <td align="right" style="padding-bottom: 8px; font-size: 14px; color: #999;">${shippingCost.toFixed(3)} TND</td>
+                <td align="right" style="padding-bottom: 8px; font-size: 14px; color: #999;">${SHIPPING_COST.toFixed(3)} TND</td>
               </tr>
 
               <!-- Total -->
@@ -117,9 +130,9 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
             <div style="background-color: #f9f9f9; border-radius: 16px; padding: 20px;">
               <h3 style="font-size: 13px; color: #999; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 10px;">Shipping To</h3>
               <p style="font-size: 14px; line-height: 1.5; color: #333; margin: 0;">
-                <span style="font-weight: 700;">${data.shippingAddress.fullName}</span><br>
-                ${data.shippingAddress.detailedAddress}<br>
-                ${data.shippingAddress.city}, ${data.shippingAddress.governorate}
+                <span style="font-weight: 700;">${escapeHtml(data.shippingAddress.fullName)}</span><br>
+                ${escapeHtml(data.shippingAddress.detailedAddress)}<br>
+                ${escapeHtml(data.shippingAddress.city)}, ${escapeHtml(data.shippingAddress.governorate)}
               </p>
             </div>
           </div>
@@ -170,7 +183,7 @@ export async function sendOrderDeliveredEmail(data: {
               <span style="font-size: 40px;">🎁</span>
             </div>
             <h1 style="font-size: 26px; font-weight: 800; margin: 0 0 8px; color: #000;">It&apos;s Here!</h1>
-            <p style="font-size: 16px; color: #666; margin: 0;">Hi ${data.userName}, your order <b>#${data.orderId.slice(-6).toUpperCase()}</b> has been delivered.</p>
+            <p style="font-size: 16px; color: #666; margin: 0;">Hi ${escapeHtml(data.userName)}, your order <b>#${data.orderId.slice(-6).toUpperCase()}</b> has been delivered.</p>
           </div>
 
           <!-- Message -->
