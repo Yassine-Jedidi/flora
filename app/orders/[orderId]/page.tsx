@@ -64,6 +64,9 @@ const defaultStatusConfig = {
     description: "We are processing your order.",
 };
 
+const ORDER_STATUS_SEQUENCE = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'] as const;
+const ORDER_STATUS_WITH_CANCELLED = [...ORDER_STATUS_SEQUENCE, 'CANCELLED'] as const;
+
 export default function OrderDetailsPage({ params }: { params: Promise<{ orderId: string }> }) {
     const resolvedParams = use(params);
     const orderId = resolvedParams.orderId;
@@ -171,10 +174,9 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
 
                                 {/* Simple Progress Bar */}
                                 <div className="mt-8 flex items-center gap-2">
-                                    {['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'].map((s) => {
-                                        const statusOrder = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
-                                        const currentIdx = statusOrder.indexOf(order.status);
-                                        const thisIdx = statusOrder.indexOf(s);
+                                    {ORDER_STATUS_SEQUENCE.map((s) => {
+                                        const currentIdx = ORDER_STATUS_WITH_CANCELLED.indexOf(order.status);
+                                        const thisIdx = ORDER_STATUS_WITH_CANCELLED.indexOf(s);
                                         const isCompleted = thisIdx <= currentIdx && order.status !== 'CANCELLED';
 
                                         return (

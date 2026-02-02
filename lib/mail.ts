@@ -2,6 +2,9 @@ import nodemailer from "nodemailer";
 import { escapeHtml } from "@/lib/utils";
 import { SHIPPING_COST } from "@/lib/constants/shipping";
 
+// Validate SMTP configuration at startup
+// This will intentionally crash the app if email credentials are missing,
+// as email notifications are core functionality for this e-commerce application.
 const smtpUser = process.env.SMTP_USER;
 const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
 
