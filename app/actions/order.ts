@@ -86,7 +86,7 @@ export async function createOrder(values: OrderValues) {
         sendOrderConfirmationEmail({
           orderId: order.id,
           userEmail: session.user.email,
-          userName: session.user.name,
+          userName: session.user.name ?? validatedData.fullName,
           totalPrice: validatedData.totalPrice,
           items: emailItems,
           shippingAddress: {
@@ -152,7 +152,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
         sendOrderDeliveredEmail({
           orderId: order.id,
           userEmail: order.user.email,
-          userName: order.user.name,
+          userName: order.user.name ?? "there",
         }).catch((err) =>
           console.error("Delivered Email background error:", err),
         );
