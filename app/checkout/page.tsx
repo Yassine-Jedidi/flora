@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckoutFormSchema, type CheckoutFormValues } from "@/lib/validations/order";
+import { AddressSchema, type AddressValues } from "@/lib/validations/order";
 import { createOrder } from "@/app/actions/order";
 import { getAddresses } from "@/app/actions/address";
 import { useSession } from "@/lib/auth-client";
@@ -44,6 +44,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Price } from "@/components/shop/price";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -67,8 +68,8 @@ export default function CheckoutPage() {
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
   const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
 
-  const form = useForm<CheckoutFormValues>({
-    resolver: zodResolver(CheckoutFormSchema),
+  const form = useForm<AddressValues>({
+    resolver: zodResolver(AddressSchema),
     defaultValues: {
       fullName: "",
       phoneNumber: "",
@@ -131,7 +132,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const shippingCost = cart.length > 0 ? 7.0 : 0;
+  const shippingCost = cart.length > 0 ? SHIPPING_COST : 0;
   const finalTotal = totalPrice + shippingCost;
 
   const selectedGov = form.watch("governorate");
@@ -139,11 +140,8 @@ export default function CheckoutPage() {
     ? TUNISIA_LOCATIONS[selectedGov] || []
     : [];
 
-  const onSubmit = async (values: CheckoutFormValues) => {
-    if (cart.length === 0) {
-      toast.error("Your cart is empty!");
-      return;
-    }
+  const onSubmit = async (values: AddressValues) => {
+    if (cart.length === 0) return;
 
     setIsPending(true);
     try {
@@ -228,10 +226,22 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <div className="p-6 md:p-8 rounded-[2rem] md:rounded-4xl bg-white border border-pink-50 shadow-sm space-y-6">
-                  <div className="flex items-center gap-2 mb-2 md:mb-4">
-                    <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center shrink-0">
+              <form
+                onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                  console.error("Form Validation Errors:", errors);
+                  // Find the first error to show in toast
+                  const errorMessages = Object.values(errors);
+                  if (errorMessages.length > 0) {
+                    toast.error("Please check your shipping details", {
+                      description: (errorMessages[0]?.message as string) || "Some fields are invalid.",
+                    });
+                  }
+                })}
+                className="space-y-8"
+              >
+                <div className="p-8 rounded-4xl bg-white border border-pink-50 shadow-sm space-y-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
                       <ShoppingBag className="w-4 h-4 text-primary" />
                     </div>
                     <h2 className="text-lg md:text-xl font-black text-flora-dark">

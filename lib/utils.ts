@@ -14,3 +14,19 @@ export function calculateDiscount(original: number, discounted: number) {
   if (!discounted || discounted >= original) return 0;
   return Math.round(((original - discounted) / original) * 100);
 }
+
+/**
+ * Escapes HTML special characters to prevent XSS attacks in HTML templates
+ */
+export function escapeHtml(text: string | null | undefined): string {
+  if (!text) return "";
+  const htmlEscapeMap: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "/": "&#x2F;",
+  };
+  return String(text).replace(/[&<>"'\/]/g, (char) => htmlEscapeMap[char]);
+}

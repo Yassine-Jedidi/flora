@@ -141,7 +141,18 @@ export default function SignUpPage() {
                             </div>
                         </div>
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                        <form
+                            onSubmit={handleSubmit(onSubmit, (errors) => {
+                                console.error("Sign Up Validation Errors:", errors);
+                                const errorMessages = Object.values(errors);
+                                if (errorMessages.length > 0) {
+                                    toast.error("Sign up failed", {
+                                        description: (errorMessages[0]?.message as string) || "Please check your account details.",
+                                    });
+                                }
+                            })}
+                            className="space-y-5"
+                        >
                             {/* Name Field */}
                             <div className="space-y-1.5">
                                 <Label htmlFor="name" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">
