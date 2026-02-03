@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import { FavoritesProvider } from "@/lib/hooks/use-favorites";
@@ -26,13 +28,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <link rel="preconnect" href="https://utfs.io" />
         <link rel="dns-prefetch" href="https://utfs.io" />
@@ -46,9 +51,11 @@ export default function RootLayout({
         <IOSCompatibilityChecker />
         <CartProvider>
           <FavoritesProvider>
-            <ScrollToTop />
-            {children}
-            <Toaster />
+            <NextIntlClientProvider messages={messages}>
+              <ScrollToTop />
+              {children}
+              <Toaster />
+            </NextIntlClientProvider>
           </FavoritesProvider>
         </CartProvider>
       </body>

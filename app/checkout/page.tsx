@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,6 +60,7 @@ import {
 export default function CheckoutPage() {
   const { cart, totalPrice, clearCart, updateQuantity, removeItem } = useCart();
   const { data: session } = useSession();
+  const t = useTranslations("Checkout");
 
   const [isPending, setIsPending] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -125,7 +127,7 @@ export default function CheckoutPage() {
   const confirmRemove = () => {
     if (itemToRemove) {
       removeItem(itemToRemove.id);
-      toast.info("Removed from cart", {
+      toast.info(t("removedFromCart"), {
         description: itemToRemove.name,
       });
       setItemToRemove(null);
@@ -160,14 +162,14 @@ export default function CheckoutPage() {
       if (result.success) {
         setSuccess(true);
         clearCart();
-        toast.success("Order placed successfully! ✨");
+        toast.success(t("orderSuccessToast"));
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
-        toast.error(result.error || "Something went wrong.");
+        toast.error(result.error || t("genericError"));
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to place order.");
+      toast.error(t("orderError"));
     } finally {
       setIsPending(false);
     }
@@ -183,15 +185,14 @@ export default function CheckoutPage() {
               <CheckCircle2 className="w-8 h-8 md:w-10 md:h-10 text-white" />
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-flora-dark mb-4">
-              Order Completed!
+              {t("orderCompleted")}
             </h1>
             <p className="text-sm md:text-base text-gray-500 font-bold mb-8">
-              Your order has been placed successfully. We&apos;ll contact you soon
-              for confirmation.
+              {t("orderSuccessMessage")}
             </p>
             <Link href="/">
               <Button className="bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-full px-8 py-4 md:px-10 md:py-6 font-black text-base md:text-lg transition-all shadow-lg shadow-purple-100">
-                Back to Shop
+                {t("backToShop")}
               </Button>
             </Link>
           </div>
@@ -212,17 +213,17 @@ export default function CheckoutPage() {
             className="inline-flex items-center text-gray-400 hover:text-primary font-bold mb-6 md:mb-8 transition-colors group text-sm md:text-base"
           >
             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
-            Back to accessories
+            {t("backToAccessories")}
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
             <div className="lg:col-span-7 order-2 lg:order-1">
               <div className="mb-8 md:mb-10 px-1">
                 <h1 className="text-2xl md:text-4xl font-black text-flora-dark tracking-tight mb-2">
-                  Checkout
+                  {t("checkoutTitle")}
                 </h1>
                 <p className="text-sm md:text-base text-gray-400 font-bold">
-                  Complete your purchase by providing your shipping details.
+                  {t("checkoutSubtitle")}
                 </p>
               </div>
 
@@ -232,8 +233,8 @@ export default function CheckoutPage() {
                   // Find the first error to show in toast
                   const errorMessages = Object.values(errors);
                   if (errorMessages.length > 0) {
-                    toast.error("Please check your shipping details", {
-                      description: (errorMessages[0]?.message as string) || "Some fields are invalid.",
+                    toast.error(t("validationErrorTitle"), {
+                      description: (errorMessages[0]?.message as string) || t("validationErrorDescription"),
                     });
                   }
                 })}
@@ -245,14 +246,14 @@ export default function CheckoutPage() {
                       <ShoppingBag className="w-4 h-4 text-primary" />
                     </div>
                     <h2 className="text-lg md:text-xl font-black text-flora-dark">
-                      Shipping Information
+                      {t("shipping")}
                     </h2>
                   </div>
 
                   {session && savedAddresses.length > 0 && !isAddingNewAddress && (
                     <div className="space-y-4 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
                       <p className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
-                        Select a saved address
+                        {t("selectSavedAddress")}
                       </p>
                       <div className="grid grid-cols-1 gap-4">
                         {savedAddresses.map((addr) => (
@@ -312,7 +313,7 @@ export default function CheckoutPage() {
                         }}
                         className="w-full rounded-2xl border-2 border-dashed border-pink-100 text-primary hover:bg-pink-50/50 font-bold py-6 md:py-8 transition-all text-xs md:text-sm"
                       >
-                        + Ship to a new address
+                        {t("shipToNewAddress")}
                       </Button>
                     </div>
                   )}
@@ -322,7 +323,7 @@ export default function CheckoutPage() {
                       {session && savedAddresses.length > 0 && (
                         <div className="flex justify-between items-center mb-2">
                           <p className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
-                            New shipping details
+                            {t("newShippingDetails")}
                           </p>
                           <button
                             type="button"
@@ -341,7 +342,7 @@ export default function CheckoutPage() {
                             }}
                             className="text-primary text-xs font-black hover:underline"
                           >
-                            Back to saved addresses
+                            {t("backToSavedAddresses")}
                           </button>
                         </div>
                       )}
@@ -349,11 +350,11 @@ export default function CheckoutPage() {
                       <div className={`grid grid-cols-1 ${!session ? "md:grid-cols-2" : ""} gap-6`}>
                         {!session && (
                           <div className="space-y-2">
-                            <Label htmlFor="fullName" className="text-flora-dark font-bold ml-1">Full Name</Label>
+                            <Label htmlFor="fullName" className="text-flora-dark font-bold ml-1">{t("fullName")}</Label>
                             <Input
                               id="fullName"
                               {...form.register("fullName")}
-                              placeholder="Enter your full name"
+                              placeholder={t("fullNamePlaceholder")}
                               className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 py-5 md:py-6 text-flora-dark font-medium text-sm md:text-base"
                             />
                             {form.formState.errors.fullName && (
@@ -363,11 +364,11 @@ export default function CheckoutPage() {
                         )}
 
                         <div className="space-y-2">
-                          <Label htmlFor="phoneNumber" className="text-flora-dark font-bold ml-1">Phone Number (8 digits)</Label>
+                          <Label htmlFor="phoneNumber" className="text-flora-dark font-bold ml-1">{t("phoneNumber")}</Label>
                           <Input
                             id="phoneNumber"
                             {...form.register("phoneNumber")}
-                            placeholder="Example: 20123456"
+                            placeholder={t("phoneNumberPlaceholder")}
                             className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 py-5 md:py-6 text-flora-dark font-medium text-sm md:text-base"
                           />
                           {form.formState.errors.phoneNumber && (
@@ -378,13 +379,13 @@ export default function CheckoutPage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <Label className="text-flora-dark font-bold ml-1">Governorate</Label>
+                          <Label className="text-flora-dark font-bold ml-1">{t("governorate")}</Label>
                           <Select
                             value={form.watch("governorate")}
                             onValueChange={(v) => form.setValue("governorate", v, { shouldValidate: true })}
                           >
                             <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 h-11 md:h-13 text-flora-dark font-medium text-sm md:text-base">
-                              <SelectValue placeholder="Select governorate" />
+                              <SelectValue placeholder={t("selectGovernorate")} />
                             </SelectTrigger>
                             <SelectContent className="rounded-xl md:rounded-2xl border-pink-100">
                               {TUNISIA_GOVERNORATES.map((gov) => (
@@ -398,14 +399,14 @@ export default function CheckoutPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label className="text-flora-dark font-bold ml-1">City / Delegation</Label>
+                          <Label className="text-flora-dark font-bold ml-1">{t("city")}</Label>
                           <Select
                             disabled={!selectedGov}
                             value={form.watch("city")}
                             onValueChange={(v) => form.setValue("city", v, { shouldValidate: true })}
                           >
                             <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 h-11 md:h-13 text-flora-dark font-medium text-sm md:text-base">
-                              <SelectValue placeholder="Select city" />
+                              <SelectValue placeholder={t("selectCity")} />
                             </SelectTrigger>
                             <SelectContent className="rounded-xl md:rounded-2xl border-pink-100">
                               {availableCities.map((city) => (
@@ -420,11 +421,11 @@ export default function CheckoutPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="detailedAddress" className="text-flora-dark font-bold ml-1">Detailed Address</Label>
+                        <Label htmlFor="detailedAddress" className="text-flora-dark font-bold ml-1">{t("detailedAddress")}</Label>
                         <Input
                           id="detailedAddress"
                           {...form.register("detailedAddress")}
-                          placeholder="Street, Building, Apartment..."
+                          placeholder={t("detailedAddressPlaceholder")}
                           className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 py-5 md:py-6 text-flora-dark font-medium text-sm md:text-base"
                         />
                         {form.formState.errors.detailedAddress && (
@@ -441,7 +442,7 @@ export default function CheckoutPage() {
                             className="w-5 h-5 border-pink-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary text-white rounded-lg transition-all duration-300"
                           />
                           <Label htmlFor="saveAddress" className="text-sm font-bold text-gray-500 cursor-pointer select-none flex items-center gap-1.5">
-                            Save this address for 1-click checkout
+                            {t("saveAddress")}
                             <Bow className="w-4 h-4 text-primary" />
                           </Label>
                         </div>
@@ -456,8 +457,8 @@ export default function CheckoutPage() {
                       <CreditCard className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-black text-flora-dark">Cash on Delivery</h4>
-                      <p className="text-[10px] md:text-xs text-purple-400 font-bold uppercase tracking-wider">Pay when you receive your treasure</p>
+                      <h4 className="text-sm font-black text-flora-dark">{t("cashOnDelivery")}</h4>
+                      <p className="text-[10px] md:text-xs text-purple-400 font-bold uppercase tracking-wider">{t("payOnReceive")}</p>
                     </div>
                   </div>
 
@@ -466,7 +467,7 @@ export default function CheckoutPage() {
                     disabled={isPending || cart.length === 0}
                     className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full py-6 md:py-8 font-black text-lg md:text-xl shadow-xl shadow-pink-200 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
                   >
-                    {isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : "Complete Purchase"}
+                    {isPending ? <Loader2 className="w-6 h-6 animate-spin" /> : t("completePurchase")}
                   </Button>
                 </div>
               </form>
@@ -479,7 +480,7 @@ export default function CheckoutPage() {
 
                   <h3 className="flex items-center gap-3 text-xl md:text-2xl font-black mb-6 md:mb-8">
                     <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-white/80" />
-                    Order Summary
+                    {t("summary")}
                   </h3>
 
                   <div className="max-h-75 overflow-y-auto pr-2 custom-scrollbar mb-6 md:mb-8 space-y-4">
@@ -532,17 +533,17 @@ export default function CheckoutPage() {
 
                   <div className="space-y-3 md:space-y-4 pt-5 md:pt-6 border-t border-white/20">
                     <div className="flex justify-between items-center text-purple-50 font-bold text-xs md:text-sm">
-                      <span>Subtotal</span>
+                      <span>{t("subtotal")}</span>
                       <Price price={totalPrice} size="xs" color="text-white" />
                     </div>
                     <div className="flex justify-between items-center text-purple-50 font-bold text-xs md:text-sm">
-                      <span>Shipping</span>
+                      <span>{t("shippingCost")}</span>
                       <Price price={7.00} size="xs" color="text-white" />
                     </div>
                     <div className="h-px bg-white/20 my-3 md:my-4" />
                     <div className="flex justify-between items-end">
                       <div>
-                        <p className="text-purple-50 text-[9px] md:text-[10px] font-black uppercase tracking-widest">Total to pay</p>
+                        <p className="text-purple-50 text-[9px] md:text-[10px] font-black uppercase tracking-widest">{t("totalToPay")}</p>
                         <Price price={finalTotal} size="lg" color="text-white" />
                       </div>
                     </div>
@@ -552,11 +553,11 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-3xl bg-gray-50 flex flex-col items-center text-center gap-2 border border-gray-100">
                     <ShieldCheck className="w-5 h-5 text-primary" />
-                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider">Quality Guaranteed</p>
+                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider">{t("qualityGuaranteed")}</p>
                   </div>
                   <div className="p-4 rounded-3xl bg-gray-50 flex flex-col items-center text-center gap-2 border border-gray-100">
                     <Truck className="w-5 h-5 text-flora-purple" />
-                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider">Fast Delivery</p>
+                    <p className="text-[10px] font-black text-flora-dark uppercase tracking-wider">{t("fastDelivery")}</p>
                   </div>
                 </div>
               </div>
@@ -570,14 +571,17 @@ export default function CheckoutPage() {
       <AlertDialog open={!!itemToRemove} onOpenChange={(open) => !open && setItemToRemove(null)}>
         <AlertDialogContent className="rounded-3xl border-pink-100">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-flora-dark font-black text-xl">Remove this treasure? ✨</AlertDialogTitle>
+            <AlertDialogTitle className="text-flora-dark font-black text-xl">{t("removeTitle")}</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-500 font-medium">
-              Are you sure you want to remove <span className="text-primary font-bold">{itemToRemove?.name}</span> from your order?
+              {t.rich("removeDescription", {
+                name: itemToRemove?.name || "",
+                bold: (chunks) => <span className="text-primary font-bold">{chunks}</span>
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-3">
-            <AlertDialogCancel className="rounded-full border-pink-100 text-gray-400 hover:bg-pink-50 font-bold px-6">Keep it</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmRemove} className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold px-6">Yes, remove</AlertDialogAction>
+            <AlertDialogCancel className="rounded-full border-pink-100 text-gray-400 hover:bg-pink-50 font-bold px-6">{t("keepIt")}</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRemove} className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold px-6">{t("remove")}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
