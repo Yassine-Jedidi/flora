@@ -12,11 +12,15 @@ import {
 } from "lucide-react";
 import { Metadata } from "next";
 import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Frequently Asked Questions | Flora Accessories",
-    description: "Find answers to common questions about ordering, delivery, and products at Flora Accessories Tunisia.",
-};
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.faq");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 
 export default function FAQPage() {

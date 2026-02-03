@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import db from "@/lib/db";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 export async function getAddresses() {
   const session = await auth.api.getSession({
@@ -11,7 +12,8 @@ export async function getAddresses() {
   });
 
   if (!session) {
-    return { success: false, error: "Not authenticated" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("unauthenticated") };
   }
 
   try {
@@ -27,7 +29,8 @@ export async function getAddresses() {
     return { success: true, data: addresses };
   } catch (error) {
     console.error("[GET_ADDRESSES]", error);
-    return { success: false, error: "Failed to fetch addresses" };
+    const t = await getTranslations("Errors.addresses");
+    return { success: false, error: t("fetchError") };
   }
 }
 
@@ -45,7 +48,8 @@ export async function createAddress(values: {
   });
 
   if (!session) {
-    return { success: false, error: "Not authenticated" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("unauthenticated") };
   }
 
   try {
@@ -61,11 +65,12 @@ export async function createAddress(values: {
       where: { userId: session.user.id },
     });
 
+    const t = await getTranslations("Errors.addresses");
+
     if (addressCount >= 4) {
       return {
         success: false,
-        error:
-          "Address limit reached. You can only have up to 4 addresses. Please remove one to add another.",
+        error: t("limitReached"),
       };
     }
 
@@ -81,7 +86,8 @@ export async function createAddress(values: {
     return { success: true, data: address };
   } catch (error) {
     console.error("[CREATE_ADDRESS]", error);
-    return { success: false, error: "Failed to create address" };
+    const t = await getTranslations("Errors.addresses");
+    return { success: false, error: t("createError") };
   }
 }
 
@@ -102,7 +108,8 @@ export async function updateAddress(
   });
 
   if (!session) {
-    return { success: false, error: "Not authenticated" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("unauthenticated") };
   }
 
   try {
@@ -125,7 +132,8 @@ export async function updateAddress(
     return { success: true, data: address };
   } catch (error) {
     console.error("[UPDATE_ADDRESS]", error);
-    return { success: false, error: "Failed to update address" };
+    const t = await getTranslations("Errors.addresses");
+    return { success: false, error: t("updateError") };
   }
 }
 
@@ -135,7 +143,8 @@ export async function deleteAddress(id: string) {
   });
 
   if (!session) {
-    return { success: false, error: "Not authenticated" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("unauthenticated") };
   }
 
   try {
@@ -150,6 +159,7 @@ export async function deleteAddress(id: string) {
     return { success: true };
   } catch (error) {
     console.error("[DELETE_ADDRESS]", error);
-    return { success: false, error: "Failed to delete address" };
+    const t = await getTranslations("Errors.addresses");
+    return { success: false, error: t("deleteError") };
   }
 }

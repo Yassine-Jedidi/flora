@@ -1,4 +1,73 @@
 {
+    "Metadata": {
+        "root": {
+            "title": "Flora | Explore Unique Treasures",
+            "description": "Discover beautiful jewelry and accessories to brighten your day."
+        },
+        "admin": {
+            "title": "Admin Dashboard | Flora",
+            "description": "Manage your jewelry collection and orders."
+        },
+        "sale": {
+            "title": "Sale Collection | Flora Accessories",
+            "description": "Discover our limited-time treasures with exclusive discounts"
+        },
+        "faq": {
+            "title": "Frequently Asked Questions | Flora Accessories",
+            "description": "Find answers to common questions about ordering, delivery, and products at Flora Accessories Tunisia."
+        },
+        "shipping": {
+            "title": "Shipping & Delivery | Flora Accessories",
+            "description": "Learn about our shipping policy, delivery times, and costs for orders across Tunisia."
+        }
+    },
+    "Errors": {
+        "generic": "Something went wrong!",
+        "validation": "Invalid fields!",
+        "notFound": "Resource not found",
+        "unauthorized": "You are not authorized",
+        "unauthenticated": "Please sign in to continue",
+        "deleteRestricted": "Cannot delete item with existing references (Orders).",
+        "priceRefinement": "Sale Price must be less than the Original Price.",
+        "itemsNotFound": "Some selected products do not exist.",
+        "categoryRequired": "Category is required. Please ensure the 'Packs' category exists.",
+        "wishlistFull": "Wishlist limit reached. You can only save up to 20 items.",
+        "fetchWishlistError": "Failed to fetch wishlist",
+        "updateWishlistError": "Failed to update wishlist",
+        "syncWishlistError": "Failed to sync wishlist",
+        "auth": {
+            "failedToCreate": "Failed to create account",
+            "invalidCredentials": "Invalid email or password",
+            "signOutError": "Error signing out"
+        },
+        "orders": {
+            "rateLimit": "Too many orders. Please try again in {message}.",
+            "invalidData": "Invalid order data. Please check your cart and shipping details.",
+            "createError": "An error occurred while creating the order.",
+            "updateStatusError": "An error occurred while updating the order status.",
+            "fetchError": "An error occurred while fetching your orders.",
+            "fetchSingleError": "An error occurred while fetching the order.",
+            "notFound": "Order not found"
+        },
+        "addresses": {
+            "limitReached": "Address limit reached. You can only have up to 4 addresses.",
+            "fetchError": "Failed to fetch addresses",
+            "createError": "Failed to create address",
+            "updateError": "Failed to update address",
+            "deleteError": "Failed to delete address"
+        },
+        "profile": {
+            "updateError": "Failed to update profile",
+            "deleteFileError": "Failed to delete file",
+            "fetchSessionsError": "Failed to fetch sessions",
+            "revokeSessionError": "Failed to revoke session",
+            "checkPasswordError": "Failed to check password status",
+            "setPasswordError": "Failed to set password",
+            "fetchAccountsError": "Failed to fetch accounts",
+            "deleteAccountError": "Failed to delete account",
+            "rateLimit": "Too many updates. Please try again in {message}."
+        }
+    },
     "HomePage": {
         "title": "Flora Access",
         "subtitle": "Timeless elegance for every occasion",

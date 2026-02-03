@@ -2,6 +2,15 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.admin");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 export default function AdminLayout({
     children,

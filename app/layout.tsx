@@ -16,17 +16,23 @@ const nunito = Nunito({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Flora | Explore Unique Treasures",
-  description: "Discover beautiful jewelry and accessories to brighten your day.",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
-  },
-  appleWebApp: {
-    title: "FloraAccess",
-  },
-};
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+  const t = await getTranslations("Metadata.root");
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    icons: {
+      icon: "/favicon.ico",
+      apple: "/apple-icon.png",
+    },
+    appleWebApp: {
+      title: "FloraAccess",
+    },
+  };
+}
 
 export default async function RootLayout({
   children,

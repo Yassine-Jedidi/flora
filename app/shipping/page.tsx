@@ -17,11 +17,15 @@ import {
 import { Metadata } from "next";
 import { Price } from "@/components/shop/price";
 import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-    title: "Shipping & Delivery | Flora Accessories",
-    description: "Learn about our shipping policy, delivery times, and costs for orders across Tunisia.",
-};
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.shipping");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 export default function ShippingPage() {
     const t = useTranslations("Shipping");

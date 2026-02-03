@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 export async function signUpEmailAction(values: {
   email: string;
@@ -21,9 +22,10 @@ export async function signUpEmailAction(values: {
 
     return { success: true, data: res };
   } catch (error: any) {
+    const t = await getTranslations("Errors.auth");
     return {
       success: false,
-      error: error.message || "Failed to create account",
+      error: error.message || t("failedToCreate"),
     };
   }
 }
@@ -43,9 +45,10 @@ export async function signInEmailAction(values: {
 
     return { success: true, data: res };
   } catch (error: any) {
+    const t = await getTranslations("Errors.auth");
     return {
       success: false,
-      error: error.message || "Invalid email or password",
+      error: error.message || t("invalidCredentials"),
     };
   }
 }

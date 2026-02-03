@@ -6,12 +6,14 @@ import { revalidatePath } from "next/cache";
 import { OrderStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 
 import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function createOrder(values: OrderValues) {
   try {
     // Check rate limit inside try block for unified error handling
+    const t = await getTranslations("Errors.orders");
     const rateLimit = await checkRateLimit({
       key: "order-creation",
       window: 60 * 10, // 10 minutes
@@ -20,7 +22,7 @@ export async function createOrder(values: OrderValues) {
 
     if (!rateLimit.success) {
       return {
-        error: `Too many orders. Please try again in ${rateLimit.message}.`,
+        error: t("rateLimit", { message: rateLimit.message || "" }),
       };
     }
 
@@ -33,8 +35,7 @@ export async function createOrder(values: OrderValues) {
 
     if (!validatedFields.success) {
       return {
-        error:
-          "Invalid order data. Please check your cart and shipping details.",
+        error: t("invalidData"),
       };
     }
 
@@ -131,7 +132,8 @@ export async function createOrder(values: OrderValues) {
     return { success: true, orderId: order.id };
   } catch (error) {
     console.error("Order creation error:", error);
-    return { error: "An error occurred while creating the order." };
+    const t = await getTranslations("Errors.orders");
+    return { error: t("createError") };
   }
 }
 
@@ -170,7 +172,8 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
     return { success: true };
   } catch (error) {
     console.error("Update Order Status error:", error);
-    return { error: "An error occurred while updating the order status." };
+    const t = await getTranslations("Errors.orders");
+    return { error: t("updateStatusError") };
   }
 }
 
@@ -181,7 +184,8 @@ export async function getUserOrders(page: number = 1, pageSize: number = 10) {
     });
 
     if (!session) {
-      return { error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { error: t("unauthenticated") };
     }
 
     const skip = (page - 1) * pageSize;
@@ -238,7 +242,8 @@ export async function getUserOrders(page: number = 1, pageSize: number = 10) {
     };
   } catch (error) {
     console.error("Fetch User Orders error:", error);
-    return { error: "An error occurred while fetching your orders." };
+    const t = await getTranslations("Errors.orders");
+    return { error: t("fetchError") };
   }
 }
 
@@ -249,7 +254,8 @@ export async function getOrderById(orderId: string) {
     });
 
     if (!session) {
-      return { error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { error: t("unauthenticated") };
     }
 
     const order = await prisma.order.findUnique({
@@ -271,7 +277,8 @@ export async function getOrderById(orderId: string) {
     });
 
     if (!order) {
-      return { error: "Order not found" };
+      const t = await getTranslations("Errors.orders");
+      return { error: t("notFound") };
     }
 
     return {
@@ -292,6 +299,7 @@ export async function getOrderById(orderId: string) {
     };
   } catch (error) {
     console.error("Fetch Order error:", error);
-    return { error: "An error occurred while fetching the order." };
+    const t = await getTranslations("Errors.orders");
+    return { error: t("fetchSingleError") };
   }
 }

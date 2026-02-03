@@ -1,4 +1,73 @@
 {
+    "Metadata": {
+        "root": {
+            "title": "Flora | Explorez des Trésors Uniques",
+            "description": "Découvrez de magnifiques bijoux et accessoires pour illuminer votre journée."
+        },
+        "admin": {
+            "title": "Tableau de Bord Admin | Flora",
+            "description": "Gérez votre collection de bijoux et vos commandes."
+        },
+        "sale": {
+            "title": "Collection en Solde | Flora Accessories",
+            "description": "Découvrez nos trésors à durée limitée avec des remises exclusives"
+        },
+        "faq": {
+            "title": "Foire Aux Questions | Flora Accessories",
+            "description": "Trouvez des réponses aux questions courantes sur les commandes, la livraison et les produits chez Flora Accessories Tunisie."
+        },
+        "shipping": {
+            "title": "Expédition & Livraison | Flora Accessories",
+            "description": "Découvrez notre politique d'expédition, les délais de livraison et les coûts pour les commandes dans toute la Tunisie."
+        }
+    },
+    "Errors": {
+        "generic": "Quelque chose s'est mal passé !",
+        "validation": "Champs invalides !",
+        "notFound": "Ressource non trouvée",
+        "unauthorized": "Vous n'êtes pas autorisé",
+        "unauthenticated": "Veuillez vous connecter pour continuer",
+        "deleteRestricted": "Impossible de supprimer un article ayant des références existantes (Commandes).",
+        "priceRefinement": "Le prix soldé doit être inférieur au prix d'origine.",
+        "itemsNotFound": "Certains produits sélectionnés n'existent pas.",
+        "categoryRequired": "La catégorie est requise. Veuillez vous assurer que la catégorie 'Packs' existe.",
+        "wishlistFull": "Limite de liste de souhaits atteinte. Vous pouvez enregistrer jusqu'à 20 articles.",
+        "fetchWishlistError": "Échec de la récupération de la liste de souhaits",
+        "updateWishlistError": "Échec de la mise à jour de la liste de souhaits",
+        "syncWishlistError": "Échec de la synchronisation de la liste de souhaits",
+        "auth": {
+            "failedToCreate": "Échec de la création du compte",
+            "invalidCredentials": "Email ou mot de passe invalide",
+            "signOutError": "Erreur lors de la déconnexion"
+        },
+        "orders": {
+            "rateLimit": "Trop de commandes. Veuillez réessayer dans {message}.",
+            "invalidData": "Données de commande invalides. Veuillez vérifier votre panier et vos détails de livraison.",
+            "createError": "Une erreur s'est produite lors de la création de la commande.",
+            "updateStatusError": "Une erreur s'est produite lors de la mise à jour du statut de la commande.",
+            "fetchError": "Une erreur s'est produite lors de la récupération de vos commandes.",
+            "fetchSingleError": "Une erreur s'est produite lors de la récupération de la commande.",
+            "notFound": "Commande non trouvée"
+        },
+        "addresses": {
+            "limitReached": "Limite d'adresses atteinte. Vous ne pouvez avoir que jusqu'à 4 adresses.",
+            "fetchError": "Échec de la récupération des adresses",
+            "createError": "Échec de la création de l'adresse",
+            "updateError": "Échec de la mise à jour de l'adresse",
+            "deleteError": "Échec de la suppression de l'adresse"
+        },
+        "profile": {
+            "updateError": "Échec de la mise à jour du profil",
+            "deleteFileError": "Échec de la suppression du fichier",
+            "fetchSessionsError": "Échec de la récupération des sessions",
+            "revokeSessionError": "Échec de la révocation de la session",
+            "checkPasswordError": "Échec de la vérification du statut du mot de passe",
+            "setPasswordError": "Échec de la définition du mot de passe",
+            "fetchAccountsError": "Échec de la récupération des comptes",
+            "deleteAccountError": "Échec de la suppression du compte",
+            "rateLimit": "Trop de mises à jour. Veuillez réessayer dans {message}."
+        }
+    },
     "HomePage": {
         "title": "Flora Access",
         "subtitle": "Élégance intemporelle pour toutes les occasions",

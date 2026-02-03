@@ -2,10 +2,13 @@ import { CategoryPage } from "@/components/shop/category-page";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-    title: "Sale Collection | Flora Accessories",
-    description: "Discover our limited-time treasures with exclusive discounts",
-};
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.sale");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 export default async function SalePage({
     searchParams
