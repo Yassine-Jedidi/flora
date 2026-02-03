@@ -7,7 +7,7 @@ export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
   fetchOptions: {
     onError: async (ctx) => {
-      if (ctx.response.status === 429) {
+      if (ctx.response && ctx.response.status === 429) {
         const retryAfter = ctx.response.headers.get("X-Retry-After");
         if (retryAfter) {
           const seconds = parseInt(retryAfter);

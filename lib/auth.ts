@@ -18,6 +18,19 @@ export const auth = betterAuth({
         },
       });
 
+      const escapeHtml = (str: string) =>
+        str.replace(
+          /[&<>"']/g,
+          (m) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[m] || m,
+        );
+
       const mailOptions = {
         from: `"Flora Access" <${process.env.SMTP_USER}>`,
         to: data.user.email,
@@ -31,7 +44,7 @@ export const auth = betterAuth({
                 </div>
                 <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 16px; color: #000;">Reset your password</h1>
                 <p style="font-size: 16px; line-height: 1.6; color: #666; margin: 0 0 32px;">
-                  Hi ${data.user.name}, we received a request to reset your password. Click the button below to choose a new one.
+                  Hi ${escapeHtml(data.user.name)}, we received a request to reset your password. Click the button below to choose a new one.
                 </p>
                 <a href="${data.url}" style="display: inline-block; background-color: #FF5A96; color: #ffffff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(255, 90, 150, 0.2);">
                   Reset Password

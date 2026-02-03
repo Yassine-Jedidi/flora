@@ -4,10 +4,20 @@ import prisma from "@/lib/db";
 import { ProductSchema, ProductFormValues } from "@/lib/validations/product";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function createProduct(values: ProductFormValues) {
   try {
     const t = await getTranslations("Errors");
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
     const tProduct = await getTranslations("Admin.productForm");
     const validatedFields = ProductSchema.safeParse(values);
 
@@ -117,6 +127,15 @@ export async function seedCategories() {
     { name: "Packs", slug: "packs" },
   ];
 
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    const t = await getTranslations("Errors");
+    return { error: t("unauthorized") };
+  }
+
   for (const cat of defaultCategories) {
     await prisma.category.upsert({
       where: { name: cat.name },
@@ -131,13 +150,21 @@ const utapi = new UTApi();
 
 export async function deleteProduct(id: string) {
   try {
+    const t = await getTranslations("Errors");
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
     // 1. Find the product and its images first
     const product = await prisma.product.findUnique({
       where: { id },
       include: { images: true },
     });
 
-    const t = await getTranslations("Errors");
     const tProduct = await getTranslations("Admin.productForm");
 
     if (!product) {
@@ -160,7 +187,11 @@ export async function deleteProduct(id: string) {
     // 4. Delete from UploadThing storage
     // If this fails, we just have orphaned files (which is better than broken UI)
     if (fileKeys.length > 0) {
-      await utapi.deleteFiles(fileKeys);
+      try {
+        await utapi.deleteFiles(fileKeys);
+      } catch (utError) {
+        console.error("Failed to delete files from UploadThing:", utError);
+      }
     }
 
     revalidatePath("/admin/inventory");
@@ -185,6 +216,14 @@ export async function deleteProduct(id: string) {
 export async function updateProduct(id: string, values: ProductFormValues) {
   try {
     const t = await getTranslations("Errors");
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
     const tProduct = await getTranslations("Admin.productForm");
     const validatedFields = ProductSchema.safeParse(values);
 
@@ -288,6 +327,12 @@ export async function updateProduct(id: string, values: ProductFormValues) {
 
 export async function deleteProductImage(url: string) {
   try {
+    const t = await getTranslations("Errors");
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) return { error: t("unauthorized") || "Unauthorized" };
     const fileKey = url.split("/").pop();
     if (!fileKey) return { error: "Invalid URL" };
 

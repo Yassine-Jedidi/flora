@@ -9,10 +9,10 @@ export function getOptimizedImageUrl(
 ) {
   if (!url) return "";
 
-  // If it's already an UploadThing URL, we can use their transformation service
+  // If it's already an UploadThing URL, we return it as is
+  // Note: img.utfs.io transformation is no longer used
   if (url.includes("utfs.io")) {
-    const baseUrl = url.replace("utfs.io", "img.utfs.io").replace("/f/", "/");
-    return `${baseUrl}?width=${width}&quality=${quality}`;
+    return url;
   }
 
   return url;

@@ -3,9 +3,9 @@
 import prisma from "@/lib/db";
 import { OrderSchema, type OrderValues } from "@/lib/validations/order";
 import { revalidatePath } from "next/cache";
-import { OrderStatus } from "@prisma/client";
+import { Prisma, OrderStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -41,6 +41,27 @@ export async function createOrder(values: OrderValues) {
 
     const validatedData = validatedFields.data;
 
+    // Security: Re-calculate prices from DB to prevent tampering
+    const productIds = validatedData.items.map((item) => item.productId);
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+    });
+
+    let recomputedTotalPrice = new Prisma.Decimal(0);
+    const finalItems = validatedData.items.map((item) => {
+      const dbProduct = products.find((p) => p.id === item.productId);
+      if (!dbProduct) throw new Error(`Product ${item.productId} not found`);
+
+      const price = dbProduct.discountedPrice ?? dbProduct.originalPrice;
+      recomputedTotalPrice = recomputedTotalPrice.add(price.mul(item.quantity));
+
+      return {
+        productId: item.productId,
+        quantity: item.quantity,
+        price: price,
+      };
+    });
+
     const order = await prisma.order.create({
       data: {
         userId: session?.user?.id,
@@ -49,14 +70,10 @@ export async function createOrder(values: OrderValues) {
         governorate: validatedData.governorate,
         city: validatedData.city,
         detailedAddress: validatedData.detailedAddress,
-        totalPrice: validatedData.totalPrice,
+        totalPrice: recomputedTotalPrice,
         status: "PENDING",
         items: {
-          create: validatedData.items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-          })),
+          create: finalItems,
         },
       },
     });
@@ -64,20 +81,14 @@ export async function createOrder(values: OrderValues) {
     // Send order confirmation email if user is logged in
     if (session?.user?.email) {
       try {
-        // Fetch product names for the email summary
-        const productIds = validatedData.items.map((item) => item.productId);
-        const products = await prisma.product.findMany({
-          where: { id: { in: productIds } },
-          select: { id: true, name: true },
-        });
-
-        // Map product names to order items
-        const emailItems = validatedData.items.map((item) => {
+        // Map verified items for email (using trusted server-side data)
+        const emailItems = finalItems.map((item) => {
+          // Reuse 'products' from the validation step (line 46)
           const product = products.find((p) => p.id === item.productId);
           return {
             name: product?.name || "Product Item",
             quantity: item.quantity,
-            price: item.price,
+            price: item.price.toNumber(),
           };
         });
 
@@ -90,7 +101,7 @@ export async function createOrder(values: OrderValues) {
           orderId: order.id,
           userEmail: session.user.email,
           userName: session.user.name ?? validatedData.fullName,
-          totalPrice: validatedData.totalPrice,
+          totalPrice: recomputedTotalPrice.toNumber(),
           items: emailItems,
           shippingAddress: {
             fullName: validatedData.fullName,
@@ -139,6 +150,38 @@ export async function createOrder(values: OrderValues) {
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      const t = await getTranslations("Errors");
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
+    // Check ownership or admin status
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { userId: true },
+    });
+
+    if (!existingOrder) {
+      const t = await getTranslations("Errors.orders");
+      return { error: t("notFound") };
+    }
+
+    const isOwner = existingOrder.userId === session.user.id;
+
+    // Check if user is admin via cookie (same auth system as /admin routes)
+    const adminCookie = (await cookies()).get("flora_admin_auth")?.value;
+    const isAdmin =
+      adminCookie === process.env.ADMIN_KEY && adminCookie !== undefined;
+
+    if (!isOwner && !isAdmin) {
+      const t = await getTranslations("Errors");
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
     const order = await prisma.order.update({
       where: { id: orderId },
       data: { status },
