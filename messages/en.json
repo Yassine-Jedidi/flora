@@ -1,0 +1,21 @@
+{
+    "HomePage": {
+        "title": "Flora Access",
+        "subtitle": "Timeless elegance for every occasion"
+    },
+    "Navigation": {
+        "home": "Home",
+        "shop": "Shop",
+        "about": "About",
+        "cart": "Cart",
+        "signIn": "Sign In",
+        "signOut": "Sign Out"
+    },
+    "Checkout": {
+        "title": "Checkout",
+        "completePurchase": "Complete Purchase",
+        "shipping": "Shipping Information",
+        "summary": "Order Summary",
+        "total": "Total"
+    }
+}

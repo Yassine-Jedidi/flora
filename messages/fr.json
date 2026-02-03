@@ -1,0 +1,21 @@
+{
+    "HomePage": {
+        "title": "Flora Access",
+        "subtitle": "Élégance intemporelle pour toutes les occasions"
+    },
+    "Navigation": {
+        "home": "Accueil",
+        "shop": "Boutique",
+        "about": "À propos",
+        "cart": "Panier",
+        "signIn": "Se connecter",
+        "signOut": "Se déconnecter"
+    },
+    "Checkout": {
+        "title": "Paiement",
+        "completePurchase": "Finaliser la commande",
+        "shipping": "Informations de livraison",
+        "summary": "Récapitulatif de commande",
+        "total": "Total"
+    }
+}
