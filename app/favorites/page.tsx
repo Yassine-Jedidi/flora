@@ -1,12 +1,6 @@
 import { getTranslations } from "next-intl/server";
-
-import dynamic from "next/dynamic";
 import { Navbar } from "@/components/navbar";
-
-const FavoritesContent = dynamic(
-  () => import("@/components/favorites/favorites-content"),
-  { ssr: false }
-);
+import FavoritesContent from "@/components/favorites/favorites-content";
 
 export async function generateMetadata() {
   const t = await getTranslations("Metadata.favorites");
