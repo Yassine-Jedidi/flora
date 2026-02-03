@@ -22,17 +22,19 @@ import { Footer } from "@/components/footer";
 
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
-
-const signInSchema = z.object({
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(1, "Password is required"),
-});
-
-type SignInValues = z.infer<typeof signInSchema>;
+import { useTranslations } from "next-intl";
 
 export default function SignInPage() {
+    const t = useTranslations("Auth.signIn");
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+
+    const signInSchema = z.object({
+        email: z.string().email(t("validationDesc")),
+        password: z.string().min(1, t("validationDesc")),
+    });
+
+    type SignInValues = z.infer<typeof signInSchema>;
 
     const {
         register,
@@ -45,21 +47,21 @@ export default function SignInPage() {
     const onSubmit = async (values: SignInValues) => {
         setIsLoading(true);
         try {
-            const { data, error } = await signIn.email({
+            const { error } = await signIn.email({
                 email: values.email,
                 password: values.password,
                 callbackURL: "/",
             });
 
             if (error) {
-                toast.error(error.message || "Invalid email or password");
+                toast.error(error.message || t("error"));
             } else {
-                toast.success("Welcome back to Flora! 🎀");
+                toast.success(t("success"));
                 router.push("/");
                 router.refresh();
             }
         } catch (err: any) {
-            toast.error("An unexpected error occurred. Please try again.");
+            toast.error(t("unexpectedError"));
         } finally {
             setIsLoading(false);
         }
@@ -73,7 +75,7 @@ export default function SignInPage() {
                 callbackURL: "/",
             });
         } catch (err: any) {
-            toast.error(`Failed to sign in with ${provider}`);
+            toast.error(t("unexpectedError"));
         } finally {
             setIsLoading(false);
         }
@@ -97,10 +99,10 @@ export default function SignInPage() {
 
                         <div className="text-center mb-8">
                             <h1 className="text-3xl font-black text-flora-dark tracking-tight mb-2">
-                                Welcome Back
+                                {t("title")}
                             </h1>
                             <p className="text-gray-400 text-sm font-medium flex items-center justify-center gap-2">
-                                We missed you! <Bow className="w-4 h-4 text-primary shrink-0" />
+                                {t("subtitle")} <Bow className="w-4 h-4 text-primary shrink-0" />
                             </p>
                         </div>
 
@@ -113,7 +115,7 @@ export default function SignInPage() {
                                 className="h-12 rounded-2xl border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-all hover:border-primary/30 flex items-center justify-center gap-3"
                             >
                                 <FcGoogle className="w-5 h-5" />
-                                Continue with Google
+                                {t("google")}
                             </Button>
                             <Button
                                 variant="outline"
@@ -122,7 +124,7 @@ export default function SignInPage() {
                                 className="h-12 rounded-2xl border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-all hover:border-primary/30 flex items-center justify-center gap-3"
                             >
                                 <FaFacebook className="w-5 h-5 text-[#1877F2]" />
-                                Continue with Facebook
+                                {t("facebook")}
                             </Button>
                         </div>
 
@@ -131,7 +133,7 @@ export default function SignInPage() {
                                 <div className="w-full border-t border-gray-100" />
                             </div>
                             <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-[0.2em] text-gray-300">
-                                <span className="bg-white px-4">Or use your email</span>
+                                <span className="bg-white px-4">{t("orEmail")}</span>
                             </div>
                         </div>
 
@@ -140,8 +142,8 @@ export default function SignInPage() {
                                 console.error("Sign In Validation Errors:", errors);
                                 const errorMessages = Object.values(errors);
                                 if (errorMessages.length > 0) {
-                                    toast.error("Sign in failed", {
-                                        description: (errorMessages[0]?.message as string) || "Please check your email and password.",
+                                    toast.error(t("validationError"), {
+                                        description: (errorMessages[0]?.message as string) || t("validationDesc"),
                                     });
                                 }
                             })}
@@ -150,14 +152,14 @@ export default function SignInPage() {
                             {/* Email Field */}
                             <div className="space-y-1.5">
                                 <Label htmlFor="email" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">
-                                    Email Address
+                                    {t("emailLabel")}
                                 </Label>
                                 <div className="relative">
                                     <Input
                                         id="email"
                                         type="email"
                                         {...register("email")}
-                                        placeholder="hello@flora.tn"
+                                        placeholder={t("emailPlaceholder")}
                                         className="h-12 rounded-xl border-gray-100 focus:ring-primary/20 focus:border-primary transition-all font-medium text-sm"
                                     />
                                 </div>
@@ -172,10 +174,10 @@ export default function SignInPage() {
                             <div className="space-y-1.5">
                                 <div className="flex justify-between items-center px-1">
                                     <Label htmlFor="password" className="text-flora-dark font-bold text-[11px] uppercase tracking-wider opacity-60">
-                                        Password
+                                        {t("passwordLabel")}
                                     </Label>
                                     <Link href="/forgot-password" className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-widest">
-                                        Forgot?
+                                        {t("forgotPassword")}
                                     </Link>
                                 </div>
                                 <div className="relative">
@@ -183,7 +185,7 @@ export default function SignInPage() {
                                         id="password"
                                         type="password"
                                         {...register("password")}
-                                        placeholder="••••••••••••"
+                                        placeholder={t("passwordPlaceholder")}
                                         className="h-12 rounded-xl border-gray-100 focus:ring-primary/20 focus:border-primary transition-all font-medium text-sm"
                                     />
                                 </div>
@@ -204,7 +206,7 @@ export default function SignInPage() {
                                         <Loader2 className="w-5 h-5 animate-spin" />
                                     ) : (
                                         <span className="flex items-center gap-2">
-                                            Sign In
+                                            {t("submit")}
                                         </span>
                                     )}
                                 </Button>
@@ -213,12 +215,12 @@ export default function SignInPage() {
 
                         <div className="mt-8 text-center pt-2 border-t border-gray-50">
                             <p className="text-gray-400 text-xs font-medium">
-                                Don&apos;t have an account?{" "}
+                                {t("noAccount")}{" "}
                                 <Link
                                     href="/signup"
                                     className="text-primary hover:text-primary/80 transition-colors font-bold ml-1"
                                 >
-                                    Sign Up
+                                    {t("signUp")}
                                 </Link>
                             </p>
                         </div>

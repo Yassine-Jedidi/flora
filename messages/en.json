@@ -333,5 +333,87 @@
                 "delivered": "Delivered"
             }
         }
+    },
+    "Auth": {
+        "signIn": {
+            "title": "Welcome Back",
+            "subtitle": "We missed you!",
+            "google": "Continue with Google",
+            "facebook": "Continue with Facebook",
+            "orEmail": "Or use your email",
+            "emailLabel": "Email Address",
+            "emailPlaceholder": "hello@flora.tn",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "••••••••••••",
+            "forgotPassword": "Forgot?",
+            "submit": "Sign In",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign Up",
+            "success": "Welcome back to Flora! 🎀",
+            "error": "Invalid email or password",
+            "unexpectedError": "An unexpected error occurred. Please try again.",
+            "validationError": "Sign in failed",
+            "validationDesc": "Please check your email and password."
+        },
+        "signUp": {
+            "title": "Create Account",
+            "subtitle": "Join the Flora family today",
+            "google": "Continue with Google",
+            "facebook": "Continue with Facebook",
+            "orEmail": "Or use your email",
+            "nameLabel": "Full Name",
+            "namePlaceholder": "Flora Beauty",
+            "emailLabel": "Email Address",
+            "emailPlaceholder": "hello@flora.tn",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "••••••••••••",
+            "submit": "Sign Up",
+            "hasAccount": "Already have an account?",
+            "signIn": "Sign In",
+            "success": "Account created! Welcome to Flora 🎀",
+            "error": "Failed to create account",
+            "socialError": "Failed to sign in with {provider}",
+            "unexpectedError": "An unexpected error occurred. Please try again.",
+            "validationError": "Sign up failed",
+            "validationDesc": "Please check your account details.",
+            "validation": {
+                "nameMin": "Name must be at least 2 characters",
+                "emailInvalid": "Invalid email address",
+                "passwordMin": "Password must be at least 8 characters"
+            }
+        },
+        "forgotPassword": {
+            "title": "Forgot Password?",
+            "subtitle": "We'll send you a link to reset it",
+            "emailLabel": "Email Address",
+            "emailPlaceholder": "hello@flora.tn",
+            "submit": "Send Reset Link",
+            "backToSignIn": "Back to Sign In",
+            "success": "Reset link sent! Check your inbox.",
+            "error": "Failed to send reset link.",
+            "unexpectedError": "An error occurred. Please try again.",
+            "sent": {
+                "title": "Check your inbox",
+                "message": "We sent a link to"
+            }
+        },
+        "resetPassword": {
+            "title": "Reset Password",
+            "subtitle": "Choose a strong password to protect your account",
+            "newPasswordLabel": "New Password",
+            "confirmPasswordLabel": "Confirm Password",
+            "submit": "Set New Password",
+            "backToSignIn": "Back to Sign In",
+            "success": "Password reset successfully! 🔒",
+            "error": "Failed to reset password",
+            "unexpectedError": "An error occurred. Please try again.",
+            "mismatchError": "Passwords do not match",
+            "lengthError": "Password must be at least 8 characters",
+            "invalidLink": {
+                "title": "Invalid or Expired Link",
+                "message": "This password reset link is invalid or has expired. Please request a new one.",
+                "requestNew": "Request New Link"
+            }
+        }
     }
 }

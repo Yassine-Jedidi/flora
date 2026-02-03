@@ -12,8 +12,10 @@ import { Bow } from "@/components/icons/bow";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 
 export default function ForgotPasswordPage() {
+    const t = useTranslations("Auth.forgotPassword");
     const [email, setEmail] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSent, setIsSent] = useState(false);
@@ -30,14 +32,14 @@ export default function ForgotPasswordPage() {
             }, {
                 onSuccess: () => {
                     setIsSent(true);
-                    toast.success("Reset link sent! Check your inbox.");
+                    toast.success(t("success"));
                 },
                 onError: (ctx: { error: { message?: string } }) => {
-                    toast.error(ctx.error.message || "Failed to send reset link.");
+                    toast.error(ctx.error.message || t("error"));
                 }
             });
         } catch (error) {
-            toast.error("An error occurred. Please try again.");
+            toast.error(t("unexpectedError"));
         } finally {
             setIsSubmitting(false);
         }
@@ -59,9 +61,9 @@ export default function ForgotPasswordPage() {
                 >
                     <div className="bg-white rounded-[32px] p-8 md:p-10 shadow-[0_8px_40px_rgba(0,0,0,0.04)] border border-gray-100 relative overflow-hidden">
                         <div className="text-center mb-8">
-                            <h1 className="text-3xl font-black text-flora-dark tracking-tight mb-2">Forgot Password?</h1>
+                            <h1 className="text-3xl font-black text-flora-dark tracking-tight mb-2">{t("title")}</h1>
                             <p className="text-gray-400 text-sm font-medium">
-                                We'll send you a link to reset it <Bow className="w-4 h-4 text-primary inline-block shrink-0 ms-1" />
+                                {t("subtitle")} <Bow className="w-4 h-4 text-primary inline-block shrink-0 ms-1" />
                             </p>
                         </div>
 
@@ -70,25 +72,25 @@ export default function ForgotPasswordPage() {
                                 <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
                                     <Mail className="w-6 h-6 text-purple-600" />
                                 </div>
-                                <h3 className="text-lg font-black text-flora-dark">Check your inbox</h3>
+                                <h3 className="text-lg font-black text-flora-dark">{t("sent.title")}</h3>
                                 <p className="text-gray-500 text-sm font-medium">
-                                    We sent a link to <span className="font-bold text-flora-dark">{email}</span>
+                                    {t("sent.message")} <span className="font-bold text-flora-dark">{email}</span>
                                 </p>
                                 <Button asChild variant="outline" className="mt-4 rounded-xl font-bold w-full h-11 border-purple-200 text-purple-700 hover:bg-purple-100/50">
-                                    <Link href="/signin">Back to Sign In</Link>
+                                    <Link href="/signin">{t("backToSignIn")}</Link>
                                 </Button>
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-1.5">
                                     <Label htmlFor="email" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">
-                                        Email Address
+                                        {t("emailLabel")}
                                     </Label>
                                     <div className="relative">
                                         <Input
                                             id="email"
                                             type="email"
-                                            placeholder="hello@flora.tn"
+                                            placeholder={t("emailPlaceholder")}
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                             className="h-12 rounded-xl border-gray-100 focus:ring-primary/20 focus:border-primary transition-all font-medium text-sm pl-11"
@@ -106,14 +108,14 @@ export default function ForgotPasswordPage() {
                                     {isSubmitting ? (
                                         <Loader2 className="w-5 h-5 animate-spin" />
                                     ) : (
-                                        "Send Reset Link"
+                                        t("submit")
                                     )}
                                 </Button>
 
                                 <div className="text-center pt-2">
                                     <Link href="/signin" className="inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-primary transition-colors uppercase tracking-widest">
                                         <ArrowLeft className="w-3 h-3" />
-                                        Back to Sign In
+                                        {t("backToSignIn")}
                                     </Link>
                                 </div>
                             </form>

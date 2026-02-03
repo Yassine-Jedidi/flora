@@ -22,18 +22,20 @@ import { Footer } from "@/components/footer";
 
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
-
-const signUpSchema = z.object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-type SignUpValues = z.infer<typeof signUpSchema>;
+import { useTranslations } from "next-intl";
 
 export default function SignUpPage() {
+    const t = useTranslations("Auth.signUp");
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+
+    const signUpSchema = z.object({
+        name: z.string().min(2, t("validation.nameMin")),
+        email: z.string().email(t("validation.emailInvalid")),
+        password: z.string().min(8, t("validation.passwordMin")),
+    });
+
+    type SignUpValues = z.infer<typeof signUpSchema>;
 
     const {
         register,
@@ -46,7 +48,7 @@ export default function SignUpPage() {
     const onSubmit = async (values: SignUpValues) => {
         setIsLoading(true);
         try {
-            const { data, error } = await signUp.email({
+            const { error } = await signUp.email({
                 email: values.email,
                 password: values.password,
                 name: values.name,
@@ -54,14 +56,14 @@ export default function SignUpPage() {
             });
 
             if (error) {
-                toast.error(error.message || "Failed to create account");
+                toast.error(error.message || t("error"));
             } else {
-                toast.success("Account created! Welcome to Flora 🎀");
+                toast.success(t("success"));
                 router.push("/");
                 router.refresh();
             }
         } catch (err: any) {
-            toast.error("Something went wrong. Please try again.");
+            toast.error(t("unexpectedError"));
         } finally {
             setIsLoading(false);
         }
@@ -70,16 +72,16 @@ export default function SignUpPage() {
     const handleSocialSignUp = async (provider: "google" | "facebook") => {
         setIsLoading(true);
         try {
-            const { data, error } = await signIn.social({
+            const { error } = await signIn.social({
                 provider,
                 callbackURL: "/",
             });
 
             if (error) {
-                toast.error(error.message || `Failed to sign in with ${provider}`);
+                toast.error(error.message || t("socialError", { provider }));
             }
         } catch (err: any) {
-            toast.error("An unexpected error occurred. Please try again.");
+            toast.error(t("unexpectedError"));
         } finally {
             setIsLoading(false);
         }
@@ -103,10 +105,10 @@ export default function SignUpPage() {
 
                         <div className="text-center mb-8">
                             <h1 className="text-3xl font-black text-flora-dark tracking-tight mb-2">
-                                Create Account
+                                {t("title")}
                             </h1>
                             <p className="text-gray-400 text-sm font-medium flex items-center justify-center gap-2">
-                                Join the Flora family today <Bow className="w-4 h-4 text-flora-purple shrink-0" />
+                                {t("subtitle")} <Bow className="w-4 h-4 text-flora-purple shrink-0" />
                             </p>
                         </div>
 
@@ -119,7 +121,7 @@ export default function SignUpPage() {
                                 className="h-12 rounded-2xl border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-all hover:border-flora-purple/30 flex items-center justify-center gap-3"
                             >
                                 <FcGoogle className="w-5 h-5" />
-                                Continue with Google
+                                {t("google")}
                             </Button>
                             <Button
                                 variant="outline"
@@ -128,7 +130,7 @@ export default function SignUpPage() {
                                 className="h-12 rounded-2xl border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-all hover:border-flora-purple/30 flex items-center justify-center gap-3"
                             >
                                 <FaFacebook className="w-5 h-5 text-[#1877F2]" />
-                                Continue with Facebook
+                                {t("facebook")}
                             </Button>
                         </div>
 
@@ -137,7 +139,7 @@ export default function SignUpPage() {
                                 <div className="w-full border-t border-gray-100" />
                             </div>
                             <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-[0.2em] text-gray-300">
-                                <span className="bg-white px-4">Or use your email</span>
+                                <span className="bg-white px-4">{t("orEmail")}</span>
                             </div>
                         </div>
 
@@ -146,8 +148,8 @@ export default function SignUpPage() {
                                 console.error("Sign Up Validation Errors:", errors);
                                 const errorMessages = Object.values(errors);
                                 if (errorMessages.length > 0) {
-                                    toast.error("Sign up failed", {
-                                        description: (errorMessages[0]?.message as string) || "Please check your account details.",
+                                    toast.error(t("validationError"), {
+                                        description: (errorMessages[0]?.message as string) || t("validationDesc"),
                                     });
                                 }
                             })}
@@ -156,13 +158,13 @@ export default function SignUpPage() {
                             {/* Name Field */}
                             <div className="space-y-1.5">
                                 <Label htmlFor="name" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">
-                                    Full Name
+                                    {t("nameLabel")}
                                 </Label>
                                 <div className="relative">
                                     <Input
                                         id="name"
                                         {...register("name")}
-                                        placeholder="Flora Beauty"
+                                        placeholder={t("namePlaceholder")}
                                         className="h-12 rounded-xl border-purple-100 bg-transparent focus:ring-flora-purple/20 focus:border-flora-purple placeholder:text-purple-300 selection:bg-flora-purple shadow-[0_2px_10px_rgba(167,139,250,0.05)] transition-all font-medium text-sm"
                                     />
                                 </div>
@@ -176,14 +178,14 @@ export default function SignUpPage() {
                             {/* Email Field */}
                             <div className="space-y-1.5">
                                 <Label htmlFor="email" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">
-                                    Email Address
+                                    {t("emailLabel")}
                                 </Label>
                                 <div className="relative">
                                     <Input
                                         id="email"
                                         type="email"
                                         {...register("email")}
-                                        placeholder="hello@flora.tn"
+                                        placeholder={t("emailPlaceholder")}
                                         className="h-12 rounded-xl border-purple-100 bg-transparent focus:ring-flora-purple/20 focus:border-flora-purple placeholder:text-purple-300 selection:bg-flora-purple shadow-[0_2px_10px_rgba(167,139,250,0.05)] transition-all font-medium text-sm"
                                     />
                                 </div>
@@ -197,14 +199,14 @@ export default function SignUpPage() {
                             {/* Password Field */}
                             <div className="space-y-1.5">
                                 <Label htmlFor="password" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">
-                                    Password
+                                    {t("passwordLabel")}
                                 </Label>
                                 <div className="relative">
                                     <Input
                                         id="password"
                                         type="password"
                                         {...register("password")}
-                                        placeholder="••••••••••••"
+                                        placeholder={t("passwordPlaceholder")}
                                         className="h-12 rounded-xl border-purple-100 bg-transparent focus:ring-flora-purple/20 focus:border-flora-purple placeholder:text-purple-300 selection:bg-flora-purple shadow-[0_2px_10px_rgba(167,139,250,0.05)] transition-all font-medium text-sm"
                                     />
                                 </div>
@@ -225,7 +227,7 @@ export default function SignUpPage() {
                                         <Loader2 className="w-5 h-5 animate-spin" />
                                     ) : (
                                         <span className="flex items-center gap-2">
-                                            Sign Up
+                                            {t("submit")}
                                         </span>
                                     )}
                                 </Button>
@@ -234,12 +236,12 @@ export default function SignUpPage() {
 
                         <div className="mt-8 text-center pt-2 border-t border-gray-50">
                             <p className="text-gray-400 text-xs font-medium">
-                                Already have an account?{" "}
+                                {t("hasAccount")}{" "}
                                 <Link
                                     href="/signin"
                                     className="text-flora-purple hover:text-flora-purple/80 transition-colors font-bold ml-1"
                                 >
-                                    Sign In
+                                    {t("signIn")}
                                 </Link>
                             </p>
                         </div>

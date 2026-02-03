@@ -13,16 +13,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 
 function ResetPasswordForm() {
+    const t = useTranslations("Auth.resetPassword");
     const searchParams = useSearchParams();
     const router = useRouter();
     const error = searchParams.get("error");
-
-    // Better Auth might just handle the token verification internally when we call resetPassword?
-    // Usually the token is in the URL. resetPassword will pick it up or we pass it?
-    // Checking Better Auth docs (mental model): resetPassword usually takes { newPassword } and automagically grabs token from URL if not provided, OR we pass it.
-    // Let's assume automatic from URL or we pass it if needed. Actually the function signature usually is resetPassword({ newPassword, token }) or similar.
 
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -35,12 +32,12 @@ function ResetPasswordForm() {
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
                     <Lock className="w-8 h-8 text-red-500" />
                 </div>
-                <h3 className="text-xl font-black text-flora-dark">Invalid or Expired Link</h3>
+                <h3 className="text-xl font-black text-flora-dark">{t("invalidLink.title")}</h3>
                 <p className="text-gray-500 font-medium">
-                    This password reset link is invalid or has expired. Please request a new one.
+                    {t("invalidLink.message")}
                 </p>
                 <Button asChild className="rounded-xl font-bold w-full h-12 bg-primary text-white">
-                    <Link href="/forgot-password">Request New Link</Link>
+                    <Link href="/forgot-password">{t("invalidLink.requestNew")}</Link>
                 </Button>
             </div>
         );
@@ -52,18 +49,14 @@ function ResetPasswordForm() {
         e.preventDefault();
 
         if (password !== confirmPassword) {
-            toast.error("Passwords do not match");
+            toast.error(t("mismatchError"));
             return;
         }
 
         if (password.length < 8) {
-            toast.error("Password must be at least 8 characters");
+            toast.error(t("lengthError"));
             return;
         }
-
-        // If token is missing, better-auth might handle it if it's in the URL, but let's be safe.
-        // Actually, for better-auth v1, usually we pass it if we have it, or it auto-detects.
-        // Let's pass it if it exists.
 
         setIsSubmitting(true);
         try {
@@ -72,15 +65,15 @@ function ResetPasswordForm() {
                 token: token || undefined
             }, {
                 onSuccess: () => {
-                    toast.success("Password reset successfully! 🔒");
+                    toast.success(t("success"));
                     router.push("/signin");
                 },
                 onError: (ctx: { error: { message?: string } }) => {
-                    toast.error(ctx.error.message || "Failed to reset password");
+                    toast.error(ctx.error.message || t("error"));
                 }
             });
         } catch (error) {
-            toast.error("An error occurred. Please try again.");
+            toast.error(t("unexpectedError"));
         } finally {
             setIsSubmitting(false);
         }
@@ -89,7 +82,7 @@ function ResetPasswordForm() {
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">New Password</Label>
+                <Label htmlFor="password" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">{t("newPasswordLabel")}</Label>
                 <div className="relative">
                     <Input
                         id="password"
@@ -111,7 +104,7 @@ function ResetPasswordForm() {
             </div>
 
             <div className="space-y-1.5">
-                <Label htmlFor="confirmPassword" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">Confirm Password</Label>
+                <Label htmlFor="confirmPassword" className="text-flora-dark font-bold ml-1 text-[11px] uppercase tracking-wider opacity-60">{t("confirmPasswordLabel")}</Label>
                 <div className="relative">
                     <Input
                         id="confirmPassword"
@@ -133,14 +126,14 @@ function ResetPasswordForm() {
                 {isSubmitting ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
-                    "Set New Password"
+                    t("submit")
                 )}
             </Button>
 
             <div className="text-center pt-2">
                 <Link href="/signin" className="inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-primary transition-colors uppercase tracking-widest">
                     <ArrowLeft className="w-3 h-3" />
-                    Back to Sign In
+                    {t("backToSignIn")}
                 </Link>
             </div>
         </form>
@@ -148,6 +141,7 @@ function ResetPasswordForm() {
 }
 
 export default function ResetPasswordPage() {
+    const t = useTranslations("Auth.resetPassword");
     return (
         <div className="min-h-screen bg-[#fafafa] flex flex-col font-sans">
             <Navbar />
@@ -164,9 +158,9 @@ export default function ResetPasswordPage() {
                 >
                     <div className="bg-white rounded-[32px] p-8 md:p-10 shadow-[0_8px_40px_rgba(0,0,0,0.04)] border border-gray-100 relative overflow-hidden">
                         <div className="text-center mb-8">
-                            <h1 className="text-3xl font-black text-flora-dark tracking-tight mb-2">Reset Password</h1>
+                            <h1 className="text-3xl font-black text-flora-dark tracking-tight mb-2">{t("title")}</h1>
                             <p className="text-gray-400 text-sm font-medium">
-                                Choose a strong password to protect your account <Bow className="w-4 h-4 text-primary inline-block shrink-0 ms-1" />
+                                {t("subtitle")} <Bow className="w-4 h-4 text-primary inline-block shrink-0 ms-1" />
                             </p>
                         </div>
 
