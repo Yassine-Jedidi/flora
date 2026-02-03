@@ -5,7 +5,7 @@ import { OrderSchema, type OrderValues } from "@/lib/validations/order";
 import { revalidatePath } from "next/cache";
 import { Prisma, OrderStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -159,7 +159,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
       return { error: t("unauthorized") || "Unauthorized" };
     }
 
-    // Check ownership
+    // Check ownership or admin status
     const existingOrder = await prisma.order.findUnique({
       where: { id: orderId },
       select: { userId: true },
@@ -172,7 +172,12 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
 
     const isOwner = existingOrder.userId === session.user.id;
 
-    if (!isOwner) {
+    // Check if user is admin via cookie (same auth system as /admin routes)
+    const adminCookie = (await cookies()).get("flora_admin_auth")?.value;
+    const isAdmin =
+      adminCookie === process.env.ADMIN_KEY && adminCookie !== undefined;
+
+    if (!isOwner && !isAdmin) {
       const t = await getTranslations("Errors");
       return { error: t("unauthorized") || "Unauthorized" };
     }
