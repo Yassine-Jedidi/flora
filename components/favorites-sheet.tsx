@@ -16,14 +16,16 @@ import { useFavorites } from "@/lib/hooks/use-favorites";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Product } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 export function FavoritesSheet() {
+  const t = useTranslations("Favorites");
   const { favorites, removeFavorite } = useFavorites();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleRemove = (id: string, name: string) => {
     removeFavorite(id);
-    toast.info("Removed from favorites", {
+    toast.info(t("removed"), {
       description: name,
     });
   };
@@ -61,13 +63,12 @@ export function FavoritesSheet() {
       >
         <SheetHeader className="pb-4">
           <SheetTitle className="text-2xl font-black text-flora-dark">
-            ✨ Your Favorites
+            ✨ {t("title")}
           </SheetTitle>
           <SheetDescription>
             {favorites.length === 0
-              ? "No favorite items yet. Start adding treasures!"
-              : `${favorites.length} item${favorites.length > 1 ? "s" : ""
-              } saved`}
+              ? t("empty")
+              : t("countSaved", { count: favorites.length })}
           </SheetDescription>
         </SheetHeader>
 
@@ -76,9 +77,9 @@ export function FavoritesSheet() {
             <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center mb-4">
               <Heart className="w-8 h-8 text-primary fill-primary" />
             </div>
-            <p className="text-gray-500 font-semibold mb-2">No favorites yet</p>
+            <p className="text-gray-500 font-semibold mb-2">{t("noFavorites")}</p>
             <p className="text-sm text-gray-400">
-              Click the heart icon on products to save them
+              {t("howToSave")}
             </p>
           </div>
         ) : (
@@ -152,7 +153,7 @@ export function FavoritesSheet() {
                 <button
                   onClick={() => handleRemove(product.id, product.name)}
                   className="self-start p-2 text-gray-400 hover:text-red-500 transition-colors hover:bg-red-50 rounded-lg"
-                  title="Remove from favorites"
+                  title={t("removeTooltip")}
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -162,7 +163,7 @@ export function FavoritesSheet() {
             {/* View All Button */}
             <Link href="/favorites" className="block pt-4">
               <Button className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-full font-bold h-12">
-                View All Favorites →
+                {t("viewAll")}
               </Button>
             </Link>
           </div>

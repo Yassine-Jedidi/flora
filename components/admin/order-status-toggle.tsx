@@ -11,38 +11,46 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { updateOrderStatus } from "@/app/actions/order";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Clock, CheckCircle2, Truck, XCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface OrderStatusToggleProps {
     orderId: string;
     currentStatus: OrderStatus;
 }
 
-const statusConfig = {
-    PENDING: {
-        label: "Pending",
-        className: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200 border-yellow-200",
-    },
-    CONFIRMED: {
-        label: "Confirmed",
-        className: "bg-blue-100 text-blue-600 hover:bg-blue-200 border-blue-200",
-    },
-    SHIPPED: {
-        label: "Shipped",
-        className: "bg-purple-100 text-purple-600 hover:bg-purple-200 border-purple-200",
-    },
-    DELIVERED: {
-        label: "Delivered",
-        className: "bg-green-100 text-green-600 hover:bg-green-200 border-green-200",
-    },
-    CANCELLED: {
-        label: "Cancelled",
-        className: "bg-red-100 text-red-600 hover:bg-red-200 border-red-200",
-    },
-};
 
 export function OrderStatusToggle({ orderId, currentStatus }: OrderStatusToggleProps) {
     const [isLoading, setIsLoading] = useState(false);
+    const t = useTranslations("Admin.orders");
+
+    const statusConfig = {
+        PENDING: {
+            label: t("filters.status.pending"),
+            className: "bg-yellow-100 text-yellow-600 hover:bg-yellow-200 border-yellow-200",
+            icon: Clock,
+        },
+        CONFIRMED: {
+            label: t("filters.status.confirmed"),
+            className: "bg-blue-100 text-blue-600 hover:bg-blue-200 border-blue-200",
+            icon: CheckCircle2,
+        },
+        SHIPPED: {
+            label: t("filters.status.shipped"),
+            className: "bg-purple-100 text-purple-600 hover:bg-purple-200 border-purple-200",
+            icon: Truck,
+        },
+        DELIVERED: {
+            label: t("filters.status.delivered"),
+            className: "bg-green-100 text-green-600 hover:bg-green-200 border-green-200",
+            icon: CheckCircle2,
+        },
+        CANCELLED: {
+            label: t("filters.status.cancelled"),
+            className: "bg-red-100 text-red-600 hover:bg-red-200 border-red-200",
+            icon: XCircle,
+        },
+    };
 
     const onStatusChange = async (newStatus: OrderStatus) => {
         if (newStatus === currentStatus) return;
@@ -52,12 +60,12 @@ export function OrderStatusToggle({ orderId, currentStatus }: OrderStatusToggleP
             const result = await updateOrderStatus(orderId, newStatus);
 
             if (result.success) {
-                toast.success(`Order status updated to ${newStatus.toLowerCase()}! ✨`);
+                toast.success(t("status.updated", { status: statusConfig[newStatus].label }));
             } else {
-                toast.error(result.error || "Failed to update status");
+                toast.error(result.error || t("status.error"));
             }
         } catch {
-            toast.error("Something went wrong");
+            toast.error(t("status.error"));
         } finally {
             setIsLoading(false);
         }
@@ -78,29 +86,38 @@ export function OrderStatusToggle({ orderId, currentStatus }: OrderStatusToggleP
                             variant="outline"
                             className={`
                 ${statusConfig[currentStatus].className}
-                uppercase tracking-wider text-[10px] font-bold rounded-full px-3 py-1 border shadow-sm
+                uppercase tracking-wider text-[10px] font-bold rounded-full px-3 py-1 border shadow-sm flex items-center gap-1.5
               `}
                         >
+                            {(() => {
+                                const Icon = statusConfig[currentStatus].icon;
+                                const textColor = statusConfig[currentStatus].className.split(' ').find(c => c.startsWith('text-'));
+                                return <Icon className={`w-3 h-3 ${textColor}`} />;
+                            })()}
                             {statusConfig[currentStatus].label}
                         </Badge>
                     )}
                 </div>
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-pink-100 shadow-xl overflow-hidden">
-                {Object.entries(statusConfig).map(([status, config]) => (
-                    <SelectItem
-                        key={status}
-                        value={status}
-                        className="focus:bg-pink-50 focus:text-[#3E343C] cursor-pointer py-2 px-4"
-                    >
-                        <div className="flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${config.className.split(' ')[0]}`} />
-                            <span className="text-xs font-bold text-[#3E343C] uppercase tracking-wider">
-                                {config.label}
-                            </span>
-                        </div>
-                    </SelectItem>
-                ))}
+                {Object.entries(statusConfig).map(([status, config]) => {
+                    const Icon = config.icon;
+                    const textColor = config.className.split(' ').find(c => c.startsWith('text-'));
+                    return (
+                        <SelectItem
+                            key={status}
+                            value={status}
+                            className="focus:bg-pink-50 focus:text-[#3E343C] cursor-pointer py-2 px-4"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Icon className={`w-4 h-4 ${textColor}`} />
+                                <span className="text-xs font-bold text-[#3E343C] uppercase tracking-wider">
+                                    {config.label}
+                                </span>
+                            </div>
+                        </SelectItem>
+                    );
+                })}
             </SelectContent>
         </Select>
     );

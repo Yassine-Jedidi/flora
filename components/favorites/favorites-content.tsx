@@ -9,10 +9,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/shop/product-card";
 import { Footer } from "@/components/footer";
 import { PaginationControl } from "@/components/ui/pagination-control";
+import { useTranslations } from "next-intl";
 
 const ITEMS_PER_PAGE = 9;
 
 export default function FavoritesContent() {
+  const t = useTranslations("Favorites");
   const router = useRouter();
   const searchParams = useSearchParams();
   const { favorites } = useFavorites();
@@ -60,19 +62,21 @@ export default function FavoritesContent() {
                 className="mb-6 md:mb-8 flex items-center gap-2 px-5 py-2 md:px-6 md:py-2.5 rounded-full bg-white/80 backdrop-blur-md text-flora-purple font-bold text-xs md:text-sm shadow-sm hover:shadow-md transition-all hover:-translate-x-1 border border-pink-50"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back to Shop
+                {t("backToShop")}
               </button>
 
               <div className="relative inline-block">
                 <h1 className="text-4xl md:text-7xl font-black text-flora-dark tracking-tight">
-                  Your <span className="text-primary">Treasures</span>
+                  {t.rich("pageTitle", {
+                    span: (chunks) => <span className="text-primary">{chunks}</span>
+                  })}
                 </h1>
               </div>
 
               <p className="mt-4 md:mt-6 text-base md:text-lg text-gray-500 font-medium max-w-lg px-4">
                 {favorites.length === 0
-                  ? "Your jewelry box is waiting to be filled with sparkles."
-                  : `You've saved ${favorites.length} piece${favorites.length === 1 ? "" : "s"} that caught your eye.`}
+                  ? t("pageSubtitle")
+                  : t("pageSubtitleCount", { count: favorites.length })}
               </p>
             </div>
           </div>
@@ -85,14 +89,14 @@ export default function FavoritesContent() {
                 <Heart className="w-12 h-12 md:w-16 md:h-16 text-primary fill-primary" />
               </div>
               <h2 className="text-2xl md:text-3xl font-black text-flora-dark mb-3 md:mb-4">
-                Your box is empty!
+                {t("emptyTitle")}
               </h2>
               <p className="text-gray-500 max-w-sm mb-8 md:mb-10 text-base md:text-lg leading-relaxed">
-                Find pieces you love and tap the heart to save them here. They&apos;ll be waiting for you!
+                {t("emptyDescription")}
               </p>
               <Link href="/">
                 <Button className="bg-primary hover:bg-[#FF75AA] text-white rounded-full font-black px-8 py-4 md:px-12 md:h-16 text-lg md:text-xl shadow-lg hover:shadow-pink-200 transition-all hover:scale-105 active:scale-95">
-                  Start Exploring
+                  {t("startExploring")}
                 </Button>
               </Link>
             </div>

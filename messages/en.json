@@ -1,0 +1,1004 @@
+{
+    "Metadata": {
+        "root": {
+            "title": "Flora | Explore Unique Treasures",
+            "description": "Discover beautiful jewelry and accessories to brighten your day."
+        },
+        "admin": {
+            "title": "Admin Dashboard | Flora",
+            "description": "Manage your jewelry collection and orders.",
+            "newProduct": {
+                "title": "New Product | Flora Admin",
+                "description": "Add a new treasure to your collection."
+            },
+            "editProduct": {
+                "title": "Edit Product | Flora Admin",
+                "description": "Update product details."
+            },
+            "newPack": {
+                "title": "New Pack | Flora Admin",
+                "description": "Create a new value bundle."
+            },
+            "editPack": {
+                "title": "Edit Pack | Flora Admin",
+                "description": "Update pack details."
+            },
+            "orders": {
+                "title": "Manage Orders | Flora Admin",
+                "description": "View and manage customer orders."
+            },
+            "inventory": {
+                "title": "Inventory Management | Flora Admin",
+                "description": "Manage your product catalog."
+            }
+        },
+        "sale": {
+            "title": "Sale Collection | Flora Accessories",
+            "description": "Discover our limited-time treasures with exclusive discounts"
+        },
+        "faq": {
+            "title": "Frequently Asked Questions | Flora Accessories",
+            "description": "Find answers to common questions about ordering, delivery, and products at Flora Accessories Tunisia."
+        },
+        "shipping": {
+            "title": "Shipping & Delivery | Flora Accessories",
+            "description": "Learn about our shipping policy, delivery times, and costs for orders across Tunisia."
+        },
+        "search": {
+            "title": "Search Treasures | Flora Accessories",
+            "description": "Search for your favorite jewelry and accessories at Flora."
+        },
+        "favorites": {
+            "title": "Your Favorites | Flora Accessories",
+            "description": "View the treasures you've saved to your favorites."
+        },
+        "orders": {
+            "title": "My Orders | Flora Accessories",
+            "description": "Track and manage your treasure orders."
+        },
+        "profile": {
+            "title": "My Profile | Flora Accessories",
+            "description": "Manage your account, addresses, and security."
+        },
+        "checkout": {
+            "title": "Checkout | Flora Accessories",
+            "description": "Complete your purchase securely."
+        },
+        "auth": {
+            "signIn": {
+                "title": "Sign In | Flora Accessories",
+                "description": "Sign in to your account to manage your orders and favorites."
+            },
+            "signUp": {
+                "title": "Sign Up | Flora Accessories",
+                "description": "Create an account to start your journey with Flora."
+            },
+            "forgotPassword": {
+                "title": "Forgot Password | Flora Accessories",
+                "description": "Reset your account password."
+            },
+            "resetPassword": {
+                "title": "Reset Password | Flora Accessories",
+                "description": "Set a new password for your account."
+            }
+        },
+        "categories": {
+            "all": {
+                "title": "All Treasures | Flora Accessories",
+                "description": "Explore our complete collection of unique jewelry and accessories."
+            },
+            "rings": {
+                "title": "Rings | Flora Accessories",
+                "description": "Discover our beautiful collection of elegant rings."
+            },
+            "bracelets": {
+                "title": "Bracelets | Flora Accessories",
+                "description": "Find the perfect bracelet to complement your style."
+            },
+            "necklaces": {
+                "title": "Necklaces | Flora Accessories",
+                "description": "Explore our curated collection of stunning necklaces."
+            },
+            "earrings": {
+                "title": "Earrings | Flora Accessories",
+                "description": "Discover elegant earrings for every occasion."
+            },
+            "packs": {
+                "title": "Special Packs | Flora Accessories",
+                "description": "Save more with our curated jewelry and accessory packs."
+            }
+        }
+    },
+    "Errors": {
+        "generic": "Something went wrong!",
+        "validation": "Invalid fields!",
+        "notFound": "Resource not found",
+        "unauthorized": "You are not authorized",
+        "unauthenticated": "Please sign in to continue",
+        "deleteRestricted": "Cannot delete item with existing references (Orders).",
+        "priceRefinement": "Sale Price must be less than the Original Price.",
+        "itemsNotFound": "Some selected products do not exist.",
+        "categoryRequired": "Category is required. Please ensure the 'Packs' category exists.",
+        "wishlistFull": "Wishlist limit reached. You can only save up to 20 items.",
+        "fetchWishlistError": "Failed to fetch wishlist",
+        "updateWishlistError": "Failed to update wishlist",
+        "syncWishlistError": "Failed to sync wishlist",
+        "auth": {
+            "failedToCreate": "Failed to create account",
+            "invalidCredentials": "Invalid email or password",
+            "signOutError": "Error signing out"
+        },
+        "orders": {
+            "rateLimit": "Too many orders. Please try again in {message}.",
+            "invalidData": "Invalid order data. Please check your cart and shipping details.",
+            "createError": "An error occurred while creating the order.",
+            "updateStatusError": "An error occurred while updating the order status.",
+            "fetchError": "An error occurred while fetching your orders.",
+            "fetchSingleError": "An error occurred while fetching the order.",
+            "notFound": "Order not found"
+        },
+        "addresses": {
+            "limitReached": "Address limit reached. You can only have up to 4 addresses.",
+            "fetchError": "Failed to fetch addresses",
+            "createError": "Failed to create address",
+            "updateError": "Failed to update address",
+            "deleteError": "Failed to delete address"
+        },
+        "profile": {
+            "updateError": "Failed to update profile",
+            "deleteFileError": "Failed to delete file",
+            "fetchSessionsError": "Failed to fetch sessions",
+            "revokeSessionError": "Failed to revoke session",
+            "checkPasswordError": "Failed to check password status",
+            "setPasswordError": "Failed to set password",
+            "fetchAccountsError": "Failed to fetch accounts",
+            "deleteAccountError": "Failed to delete account",
+            "rateLimit": "Too many updates. Please try again in {message}."
+        }
+    },
+    "HomePage": {
+        "title": "Flora Access",
+        "subtitle": "Timeless elegance for every occasion",
+        "sparkleTitle": "Sparkle Every Day",
+        "sparkleSubtitle": "Discover the cutest accessories to brighten up your daily look.",
+        "shopNewArrivals": "Shop New Arrivals",
+        "exploreStyles": "Explore Styles",
+        "exploreAll": "Explore All Collections",
+        "stylesSubtitle": "Find your next signature piece among our most-loved categories.",
+        "collection": "Collection",
+        "trendingNow": "Trending Now",
+        "featuredTreasures": "Featured Treasures",
+        "featuredSubtitle": "Discover our most loved pieces, handpicked just for you."
+    },
+    "Navigation": {
+        "home": "Home",
+        "shop": "Shop",
+        "about": "About",
+        "cart": "Cart",
+        "signIn": "Sign In",
+        "signOut": "Sign Out",
+        "rings": "Rings",
+        "bracelets": "Bracelets",
+        "necklaces": "Necklaces",
+        "earrings": "Earrings",
+        "packs": "Packs",
+        "sale": "Sale",
+        "searchPlaceholder": "Find treasures...",
+        "myProfile": "My Profile",
+        "myOrders": "My Orders",
+        "wishlist": "Wishlist",
+        "welcome": "Welcome to Flora",
+        "createAccount": "Create Account",
+        "menuTitle": "Navigation Menu",
+        "gift": "GIFT",
+        "hot": "HOT",
+        "saveBig": "SAVE BIG",
+        "pressEnter": "Press enter to see all results",
+        "noResults": "No treasures found matching \"{query}\"",
+        "searchFailed": "Search failed",
+        "selectLanguage": "Select language",
+        "logoAlt": "Flora Logo"
+    },
+    "Checkout": {
+        "title": "Checkout",
+        "completePurchase": "Complete Purchase",
+        "shipping": "Shipping Information",
+        "summary": "Order Summary",
+        "total": "Total",
+        "backToAccessories": "Back to accessories",
+        "checkoutTitle": "Checkout",
+        "checkoutSubtitle": "Complete your purchase by providing your shipping details.",
+        "selectSavedAddress": "Select a saved address",
+        "shipToNewAddress": "+ Ship to a new address",
+        "newShippingDetails": "New shipping details",
+        "backToSavedAddresses": "Back to saved addresses",
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "Enter your full name",
+        "phoneNumber": "Phone Number (8 digits)",
+        "phoneNumberPlaceholder": "Example: 20123456",
+        "governorate": "Governorate",
+        "selectGovernorate": "Select governorate",
+        "city": "City / Delegation",
+        "selectCity": "Select city",
+        "detailedAddress": "Detailed Address",
+        "detailedAddressPlaceholder": "Street, Building, Apartment...",
+        "saveAddress": "Save this address for 1-click checkout",
+        "cashOnDelivery": "Cash on Delivery",
+        "payOnReceive": "Pay when you receive your treasure",
+        "subtotal": "Subtotal",
+        "shippingCost": "Shipping",
+        "totalToPay": "Total to pay",
+        "qualityGuaranteed": "Quality Guaranteed",
+        "fastDelivery": "Fast Delivery",
+        "removeTitle": "Remove this treasure? ✨",
+        "removeDescription": "Are you sure you want to remove <bold>{name}</bold> from your order?",
+        "keepIt": "Keep it",
+        "remove": "Yes, remove",
+        "orderCompleted": "Order Completed!",
+        "orderSuccessMessage": "Your order has been placed successfully. We'll contact you soon for confirmation.",
+        "backToShop": "Back to Shop",
+        "removedFromCart": "Removed from cart",
+        "orderSuccessToast": "Order placed successfully! ✨",
+        "genericError": "Something went wrong.",
+        "orderError": "Failed to place order.",
+        "validationErrorTitle": "Please check your shipping details",
+        "validationErrorDescription": "Some fields are invalid."
+    },
+    "Footer": {
+        "tagline": "Elevating everyday moments with exquisite adornments.",
+        "shop": "Shop",
+        "help": "Help",
+        "shipping": "Shipping",
+        "faq": "FAQ",
+        "contactUs": "Contact Us",
+        "copyright": "© {year} Flora Accessories. Designed with"
+    },
+    "Shop": {
+        "galleryTitle": "The Flora Gallery",
+        "treasuresCount": "{count} Treasures",
+        "noResults": "No {category} found",
+        "newCollection": "New collection arriving soon.",
+        "checkBack": "Check back soon for new treasures! ✨",
+        "titles": {
+            "all": "Shop All",
+            "rings": "Rings",
+            "bracelets": "Bracelets",
+            "necklaces": "Necklaces",
+            "earrings": "Earrings",
+            "packs": "Packs",
+            "sale": "Sale"
+        },
+        "subtitles": {
+            "all": "Explore our entire collection of exquisite adornments",
+            "rings": "Adorn your fingers with a touch of magic and sparkle",
+            "bracelets": "Wrap your wrists in elegance and charm",
+            "necklaces": "Frame your beauty with our delicate chains",
+            "earrings": "Let your ears sparkle with every move",
+            "packs": "Curated sets for every occasion",
+            "sale": "Grab your favorite treasures at a special price"
+        },
+        "badges": {
+            "new": "NEW",
+            "bestseller": "BESTSELLER"
+        },
+        "filters": {
+            "category": "Filter by Category",
+            "sort": "Sort Selection",
+            "all": "All"
+        },
+        "sort": {
+            "popular": "Popular",
+            "newest": "Newest",
+            "priceAsc": "Price: Low to High",
+            "priceDesc": "Price: High to Low"
+        },
+        "pagination": {
+            "viewing": "Viewing page {current} of {total}"
+        },
+        "collection": {
+            "exclusive": "Exclusive Treasures",
+            "limited": "Limited Time Sparkle",
+            "collection": "Collection"
+        },
+        "product": {
+            "backTo": "Back to {category}",
+            "limitedOffer": "Limited Time Offer",
+            "endingIn": "Ending in:",
+            "includes": "This Pack Includes:",
+            "qty": "Qty:",
+            "quantity": "Quantity",
+            "addToCart": "Add to Cart ✨",
+            "addedToCart": "Added to cart",
+            "addToFavorites": "Add to favorites",
+            "qualityGuaranteed": "Quality Guaranteed",
+            "premiumMaterials": "Premium Materials",
+            "fastDelivery": "Fast Delivery",
+            "deliveryTunisia": "Delivery across Tunisia"
+        },
+        "related": {
+            "title": "You might also love",
+            "subtitle": "Discover more handpicked treasures from our collection"
+        }
+    },
+    "Cart": {
+        "title": "My Treasures",
+        "empty": "Your box is empty!",
+        "emptySubtitle": "Start adding some sparkles.",
+        "total": "Total",
+        "checkout": "Check Out Now",
+        "secure": "Verify your package 🌸",
+        "removed": "Removed from cart"
+    },
+    "Favorites": {
+        "title": "Your Favorites",
+        "empty": "No favorite items yet. Start adding treasures!",
+        "countSaved": "{count, plural, =0 {No items saved} =1 {1 item saved} other {# items saved}}",
+        "noFavorites": "No favorites yet",
+        "howToSave": "Click the heart icon on products to save them",
+        "viewAll": "View All Favorites →",
+        "removed": "Removed from favorites",
+        "removeTooltip": "Remove from favorites",
+        "backToShop": "Back to Shop",
+        "pageTitle": "Your <span>Treasures</span>",
+        "pageSubtitle": "Your jewelry box is waiting to be filled with sparkles.",
+        "pageSubtitleCount": "You've saved {count} {count, plural, =1 {piece} other {pieces}} that caught your eye.",
+        "emptyTitle": "Your box is empty!",
+        "emptyDescription": "Find pieces you love and tap the heart to save them here. They'll be waiting for you!",
+        "startExploring": "Start Exploring"
+    },
+    "Search": {
+        "title": "Search",
+        "resultsFor": "Results for \"{query}\"",
+        "foundCount": "We found {count} {count, plural, =1 {treasure} other {treasures}} matching your search",
+        "foundSimple": "{count} {count, plural, =1 {Treasure} other {Treasures}} Found",
+        "gallery": "Search Gallery",
+        "lookingFor": "What are you looking for?",
+        "enterKeyword": "Enter a keyword to start searching for treasures. ✨",
+        "tryAgain": "Try again later or search for something else! ⏳",
+        "noResults": "No treasures found for \"{query}\"",
+        "tryDifferent": "Try a different keyword or explore our treasures! ✨",
+        "subtitleDefault": "Find your next signature piece"
+    },
+    "Shipping": {
+        "title": "Shipping & <span>Delivery</span>",
+        "subtitle": "We strive to deliver your Flora treasures as quickly and safely as possible. Here is everything you need to know about our shipping process in Tunisia.",
+        "flatRateTitle": "Flat Rate Shipping",
+        "flatRateDesc": "We offer a flat shipping rate for all orders.",
+        "fastDeliveryTitle": "Fast Delivery",
+        "fastDeliveryDesc": "Greater Tunis: 24-48h. Other regions (Sousse, Sfax, Gabes, etc.): 2-4 business days.",
+        "codTitle": "Cash on Delivery",
+        "codDesc": "Pay on delivery. Pay conveniently in cash when your package arrives door-to-door.",
+        "coverageTitle": "Nationwide Coverage",
+        "coverageDesc": "We deliver to all 24 governorates of Tunisia, from Bizerte to Tataouine.",
+        "processTitle": "Delivery Process",
+        "processDesc": "We follow a streamlined process to ensure your order reach you in perfect condition.",
+        "step1Title": "Order Confirmation",
+        "step1Desc": "Once you place your order, we'll send you a confirmation message. Our team might call you to verify the delivery address.",
+        "step2Title": "Processing & Packaging",
+        "step2Desc": "Our team carefully picks and packs your accessories in our signature protective packaging within 1 business day.",
+        "step3Title": "Handover to Carrier",
+        "step3Desc": "Your package is handed over to our trusted delivery partners for the journey.",
+        "step4Title": "Delivery to Your Door",
+        "step4Desc": "The courier will contact you via phone before arrival to ensure you're available to receive your Flora treasure.",
+        "commonQuestions": "Common Questions",
+        "q1": "Can I open the package before paying?",
+        "a1": "Of course! At Flora, we want you to be 100% happy. You can check your items in front of the courier before finalizing the payment.",
+        "q2": "Do you ship to remote areas?",
+        "a2": "Yes, we reach everywhere in Tunisia! Whether you're in Djerba, Nefta, or Tabarka, we'll get your treasure to you.",
+        "needMoreHelp": "Need more help?",
+        "supportWhatsApp": "Support via WhatsApp",
+        "contact": "Contact",
+        "trustTitle": "Quality & Trust Guaranteed",
+        "trustDesc": "Every shipment is handled with the utmost care. We use premium floral-inspired packaging to ensure your accessories arrive in pristine condition, ready to sparkle."
+    },
+    "FAQ": {
+        "title": "How can we <span>help you?</span>",
+        "subtitle": "Find answers to the most common questions about the Flora experience.",
+        "categories": {
+            "orders": "Orders & Products",
+            "shipping": "Shipping & Delivery",
+            "payments": "Payments"
+        },
+        "questions": {
+            "orderPlacementQ": "How do I place an order?",
+            "orderPlacementA": "Simply browse our collection, add your favorite treasures to the cart, and proceed to checkout. You don't need an account to shop with us!",
+            "durabilityQ": "Are the accessories durable?",
+            "durabilityA": "Yes! We carefully select our materials to ensure they sparkle for a long time. However, like all jewelry, we recommend keeping them away from water and perfume to maintain their shine.",
+            "stockQ": "What if an item I want is out of stock?",
+            "stockA": "Our treasures go fast! You can follow us on Instagram @flora_.access for restock announcements or contact us to inquire about a specific item.",
+            "shippingCostQ": "How much does shipping cost?",
+            "shippingCostA": "We offer a flat rate of 7.00 DT for deliveries all across Tunisia.",
+            "deliveryTimeQ": "How long will it take to get my order?",
+            "deliveryTimeA": "For Greater Tunis, it usually takes 24-48 hours. For other regions, expect your delivery within 2-4 business days.",
+            "openPackageQ": "Can I open the package before paying?",
+            "openPackageA": "Absolutely! We want you to be 100% happy with your purchase. You can inspect your items in front of the courier before finalizing the Cash on Delivery payment.",
+            "paymentMethodsQ": "How can I pay?",
+            "paymentMethodsA": "Currently, we offer 'Cash on Delivery' (Payment on delivery). You pay the courier in cash when your package arrives at your doorstep.",
+            "bankTransferQ": "Do you accept bank transfers?",
+            "bankTransferA": "At the moment, we prioritize cash on delivery for its simplicity and security for our customers. Contact us if you have special requirements."
+        },
+        "footerTitle": "Still have questions?",
+        "footerSubtitle": "Can't find what you're looking for? Our team is always ready to help you find your perfect match.",
+        "footerButton": "Message us on Instagram",
+        "trustQuality": "Quality Assured",
+        "trustDelivery": "Nationwide Delivery",
+        "trustLove": "Made with Love"
+    },
+    "Orders": {
+        "title": "My Orders",
+        "subtitle": "Review and track your Flora treasures.",
+        "count": "{count, plural, =1 {1 Order} other {# Orders}}",
+        "backToShop": "Back to shop",
+        "orderId": "Order ID",
+        "date": "Date",
+        "status": {
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "shipped": "Shipped",
+            "delivered": "Delivered",
+            "cancelled": "Cancelled",
+            "unknown": "Unknown"
+        },
+        "shippingTo": "Shipping to",
+        "totalAmount": "Total amount",
+        "viewTreasure": "View Treasure",
+        "viewDetails": "View Full Details",
+        "noOrdersTitle": "No treasures yet!",
+        "noOrdersSubtitle": "Your shopping bag is waiting for its first gems.",
+        "startShopping": "Start Shopping",
+        "errorTitle": "Oops! Something went wrong",
+        "tryAgain": "Try Again",
+        "details": {
+            "title": "Order Details",
+            "orderNo": "Order",
+            "backToAll": "Back to all orders",
+            "packageStatus": "Package Status",
+            "orderedItems": "Ordered Items",
+            "quantity": "Quantity",
+            "summary": "Order Summary",
+            "subtotal": "Items Subtotal",
+            "shipping": "Shipping Cost",
+            "total": "Total Amount",
+            "deliveryDetails": "Delivery Details",
+            "fullName": "Full Name",
+            "phoneNumber": "Phone Number",
+            "address": "Shipping Address",
+            "paymentMethod": "Payment Method",
+            "cod": "Cash on Delivery",
+            "notFoundTitle": "Order Not Found",
+            "notFoundSubtitle": "This order could not be retrieved.",
+            "backToOrders": "Back to My Orders",
+            "statusLabel": {
+                "pending": "Pending Receipt",
+                "confirmed": "Order Confirmed",
+                "shipped": "Shipped",
+                "delivered": "Delivered",
+                "cancelled": "Cancelled",
+                "processing": "Processing"
+            },
+            "statusDesc": {
+                "pending": "We've received your order and we'll call you shortly for confirmation.",
+                "confirmed": "Your order has been confirmed and is being prepared with love.",
+                "shipped": "Your treasures are on the way! They'll be with you shortly.",
+                "delivered": "Your package has arrived. We hope you love your new treasures!",
+                "cancelled": "This order has been cancelled.",
+                "processing": "We are processing your order."
+            },
+            "steps": {
+                "received": "Received",
+                "confirmed": "Confirmed",
+                "shipped": "Shipped",
+                "delivered": "Delivered"
+            }
+        }
+    },
+    "Auth": {
+        "signIn": {
+            "title": "Welcome Back",
+            "subtitle": "We missed you!",
+            "google": "Continue with Google",
+            "facebook": "Continue with Facebook",
+            "orEmail": "Or use your email",
+            "emailLabel": "Email Address",
+            "emailPlaceholder": "hello@flora.tn",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "••••••••••••",
+            "forgotPassword": "Forgot?",
+            "signIn": "Sign In",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign Up",
+            "success": "Welcome back to Flora! 🎀",
+            "error": "Invalid email or password",
+            "unexpectedError": "An unexpected error occurred. Please try again.",
+            "validationError": "Sign in failed",
+            "validationDesc": "Please check your email and password."
+        },
+        "signUp": {
+            "title": "Create Account",
+            "subtitle": "Join the Flora family today",
+            "google": "Continue with Google",
+            "facebook": "Continue with Facebook",
+            "orEmail": "Or use your email",
+            "nameLabel": "Full Name",
+            "namePlaceholder": "Flora Beauty",
+            "emailLabel": "Email Address",
+            "emailPlaceholder": "hello@flora.tn",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "••••••••••••",
+            "signUp": "Sign Up",
+            "hasAccount": "Already have an account?",
+            "signIn": "Sign In",
+            "success": "Account created! Welcome to Flora 🎀",
+            "error": "Failed to create account",
+            "socialError": "Failed to sign in with {provider}",
+            "unexpectedError": "An unexpected error occurred. Please try again.",
+            "validationError": "Sign up failed",
+            "validationDesc": "Please check your account details.",
+            "validation": {
+                "nameMin": "Name must be at least 2 characters",
+                "emailInvalid": "Invalid email address",
+                "passwordMin": "Password must be at least 8 characters"
+            }
+        },
+        "forgotPassword": {
+            "title": "Forgot Password?",
+            "subtitle": "We'll send you a link to reset it",
+            "emailLabel": "Email Address",
+            "emailPlaceholder": "hello@flora.tn",
+            "submit": "Send Reset Link",
+            "backToSignIn": "Back to Sign In",
+            "success": "Reset link sent! Check your inbox.",
+            "error": "Failed to send reset link.",
+            "unexpectedError": "An error occurred. Please try again.",
+            "sent": {
+                "title": "Check your inbox",
+                "message": "We sent a link to"
+            }
+        },
+        "resetPassword": {
+            "title": "Reset Password",
+            "subtitle": "Choose a strong password to protect your account",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "newPasswordLabel": "New Password",
+            "confirmPasswordLabel": "Confirm Password",
+            "submit": "Set New Password",
+            "backToSignIn": "Back to Sign In",
+            "success": "Password reset successfully! 🔒",
+            "error": "Failed to reset password",
+            "unexpectedError": "An error occurred. Please try again.",
+            "mismatchError": "Passwords do not match",
+            "lengthError": "Password must be at least 8 characters",
+            "invalidLink": {
+                "title": "Invalid or Expired Link",
+                "message": "This password reset link is invalid or has expired. Please request a new one.",
+                "requestNew": "Request New Link"
+            }
+        }
+    },
+    "Profile": {
+        "hero": {
+            "greeting": "Hello, {name}!",
+            "editProfile": "Edit Profile"
+        },
+        "tabs": {
+            "addresses": "Addresses",
+            "account": "Account",
+            "security": "Security"
+        },
+        "addresses": {
+            "title": "Saved Addresses",
+            "description": "Manage your shipping locations for a faster, seamless checkout experience across all your devices.",
+            "addBtn": "Add New Address",
+            "empty": {
+                "title": "No addresses yet",
+                "message": "You haven't saved any shipping addresses yet."
+            },
+            "card": {
+                "default": "Default",
+                "edit": "Edit",
+                "setDefault": "Set Default",
+                "delete": "Delete",
+                "deleteConfirm": "Are you sure you want to delete \"{name}\"?"
+            },
+            "limitReached": "You have reached the limit of 4 addresses. Please remove an existing address to add a new one.",
+            "saveSuccess": "Address saved! 🎀",
+            "updateSuccess": "Address updated! 🎀",
+            "deleteSuccess": "Address deleted.",
+            "defaultSuccess": "Default address updated! 🎀",
+            "fillAllFields": "Please fill in all fields.",
+            "modal": {
+                "titleNew": "New Address",
+                "titleUpdate": "Update Address",
+                "descNew": "Add a new treasure delivery destination.",
+                "descUpdate": "Refine your shipping location details.",
+                "labelName": "Address Name (e.g., Home, Office)",
+                "placeholderName": "e.g. Home, Work",
+                "labelFullName": "Full Name",
+                "placeholderFullName": "Who's receiving the package?",
+                "labelPhone": "Phone Number",
+                "placeholderPhone": "Mobile number",
+                "labelGov": "Governorate",
+                "labelCity": "City / Delegation",
+                "selectPlaceholder": "Select",
+                "labelDetailed": "Detailed Address",
+                "placeholderDetailed": "Street name, building, apartment...",
+                "submitNew": "Save Destination",
+                "submitUpdate": "Update Destination"
+            }
+        },
+        "account": {
+            "personalInfo": "Personal Information",
+            "labelName": "Your Name",
+            "labelEmail": "Email Address",
+            "labelMemberSince": "Member Since",
+            "labelPhone": "Phone Number",
+            "noPhone": "No phone added",
+            "joinedFlora": "Joined Flora",
+            "activeContact": "Active Contact",
+            "linkedAccounts": "Linked Accounts",
+            "noLinkedAccounts": "No linked accounts found.",
+            "connectedDate": "Connected {date}",
+            "credentialProvider": "Email Address"
+        },
+        "security": {
+            "title": "Security & Privacy",
+            "description": "Manage your account security and active devices.",
+            "activeSessions": "Active Sessions",
+            "noSessions": "No active sessions found.",
+            "currentBadge": "Current",
+            "revokeBtn": "Revoke",
+            "revokeSuccess": "Session revoked 🔒",
+            "revokeError": "Failed to revoke session",
+            "changePasswordBtn": "Change Password",
+            "setPasswordBtn": "Set Password",
+            "deleteAccountBtn": "Delete Account",
+            "devices": {
+                "windows": "Windows PC",
+                "mac": "Macbook",
+                "iphone": "iPhone",
+                "android": "Android Device",
+                "unknown": "Unknown Device",
+                "localhost": "Localhost"
+            }
+        },
+        "deleteAccount": {
+            "modalTitle": "Saying Goodbye?",
+            "modalDesc": "This action is permanent. All your treasures (addresses, wishlist, and profile) will be deleted forever.",
+            "privacyNotice": "Privacy Notice",
+            "privacyMessage": "We keep order records for business accounting, but they will be completely unlinked from your email.",
+            "confirmBtn": "Delete My Account",
+            "cancelBtn": "Actually, I want to stay",
+            "success": "Account deleted successfully. We're sorry to see you go. 🎀"
+        },
+        "editProfile": {
+            "title": "Edit Profile",
+            "description": "Update your personal information.",
+            "profilePicture": "Profile Picture",
+            "uploading": "Uploading image...",
+            "uploadSuccess": "Image uploaded! Don't forget to save. 📸",
+            "uploadError": "Error uploading: {message}",
+            "fullName": "Full Name",
+            "fullNamePlaceholder": "Your full name",
+            "submit": "Save Changes",
+            "saving": "Saving...",
+            "uploadBtn": "Upload Image",
+            "nameEmpty": "Name cannot be empty",
+            "success": "Profile updated! ✨"
+        },
+        "passwordModal": {
+            "titleChange": "Change Password",
+            "titleSet": "Set Password",
+            "descChange": "Secure your account with a new password.",
+            "descSet": "Set a password to login with email.",
+            "labelCurrent": "Current Password",
+            "placeholderCurrent": "Enter your current password",
+            "labelNew": "New Password",
+            "placeholderNew": "Enter new password",
+            "labelConfirm": "Confirm New Password",
+            "placeholderConfirm": "Confirm new password",
+            "submitChange": "Update Password",
+            "submitSet": "Set Password",
+            "loading": "Updating...",
+            "fillAllFields": "Please fill in all fields.",
+            "mismatch": "New passwords do not match.",
+            "length": "Password must be at least 8 characters long.",
+            "sameAsOld": "New password cannot be the same as the old password.",
+            "successChange": "Password changed successfully! 🔒",
+            "successSet": "Password set successfully! 🔒"
+        },
+        "errors": {
+            "unexpected": "An error occurred",
+            "saveAddress": "Failed to save address.",
+            "deleteAddress": "Failed to delete address.",
+            "updateProfile": "Failed to update profile",
+            "setPassword": "Failed to set password.",
+            "changePassword": "Failed to change password.",
+            "deleteAccount": "Failed to delete account."
+        }
+    },
+    "NotFound": {
+        "title": "Oh no! This treasure",
+        "subtitle": "is missing.",
+        "description": "We couldn't find the page you were looking for. It might have been moved, or it's hiding in another jewelry box! ✨",
+        "backHome": "Back to Home"
+    },
+    "Admin": {
+        "layout": {
+            "badge": "Admin Dashboard",
+            "title": "Treasure Management ✨",
+            "subtitle": "Manage your beautiful collection and list new accessories for your customers."
+        },
+        "nav": {
+            "orders": "Orders",
+            "newProduct": "New Product",
+            "newPack": "New Pack",
+            "inventory": "Your Inventory",
+            "profit": "Profit Calc"
+        },
+        "orders": {
+            "table": {
+                "date": "Date & Time",
+                "customer": "Customer",
+                "items": "Items (Qty x Price)",
+                "total": "Total",
+                "location": "Location",
+                "status": "Status",
+                "empty": "No orders found."
+            },
+            "filters": {
+                "searchPlaceholder": "Search by customer name or phone...",
+                "search": "Search",
+                "clear": "Clear",
+                "allLocations": "All Locations",
+                "status": {
+                    "all": "All Status",
+                    "pending": "Pending",
+                    "confirmed": "Confirmed",
+                    "shipped": "Shipped",
+                    "delivered": "Delivered",
+                    "cancelled": "Cancelled"
+                },
+                "date": {
+                    "all": "All Time",
+                    "today": "Today",
+                    "week": "This Week",
+                    "month": "This Month"
+                }
+            },
+            "status": {
+                "updated": "Order status updated to {status}! ✨",
+                "error": "Failed to update status"
+            }
+        },
+        "inventory": {
+            "filters": {
+                "title": "Filters:",
+                "searchPlaceholder": "Search products...",
+                "search": "Search",
+                "clear": "Clear",
+                "allCategories": "All",
+                "loading": "Loading...",
+                "status": {
+                    "all": "All Status",
+                    "live": "Live",
+                    "paused": "Paused",
+                    "archived": "Archived"
+                },
+                "stock": {
+                    "all": "All Stock",
+                    "inStock": "In Stock",
+                    "lowStock": "Low Stock",
+                    "outOfStock": "Out of Stock"
+                }
+            },
+            "list": {
+                "empty": "No accessories listed yet. Start by adding one above! ✨",
+                "title": "Recent Inventory",
+                "table": {
+                    "product": "Product",
+                    "category": "Category",
+                    "price": "Price",
+                    "stock": "Stock",
+                    "status": "Status",
+                    "actions": "Actions"
+                },
+                "badges": {
+                    "pack": "Pack",
+                    "featured": "Featured",
+                    "archived": "Archived",
+                    "paused": "Paused",
+                    "live": "Live"
+                },
+                "delete": {
+                    "title": "Are you absolutely sure? ✨",
+                    "description": "This will permanently remove {name} from your beautiful inventory. This action cannot be undone.",
+                    "cancel": "Cancel",
+                    "confirm": "Yes, delete it",
+                    "success": "Accessory deleted successfully! ✨",
+                    "error": "Failed to delete product"
+                },
+                "pagination": {
+                    "previous": "Previous",
+                    "next": "Next",
+                    "pageInfo": "Page {current} of {total}"
+                }
+            }
+        },
+        "profit": {
+            "title": "Profit & Risk Simulator",
+            "subtitle": "Compare profit if delivered vs. loss if returned",
+            "labels": {
+                "selectProduct": "Select Product (Optional)",
+                "manualInput": "-- Manual Input --",
+                "sellingPrice": "Selling Price",
+                "buyingPrice": "Buying Price",
+                "packaging": "Emballage",
+                "delivery": "Livraison",
+                "return": "Coût Retour",
+                "other": "Other Costs",
+                "freeShipping": "Livraison Gratuite",
+                "wasReturned": "Was returned before?"
+            },
+            "buttons": {
+                "bestPrice": "Get Best Price"
+            },
+            "help": {
+                "freeShipping": "Customer pays extra 7dt for free shipping",
+                "wasReturned": "Subtracts previous loss (Livraison + Retour) from profit."
+            },
+            "results": {
+                "title": "Results Scenarios",
+                "delivered": "If Delivered",
+                "returned": "If Returned",
+                "roi": "ROI",
+                "margin": "Margin",
+                "target": "Target",
+                "worstCase": "Worst case (return + redeliver)",
+                "returnLoss": "(Loss of Delivery + Return)",
+                "status": {
+                    "excellent": "(Excellent)",
+                    "good": "(Good)",
+                    "minimum": "(Minimum)",
+                    "bad": "(Bad)"
+                }
+            },
+            "tip": {
+                "title": "Risk vs. Reward:",
+                "text": "This breakdown helps you decide if shipping is risky. 'If Returned' shows your cash loss assuming the item is returned to inventory."
+            }
+        },
+        "productForm": {
+            "title": {
+                "new": "Listing Details",
+                "edit": "Refine Your Treasure ✨"
+            },
+            "desc": {
+                "new": "Enter the information that will be shown to customers.",
+                "edit": "Update the information about this beautiful accessory."
+            },
+            "labels": {
+                "name": "Product Name",
+                "description": "Description",
+                "salePrice": "Sale Price (DT)",
+                "discountPercent": "Discount %",
+                "originalPrice": "Original Price (DT)",
+                "stock": "Initial Stock",
+                "category": "Category",
+                "featured": "Featured Product",
+                "live": "Live Status",
+                "archived": "Archived",
+                "photography": "Product Photography"
+            },
+            "placeholders": {
+                "name": "e.g. Sparkly Butterfly Clip",
+                "description": "Tell a story about this accessory...",
+                "salePrice": "Final price",
+                "originalPrice": "Optional - leave empty for no discount",
+                "selectCategory": "Select a category",
+                "uploadTitle": "Upload Product Images",
+                "uploadDesc": "Pick the cutest photos of your accessories (up to 4)"
+            },
+            "buttons": {
+                "magicMarkdown": "Magic Markdown ✨",
+                "enhancing": "Enhancing...",
+                "addPhoto": "Add Photo ✨",
+                "uploading": "Uploading...",
+                "back": "Back to Inventory",
+                "cancel": "Cancel",
+                "save": "Save Changes",
+                "list": "List This Accessory",
+                "saving": "Saving...",
+                "uploadingImages": "Uploading Images...",
+                "deletingImage": "Deleting Image..."
+            },
+            "help": {
+                "salePrice": "Final price customers will pay",
+                "originalPrice": "Market price (only fill this if you want to show a discount)",
+                "discountPercent": "Optional: Enter discount %",
+                "featured": "Show this product in the 'Featured' section on the homepage",
+                "live": "Visible to customers (Turn off to hide without archiving)",
+                "archived": "Soft-delete this product (Hidden everywhere, but keeps order history)",
+                "photoLimit": "Max 4MB per image",
+                "photoSpecs": "Best results with 1080x1080 square images",
+                "safeVault": "Your changes are saved to the secure inventory vault."
+            },
+            "sections": {
+                "pricing": "💰 Pricing & Discounts",
+                "featured": "✨ Featured Product",
+                "live": "🟢 Live Status",
+                "archived": "📦 Archived"
+            },
+            "toasts": {
+                "descShort": "Please enter a longer description first",
+                "descEnhanced": "Description enhanced! ✨",
+                "descFail": "AI enhancement failed",
+                "uploadComplete": "Upload Completed!",
+                "waitUpload": "Please wait for images to finish uploading",
+                "waitDelete": "Please wait for images to finish deleting",
+                "successCreate": "Accessory created successfully! ✨",
+                "successUpdate": "Accessory updated successfully! ✨",
+                "errorSave": "Error saving product",
+                "errorGeneric": "Something went wrong",
+                "imageDeleted": "Image deleted from storage",
+                "imageDeleteFail": "Failed to delete image file"
+            },
+            "saleTag": "🔥 {percent}% OFF"
+        },
+        "packForm": {
+            "title": {
+                "new": "Create New Pack",
+                "edit": "Edit Pack ✨"
+            },
+            "desc": "Bundle multiple products together. Pricing and stock are calculated automatically, then you can upload your custom pack images.",
+            "labels": {
+                "name": "Pack Name",
+                "description": "Description",
+                "photography": "Pack Photography",
+                "featured": "Featured",
+                "live": "Live",
+                "marketValue": "Market Value",
+                "shopValue": "Shop Value",
+                "packPrice": "Pack Price",
+                "dynamicStock": "Dynamic Stock",
+                "contents": "Pack Contents",
+                "product": "Product",
+                "qty": "Qty",
+                "unitPrice": "Unit Price",
+                "available": "Available",
+                "visuals": "Product Visuals"
+            },
+            "placeholders": {
+                "name": "e.g. Summer Essentials Bundle",
+                "description": "Describe what makes this pack special...",
+                "search": "Search product...",
+                "addPhoto": "Add Photo ✨"
+            },
+            "buttons": {
+                "magic": "Magic",
+                "addProduct": "Add Product",
+                "cancel": "Cancel",
+                "update": "Update Pack",
+                "publish": "Publish Pack",
+                "saving": "Saving Pack..."
+            },
+            "badges": {
+                "original": "ORIGINAL",
+                "autoSum": "AUTO-SUM",
+                "auto": "AUTO"
+            },
+            "toasts": {
+                "autoPricing": "Auto-Pricing Active! ✨ (5% Pack Discount applied on Shop Value)",
+                "errorSave": "Error saving pack"
+            },
+            "help": {
+                "featured": "Home page visibility",
+                "live": "Website visibility",
+                "contents": "Select the products included in this bundle.",
+                "noProducts": "Add products to build this pack",
+                "photoLimit": "Max 4MB per image",
+                "photoSpecs": "Best results with 1080x1080 square images"
+            }
+        }
+    }
+}

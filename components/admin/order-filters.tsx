@@ -6,32 +6,35 @@ import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface OrderFiltersProps {
   governorates: string[];
 }
 
-const statusOptions = [
-  { value: "all", label: "All Status" },
-  { value: "pending", label: "Pending" },
-  { value: "confirmed", label: "Confirmed" },
-  { value: "shipped", label: "Shipped" },
-  { value: "delivered", label: "Delivered" },
-  { value: "cancelled", label: "Cancelled" },
-];
-
-const dateOptions = [
-  { value: "all", label: "All Time" },
-  { value: "today", label: "Today" },
-  { value: "week", label: "This Week" },
-  { value: "month", label: "This Month" },
-];
 
 export function OrderFilters({ governorates }: OrderFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("Admin.orders.filters");
+
+  const statusOptions = [
+    { value: "all", label: t("status.all") },
+    { value: "pending", label: t("status.pending") },
+    { value: "confirmed", label: t("status.confirmed") },
+    { value: "shipped", label: t("status.shipped") },
+    { value: "delivered", label: t("status.delivered") },
+    { value: "cancelled", label: t("status.cancelled") },
+  ];
+
+  const dateOptions = [
+    { value: "all", label: t("date.all") },
+    { value: "today", label: t("date.today") },
+    { value: "week", label: t("date.week") },
+    { value: "month", label: t("date.month") },
+  ];
 
   const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
 
@@ -82,7 +85,7 @@ export function OrderFilters({ governorates }: OrderFiltersProps) {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
-            placeholder="Search by customer name or phone..."
+            placeholder={t("searchPlaceholder")}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             className="pl-10 pr-10 rounded-full border-pink-100 focus:border-pink-300 focus:ring-pink-200"
@@ -105,7 +108,7 @@ export function OrderFilters({ governorates }: OrderFiltersProps) {
           className="rounded-full bg-pink-500 hover:bg-pink-600 text-white px-6"
           disabled={isPending}
         >
-          Search
+          {t("search")}
         </Button>
       </form>
 
@@ -168,7 +171,7 @@ export function OrderFilters({ governorates }: OrderFiltersProps) {
                   : "bg-emerald-50 text-gray-600 hover:bg-emerald-100"
               )}
             >
-              All Locations
+              {t("allLocations")}
             </button>
             {governorates.map((gov) => (
               <button
@@ -198,7 +201,7 @@ export function OrderFilters({ governorates }: OrderFiltersProps) {
               className="text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full gap-1"
             >
               <X className="w-3 h-3" />
-              Clear
+              {t("clear")}
             </Button>
           </>
         )}

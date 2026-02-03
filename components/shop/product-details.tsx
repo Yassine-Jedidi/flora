@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { useForm, useWatch } from "react-hook-form";
 import { useCart } from "@/lib/hooks/use-cart";
 import { useFavorites } from "@/lib/hooks/use-favorites";
+import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { ProductBadge } from "./product-badge";
 import { Price } from "./price";
@@ -35,6 +36,7 @@ const FavoriteButton = dynamic(() => import("./favorite-button"), {
 });
 
 export function ProductDetails({ product }: { product: Product }) {
+  const t = useTranslations("Shop.product");
   const { addItem } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const [selectedImage, setSelectedImage] = useState(0);
@@ -318,10 +320,10 @@ export function ProductDetails({ product }: { product: Product }) {
             </div>
             <div className="flex flex-col">
               <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em] leading-none mb-1.5 font-sans">
-                Limited Time Offer
+                {t("limitedOffer")}
               </span>
               <div className="flex items-center gap-2">
-                <span className="text-[13px] font-bold text-purple-900/60 leading-none">Ending in:</span>
+                <span className="text-[13px] font-bold text-purple-900/60 leading-none">{t("endingIn")}</span>
                 <span className="text-[15px] font-black text-purple-600 font-mono tabular-nums leading-none">
                   {String(timeLeft.h).padStart(2, '0')}:{String(timeLeft.m).padStart(2, '0')}:{String(timeLeft.s).padStart(2, '0')}
                 </span>
@@ -444,7 +446,7 @@ export function ProductDetails({ product }: { product: Product }) {
           {/* Pack Contents */}
           {product.packItems && product.packItems.length > 0 && (
             <div className="space-y-4 pb-6 border-b border-dotted border-pink-100">
-              <h3 className="text-lg font-black text-flora-dark">This Pack Includes:</h3>
+              <h3 className="text-lg font-black text-flora-dark">{t("includes")}</h3>
               <div className="space-y-3">
                 {product.packItems.map((packItem) => (
                   <Link
@@ -483,7 +485,7 @@ export function ProductDetails({ product }: { product: Product }) {
                       </p>
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none mt-0.5">
-                          Qty: {packItem.quantity}
+                          {t("qty")} {packItem.quantity}
                         </span>
                         <span className="text-gray-300 leading-none">•</span>
                         <Price
@@ -505,7 +507,7 @@ export function ProductDetails({ product }: { product: Product }) {
           <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50/50 border border-gray-100">
             <div className="flex flex-col">
               <Label className="text-[10px] font-black text-[#8B7E84] uppercase tracking-[0.2em]">
-                Quantity
+                {t("quantity")}
               </Label>
             </div>
             <div className="flex items-center gap-4 bg-white rounded-full p-1.5 shadow-sm border border-gray-100">
@@ -544,7 +546,7 @@ export function ProductDetails({ product }: { product: Product }) {
               onClick={onAddToCart}
               className="h-14 rounded-2xl bg-flora-purple hover:bg-[#8B5CF6] text-white text-base font-black shadow-lg shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight"
             >
-              Add to Cart ✨
+              {t("addToCart")}
             </Button>
 
             <Button
@@ -556,7 +558,7 @@ export function ProductDetails({ product }: { product: Product }) {
                 className={`w-4 h-4 ${isFavorite(product.id) ? "fill-primary" : ""
                   }`}
               />
-              Add to favorites
+              {t("addToFavorites")}
             </Button>
           </div>
         </div>
@@ -569,10 +571,10 @@ export function ProductDetails({ product }: { product: Product }) {
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-black text-flora-dark">
-                Quality Guaranteed
+                {t("qualityGuaranteed")}
               </span>
               <span className="text-[10px] text-gray-400 font-medium">
-                Premium Materials
+                {t("premiumMaterials")}
               </span>
             </div>
           </div>
@@ -582,10 +584,10 @@ export function ProductDetails({ product }: { product: Product }) {
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-black text-flora-dark">
-                Fast Delivery
+                {t("fastDelivery")}
               </span>
               <span className="text-[10px] text-gray-400 font-medium flex items-center gap-1">
-                Delivery across Tunisia
+                {t("deliveryTunisia")}
                 <div className="relative w-4 h-3 overflow-hidden rounded-sm">
                   <Image
                     src="https://flagcdn.com/tn.svg"

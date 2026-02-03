@@ -3,9 +3,12 @@
 import { Instagram, Facebook, Heart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const t = useTranslations("Footer");
+  const tNav = useTranslations("Navigation");
 
   return (
     <footer className="w-full bg-[#FFF5F9] border-t border-pink-100/50 mt-auto">
@@ -23,7 +26,7 @@ export function Footer() {
               />
             </div>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Elevating everyday moments with exquisite adornments.
+              {t("tagline")}
             </p>
             <div className="flex items-center gap-6 mt-2">
               <a
@@ -73,14 +76,14 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-8 md:col-span-2">
             {/* Shop Column */}
             <div className="flex flex-col gap-4 items-center md:items-start">
-              <h3 className="text-base font-bold text-foreground">Shop</h3>
+              <h3 className="text-base font-bold text-foreground">{t("shop")}</h3>
               <ul className="grid grid-cols-2 gap-x-8 gap-y-2 text-left">
                 <li>
                   <Link
                     href="/rings"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Rings
+                    {tNav("rings")}
                   </Link>
                 </li>
                 <li>
@@ -88,7 +91,7 @@ export function Footer() {
                     href="/bracelets"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Bracelets
+                    {tNav("bracelets")}
                   </Link>
                 </li>
                 <li>
@@ -96,7 +99,7 @@ export function Footer() {
                     href="/necklaces"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Necklaces
+                    {tNav("necklaces")}
                   </Link>
                 </li>
                 <li>
@@ -104,7 +107,7 @@ export function Footer() {
                     href="/earrings"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Earrings
+                    {tNav("earrings")}
                   </Link>
                 </li>
                 <li>
@@ -112,7 +115,7 @@ export function Footer() {
                     href="/packs"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Packs
+                    {tNav("packs")}
                   </Link>
                 </li>
                 <li>
@@ -120,7 +123,7 @@ export function Footer() {
                     href="/shop"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    All
+                    {tNav("shop")}
                   </Link>
                 </li>
                 <li>
@@ -128,7 +131,7 @@ export function Footer() {
                     href="/sale"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Sale
+                    {tNav("sale")}
                   </Link>
                 </li>
               </ul>
@@ -136,14 +139,14 @@ export function Footer() {
 
             {/* Help Column */}
             <div className="flex flex-col gap-4 items-center md:items-start">
-              <h3 className="text-base font-bold text-foreground">Help</h3>
+              <h3 className="text-base font-bold text-foreground">{t("help")}</h3>
               <ul className="flex flex-col gap-3">
                 <li>
                   <Link
                     href="/shipping"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Shipping
+                    {t("shipping")}
                   </Link>
                 </li>
                 <li>
@@ -151,7 +154,7 @@ export function Footer() {
                     href="/faq"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    FAQ
+                    {t("faq")}
                   </Link>
                 </li>
                 <li>
@@ -161,7 +164,7 @@ export function Footer() {
                     rel="noopener noreferrer"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Contact Us
+                    {t("contactUs")}
                   </a>
                 </li>
               </ul>
@@ -172,7 +175,7 @@ export function Footer() {
         {/* Bottom Section - Copyright */}
         <div className="border-t border-pink-200 pt-6">
           <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
-            <span>© {currentYear} Flora Accessories. Designed with</span>
+            <span>{t("copyright", { year: currentYear })}</span>
             <Heart className="h-4 w-4 text-pink-500 fill-pink-500" />
           </div>
         </div>

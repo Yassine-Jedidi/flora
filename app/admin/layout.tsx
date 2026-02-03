@@ -1,12 +1,23 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { AdminNav } from "@/components/admin/admin-nav";
+import { getTranslations } from "next-intl/server";
 
-export default function AdminLayout({
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.admin");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
+
+export default async function AdminLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const t = await getTranslations("Admin.layout");
+
     return (
         <div className="min-h-screen flex flex-col bg-[#FDF8FA]">
             <Navbar />
@@ -14,13 +25,13 @@ export default function AdminLayout({
                 <div className="max-w-5xl mx-auto space-y-12">
                     <div className="flex flex-col items-center text-center space-y-4">
                         <div className="bg-pink-100 text-primary px-4 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase shadow-sm">
-                            Admin Dashboard
+                            {t("badge")}
                         </div>
                         <h1 className="text-4xl md:text-5xl font-extrabold text-flora-dark">
-                            Treasure Management ✨
+                            {t("title")}
                         </h1>
                         <p className="text-gray-500 max-w-lg">
-                            Manage your beautiful collection and list new accessories for your customers.
+                            {t("subtitle")}
                         </p>
                     </div>
 

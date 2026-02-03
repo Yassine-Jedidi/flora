@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 
 interface CollectionHeaderProps {
     title: string;
@@ -10,6 +12,9 @@ interface CollectionHeaderProps {
 }
 
 export function CollectionHeader({ title, subtitle, showCollectionWord = true, isSale = false }: CollectionHeaderProps) {
+    const t = useTranslations("Shop.collection");
+    const isLongTitle = title.length > 12;
+
     return (
         <div className="relative overflow-hidden bg-white pt-12 pb-12 flex items-center justify-center">
             {/* Simple Dotted Pattern Background */}
@@ -66,7 +71,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true, i
                     </motion.div>
                 </div>
 
-                <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+                <div className="flex flex-col items-center text-center max-w-7xl mx-auto">
                     {/* Minimal Badge */}
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -75,18 +80,23 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true, i
                         className="mb-8"
                     >
                         <span className={`px-5 py-1.5 rounded-full ${isSale ? 'bg-red-50 text-red-500 border-red-100' : 'bg-pink-50/50 text-primary border-pink-100/30'} text-[10px] font-black uppercase tracking-[0.3em] border`}>
-                            {isSale ? 'Limited Time Sparkle' : 'Exclusive Treasures'}
+                            {isSale ? t("limited") : t("exclusive")}
                         </span>
                     </motion.div>
-
                     {/* Clean Title */}
-                    <div className="relative">
-                        <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none flex flex-col md:flex-row items-center justify-center gap-x-6">
+                    <div className="relative w-full">
+                        <h1 className={cn(
+                            "font-black tracking-tighter leading-[0.85] flex flex-col items-center justify-center text-center",
+                            isLongTitle
+                                ? "text-4xl sm:text-6xl md:text-7xl lg:text-8xl"
+                                : "text-6xl md:text-8xl lg:text-9xl",
+                            showCollectionWord && !isLongTitle ? "md:flex-row gap-x-6" : "gap-y-0"
+                        )}>
                             <motion.span
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, delay: 0.1 }}
-                                className="text-flora-dark relative"
+                                className="text-flora-dark relative whitespace-normal md:whitespace-nowrap"
                             >
                                 {title}
                             </motion.span>
@@ -95,9 +105,12 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true, i
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.8, delay: 0.2 }}
-                                    className="text-primary drop-shadow-sm whitespace-nowrap"
+                                    className={cn(
+                                        "text-primary drop-shadow-sm whitespace-nowrap",
+                                        isLongTitle && "text-3xl md:text-5xl lg:text-7xl xl:text-8xl mt-2"
+                                    )}
                                 >
-                                    Collection
+                                    {t("collection")}
                                 </motion.span>
                             )}
                         </h1>

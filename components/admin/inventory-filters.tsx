@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface Category {
   id: string;
@@ -18,25 +19,27 @@ interface InventoryFiltersProps {
   categories: Category[];
 }
 
-const statusOptions = [
-  { value: "all", label: "All Status" },
-  { value: "live", label: "Live" },
-  { value: "paused", label: "Paused" },
-  { value: "archived", label: "Archived" },
-];
-
-const stockOptions = [
-  { value: "all", label: "All Stock" },
-  { value: "inStock", label: "In Stock" },
-  { value: "lowStock", label: "Low Stock" },
-  { value: "outOfStock", label: "Out of Stock" },
-];
 
 export function InventoryFilters({ categories }: InventoryFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("Admin.inventory.filters");
+
+  const statusOptions = [
+    { value: "all", label: t("status.all") },
+    { value: "live", label: t("status.live") },
+    { value: "paused", label: t("status.paused") },
+    { value: "archived", label: t("status.archived") },
+  ];
+
+  const stockOptions = [
+    { value: "all", label: t("stock.all") },
+    { value: "inStock", label: t("stock.inStock") },
+    { value: "lowStock", label: t("stock.lowStock") },
+    { value: "outOfStock", label: t("stock.outOfStock") },
+  ];
 
   const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
 
@@ -82,7 +85,7 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
-            placeholder="Search products..."
+            placeholder={t("searchPlaceholder")}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             className="pl-10 pr-10 rounded-full border-pink-100 focus:border-pink-300 focus:ring-pink-200"
@@ -105,7 +108,7 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
           className="rounded-full bg-pink-500 hover:bg-pink-600 text-white px-6"
           disabled={isPending}
         >
-          Search
+          {t("search")}
         </Button>
       </form>
 
@@ -113,7 +116,7 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
       <div className="flex flex-wrap gap-2 items-center">
         <div className="flex items-center gap-1 text-sm text-gray-500 mr-2">
           <Filter className="w-4 h-4" />
-          <span className="hidden sm:inline">Filters:</span>
+          <span className="hidden sm:inline">{t("title")}</span>
         </div>
 
         {/* Category Filter */}
@@ -128,7 +131,7 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
             )}
             onClick={() => updateFilters("category", "all")}
           >
-            All
+            {t("allCategories")}
           </Badge>
           {categories.map((cat) => (
             <Badge
@@ -161,10 +164,10 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
                   ? option.value === "live"
                     ? "bg-green-500 text-white border-green-500"
                     : option.value === "paused"
-                    ? "bg-amber-500 text-white border-amber-500"
-                    : option.value === "archived"
-                    ? "bg-gray-500 text-white border-gray-500"
-                    : "bg-pink-500 text-white border-pink-500"
+                      ? "bg-amber-500 text-white border-amber-500"
+                      : option.value === "archived"
+                        ? "bg-gray-500 text-white border-gray-500"
+                        : "bg-pink-500 text-white border-pink-500"
                   : "bg-white text-gray-600 border-pink-100 hover:bg-pink-50"
               )}
               onClick={() => updateFilters("status", option.value)}
@@ -188,10 +191,10 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
                   ? option.value === "outOfStock"
                     ? "bg-red-500 text-white border-red-500"
                     : option.value === "lowStock"
-                    ? "bg-orange-500 text-white border-orange-500"
-                    : option.value === "inStock"
-                    ? "bg-green-500 text-white border-green-500"
-                    : "bg-pink-500 text-white border-pink-500"
+                      ? "bg-orange-500 text-white border-orange-500"
+                      : option.value === "inStock"
+                        ? "bg-green-500 text-white border-green-500"
+                        : "bg-pink-500 text-white border-pink-500"
                   : "bg-white text-gray-600 border-pink-100 hover:bg-pink-50"
               )}
               onClick={() => updateFilters("stock", option.value)}
@@ -210,7 +213,7 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
             className="text-gray-400 hover:text-red-500 rounded-full ml-2"
           >
             <X className="w-4 h-4 mr-1" />
-            Clear
+            {t("clear")}
           </Button>
         )}
       </div>
@@ -218,7 +221,7 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
       {/* Loading indicator */}
       {isPending && (
         <div className="text-center text-sm text-pink-500 animate-pulse">
-          Loading...
+          {t("loading")}
         </div>
       )}
     </div>

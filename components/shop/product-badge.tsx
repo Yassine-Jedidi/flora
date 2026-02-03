@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface ProductBadgeProps {
   type: "new" | "bestseller" | "discount" | "category";
@@ -8,6 +9,7 @@ interface ProductBadgeProps {
 }
 
 export function ProductBadge({ type, content, className, noRotate }: ProductBadgeProps) {
+  const t = useTranslations("Shop.badges");
   const baseStyles = "text-[10px] font-black px-3 py-1.5 rounded-xl shadow-md inline-block transition-transform hover:scale-110 cursor-default";
 
   if (type === "new") {
@@ -18,7 +20,7 @@ export function ProductBadge({ type, content, className, noRotate }: ProductBadg
         baseStyles,
         className
       )}>
-        NEW
+        {t("new")}
       </span>
     );
   }
@@ -31,7 +33,7 @@ export function ProductBadge({ type, content, className, noRotate }: ProductBadg
         baseStyles,
         className
       )}>
-        BESTSELLER
+        {t("bestseller")}
       </span>
     );
   }

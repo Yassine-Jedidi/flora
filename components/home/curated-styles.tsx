@@ -2,28 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, ShoppingBag, Gem } from "lucide-react";
 import { getCategoryImages } from "@/app/actions/get-products";
+import { getTranslations } from "next-intl/server";
 
 export async function CuratedStyles() {
     const categoryImages = await getCategoryImages();
+    const tHome = await getTranslations("HomePage");
+    const tNav = await getTranslations("Navigation");
 
     const categories = [
         {
-            name: "Rings",
+            name: tNav("rings"),
             slug: "rings",
             href: "/rings",
         },
         {
-            name: "Bracelets",
+            name: tNav("bracelets"),
             slug: "bracelets",
             href: "/bracelets",
         },
         {
-            name: "Necklaces",
+            name: tNav("necklaces"),
             slug: "necklaces",
             href: "/necklaces",
         },
         {
-            name: "Earrings",
+            name: tNav("earrings"),
             slug: "earrings",
             href: "/earrings",
         },
@@ -34,18 +37,19 @@ export async function CuratedStyles() {
             <div className="flex flex-col mb-16 gap-4">
                 <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6">
                     <h2 className="text-4xl md:text-6xl font-black text-primary tracking-tighter flex items-center gap-3">
-                        Explore Styles <Gem className="w-8 h-8 md:w-12 md:h-12 text-primary" />
+                        {tHome("exploreStyles")} <span className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">🌸</span>
+
                     </h2>
                     <Link
                         href="/shop"
                         className="group flex items-center gap-2 px-6 py-3 md:py-4 rounded-full bg-flora-purple text-white font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-[#8B5CF6] transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl shadow-flora-purple/20 shrink-0"
                     >
-                        Explore All Collections <ChevronRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
+                        {tHome("exploreAll")} <ChevronRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                 </div>
                 <div className="text-center md:text-left">
                     <p className="text-[#B08B9B] font-medium text-base max-w-2xl leading-relaxed">
-                        Find your next signature piece among our most-loved categories.
+                        {tHome("stylesSubtitle")}
                     </p>
                 </div>
             </div>
@@ -85,7 +89,7 @@ export async function CuratedStyles() {
                             <div className="absolute inset-0 z-20 p-8 flex flex-col justify-end">
                                 <div className="overflow-hidden">
                                     <p className="text-[#FFF5F9] text-xs font-black uppercase tracking-[0.3em] mb-2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                                        Collection
+                                        {tHome("collection")}
                                     </p>
                                 </div>
                                 <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter drop-shadow-md">

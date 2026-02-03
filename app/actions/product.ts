@@ -3,9 +3,12 @@
 import prisma from "@/lib/db";
 import { ProductSchema, ProductFormValues } from "@/lib/validations/product";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 export async function createProduct(values: ProductFormValues) {
   try {
+    const t = await getTranslations("Errors");
+    const tProduct = await getTranslations("Admin.productForm");
     const validatedFields = ProductSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -15,7 +18,8 @@ export async function createProduct(values: ProductFormValues) {
       );
       return {
         error:
-          "Invalid fields! " +
+          t("validation") +
+          " " +
           Object.keys(validatedFields.error.flatten().fieldErrors).join(", "),
       };
     }
@@ -81,10 +85,11 @@ export async function createProduct(values: ProductFormValues) {
     revalidatePath("/admin/inventory");
     revalidatePath("/"); // Revalidate home page if products are shown there
 
-    return { success: "Product created successfully!", productId: product.id };
+    return { success: tProduct("toasts.successCreate"), productId: product.id };
   } catch (error) {
     console.error("Error creating product:", error);
-    return { error: "Something went wrong!" };
+    const t = await getTranslations("Errors");
+    return { error: t("generic") };
   }
 }
 
@@ -132,8 +137,11 @@ export async function deleteProduct(id: string) {
       include: { images: true },
     });
 
+    const t = await getTranslations("Errors");
+    const tProduct = await getTranslations("Admin.productForm");
+
     if (!product) {
-      return { error: "Product not found" };
+      return { error: t("notFound") };
     }
 
     // 2. Extract file keys from UploadThing URLs
@@ -158,26 +166,26 @@ export async function deleteProduct(id: string) {
     revalidatePath("/admin/inventory");
     revalidatePath("/");
 
-    return { success: "Product and its images deleted successfully! ✨" };
+    return { success: tProduct("toasts.successDelete") };
   } catch (error) {
-    // Check for Prisma "Foreign Key Constraint" error (P2003)
-    // This happens when the product is linked to Orders or other tables that restrict deletion
+    const t = await getTranslations("Errors");
     if (
       error instanceof Error &&
       (error as { code?: unknown }).code === "P2003"
     ) {
       return {
-        error:
-          "Cannot delete product with existing Orders. It must remain Archived to preserve sales history.",
+        error: t("deleteRestricted"),
       };
     }
 
     console.error("Error deleting product:", error);
-    return { error: "Something went wrong!" };
+    return { error: t("generic") };
   }
 }
 export async function updateProduct(id: string, values: ProductFormValues) {
   try {
+    const t = await getTranslations("Errors");
+    const tProduct = await getTranslations("Admin.productForm");
     const validatedFields = ProductSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -187,7 +195,8 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       );
       return {
         error:
-          "Invalid fields! " +
+          t("validation") +
+          " " +
           Object.keys(validatedFields.error.flatten().fieldErrors).join(", "),
       };
     }
@@ -212,8 +221,7 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       rawOriginalPrice <= rawDiscountedPrice
     ) {
       return {
-        error:
-          "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty.",
+        error: t("priceRefinement"),
       };
     }
 
@@ -229,6 +237,10 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       rawOriginalPrice > rawDiscountedPrice
         ? rawDiscountedPrice
         : null;
+
+    if (!categoryId) {
+      return { error: t("categoryRequired") };
+    }
 
     // We do a transaction to ensure everything updates correctly
     await prisma.$transaction(async (tx) => {
@@ -266,10 +278,11 @@ export async function updateProduct(id: string, values: ProductFormValues) {
     revalidatePath("/admin/inventory");
     revalidatePath("/");
 
-    return { success: "Product updated successfully! ✨" };
+    return { success: tProduct("toasts.successUpdate") };
   } catch (error) {
     console.error("Error updating product:", error);
-    return { error: "Something went wrong!" };
+    const t = await getTranslations("Errors");
+    return { error: t("generic") };
   }
 }
 

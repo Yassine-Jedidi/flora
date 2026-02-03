@@ -2,6 +2,15 @@ import { notFound } from "next/navigation";
 import { ProductForm } from "@/components/admin/product-form";
 import { getCategories, seedCategories } from "@/app/actions/product";
 import { getProduct } from "@/app/actions/get-products";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.admin.editProduct");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 interface EditProductPageProps {
     params: Promise<{ id: string }>;

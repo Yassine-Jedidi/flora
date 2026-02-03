@@ -30,6 +30,7 @@ import { deleteProduct } from "@/app/actions/product";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Product } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 interface ProductListProps {
   products: Product[];
@@ -44,6 +45,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const t = useTranslations("Admin.inventory.list");
 
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
@@ -56,14 +58,14 @@ export function ProductList({ products, pagination }: ProductListProps) {
     try {
       const result = await deleteProduct(id);
       if (result.success) {
-        toast.success("Accessory deleted successfully! ✨");
+        toast.success(t("delete.success"));
         router.refresh();
       } else {
-        toast.error(result.error || "Error deleting product");
+        toast.error(result.error || t("delete.error"));
       }
     } catch (error) {
       console.error("Delete error:", error);
-      toast.error("Something went wrong");
+      toast.error(t("delete.error"));
     } finally {
       setIsDeleting(null);
     }
@@ -75,7 +77,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
         <Card className="border-dashed border-pink-200 bg-pink-50/10 rounded-3xl">
           <CardContent className="py-20 flex flex-col items-center justify-center">
             <p className="text-gray-400 italic">
-              No accessories listed yet. Start by adding one above! ✨
+              {t("empty")}
             </p>
           </CardContent>
         </Card>
@@ -88,7 +90,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
       <Card className="border-pink-100 shadow-xl shadow-pink-100/10 rounded-3xl overflow-hidden">
         <CardHeader className="bg-pink-50/30 border-b border-pink-100/50 py-4">
           <CardTitle className="text-lg font-bold text-flora-dark">
-            Recent Inventory
+            {t("title")}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -96,22 +98,22 @@ export function ProductList({ products, pagination }: ProductListProps) {
             <TableHeader>
               <TableRow className="hover:bg-transparent border-pink-50">
                 <TableHead className="px-2 md:px-6 font-bold text-flora-dark">
-                  Product
+                  {t("table.product")}
                 </TableHead>
                 <TableHead className="hidden md:table-cell px-6 font-bold text-flora-dark">
-                  Category
+                  {t("table.category")}
                 </TableHead>
                 <TableHead className="px-2 md:px-6 font-bold text-flora-dark">
-                  Price
+                  {t("table.price")}
                 </TableHead>
                 <TableHead className="hidden sm:table-cell px-2 md:px-6 font-bold text-flora-dark">
-                  Stock
+                  {t("table.stock")}
                 </TableHead>
                 <TableHead className="hidden lg:table-cell px-6 font-bold text-flora-dark">
-                  Status
+                  {t("table.status")}
                 </TableHead>
                 <TableHead className="px-2 md:px-6 font-bold text-flora-dark text-right">
-                  Actions
+                  {t("table.actions")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -139,7 +141,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
                         {product.name}
                         {product._count && product._count.packItems > 0 && (
                           <Badge variant="outline" className="text-[10px] bg-purple-50 text-purple-600 border-purple-200 py-0 h-5">
-                            Pack
+                            {t("badges.pack")}
                           </Badge>
                         )}
                       </span>
@@ -197,23 +199,23 @@ export function ProductList({ products, pagination }: ProductListProps) {
                           variant="outline"
                           className="text-gray-400 border-gray-200 bg-gray-50"
                         >
-                          Archived
+                          {t("badges.archived")}
                         </Badge>
                       ) : !product.isLive ? (
                         <Badge
                           variant="outline"
                           className="text-amber-600 border-amber-200 bg-amber-50 font-bold"
                         >
-                          Paused
+                          {t("badges.paused")}
                         </Badge>
                       ) : (
                         <Badge className="bg-green-500 hover:bg-green-600">
-                          Live
+                          {t("badges.live")}
                         </Badge>
                       )}
                       {product.isFeatured && (
                         <Badge className="bg-primary hover:bg-[#FF75AA]">
-                          Featured
+                          {t("badges.featured")}
                         </Badge>
                       )}
                     </div>
@@ -251,26 +253,21 @@ export function ProductList({ products, pagination }: ProductListProps) {
                         <AlertDialogContent className="rounded-3xl border-pink-100">
                           <AlertDialogHeader>
                             <AlertDialogTitle className="text-flora-dark font-bold text-xl">
-                              Are you absolutely sure? ✨
+                              {t("delete.title")}
                             </AlertDialogTitle>
                             <AlertDialogDescription className="text-gray-500">
-                              This will permanently remove{" "}
-                              <span className="font-bold text-pink-500">
-                                {product.name}
-                              </span>{" "}
-                              from your beautiful inventory. This action cannot be
-                              undone.
+                              {t("delete.description", { name: product.name })}
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel className="rounded-full border-pink-100 text-gray-500 hover:bg-pink-50 transition-all">
-                              Cancel
+                              {t("delete.cancel")}
                             </AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => onDelete(product.id)}
                               className="rounded-full bg-red-500 hover:bg-red-600 text-white font-bold transition-all"
                             >
-                              Yes, delete it
+                              {t("delete.confirm")}
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -295,14 +292,10 @@ export function ProductList({ products, pagination }: ProductListProps) {
             className="rounded-full border-pink-100 text-flora-dark hover:bg-pink-50 hover:text-primary"
           >
             <ChevronLeft className="h-4 w-4 mr-1" />
-            Previous
+            {t("pagination.previous")}
           </Button>
           <div className="text-sm font-medium text-gray-500">
-            Page{" "}
-            <span className="text-flora-dark font-bold">
-              {pagination.currentPage}
-            </span>{" "}
-            of {pagination.totalPages}
+            {t("pagination.pageInfo", { current: pagination.currentPage, total: pagination.totalPages })}
           </div>
           <Button
             variant="outline"
@@ -311,7 +304,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
             disabled={pagination.currentPage >= pagination.totalPages}
             className="rounded-full border-pink-100 text-flora-dark hover:bg-pink-50 hover:text-primary"
           >
-            Next
+            {t("pagination.next")}
             <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
         </div>

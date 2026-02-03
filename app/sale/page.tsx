@@ -1,22 +1,27 @@
 import { CategoryPage } from "@/components/shop/category-page";
+import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-    title: "Sale Collection | Flora Accessories",
-    description: "Discover our limited-time treasures with exclusive discounts",
-};
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.sale");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 export default async function SalePage({
     searchParams
 }: {
     searchParams: Promise<{ sort?: string; category?: string; page?: string }>
 }) {
+    const t = await getTranslations("Shop");
     return (
         <CategoryPage
             categorySlug="sale"
             isSale={true}
-            title="Sale"
-            subtitle="Grab your favorite treasures at a special price"
+            title={t("titles.sale")}
+            subtitle={t("subtitles.sale")}
             searchParams={searchParams}
         />
     );

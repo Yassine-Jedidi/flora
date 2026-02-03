@@ -14,6 +14,7 @@ import { Loader2, Plus, X, Save, RotateCcw, Package, Wand2, Sparkles } from "luc
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { enhanceDescription } from "@/app/actions/ai";
+import { useTranslations } from "next-intl";
 
 import {
     Card,
@@ -61,6 +62,7 @@ export function PackForm({
     onCancel,
 }: PackFormProps) {
     const router = useRouter();
+    const t = useTranslations("Admin.packForm");
     const [isPending, setIsPending] = useState(false);
     const [isEnhancing, setIsEnhancing] = useState(false);
     const [isManualPricing, setIsManualPricing] = useState(!!initialData);
@@ -119,7 +121,7 @@ export function PackForm({
             form.setValue("images", updatedImages, { shouldValidate: true });
         },
         onUploadError: () => {
-            alert("Error uploading images");
+            toast.error(t("toasts.errorGeneric"));
         },
     });
 
@@ -227,13 +229,13 @@ export function PackForm({
         form.setValue("discountedPrice", discounted, { shouldDirty: true });
 
         setIsManualPricing(false);
-        toast.success("Auto-Pricing Active! ✨ (5% Pack Discount applied on Shop Value)");
+        toast.success(t("toasts.autoPricing"));
     };
 
     const handleAIByDescription = async () => {
         const currentDesc = form.getValues("description");
         if (!currentDesc || currentDesc.length < 10) {
-            toast.error("Please enter a longer description first");
+            toast.error(t("toasts.descShort"));
             return;
         }
 
@@ -242,12 +244,12 @@ export function PackForm({
             const result = await enhanceDescription(currentDesc);
             if (result.text) {
                 form.setValue("description", result.text);
-                toast.success("Description enhanced! ✨");
+                toast.success(t("toasts.descEnhanced"));
             } else if (result.error) {
                 toast.error(result.error);
             }
         } catch {
-            toast.error("AI enhancement failed");
+            toast.error(t("toasts.descFail"));
         } finally {
             setIsEnhancing(false);
         }
@@ -267,14 +269,15 @@ export function PackForm({
                 : await createPack(values);
 
             if (result.success) {
-                toast.success(result.success);
+                // For packs, we might want a specific success toast too
+                toast.success(initialData ? t("toasts.successUpdate") : t("toasts.successCreate"));
                 router.push("/admin/inventory");
             } else {
-                toast.error(result.error || "Error saving pack");
+                toast.error(result.error || t("toasts.errorSave"));
             }
         } catch (error) {
             console.error("Submission error:", error);
-            toast.error("Something went wrong");
+            toast.error(t("toasts.errorGeneric"));
         } finally {
             setIsPending(false);
         }
@@ -296,11 +299,11 @@ export function PackForm({
             <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
                 <CardHeader className="pb-8">
                     <CardTitle className="text-2xl font-bold text-flora-dark flex items-center gap-2">
-                        <Package className="w-6 h-6" />
-                        {initialData ? "Edit Pack ✨" : "Create New Pack"}
+                        <Package className="w-6 h-6 text-pink-500" />
+                        {initialData ? t("title.edit") : t("title.new")}
                     </CardTitle>
                     <CardDescription>
-                        Bundle multiple products together. Pricing and stock are calculated automatically, then you can upload your custom pack images.
+                        {t("desc")}
                     </CardDescription>
                 </CardHeader>
 
@@ -310,12 +313,12 @@ export function PackForm({
                         <div className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="name" className="text-flora-dark font-bold">
-                                    Pack Name
+                                    {t("labels.name")}
                                 </Label>
                                 <Input
                                     id="name"
                                     {...form.register("name")}
-                                    placeholder="e.g. Summer Essentials Bundle"
+                                    placeholder={t("placeholders.name")}
                                     className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
                                 />
                             </div>
@@ -323,7 +326,7 @@ export function PackForm({
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <Label htmlFor="description" className="text-flora-dark font-bold">
-                                        Description
+                                        {t("labels.description")}
                                     </Label>
                                     <Button
                                         type="button"
@@ -338,14 +341,14 @@ export function PackForm({
                                         ) : (
                                             <Sparkles className="w-3 h-3" />
                                         )}
-                                        {isEnhancing ? "Enhancing..." : "Magic Markdown ✨"}
+                                        {isEnhancing ? t("buttons.magic") : t("buttons.magic")}
                                     </Button>
                                 </div>
                                 <Textarea
                                     id="description"
                                     {...form.register("description")}
                                     rows={3}
-                                    placeholder="Describe what makes this pack special..."
+                                    placeholder={t("placeholders.description")}
                                     className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white resize-none"
                                 />
                             </div>
@@ -355,7 +358,7 @@ export function PackForm({
                         {/* Right Column: Images */}
                         <div className="space-y-6">
                             <Label className="text-flora-dark font-bold">
-                                Pack Photography
+                                {t("labels.photography")}
                             </Label>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -411,10 +414,10 @@ export function PackForm({
                                                 )}
                                             </div>
                                             <p className="text-xs font-bold text-flora-dark">
-                                                {isUploading ? "Uploading..." : "Add Photo ✨"}
+                                                {isUploading ? t("buttons.uploading") : t("placeholders.addPhoto")}
                                             </p>
                                             <p className="text-[10px] text-pink-400 mt-1">
-                                                Max 4MB per image
+                                                {t("help.photoLimit")}
                                             </p>
                                         </label>
                                     </div>
@@ -426,7 +429,7 @@ export function PackForm({
                                 </p>
                             )}
                             <p className="text-[10px] text-gray-400 text-center uppercase tracking-wider font-semibold">
-                                Best results with 1080x1080 square images
+                                {t("help.photoSpecs")}
                             </p>
                         </div>
                     </div>
@@ -435,8 +438,8 @@ export function PackForm({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
                                 <div className="space-y-0.5">
-                                    <Label className="text-sm font-bold text-flora-dark">Featured</Label>
-                                    <p className="text-[10px] text-gray-500">Home page visibility</p>
+                                    <Label className="text-sm font-bold text-flora-dark">{t("labels.featured")}</Label>
+                                    <p className="text-[10px] text-gray-500">{t("help.featured")}</p>
                                 </div>
                                 <Switch
                                     checked={form.watch("isFeatured")}
@@ -447,8 +450,8 @@ export function PackForm({
 
                             <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50">
                                 <div className="space-y-0.5">
-                                    <Label className="text-sm font-bold text-flora-dark">Live</Label>
-                                    <p className="text-[10px] text-gray-500">Website visibility</p>
+                                    <Label className="text-sm font-bold text-flora-dark">{t("labels.live")}</Label>
+                                    <p className="text-[10px] text-gray-500">{t("help.live")}</p>
                                 </div>
                                 <Switch
                                     checked={form.watch("isLive")}
@@ -462,8 +465,8 @@ export function PackForm({
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100 flex flex-col justify-between">
                                 <div className="flex items-center justify-between mb-2">
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase">Market Value</p>
-                                    <Badge variant="outline" className="text-[9px] bg-white text-gray-400 border-gray-100">ORIGINAL</Badge>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase">{t("labels.marketValue")}</p>
+                                    <Badge variant="outline" className="text-[9px] bg-white text-gray-400 border-gray-100">{t("badges.original")}</Badge>
                                 </div>
                                 <div className="relative">
                                     <p className="text-xl font-bold text-gray-400 line-through">
@@ -475,8 +478,8 @@ export function PackForm({
 
                             <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 flex flex-col justify-between">
                                 <div className="flex items-center justify-between mb-2">
-                                    <p className="text-xs font-bold text-blue-600 uppercase">Shop Value</p>
-                                    <Badge variant="outline" className="text-[9px] bg-white text-blue-500 border-blue-100">AUTO-SUM</Badge>
+                                    <p className="text-xs font-bold text-blue-600 uppercase">{t("labels.shopValue")}</p>
+                                    <Badge variant="outline" className="text-[9px] bg-white text-blue-500 border-blue-100">{t("badges.autoSum")}</Badge>
                                 </div>
                                 <div className="relative">
                                     <p className="text-2xl font-bold text-flora-dark">
@@ -488,7 +491,7 @@ export function PackForm({
 
                             <div className="p-4 rounded-2xl bg-green-50 border border-green-100 ring-2 ring-green-500/20 flex flex-col justify-between">
                                 <div className="flex items-center justify-between mb-2">
-                                    <p className="text-xs font-bold text-green-600 uppercase">Pack Price</p>
+                                    <p className="text-xs font-bold text-green-600 uppercase">{t("labels.packPrice")}</p>
                                     <Button
                                         type="button"
                                         variant="ghost"
@@ -496,7 +499,7 @@ export function PackForm({
                                         onClick={handleMagicCalculate}
                                         className="h-6 px-2 text-[10px] bg-white hover:bg-green-100 text-green-600 font-bold border border-green-100"
                                     >
-                                        <Wand2 className="w-3 h-3 mr-1" /> Magic
+                                        <Wand2 className="w-3 h-3 mr-1" /> {t("buttons.magic")}
                                     </Button>
                                 </div>
                                 <div className="relative">
@@ -515,10 +518,10 @@ export function PackForm({
                             </div>
 
                             <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100 flex flex-col justify-between">
-                                <p className="text-xs font-bold text-amber-600 uppercase mb-1">Dynamic Stock</p>
+                                <p className="text-xs font-bold text-amber-600 uppercase mb-1">{t("labels.dynamicStock")}</p>
                                 <p className="text-2xl font-bold text-flora-dark flex items-center gap-2">
                                     {typeof currentStock === 'number' ? currentStock : 0}
-                                    <Badge variant="outline" className="text-[10px] bg-white text-amber-500 border-amber-100">AUTO</Badge>
+                                    <Badge variant="outline" className="text-[10px] bg-white text-amber-500 border-amber-100">{t("badges.auto")}</Badge>
                                 </p>
                             </div>
                         </div>
@@ -529,10 +532,10 @@ export function PackForm({
                         <div className="flex items-center justify-between border-b pb-4">
                             <div>
                                 <Label className="text-flora-dark font-bold text-lg">
-                                    📦 Pack Contents
+                                    {t("labels.contents")}
                                 </Label>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    Select the products included in this bundle.
+                                    {t("help.contents")}
                                 </p>
                             </div>
                             <Button
@@ -543,7 +546,7 @@ export function PackForm({
                                 className="rounded-full border-pink-200 text-pink-600 hover:bg-pink-50"
                             >
                                 <Plus className="w-4 h-4 mr-2" />
-                                Add Product
+                                {t("buttons.addProduct")}
                             </Button>
                         </div>
 
@@ -568,7 +571,7 @@ export function PackForm({
                                             <div className="flex-1 space-y-4">
                                                 <div className="grid grid-cols-1 md:grid-cols-[4fr_1fr] gap-4">
                                                     <div className="space-y-2">
-                                                        <Label className="text-xs font-bold text-flora-dark uppercase tracking-wider">Product</Label>
+                                                        <Label className="text-xs font-bold text-flora-dark uppercase tracking-wider">{t("labels.product")}</Label>
                                                         <Select
                                                             onValueChange={(value) => {
                                                                 form.setValue(`packItems.${index}.itemId`, value);
@@ -581,7 +584,7 @@ export function PackForm({
                                                             value={selectedItemId}
                                                         >
                                                             <SelectTrigger className="w-full rounded-xl border-pink-100 bg-pink-50/30">
-                                                                <SelectValue placeholder="Search product..." />
+                                                                <SelectValue placeholder={t("placeholders.search")} />
                                                             </SelectTrigger>
                                                             <SelectContent>
                                                                 {availableProducts.map((p) => (
@@ -593,7 +596,7 @@ export function PackForm({
                                                         </Select>
                                                     </div>
                                                     <div className="space-y-2">
-                                                        <Label className="text-xs font-bold text-flora-dark uppercase tracking-wider">Qty</Label>
+                                                        <Label className="text-xs font-bold text-flora-dark uppercase tracking-wider">{t("labels.qty")}</Label>
                                                         <Input
                                                             type="number"
                                                             min="1"
@@ -616,8 +619,8 @@ export function PackForm({
 
                                                 {product && (
                                                     <div className="flex items-center justify-between text-xs px-2 py-1 bg-gray-50 rounded-lg">
-                                                        <span className="text-gray-500">Unit Price: <span className="font-bold text-flora-dark">{Number(product.discountedPrice).toFixed(3)} DT</span></span>
-                                                        <span className="text-gray-500">Available: <span className="font-bold text-flora-dark">{product.stock}</span></span>
+                                                        <span className="text-gray-500">{t("labels.unitPrice")}: <span className="font-bold text-flora-dark">{Number(product.discountedPrice).toFixed(3)} DT</span></span>
+                                                        <span className="text-gray-500">{t("labels.available")}: <span className="font-bold text-flora-dark">{product.stock}</span></span>
                                                     </div>
                                                 )}
                                             </div>
@@ -625,7 +628,7 @@ export function PackForm({
                                             {/* Product Images Preview */}
                                             {product && product.images && product.images.length > 0 && (
                                                 <div className="flex-none w-full md:w-48 space-y-2">
-                                                    <Label className="text-[10px] font-bold text-flora-dark uppercase tracking-wider">Product Visuals</Label>
+                                                    <Label className="text-[10px] font-bold text-flora-dark uppercase tracking-wider">{t("labels.visuals")}</Label>
                                                     <div className="flex md:grid md:grid-cols-2 gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
                                                         {product.images.map((img: { url: string }, i: number) => (
                                                             <div key={i} className="relative w-16 h-16 md:w-full md:aspect-square rounded-xl overflow-hidden border border-pink-100 flex-none bg-[#FDF2F8]">
@@ -648,7 +651,7 @@ export function PackForm({
                             {fields.length === 0 && (
                                 <div className="text-center py-12 border-2 border-dashed border-pink-100 rounded-3xl bg-pink-50/10">
                                     <Package className="w-10 h-10 mx-auto text-pink-200 mb-3" />
-                                    <p className="text-sm text-flora-dark font-medium">Add products to build this pack</p>
+                                    <p className="text-sm text-flora-dark font-medium">{t("help.noProducts")}</p>
                                 </div>
                             )}
                         </div>
@@ -662,7 +665,7 @@ export function PackForm({
                         onClick={() => onCancel ? onCancel() : router.push("/admin/inventory")}
                         className="rounded-full text-gray-400 hover:text-flora-dark"
                     >
-                        <RotateCcw className="w-4 h-4 mr-2" /> Cancel
+                        <RotateCcw className="w-4 h-4 mr-2" /> {t("buttons.cancel")}
                     </Button>
                     <Button
                         disabled={isPending || fields.length === 0}
@@ -670,7 +673,7 @@ export function PackForm({
                         className="bg-primary hover:bg-[#FF75AA] text-white px-10 py-6 rounded-full font-bold shadow-xl shadow-pink-200 transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
                     >
                         {isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : initialData ? <Save className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
-                        {isPending ? "Saving Pack..." : initialData ? "Update Pack" : "Publish Pack"}
+                        {isPending ? t("buttons.saving") : initialData ? t("buttons.update") : t("buttons.publish")}
                     </Button>
                 </CardFooter>
             </form>

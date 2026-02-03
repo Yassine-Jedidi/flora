@@ -6,6 +6,7 @@ import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { UTApi } from "uploadthing/server";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getTranslations } from "next-intl/server";
 
 const utapi = new UTApi();
 
@@ -16,10 +17,12 @@ export async function updateProfile(values: { name: string; image?: string }) {
     max: 10, // 10 updates per hour
   });
 
+  const tProfile = await getTranslations("Errors.profile");
+
   if (!rateLimit.success) {
     return {
       success: false,
-      error: `Too many profile updates. Please try again in ${rateLimit.message}.`,
+      error: tProfile("rateLimit", { message: rateLimit.message || "" }),
     };
   }
 
@@ -29,7 +32,8 @@ export async function updateProfile(values: { name: string; image?: string }) {
     });
 
     if (!session) {
-      return { success: false, error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { success: false, error: t("unauthenticated") };
     }
 
     // Get current user to check for old image
@@ -70,7 +74,8 @@ export async function updateProfile(values: { name: string; image?: string }) {
     return { success: true };
   } catch (error) {
     console.error("Profile update error:", error);
-    return { success: false, error: "Failed to update profile" };
+    const t = await getTranslations("Errors.profile");
+    return { success: false, error: t("updateError") };
   }
 }
 
@@ -81,10 +86,12 @@ export async function deleteUploadedFile(fileUrl: string) {
     max: 20, // 20 deletions per hour
   });
 
+  const tProfile = await getTranslations("Errors.profile");
+
   if (!rateLimit.success) {
     return {
       success: false,
-      error: `Too many deletions. Please try again in ${rateLimit.message}.`,
+      error: tProfile("rateLimit", { message: rateLimit.message || "" }),
     };
   }
 
@@ -94,7 +101,8 @@ export async function deleteUploadedFile(fileUrl: string) {
     });
 
     if (!session) {
-      return { success: false, error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { success: false, error: t("unauthenticated") };
     }
 
     if (!fileUrl.includes("utfs.io")) {
@@ -112,7 +120,8 @@ export async function deleteUploadedFile(fileUrl: string) {
     return { success: true };
   } catch (error) {
     console.error("Delete file error:", error);
-    return { success: false, error: "Failed to delete file" };
+    const t = await getTranslations("Errors.profile");
+    return { success: false, error: t("deleteFileError") };
   }
 }
 
@@ -123,7 +132,8 @@ export async function getUserSessions() {
     });
 
     if (!session) {
-      return { success: false, error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { success: false, error: t("unauthenticated") };
     }
 
     const sessions = await db.session.findMany({
@@ -149,7 +159,8 @@ export async function getUserSessions() {
     return { success: true, data: safeSessions };
   } catch (error) {
     console.error("Get sessions error:", error);
-    return { success: false, error: "Failed to fetch sessions" };
+    const t = await getTranslations("Errors.profile");
+    return { success: false, error: t("fetchSessionsError") };
   }
 }
 
@@ -160,7 +171,8 @@ export async function revokeSession(sessionId: string) {
     });
 
     if (!session) {
-      return { success: false, error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { success: false, error: t("unauthenticated") };
     }
 
     // Verify ownership
@@ -180,7 +192,8 @@ export async function revokeSession(sessionId: string) {
     return { success: true };
   } catch (error) {
     console.error("Revoke session error:", error);
-    return { success: false, error: "Failed to revoke session" };
+    const t = await getTranslations("Errors.profile");
+    return { success: false, error: t("revokeSessionError") };
   }
 }
 
@@ -191,7 +204,8 @@ export async function checkUserHasPassword() {
     });
 
     if (!session) {
-      return { success: false, error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { success: false, error: t("unauthenticated") };
     }
 
     const user = await db.user.findUnique({
@@ -205,7 +219,8 @@ export async function checkUserHasPassword() {
     return { success: true, hasPassword };
   } catch (error) {
     console.error("Check password error:", error);
-    return { success: false, error: "Failed to check password status" };
+    const t = await getTranslations("Errors.profile");
+    return { success: false, error: t("checkPasswordError") };
   }
 }
 
@@ -216,7 +231,8 @@ export async function setUserPassword(password: string) {
     });
 
     if (!session) {
-      return { success: false, error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { success: false, error: t("unauthenticated") };
     }
 
     // Safety check for method existence
@@ -239,12 +255,11 @@ export async function setUserPassword(password: string) {
     return { success: true };
   } catch (error: any) {
     console.error("Set password error:", error);
+    const t = await getTranslations("Errors.profile");
     return {
       success: false,
       error:
-        error.message?.body?.message ||
-        error.message ||
-        "Failed to set password",
+        error.message?.body?.message || error.message || t("setPasswordError"),
     };
   }
 }
@@ -256,7 +271,8 @@ export async function getUserAccounts() {
     });
 
     if (!session) {
-      return { success: false, error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { success: false, error: t("unauthenticated") };
     }
 
     const accounts = await db.account.findMany({
@@ -271,7 +287,8 @@ export async function getUserAccounts() {
     return { success: true, data: accounts };
   } catch (error) {
     console.error("Get accounts error:", error);
-    return { success: false, error: "Failed to fetch accounts" };
+    const t = await getTranslations("Errors.profile");
+    return { success: false, error: t("fetchAccountsError") };
   }
 }
 
@@ -282,7 +299,8 @@ export async function deleteUserAccount() {
     });
 
     if (!session) {
-      return { success: false, error: "Not authenticated" };
+      const t = await getTranslations("Errors");
+      return { success: false, error: t("unauthenticated") };
     }
 
     const userId = session.user.id;
@@ -309,6 +327,7 @@ export async function deleteUserAccount() {
     return { success: true };
   } catch (error) {
     console.error("Delete account error:", error);
-    return { success: false, error: "Failed to delete account" };
+    const t = await getTranslations("Errors.profile");
+    return { success: false, error: t("deleteAccountError") };
   }
 }

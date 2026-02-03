@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import { FavoritesProvider } from "@/lib/hooks/use-favorites";
@@ -14,25 +16,34 @@ const nunito = Nunito({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Flora | Explore Unique Treasures",
-  description: "Discover beautiful jewelry and accessories to brighten your day.",
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
-  },
-  appleWebApp: {
-    title: "FloraAccess",
-  },
-};
+import { getTranslations } from "next-intl/server";
 
-export default function RootLayout({
+export async function generateMetadata() {
+  const t = await getTranslations("Metadata.root");
+
+  return {
+    title: t("title"),
+    description: t("description"),
+    icons: {
+      icon: "/favicon.ico",
+      apple: "/apple-icon.png",
+    },
+    appleWebApp: {
+      title: "FloraAccess",
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <link rel="preconnect" href="https://utfs.io" />
         <link rel="dns-prefetch" href="https://utfs.io" />
@@ -41,16 +52,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${nunito.variable} font-sans antialiased`}>
+      <body className={`${nunito.variable} font-sans antialiased text-flora-dark`}>
         <MobileDebug />
         <IOSCompatibilityChecker />
-        <CartProvider>
-          <FavoritesProvider>
-            <ScrollToTop />
-            {children}
-            <Toaster />
-          </FavoritesProvider>
-        </CartProvider>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <CartProvider>
+            <FavoritesProvider>
+              <ScrollToTop />
+              {children}
+              <Toaster />
+            </FavoritesProvider>
+          </CartProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

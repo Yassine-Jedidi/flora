@@ -1,9 +1,18 @@
 import { getProducts, getCategories } from "@/app/actions/get-products";
 import { ProductList } from "@/components/admin/product-list";
 import { InventoryFilters } from "@/components/admin/inventory-filters";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.admin.inventory");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 interface InventoryPageProps {
-    searchParams: Promise<{ 
+    searchParams: Promise<{
         page?: string;
         search?: string;
         category?: string;
@@ -15,7 +24,7 @@ interface InventoryPageProps {
 export default async function InventoryPage({ searchParams }: InventoryPageProps) {
     const params = await searchParams;
     const page = Number(params?.page) || 1;
-    
+
     const filters = {
         search: params?.search,
         category: params?.category,

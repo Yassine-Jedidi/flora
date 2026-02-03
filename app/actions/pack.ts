@@ -3,57 +3,78 @@
 import prisma from "@/lib/db";
 import { PackSchema, PackFormValues } from "@/lib/validations/pack";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 export async function createPack(values: PackFormValues) {
   try {
+    const t = await getTranslations("Errors");
+    const tPack = await getTranslations("Admin.packForm");
     const validatedFields = PackSchema.safeParse(values);
 
     if (!validatedFields.success) {
-      console.error("Create Pack - Validation error:", validatedFields.error.flatten().fieldErrors);
-      return { error: "Invalid fields! " + Object.keys(validatedFields.error.flatten().fieldErrors).join(", ") };
+      console.error(
+        "Create Pack - Validation error:",
+        validatedFields.error.flatten().fieldErrors,
+      );
+      return {
+        error:
+          t("validation") +
+          " " +
+          Object.keys(validatedFields.error.flatten().fieldErrors).join(", "),
+      };
     }
 
-    const { 
-      name, 
-      description, 
+    const {
+      name,
+      description,
       originalPrice: rawOriginalPrice,
-      discountedPrice: rawDiscountedPrice, 
-      categoryId, 
-      stock, 
-      images, 
-      isFeatured, 
+      discountedPrice: rawDiscountedPrice,
+      categoryId,
+      stock,
+      images,
+      isFeatured,
       isArchived,
       isLive,
-      packItems
+      packItems,
     } = validatedFields.data;
 
     // Manual refinement check
-    if (rawOriginalPrice && rawDiscountedPrice && rawOriginalPrice <= rawDiscountedPrice) {
-      return { error: "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty." };
+    if (
+      rawOriginalPrice &&
+      rawDiscountedPrice &&
+      rawOriginalPrice <= rawDiscountedPrice
+    ) {
+      return {
+        error: t("priceRefinement"),
+      };
     }
 
     // Logic for optional discount
-    const finalOriginalPrice = rawOriginalPrice && rawOriginalPrice > 0 
-      ? rawOriginalPrice 
-      : rawDiscountedPrice;
-    
-    const finalDiscountedPrice = (rawOriginalPrice && rawOriginalPrice > 0 && rawOriginalPrice > rawDiscountedPrice)
-      ? rawDiscountedPrice 
-      : null;
+    const finalOriginalPrice =
+      rawOriginalPrice && rawOriginalPrice > 0
+        ? rawOriginalPrice
+        : rawDiscountedPrice;
+
+    const finalDiscountedPrice =
+      rawOriginalPrice &&
+      rawOriginalPrice > 0 &&
+      rawOriginalPrice > rawDiscountedPrice
+        ? rawDiscountedPrice
+        : null;
 
     // Verify all items exist
-    const itemIds = packItems.map(item => item.itemId);
+    const itemIds = packItems.map((item) => item.itemId);
     const existingProducts = await prisma.product.findMany({
       where: { id: { in: itemIds } },
-      select: { id: true }
+      select: { id: true },
     });
 
     if (existingProducts.length !== itemIds.length) {
-      return { error: "Some selected products do not exist" };
+      return { error: t("itemsNotFound") };
     }
 
     if (!categoryId) {
-      return { error: "Category is required. Please ensure the 'Packs' category exists." };
+      return { error: t("categoryRequired") };
     }
 
     // Create the pack with its items
@@ -74,7 +95,7 @@ export async function createPack(values: PackFormValues) {
           },
         },
         packItems: {
-          create: packItems.map(item => ({
+          create: packItems.map((item) => ({
             itemId: item.itemId,
             quantity: item.quantity,
           })),
@@ -85,67 +106,88 @@ export async function createPack(values: PackFormValues) {
     revalidatePath("/admin/inventory");
     revalidatePath("/"); // Revalidate home page if products are shown there
 
-    return { success: "Pack created successfully!", packId: pack.id };
+    return { success: tPack("toasts.successCreate"), packId: pack.id };
   } catch (error) {
     console.error("Error creating pack:", error);
-    return { error: "Something went wrong!" };
+    const t = await getTranslations("Errors");
+    return { error: t("generic") };
   }
 }
 
 export async function updatePack(id: string, values: PackFormValues) {
   try {
+    const t = await getTranslations("Errors");
+    const tPack = await getTranslations("Admin.packForm");
     const validatedFields = PackSchema.safeParse(values);
 
     if (!validatedFields.success) {
-      console.error("Update Pack - Validation error:", validatedFields.error.flatten().fieldErrors);
-      return { error: "Invalid fields! " + Object.keys(validatedFields.error.flatten().fieldErrors).join(", ") };
+      console.error(
+        "Update Pack - Validation error:",
+        validatedFields.error.flatten().fieldErrors,
+      );
+      return {
+        error:
+          t("validation") +
+          " " +
+          Object.keys(validatedFields.error.flatten().fieldErrors).join(", "),
+      };
     }
 
-    const { 
-      name, 
-      description, 
+    const {
+      name,
+      description,
       originalPrice: rawOriginalPrice,
-      discountedPrice: rawDiscountedPrice, 
-      categoryId, 
-      stock, 
-      images, 
-      isFeatured, 
+      discountedPrice: rawDiscountedPrice,
+      categoryId,
+      stock,
+      images,
+      isFeatured,
       isArchived,
       isLive,
-      packItems
+      packItems,
     } = validatedFields.data;
 
     // Manual refinement check
-    if (rawOriginalPrice && rawDiscountedPrice && rawOriginalPrice <= rawDiscountedPrice) {
-      return { error: "Lowered price (Sale Price) must be less than the Original Price. If there is no discount, leave Original Price empty." };
+    if (
+      rawOriginalPrice &&
+      rawDiscountedPrice &&
+      rawOriginalPrice <= rawDiscountedPrice
+    ) {
+      return {
+        error: t("priceRefinement"),
+      };
     }
 
     // Logic for optional discount
-    const finalOriginalPrice = rawOriginalPrice && rawOriginalPrice > 0 
-      ? rawOriginalPrice 
-      : rawDiscountedPrice;
-    
-    const finalDiscountedPrice = (rawOriginalPrice && rawOriginalPrice > 0 && rawOriginalPrice > rawDiscountedPrice)
-      ? rawDiscountedPrice 
-      : null;
+    const finalOriginalPrice =
+      rawOriginalPrice && rawOriginalPrice > 0
+        ? rawOriginalPrice
+        : rawDiscountedPrice;
+
+    const finalDiscountedPrice =
+      rawOriginalPrice &&
+      rawOriginalPrice > 0 &&
+      rawOriginalPrice > rawDiscountedPrice
+        ? rawDiscountedPrice
+        : null;
 
     // Verify all items exist
-    const itemIds = packItems.map(item => item.itemId);
+    const itemIds = packItems.map((item) => item.itemId);
     const existingProducts = await prisma.product.findMany({
       where: { id: { in: itemIds } },
-      select: { id: true }
+      select: { id: true },
     });
 
     if (existingProducts.length !== itemIds.length) {
-      return { error: "Some selected products do not exist" };
+      return { error: t("itemsNotFound") };
+    }
+
+    if (!categoryId) {
+      return { error: t("categoryRequired") };
     }
 
     // Update the pack with transaction
     await prisma.$transaction(async (tx) => {
-      if (!categoryId) {
-        throw new Error("Category is required. Please ensure the 'Packs' category exists.");
-      }
-
       // 1. Update basic pack info
       await tx.product.update({
         where: { id },
@@ -180,7 +222,7 @@ export async function updatePack(id: string, values: PackFormValues) {
       });
 
       await tx.packItem.createMany({
-        data: packItems.map(item => ({
+        data: packItems.map((item) => ({
           packId: id,
           itemId: item.itemId,
           quantity: item.quantity,
@@ -190,11 +232,12 @@ export async function updatePack(id: string, values: PackFormValues) {
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");
-    
-    return { success: "Pack updated successfully! ✨" };
+
+    return { success: tPack("toasts.successUpdate") };
   } catch (error) {
     console.error("Error updating pack:", error);
-    return { error: "Something went wrong!" };
+    const t = await getTranslations("Errors");
+    return { error: t("generic") };
   }
 }
 
@@ -225,10 +268,12 @@ export async function getAvailableProducts() {
       },
     });
 
-    return products.map(product => ({
+    return products.map((product) => ({
       ...product,
       originalPrice: Number(product.originalPrice),
-      discountedPrice: product.discountedPrice ? Number(product.discountedPrice) : null,
+      discountedPrice: product.discountedPrice
+        ? Number(product.discountedPrice)
+        : null,
     }));
   } catch (error) {
     console.error("Error fetching available products:", error);

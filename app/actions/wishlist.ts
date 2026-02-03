@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import db from "@/lib/db";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 
 export async function getWishlist() {
   const session = await auth.api.getSession({
@@ -11,7 +12,8 @@ export async function getWishlist() {
   });
 
   if (!session) {
-    return { success: false, error: "Not authenticated" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("unauthenticated") };
   }
 
   try {
@@ -44,7 +46,8 @@ export async function getWishlist() {
     };
   } catch (error) {
     console.error("[GET_WISHLIST]", error);
-    return { success: false, error: "Failed to fetch wishlist" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("fetchWishlistError") };
   }
 }
 
@@ -54,7 +57,8 @@ export async function toggleWishlistProduct(productId: string) {
   });
 
   if (!session) {
-    return { success: false, error: "Not authenticated" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("unauthenticated") };
   }
 
   try {
@@ -86,9 +90,8 @@ export async function toggleWishlistProduct(productId: string) {
         });
 
         if (count >= 20) {
-          throw new Error(
-            "Wishlist limit reached. You can only save up to 20 items.",
-          );
+          const t = await getTranslations("Errors");
+          throw new Error(t("wishlistFull"));
         }
 
         // Create wishlist item within same transaction
@@ -119,7 +122,8 @@ export async function toggleWishlistProduct(productId: string) {
       };
     }
 
-    return { success: false, error: "Failed to update wishlist" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("updateWishlistError") };
   }
 }
 
@@ -129,7 +133,8 @@ export async function syncWishlist(productIds: string[]) {
   });
 
   if (!session) {
-    return { success: false, error: "Not authenticated" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("unauthenticated") };
   }
 
   try {
@@ -175,6 +180,7 @@ export async function syncWishlist(productIds: string[]) {
     return { success: true };
   } catch (error) {
     console.error("[SYNC_WISHLIST]", error);
-    return { success: false, error: "Failed to sync wishlist" };
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("syncWishlistError") };
   }
 }

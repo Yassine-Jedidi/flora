@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
+import { getTranslations } from "next-intl/server";
 
 export default async function ProductPage({
     params
@@ -22,6 +23,8 @@ export default async function ProductPage({
     if (!product || !product.isLive) {
         return notFound();
     }
+
+    const t = await getTranslations("Shop.product");
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -38,7 +41,7 @@ export default async function ProductPage({
                             <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-pink-50 transition-colors">
                                 <ChevronLeft className="w-4 h-4 text-[#8B7E84] group-hover:text-primary" />
                             </div>
-                            Back to {product.category.name}
+                            {t("backTo", { category: product.category.name })}
                         </Link>
                     </div>
 
