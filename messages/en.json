@@ -562,5 +562,279 @@
         "subtitle": "is missing.",
         "description": "We couldn't find the page you were looking for. It might have been moved, or it's hiding in another jewelry box! ✨",
         "backHome": "Back to Home"
+    },
+    "Admin": {
+        "layout": {
+            "badge": "Admin Dashboard",
+            "title": "Treasure Management ✨",
+            "subtitle": "Manage your beautiful collection and list new accessories for your customers."
+        },
+        "nav": {
+            "orders": "Orders",
+            "newProduct": "New Product",
+            "newPack": "New Pack",
+            "inventory": "Your Inventory",
+            "profit": "Profit Calc"
+        },
+        "orders": {
+            "table": {
+                "date": "Date & Time",
+                "customer": "Customer",
+                "items": "Items (Qty x Price)",
+                "total": "Total",
+                "location": "Location",
+                "status": "Status",
+                "empty": "No orders found."
+            },
+            "filters": {
+                "searchPlaceholder": "Search by customer name or phone...",
+                "search": "Search",
+                "clear": "Clear",
+                "allLocations": "All Locations",
+                "status": {
+                    "all": "All Status",
+                    "pending": "Pending",
+                    "confirmed": "Confirmed",
+                    "shipped": "Shipped",
+                    "delivered": "Delivered",
+                    "cancelled": "Cancelled"
+                },
+                "date": {
+                    "all": "All Time",
+                    "today": "Today",
+                    "week": "This Week",
+                    "month": "This Month"
+                }
+            },
+            "status": {
+                "updated": "Order status updated to {status}! ✨",
+                "error": "Failed to update status"
+            }
+        },
+        "inventory": {
+            "filters": {
+                "title": "Filters:",
+                "searchPlaceholder": "Search products...",
+                "search": "Search",
+                "allCategories": "All",
+                "loading": "Loading...",
+                "status": {
+                    "all": "All Status",
+                    "live": "Live",
+                    "paused": "Paused",
+                    "archived": "Archived"
+                },
+                "stock": {
+                    "all": "All Stock",
+                    "inStock": "In Stock",
+                    "lowStock": "Low Stock",
+                    "outOfStock": "Out of Stock"
+                }
+            },
+            "list": {
+                "empty": "No accessories listed yet. Start by adding one above! ✨",
+                "title": "Recent Inventory",
+                "table": {
+                    "product": "Product",
+                    "category": "Category",
+                    "price": "Price",
+                    "stock": "Stock",
+                    "status": "Status",
+                    "actions": "Actions"
+                },
+                "badges": {
+                    "pack": "Pack",
+                    "featured": "Featured",
+                    "archived": "Archived",
+                    "paused": "Paused",
+                    "live": "Live"
+                },
+                "delete": {
+                    "title": "Are you absolutely sure? ✨",
+                    "description": "This will permanently remove {name} from your beautiful inventory. This action cannot be undone.",
+                    "cancel": "Cancel",
+                    "confirm": "Yes, delete it",
+                    "success": "Accessory deleted successfully! ✨"
+                },
+                "pagination": {
+                    "previous": "Previous",
+                    "next": "Next",
+                    "pageInfo": "Page {current} of {total}"
+                }
+            }
+        },
+        "profit": {
+            "title": "Profit & Risk Simulator",
+            "subtitle": "Compare profit if delivered vs. loss if returned",
+            "labels": {
+                "selectProduct": "Select Product (Optional)",
+                "manualInput": "-- Manual Input --",
+                "sellingPrice": "Selling Price",
+                "buyingPrice": "Buying Price",
+                "packaging": "Emballage",
+                "delivery": "Livraison",
+                "return": "Coût Retour",
+                "other": "Other Costs",
+                "freeShipping": "Livraison Gratuite",
+                "wasReturned": "Was returned before?"
+            },
+            "buttons": {
+                "bestPrice": "Get Best Price"
+            },
+            "help": {
+                "freeShipping": "Customer pays extra 7dt for free shipping",
+                "wasReturned": "Subtracts previous loss (Livraison + Retour) from profit."
+            },
+            "results": {
+                "title": "Results Scenarios",
+                "delivered": "If Delivered",
+                "returned": "If Returned",
+                "roi": "ROI",
+                "margin": "Margin",
+                "target": "Target",
+                "worstCase": "Worst case (return + redeliver)",
+                "returnLoss": "(Loss of Delivery + Return)",
+                "status": {
+                    "excellent": "(Excellent)",
+                    "good": "(Good)",
+                    "minimum": "(Minimum)",
+                    "bad": "(Bad)"
+                }
+            },
+            "tip": {
+                "title": "Risk vs. Reward:",
+                "text": "This breakdown helps you decide if shipping is risky. 'If Returned' shows your cash loss assuming the item is returned to inventory."
+            }
+        },
+        "productForm": {
+            "title": {
+                "new": "Listing Details",
+                "edit": "Refine Your Treasure ✨"
+            },
+            "desc": {
+                "new": "Enter the information that will be shown to customers.",
+                "edit": "Update the information about this beautiful accessory."
+            },
+            "labels": {
+                "name": "Product Name",
+                "description": "Description",
+                "salePrice": "Sale Price (DT)",
+                "discountPercent": "Discount %",
+                "originalPrice": "Original Price (DT)",
+                "stock": "Initial Stock",
+                "category": "Category",
+                "featured": "Featured Product",
+                "live": "Live Status",
+                "archived": "Archived",
+                "photography": "Product Photography"
+            },
+            "placeholders": {
+                "name": "e.g. Sparkly Butterfly Clip",
+                "description": "Tell a story about this accessory...",
+                "salePrice": "Final price",
+                "originalPrice": "Optional - leave empty for no discount",
+                "selectCategory": "Select a category",
+                "uploadTitle": "Upload Product Images",
+                "uploadDesc": "Pick the cutest photos of your accessories (up to 4)"
+            },
+            "buttons": {
+                "magicMarkdown": "Magic Markdown ✨",
+                "enhancing": "Enhancing...",
+                "addPhoto": "Add Photo ✨",
+                "uploading": "Uploading...",
+                "back": "Back to Inventory",
+                "cancel": "Cancel",
+                "save": "Save Changes",
+                "list": "List This Accessory",
+                "saving": "Saving...",
+                "uploadingImages": "Uploading Images...",
+                "deletingImage": "Deleting Image..."
+            },
+            "help": {
+                "salePrice": "Final price customers will pay",
+                "originalPrice": "Market price (only fill this if you want to show a discount)",
+                "discountPercent": "Optional: Enter discount %",
+                "featured": "Show this product in the 'Featured' section on the homepage",
+                "live": "Visible to customers (Turn off to hide without archiving)",
+                "archived": "Soft-delete this product (Hidden everywhere, but keeps order history)",
+                "photoLimit": "Max 4MB per image",
+                "photoSpecs": "Best results with 1080x1080 square images",
+                "safeVault": "Your changes are saved to the secure inventory vault."
+            },
+            "sections": {
+                "pricing": "💰 Pricing & Discounts",
+                "featured": "✨ Featured Product",
+                "live": "🟢 Live Status",
+                "archived": "📦 Archived"
+            },
+            "toasts": {
+                "descShort": "Please enter a longer description first",
+                "descEnhanced": "Description enhanced! ✨",
+                "descFail": "AI enhancement failed",
+                "uploadComplete": "Upload Completed!",
+                "waitUpload": "Please wait for images to finish uploading",
+                "waitDelete": "Please wait for images to finish deleting",
+                "successCreate": "Accessory created successfully! ✨",
+                "successUpdate": "Accessory updated successfully! ✨",
+                "errorSave": "Error saving product",
+                "errorGeneric": "Something went wrong",
+                "imageDeleted": "Image deleted from storage",
+                "imageDeleteFail": "Failed to delete image file"
+            },
+            "saleTag": "🔥 {percent}% OFF"
+        },
+        "packForm": {
+            "title": {
+                "new": "Create New Pack",
+                "edit": "Edit Pack ✨"
+            },
+            "desc": "Bundle multiple products together. Pricing and stock are calculated automatically, then you can upload your custom pack images.",
+            "labels": {
+                "name": "Pack Name",
+                "description": "Description",
+                "photography": "Pack Photography",
+                "featured": "Featured",
+                "live": "Live",
+                "marketValue": "Market Value",
+                "shopValue": "Shop Value",
+                "packPrice": "Pack Price",
+                "dynamicStock": "Dynamic Stock",
+                "contents": "Pack Contents",
+                "product": "Product",
+                "qty": "Qty",
+                "unitPrice": "Unit Price",
+                "available": "Available",
+                "visuals": "Product Visuals"
+            },
+            "placeholders": {
+                "name": "e.g. Summer Essentials Bundle",
+                "description": "Describe what makes this pack special...",
+                "search": "Search product...",
+                "addPhoto": "Add Photo ✨"
+            },
+            "buttons": {
+                "magic": "Magic",
+                "addProduct": "Add Product",
+                "cancel": "Cancel",
+                "update": "Update Pack",
+                "publish": "Publish Pack",
+                "saving": "Saving Pack..."
+            },
+            "badges": {
+                "original": "ORIGINAL",
+                "autoSum": "AUTO-SUM",
+                "auto": "AUTO"
+            },
+            "toasts": {
+                "autoPricing": "Auto-Pricing Active! ✨ (5% Pack Discount applied on Shop Value)",
+                "errorSave": "Error saving pack"
+            },
+            "help": {
+                "featured": "Home page visibility",
+                "live": "Website visibility",
+                "contents": "Select the products included in this bundle.",
+                "noProducts": "Add products to build this pack"
+            }
+        }
     }
 }

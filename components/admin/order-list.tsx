@@ -13,6 +13,7 @@ import { Order } from "@/lib/types";
 import { OrderStatusToggle } from "./order-status-toggle";
 import { OrderStatus } from "@prisma/client";
 import { PaginationControl } from "@/components/ui/pagination-control";
+import { useTranslations } from "next-intl";
 
 interface OrderListProps {
   orders: Order[];
@@ -24,6 +25,7 @@ interface OrderListProps {
 }
 
 export function OrderList({ orders, pagination }: OrderListProps) {
+  const t = useTranslations("Admin.orders.table");
 
   return (
     <div className="space-y-4">
@@ -34,22 +36,22 @@ export function OrderList({ orders, pagination }: OrderListProps) {
             <TableHeader className="bg-pink-50/50">
               <TableRow className="hover:bg-transparent border-pink-100">
                 <TableHead className="font-bold text-flora-dark text-xs md:text-sm">
-                  Date & Time
+                  {t("date")}
                 </TableHead>
                 <TableHead className="font-bold text-flora-dark text-xs md:text-sm">
-                  Customer
+                  {t("customer")}
                 </TableHead>
                 <TableHead className="hidden lg:table-cell font-bold text-flora-dark text-xs md:text-sm">
-                  Items (Qty x Price)
+                  {t("items")}
                 </TableHead>
                 <TableHead className="font-bold text-flora-dark text-xs md:text-sm">
-                  Total
+                  {t("total")}
                 </TableHead>
                 <TableHead className="hidden md:table-cell font-bold text-flora-dark text-xs md:text-sm">
-                  Location
+                  {t("location")}
                 </TableHead>
                 <TableHead className="font-bold text-flora-dark text-xs md:text-sm">
-                  Status
+                  {t("status")}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -60,7 +62,7 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                     colSpan={6}
                     className="text-center py-10 text-gray-500"
                   >
-                    No orders found.
+                    {t("empty")}
                   </TableCell>
                 </TableRow>
               ) : (

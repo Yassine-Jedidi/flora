@@ -562,5 +562,279 @@
         "subtitle": "est introuvable.",
         "description": "Nous n'avons pas pu trouver la page que vous recherchez. Elle a peut-être été déplacée ou se cache dans une autre boîte à bijoux ! ✨",
         "backHome": "Retour à l'accueil"
+    },
+    "Admin": {
+        "layout": {
+            "badge": "Tableau de Bord Admin",
+            "title": "Gestion des Trésors ✨",
+            "subtitle": "Gérez votre belle collection et listez de nouveaux accessoires pour vos clients."
+        },
+        "nav": {
+            "orders": "Commandes",
+            "newProduct": "Nouveau Produit",
+            "newPack": "Nouveau Pack",
+            "inventory": "Votre Inventaire",
+            "profit": "Calcul de Profit"
+        },
+        "orders": {
+            "table": {
+                "date": "Date & Heure",
+                "customer": "Client",
+                "items": "Articles (Qté x Prix)",
+                "total": "Total",
+                "location": "Lieu",
+                "status": "Statut",
+                "empty": "Aucune commande trouvée."
+            },
+            "filters": {
+                "searchPlaceholder": "Rechercher par nom de client ou téléphone...",
+                "search": "Rechercher",
+                "clear": "Effacer",
+                "allLocations": "Tous les Lieux",
+                "status": {
+                    "all": "Tous les Statuts",
+                    "pending": "En attente",
+                    "confirmed": "Confirmée",
+                    "shipped": "Expédiée",
+                    "delivered": "Livrée",
+                    "cancelled": "Annulée"
+                },
+                "date": {
+                    "all": "Tout le temps",
+                    "today": "Aujourd'hui",
+                    "week": "Cette semaine",
+                    "month": "Ce mois-ci"
+                }
+            },
+            "status": {
+                "updated": "Statut de la commande mis à jour sur {status} ! ✨",
+                "error": "Échec de la mise à jour du statut"
+            }
+        },
+        "inventory": {
+            "filters": {
+                "title": "Filtres :",
+                "searchPlaceholder": "Rechercher des produits...",
+                "search": "Rechercher",
+                "allCategories": "Tout",
+                "loading": "Chargement...",
+                "status": {
+                    "all": "Tous les Statuts",
+                    "live": "En ligne",
+                    "paused": "En pause",
+                    "archived": "Archivé"
+                },
+                "stock": {
+                    "all": "Tout le Stock",
+                    "inStock": "En Stock",
+                    "lowStock": "Stock Faible",
+                    "outOfStock": "Rupture de Stock"
+                }
+            },
+            "list": {
+                "empty": "Aucun accessoire listé pour le moment. Commencez par en ajouter un ci-dessus ! ✨",
+                "title": "Inventaire Récent",
+                "table": {
+                    "product": "Produit",
+                    "category": "Catégorie",
+                    "price": "Prix",
+                    "stock": "Stock",
+                    "status": "Statut",
+                    "actions": "Actions"
+                },
+                "badges": {
+                    "pack": "Pack",
+                    "featured": "En Vedette",
+                    "archived": "Archivé",
+                    "paused": "En pause",
+                    "live": "En ligne"
+                },
+                "delete": {
+                    "title": "Êtes-vous absolument sûr ? ✨",
+                    "description": "Cela supprimera définitivement {name} de votre bel inventaire. Cette action est irréversible.",
+                    "cancel": "Annuler",
+                    "confirm": "Oui, supprimer",
+                    "success": "L'accessoire a été supprimé avec succès ! ✨"
+                },
+                "pagination": {
+                    "previous": "Précédent",
+                    "next": "Suivant",
+                    "pageInfo": "Page {current} sur {total}"
+                }
+            }
+        },
+        "profit": {
+            "title": "Simulateur de Profit & Risque",
+            "subtitle": "Comparez le profit si livré vs la perte si retourné",
+            "labels": {
+                "selectProduct": "Sélectionner un Produit (Optionnel)",
+                "manualInput": "-- Saisie Manuelle --",
+                "sellingPrice": "Prix de Vente",
+                "buyingPrice": "Prix d'Achat",
+                "packaging": "Emballage",
+                "delivery": "Livraison",
+                "return": "Coût Retour",
+                "other": "Autres Coûts",
+                "freeShipping": "Livraison Gratuite",
+                "wasReturned": "Déjà retourné ?"
+            },
+            "buttons": {
+                "bestPrice": "Obtenir le Meilleur Prix"
+            },
+            "help": {
+                "freeShipping": "Le client paie 7dt de plus pour la livraison gratuite",
+                "wasReturned": "Soustrait la perte précédente (Livraison + Retour) du profit."
+            },
+            "results": {
+                "title": "Scénarios de Résultats",
+                "delivered": "Si Livré",
+                "returned": "Si Retourné",
+                "roi": "ROI",
+                "margin": "Marge",
+                "target": "Cible",
+                "worstCase": "Pire cas (retour + réexpédition)",
+                "returnLoss": "(Perte de Livraison + Retour)",
+                "status": {
+                    "excellent": "(Excellent)",
+                    "good": "(Bon)",
+                    "minimum": "(Minimum)",
+                    "bad": "(Mauvais)"
+                }
+            },
+            "tip": {
+                "title": "Risque vs Récompense :",
+                "text": "Cette répartition vous aide à décider si l'expédition est risquée. 'Si Retourné' montre votre perte de trésorerie en supposant que l'article retourne en stock."
+            }
+        },
+        "productForm": {
+            "title": {
+                "new": "Détails de l'Annonce",
+                "edit": "Affinez Votre Trésor ✨"
+            },
+            "desc": {
+                "new": "Entrez les informations qui seront affichées aux clients.",
+                "edit": "Mettez à jour les informations sur ce bel accessoire."
+            },
+            "labels": {
+                "name": "Nom du Produit",
+                "description": "Description",
+                "salePrice": "Prix de Vente (DT)",
+                "discountPercent": "Remise %",
+                "originalPrice": "Prix d'Origine (DT)",
+                "stock": "Stock Initial",
+                "category": "Catégorie",
+                "featured": "Produit en Vedette",
+                "live": "Statut En Ligne",
+                "archived": "Archivé",
+                "photography": "Photographie du Produit"
+            },
+            "placeholders": {
+                "name": "ex: Pince Papillon Scintillante",
+                "description": "Racontez une histoire sur cet accessoire...",
+                "salePrice": "Prix final",
+                "originalPrice": "Optionnel - laisser vide pour aucune remise",
+                "selectCategory": "Sélectionnez une catégorie",
+                "uploadTitle": "Télécharger des Images du Produit",
+                "uploadDesc": "Choisissez les plus belles photos de vos accessoires (jusqu'à 4)"
+            },
+            "buttons": {
+                "magicMarkdown": "Markdown Magique ✨",
+                "enhancing": "Amélioration...",
+                "addPhoto": "Ajouter Photo ✨",
+                "uploading": "Téléchargement...",
+                "back": "Retour à l'Inventaire",
+                "cancel": "Annuler",
+                "save": "Enregistrer les Changements",
+                "list": "Lister cet Accessoire",
+                "saving": "Enregistrement...",
+                "uploadingImages": "Téléchargement des images...",
+                "deletingImage": "Suppression de l'image..."
+            },
+            "help": {
+                "salePrice": "Prix final que les clients paieront",
+                "originalPrice": "Prix du marché (ne remplissez ceci que si vous voulez afficher une remise)",
+                "discountPercent": "Optionnel : Entrez le % de remise",
+                "featured": "Afficher ce produit dans la section 'En Vedette' sur la page d'accueil",
+                "live": "Visible par les clients (Désactivez pour masquer sans archiver)",
+                "archived": "Suppression douce (Masqué partout, mais garde l'historique des commandes)",
+                "photoLimit": "Max 4Mo par image",
+                "photoSpecs": "Meilleurs résultats avec des images carrées 1080x1080",
+                "safeVault": "Vos modifications sont enregistrées dans le coffre-fort d'inventaire sécurisé."
+            },
+            "sections": {
+                "pricing": "💰 Prix & Remises",
+                "featured": "✨ Produit en Vedette",
+                "live": "🟢 Statut En Ligne",
+                "archived": "📦 Archivé"
+            },
+            "toasts": {
+                "descShort": "Veuillez d'abord entrer une description plus longue",
+                "descEnhanced": "Description améliorée ! ✨",
+                "descFail": "L'amélioration par IA a échoué",
+                "uploadComplete": "Téléchargement terminé !",
+                "waitUpload": "Veuillez attendre la fin du téléchargement des images",
+                "waitDelete": "Veuillez attendre la fin de la suppression des images",
+                "successCreate": "Accessoire créé avec succès ! ✨",
+                "successUpdate": "Accessoire mis à jour avec succès ! ✨",
+                "errorSave": "Erreur lors de l'enregistrement du produit",
+                "errorGeneric": "Quelque chose s'est mal passé",
+                "imageDeleted": "Image supprimée du stockage",
+                "imageDeleteFail": "Échec de la suppression du fichier image"
+            },
+            "saleTag": "🔥 -{percent}%"
+        },
+        "packForm": {
+            "title": {
+                "new": "Créer un Nouveau Pack",
+                "edit": "Modifier le Pack ✨"
+            },
+            "desc": "Regroupez plusieurs produits ensemble. Le prix et le stock sont calculés automatiquement, puis vous pouvez télécharger vos images de pack personnalisées.",
+            "labels": {
+                "name": "Nom du Pack",
+                "description": "Description",
+                "photography": "Photographie du Pack",
+                "featured": "En Vedette",
+                "live": "En Ligne",
+                "marketValue": "Valeur Marchande",
+                "shopValue": "Valeur Boutique",
+                "packPrice": "Prix du Pack",
+                "dynamicStock": "Stock Dynamique",
+                "contents": "Contenu du Pack",
+                "product": "Produit",
+                "qty": "Qté",
+                "unitPrice": "Prix Unitaire",
+                "available": "Disponible",
+                "visuals": "Visuels du Produit"
+            },
+            "placeholders": {
+                "name": "ex: Pack Essentiels d'Été",
+                "description": "Décrivez ce qui rend ce pack spécial...",
+                "search": "Rechercher un produit...",
+                "addPhoto": "Ajouter Photo ✨"
+            },
+            "buttons": {
+                "magic": "Magie",
+                "addProduct": "Ajouter Produit",
+                "cancel": "Annuler",
+                "update": "Mettre à jour le Pack",
+                "publish": "Publier le Pack",
+                "saving": "Enregistrement du Pack..."
+            },
+            "badges": {
+                "original": "ORIGINAL",
+                "autoSum": "SOMME-AUTO",
+                "auto": "AUTO"
+            },
+            "toasts": {
+                "autoPricing": "Tarification Automatique Active ! ✨ (Remise Pack de 5% appliquée sur la Valeur Boutique)",
+                "errorSave": "Erreur lors de l'enregistrement du pack"
+            },
+            "help": {
+                "featured": "Visibilité sur la page d'accueil",
+                "live": "Visibilité sur le site web",
+                "contents": "Sélectionnez les produits inclus dans ce pack.",
+                "noProducts": "Ajoutez des produits pour construire ce pack"
+            }
+        }
     }
 }

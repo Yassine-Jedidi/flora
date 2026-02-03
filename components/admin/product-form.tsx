@@ -14,6 +14,7 @@ import { Loader2, Plus, X, Save, RotateCcw, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { enhanceDescription } from "@/app/actions/ai";
+import { useTranslations } from "next-intl";
 
 import {
   Card,
@@ -49,6 +50,7 @@ export function ProductForm({
   onCancel,
 }: ProductFormProps) {
   const router = useRouter();
+  const t = useTranslations("Admin.productForm");
   const [isPending, setIsPending] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -135,7 +137,7 @@ export function ProductForm({
   const handleAIByDescription = async () => {
     const currentDesc = form.getValues("description");
     if (!currentDesc || currentDesc.length < 10) {
-      toast.error("Please enter a longer description first");
+      toast.error(t("toasts.descShort"));
       return;
     }
 
@@ -144,12 +146,12 @@ export function ProductForm({
       const result = await enhanceDescription(currentDesc);
       if (result.text) {
         form.setValue("description", result.text);
-        toast.success("Description enhanced! ✨");
+        toast.success(t("toasts.descEnhanced"));
       } else if (result.error) {
         toast.error(result.error);
       }
     } catch {
-      toast.error("AI enhancement failed");
+      toast.error(t("toasts.descFail"));
     } finally {
       setIsEnhancing(false);
     }
@@ -160,11 +162,11 @@ export function ProductForm({
     setSuccess(null);
     try {
       if (isUploading) {
-        toast.error("Please wait for images to finish uploading");
+        toast.error(t("toasts.waitUpload"));
         return;
       }
       if (isDeleting) {
-        toast.error("Please wait for images to finish deleting");
+        toast.error(t("toasts.waitDelete"));
         return;
       }
 
@@ -174,15 +176,17 @@ export function ProductForm({
         : await createProduct(values);
 
       if (result.success) {
-        toast.success(result.success);
+        // Since result.success usually contains a string from server action, 
+        // we might want to override it with our translation if it's dynamic
+        toast.success(initialData ? t("toasts.successUpdate") : t("toasts.successCreate"));
         // Immediate redirection to inventory for a smooth, fast experience
         router.push("/admin/inventory");
       } else {
-        toast.error(result.error || "Error saving product");
+        toast.error(result.error || t("toasts.errorSave"));
       }
     } catch (error) {
       console.error("Submission error:", error);
-      toast.error("Something went wrong");
+      toast.error(t("toasts.errorGeneric"));
     } finally {
       setIsPending(false);
     }
@@ -195,7 +199,7 @@ export function ProductForm({
       form.setValue("images", updatedImages, { shouldValidate: true });
     },
     onUploadError: () => {
-      alert("Error uploading images");
+      toast.error(t("toasts.errorGeneric"));
     },
   });
 
@@ -217,9 +221,9 @@ export function ProductForm({
       // Import this from actions if not already imported
       const { deleteProductImage } = await import("@/app/actions/product");
       await deleteProductImage(urlToRemove);
-      toast.success("Image deleted from storage");
+      toast.success(t("toasts.imageDeleted"));
     } catch {
-      toast.error("Failed to delete image file");
+      toast.error(t("toasts.imageDeleteFail"));
     } finally {
       setIsDeleting(false);
     }
@@ -242,12 +246,10 @@ export function ProductForm({
       <form onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
         <CardHeader className="pb-8">
           <CardTitle className="text-2xl font-bold text-flora-dark">
-            {initialData ? "Refine Your Treasure ✨" : "Listing Details"}
+            {initialData ? t("title.edit") : t("title.new")}
           </CardTitle>
           <CardDescription>
-            {initialData
-              ? "Update the information about this beautiful accessory."
-              : "Enter the information that will be shown to customers."}
+            {initialData ? t("desc.edit") : t("desc.new")}
           </CardDescription>
         </CardHeader>
 
@@ -257,12 +259,12 @@ export function ProductForm({
             <div className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-flora-dark font-bold">
-                  Product Name
+                  {t("labels.name")}
                 </Label>
                 <Input
                   id="name"
                   {...form.register("name")}
-                  placeholder="e.g. Sparkly Butterfly Clip"
+                  placeholder={t("placeholders.name")}
                   className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
                 />
                 {form.formState.errors.name && (
@@ -278,7 +280,7 @@ export function ProductForm({
                     htmlFor="description"
                     className="text-flora-dark font-bold"
                   >
-                    Description
+                    {t("labels.description")}
                   </Label>
                   <Button
                     type="button"
@@ -293,14 +295,14 @@ export function ProductForm({
                     ) : (
                       <Sparkles className="w-3 h-3" />
                     )}
-                    {isEnhancing ? "Enhancing..." : "Magic Markdown ✨"}
+                    {isEnhancing ? t("buttons.enhancing") : t("buttons.magicMarkdown")}
                   </Button>
                 </div>
                 <Textarea
                   id="description"
                   {...form.register("description")}
                   rows={4}
-                  placeholder="Tell a story about this accessory..."
+                  placeholder={t("placeholders.description")}
                   className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white resize-none"
                 />
                 {form.formState.errors.description && (
@@ -314,7 +316,7 @@ export function ProductForm({
               <div className="space-y-4 p-4 rounded-2xl bg-gradient-to-br from-pink-50/50 to-purple-50/30 border border-pink-100/50">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm font-bold text-flora-dark">
-                    💰 Pricing & Discounts
+                    {t("sections.pricing")}
                   </span>
                 </div>
 
@@ -324,10 +326,10 @@ export function ProductForm({
                       htmlFor="discountedPrice"
                       className="text-flora-dark font-bold"
                     >
-                      Sale Price (DT){" "}
+                      {t("labels.salePrice")}{" "}
                       {discountPercent && discountPercent > 0 && (
                         <span className="text-red-500 text-xs ml-2">
-                          🔥 {discountPercent}% OFF
+                          {t("saleTag", { percent: discountPercent })}
                         </span>
                       )}
                     </Label>
@@ -336,7 +338,7 @@ export function ProductForm({
                       {...form.register("discountedPrice")}
                       type="number"
                       step="0.001"
-                      placeholder="Final price"
+                      placeholder={t("placeholders.salePrice")}
                       className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white font-bold"
                     />
                     {form.formState.errors.discountedPrice && (
@@ -345,7 +347,7 @@ export function ProductForm({
                       </p>
                     )}
                     <p className="text-[10px] text-gray-400">
-                      Final price customers will pay
+                      {t("help.salePrice")}
                     </p>
                   </div>
 
@@ -354,7 +356,7 @@ export function ProductForm({
                       htmlFor="discountPercent"
                       className="text-flora-dark font-bold"
                     >
-                      Discount %
+                      {t("labels.discountPercent")}
                     </Label>
                     <Input
                       id="discountPercent"
@@ -367,7 +369,7 @@ export function ProductForm({
                       className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
                     />
                     <p className="text-[10px] text-gray-400">
-                      Optional: Enter discount %
+                      {t("help.discountPercent")}
                     </p>
                   </div>
                 </div>
@@ -377,14 +379,14 @@ export function ProductForm({
                     htmlFor="originalPrice"
                     className="text-flora-dark font-bold"
                   >
-                    Original Price (DT)
+                    {t("labels.originalPrice")}
                   </Label>
                   <Input
                     id="originalPrice"
                     {...form.register("originalPrice")}
                     type="number"
                     step="0.001"
-                    placeholder="Optional - leave empty for no discount"
+                    placeholder={t("placeholders.originalPrice")}
                     className="rounded-xl border-pink-100 focus-visible:ring-pink-300 bg-white"
                   />
                   {form.formState.errors.originalPrice && (
@@ -393,7 +395,7 @@ export function ProductForm({
                     </p>
                   )}
                   <p className="text-[10px] text-gray-400">
-                    Market price (only fill this if you want to show a discount)
+                    {t("help.originalPrice")}
                   </p>
                 </div>
               </div>
@@ -401,7 +403,7 @@ export function ProductForm({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="stock" className="text-flora-dark font-bold">
-                    Initial Stock
+                    {t("labels.stock")}
                   </Label>
                   <Input
                     id="stock"
@@ -412,7 +414,7 @@ export function ProductForm({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-flora-dark font-bold">Category</Label>
+                  <Label className="text-flora-dark font-bold">{t("labels.category")}</Label>
                   <Select
                     onValueChange={(value) =>
                       form.setValue("categoryId", value, { shouldValidate: true })
@@ -420,7 +422,7 @@ export function ProductForm({
                     value={form.watch("categoryId")}
                   >
                     <SelectTrigger className="w-full rounded-xl border-pink-100 focus:ring-pink-300 bg-white text-left">
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={t("placeholders.selectCategory")} />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl bg-white border-pink-100 shadow-xl">
                       {categories.map((cat) => (
@@ -446,10 +448,10 @@ export function ProductForm({
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-pink-50/30 border border-pink-100/50 hover:bg-pink-50/50 transition-colors">
                   <div className="space-y-0.5">
                     <Label className="text-sm font-bold text-flora-dark">
-                      ✨ Featured Product
+                      {t("sections.featured")}
                     </Label>
                     <p className="text-[10px] text-gray-500">
-                      Show this product in the &quot;Featured&quot; section on the homepage
+                      {t("help.featured")}
                     </p>
                   </div>
                   <Switch
@@ -464,10 +466,10 @@ export function ProductForm({
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-purple-50/30 border border-purple-100/50 hover:bg-purple-50/50 transition-colors">
                   <div className="space-y-0.5">
                     <Label className="text-sm font-bold text-flora-purple">
-                      🟢 Live Status
+                      {t("sections.live")}
                     </Label>
                     <p className="text-[10px] text-gray-500">
-                      Visible to customers (Turn off to hide without archiving)
+                      {t("help.live")}
                     </p>
                   </div>
                   <Switch
@@ -482,10 +484,10 @@ export function ProductForm({
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors">
                   <div className="space-y-0.5">
                     <Label className="text-sm font-bold text-gray-700">
-                      📦 Archived
+                      {t("sections.archived")}
                     </Label>
                     <p className="text-[10px] text-gray-500">
-                      Soft-delete this product (Hidden everywhere, but keeps order history)
+                      {t("help.archived")}
                     </p>
                   </div>
                   <Switch
@@ -502,7 +504,7 @@ export function ProductForm({
             {/* Right Column: Images */}
             <div className="space-y-6">
               <Label className="text-flora-dark font-bold">
-                Product Photography
+                {t("labels.photography")}
               </Label>
 
               <div className="grid grid-cols-2 gap-4">
@@ -558,10 +560,10 @@ export function ProductForm({
                         )}
                       </div>
                       <p className="text-xs font-bold text-flora-dark">
-                        {isUploading ? "Uploading..." : "Add Photo ✨"}
+                        {isUploading ? t("buttons.uploading") : t("buttons.addPhoto")}
                       </p>
                       <p className="text-[10px] text-pink-400 mt-1">
-                        Max 4MB per image
+                        {t("help.photoLimit")}
                       </p>
                     </label>
                   </div>
@@ -573,7 +575,7 @@ export function ProductForm({
                 </p>
               )}
               <p className="text-[10px] text-gray-400 text-center uppercase tracking-wider font-semibold">
-                Best results with 1080x1080 square images
+                {t("help.photoSpecs")}
               </p>
             </div>
           </div>
@@ -581,7 +583,7 @@ export function ProductForm({
 
         <CardFooter className="pt-8 border-t border-pink-50/50 flex flex-col md:flex-row gap-4 items-center justify-between">
           <p className="text-xs text-gray-400 font-medium">
-            Your changes are saved to the secure inventory vault.
+            {t("help.safeVault")}
           </p>
           <div className="flex gap-3">
             <Button
@@ -591,7 +593,7 @@ export function ProductForm({
               className="rounded-full border-pink-100 text-gray-500 hover:bg-pink-50 px-6 font-bold"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
-              {initialData ? "Back to Inventory" : "Cancel"}
+              {initialData ? t("buttons.back") : t("buttons.cancel")}
             </Button>
             <Button
               disabled={isPending || isUploading || isDeleting}
@@ -607,7 +609,7 @@ export function ProductForm({
               ) : (
                 <Plus className="w-4 h-4 mr-2" />
               )}
-              {isUploading ? "Uploading Images..." : isDeleting ? "Deleting Image..." : isPending ? "Saving..." : initialData ? "Save Changes" : "List This Accessory"}
+              {isUploading ? t("buttons.uploadingImages") : isDeleting ? t("buttons.deletingImage") : isPending ? t("buttons.saving") : initialData ? t("buttons.save") : t("buttons.list")}
             </Button>
           </div>
         </CardFooter>

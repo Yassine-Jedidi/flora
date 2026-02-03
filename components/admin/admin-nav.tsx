@@ -4,34 +4,36 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ShoppingBag, PlusCircle, ListTodo, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export function AdminNav() {
     const pathname = usePathname();
+    const t = useTranslations("Admin.nav");
 
     const navItems = [
         {
             href: "/admin/orders",
-            label: "Orders",
+            label: t("orders"),
             icon: ShoppingBag,
         },
         {
             href: "/admin/product/new",
-            label: "New Product",
+            label: t("newProduct"),
             icon: PlusCircle,
         },
         {
             href: "/admin/product/new-pack",
-            label: "New Pack",
+            label: t("newPack"),
             icon: PlusCircle,
         },
         {
             href: "/admin/inventory",
-            label: "Your Inventory",
+            label: t("inventory"),
             icon: ListTodo,
         },
         {
             href: "/admin/profit",
-            label: "Profit Calc",
+            label: t("profit"),
             icon: Calculator,
         },
     ];

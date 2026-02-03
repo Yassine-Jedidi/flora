@@ -21,12 +21,14 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { useTranslations } from "next-intl";
 
 interface ProfitCalculatorProps {
   products: Product[];
 }
 
 export function ProfitCalculator({ products }: ProfitCalculatorProps) {
+  const t = useTranslations("Admin.profit");
   const [selectedProductId, setSelectedProductId] = useState<string>("");
   const [sellingPrice, setSellingPrice] = useState<string>("0");
   const [buyingPrice, setBuyingPrice] = useState<string>("0");
@@ -191,10 +193,10 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
             </div>
             <div>
               <CardTitle className="text-flora-dark text-xl">
-                Profit & Risk Simulator
+                {t("title")}
               </CardTitle>
               <CardDescription>
-                Compare profit if delivered vs. loss if returned
+                {t("subtitle")}
               </CardDescription>
             </div>
             <Button
@@ -212,14 +214,14 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
           <div className="space-y-4 md:space-y-6">
             <div className="space-y-2">
               <Label className="text-flora-dark font-bold">
-                Select Product (Optional)
+                {t("labels.selectProduct")}
               </Label>
               <select
                 className="w-full flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 value={selectedProductId}
                 onChange={handleProductChange}
               >
-                <option value="">-- Manual Input --</option>
+                <option value="">{t("labels.manualInput")}</option>
                 {products.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.name}
@@ -231,7 +233,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-flora-dark font-bold flex items-center gap-2">
-                  <DollarSign className="w-3 h-3" /> Selling Price
+                  <DollarSign className="w-3 h-3" /> {t("labels.sellingPrice")}
                 </Label>
                 <Input
                   type="number"
@@ -271,13 +273,13 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                     size="sm"
                     className="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold mt-1"
                   >
-                    Get Best Price
+                    {t("buttons.bestPrice")}
                   </Button>
                 )}
               </div>
               <div className="space-y-2">
                 <Label className="text-flora-dark font-bold flex items-center gap-2">
-                  <DollarSign className="w-3 h-3" /> Buying Price
+                  <DollarSign className="w-3 h-3" /> {t("labels.buyingPrice")}
                 </Label>
                 <Input
                   type="number"
@@ -292,7 +294,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-gray-600 font-semibold flex items-center gap-2">
-                  <Package className="w-3 h-3" /> Emballage
+                  <Package className="w-3 h-3" /> {t("labels.packaging")}
                 </Label>
                 <Input
                   type="number"
@@ -303,7 +305,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
               </div>
               <div className="space-y-2">
                 <Label className="text-gray-600 font-semibold flex items-center gap-2">
-                  <Truck className="w-3 h-3" /> Livraison
+                  <Truck className="w-3 h-3" /> {t("labels.delivery")}
                 </Label>
                 <Input
                   type="number"
@@ -317,10 +319,10 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
             <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-100">
               <div className="space-y-0.5">
                 <Label className="text-flora-dark font-bold">
-                  Livraison Gratuite
+                  {t("labels.freeShipping")}
                 </Label>
                 <p className="text-xs text-gray-500">
-                  Customer pays extra 7dt for free shipping
+                  {t("help.freeShipping")}
                 </p>
               </div>
               <Switch
@@ -332,7 +334,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-gray-600 font-semibold flex items-center gap-2">
-                  <RefreshCcw className="w-3 h-3" /> Coût Retour
+                  <RefreshCcw className="w-3 h-3" /> {t("labels.return")}
                 </Label>
                 <Input
                   type="number"
@@ -343,7 +345,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
               </div>
               <div className="space-y-2">
                 <Label className="text-gray-600 font-semibold">
-                  Other Costs
+                  {t("labels.other")}
                 </Label>
                 <Input
                   type="number"
@@ -357,10 +359,10 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
             <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-100">
               <div className="space-y-0.5">
                 <Label className="text-flora-dark font-bold">
-                  Was returned before?
+                  {t("labels.wasReturned")}
                 </Label>
                 <p className="text-xs text-gray-500">
-                  Subtracts previous loss (Livraison + Retour) from profit.
+                  {t("help.wasReturned")}
                 </p>
               </div>
               <Switch checked={wasReturned} onCheckedChange={setWasReturned} />
@@ -370,7 +372,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
           {/* Results Section */}
           <div className="bg-gradient-to-br from-pink-50/50 to-white p-4 md:p-6 rounded-3xl border border-pink-100 flex flex-col justify-center space-y-4 md:space-y-6">
             <h3 className="text-lg font-black text-flora-dark text-center mb-2 flex items-center justify-center gap-2">
-              <TrendingUp className="w-5 h-5 text-pink-500" /> Results Scenarios
+              <TrendingUp className="w-5 h-5 text-pink-500" /> {t("results.title")}
             </h3>
 
             <div className="space-y-4">
@@ -391,7 +393,7 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                       : "text-red-700"
                     }`}
                 >
-                  <Package className="w-3 h-3" /> If Delivered
+                  <Package className="w-3 h-3" /> {t("results.delivered")}
                 </p>
                 <p
                   className={`text-3xl font-black ${marginStatus === "good"
@@ -421,15 +423,15 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                           }`}
                       >
                         {roiStatus === "excellent"
-                          ? "(Excellent)"
+                          ? t("results.status.excellent")
                           : roiStatus === "good"
-                            ? "(Good)"
+                            ? t("results.status.good")
                             : roiStatus === "minimum"
-                              ? "(Minimum)"
-                              : "(Bad)"}
+                              ? t("results.status.minimum")
+                              : t("results.status.bad")}
                       </span>
                       <p className="text-[10px] text-gray-400 mt-1">
-                        Target: 100% (Good) / 50% (Minimum)
+                        {t("results.target")}: 100% ({t("results.status.good")}) / 50% ({t("results.status.minimum")})
                       </p>
                     </div>
                     <div className="h-2 bg-white/60 rounded-full overflow-hidden w-24">
@@ -462,18 +464,18 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
                           }`}
                       >
                         {marginStatus === "good"
-                          ? "(Good)"
+                          ? t("results.status.good")
                           : marginStatus === "minimum"
-                            ? "(Minimum)"
-                            : "(Bad)"}
+                            ? t("results.status.minimum")
+                            : t("results.status.bad")}
                       </span>
                       <p className="text-[10px] text-gray-400 mt-1">
-                        Target: 30% (Good) / 20% (Minimum)
+                        {t("results.target")}: 30% ({t("results.status.good")}) / 20% ({t("results.status.minimum")})
                       </p>
                       {!worstCaseMarginOk && (
                         <p className="text-[10px] text-red-600 font-bold mt-1">
-                          ⚠️ Worst case (return + redeliver):{" "}
-                          {marginRedelivery.toFixed(1)}% margin
+                          ⚠️ {t("results.worstCase")}:{" "}
+                          {marginRedelivery.toFixed(1)}% {t("results.margin").toLowerCase()}
                         </p>
                       )}
                     </div>
@@ -500,13 +502,13 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
               {/* Scenario 2: Returned */}
               <div className="p-4 rounded-2xl shadow-sm border bg-red-50 border-red-100 text-center">
                 <p className="text-xs text-red-700 uppercase font-bold tracking-wider mb-1 flex items-center justify-center gap-1">
-                  <RefreshCcw className="w-3 h-3" /> If Returned
+                  <RefreshCcw className="w-3 h-3" /> {t("results.returned")}
                 </p>
                 <p className="text-2xl font-black text-red-500">
                   {formatCurrency(lossReturned)}
                 </p>
                 <p className="text-[10px] text-red-400 mt-1 font-medium">
-                  (Loss of Delivery + Return)
+                  {t("results.returnLoss")}
                 </p>
               </div>
             </div>
@@ -519,10 +521,9 @@ export function ProfitCalculator({ products }: ProfitCalculatorProps) {
           <DollarSign className="w-4 h-4 text-purple-600" />
         </div>
         <div>
-          <p className="font-bold">Risk vs. Reward:</p>
+          <p className="font-bold">{t("tip.title")}</p>
           <p className="opacity-80">
-            This breakdown helps you decide if shipping is risky. &quot;If Returned&quot;
-            shows your cash loss assuming the item is returned to inventory.
+            {t("tip.text")}
           </p>
         </div>
       </div>
