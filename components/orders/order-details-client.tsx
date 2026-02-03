@@ -24,6 +24,10 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { SHIPPING_COST } from "@/lib/constants/shipping";
 import { useTranslations } from "next-intl";
+import { useSession } from "@/lib/auth-client";
+import { useRouter, usePathname } from "next/navigation";
+import { useRef } from "react";
+
 
 export function OrderDetailsClient({ params }: { params: Promise<{ orderId: string }> }) {
     const t = useTranslations("Orders.details");
@@ -73,9 +77,32 @@ export function OrderDetailsClient({ params }: { params: Promise<{ orderId: stri
     const ORDER_STATUS_SEQUENCE = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'] as const;
     const ORDER_STATUS_WITH_CANCELLED = [...ORDER_STATUS_SEQUENCE, 'CANCELLED'] as const;
 
+    const { data: session, isPending: isSessionPending } = useSession();
+    const router = useRouter();
+    const pathname = usePathname();
+
     const [order, setOrder] = useState<Awaited<ReturnType<typeof getOrderById>>["order"] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Track if user was previously logged in
+    const wasLoggedIn = useRef(false);
+
+    useEffect(() => {
+        if (session) {
+            wasLoggedIn.current = true;
+        }
+    }, [session]);
+
+    useEffect(() => {
+        if (!isSessionPending && !session) {
+            if (wasLoggedIn.current) {
+                router.push("/");
+            } else {
+                router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`);
+            }
+        }
+    }, [isSessionPending, session, router, pathname]);
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -91,9 +118,9 @@ export function OrderDetailsClient({ params }: { params: Promise<{ orderId: stri
         fetchOrder();
     }, [orderId, t]);
 
-    if (isLoading) {
+    if (isSessionPending || !session || isLoading) {
         return (
-            <div className="min-h-screen bg-white flex flex-col">
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center">
                 <Navbar />
                 <main className="flex-1 flex items-center justify-center">
                     <Loader2 className="w-10 h-10 text-primary animate-spin" />

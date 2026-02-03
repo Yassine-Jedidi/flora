@@ -26,6 +26,10 @@ import { useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/pagination-control";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
+import { useSession } from "@/lib/auth-client";
+import { useRouter, usePathname } from "next/navigation";
+import { useRef } from "react";
+
 
 function OrdersContent() {
     const t = useTranslations("Orders");
@@ -70,6 +74,10 @@ function OrdersContent() {
     const parsedPage = parseInt(pageParam || "1", 10);
     const page = Number.isFinite(parsedPage) ? Math.max(1, parsedPage) : 1;
 
+    const { data: session, isPending: isSessionPending } = useSession();
+    const router = useRouter();
+    const pathname = usePathname();
+
     const [orders, setOrders] = useState<any[]>([]);
     const [pagination, setPagination] = useState<{
         total: number;
@@ -78,6 +86,25 @@ function OrdersContent() {
     } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Track if user was previously logged in
+    const wasLoggedIn = useRef(false);
+
+    useEffect(() => {
+        if (session) {
+            wasLoggedIn.current = true;
+        }
+    }, [session]);
+
+    useEffect(() => {
+        if (!isSessionPending && !session) {
+            if (wasLoggedIn.current) {
+                router.push("/");
+            } else {
+                router.push(`/signin?callbackUrl=${encodeURIComponent(pathname)}`);
+            }
+        }
+    }, [isSessionPending, session, router, pathname]);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -108,6 +135,14 @@ function OrdersContent() {
         };
         fetchOrders();
     }, [page, t]);
+
+    if (isSessionPending || !session) {
+        return (
+            <div className="min-h-screen bg-white flex flex-col justify-center items-center">
+                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white flex flex-col font-sans">
