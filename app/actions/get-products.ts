@@ -451,7 +451,12 @@ export async function getProduct(id: string): Promise<Product | null> {
   }
 }
 
-export async function searchProducts(query: string, limit: number = 5) {
+export async function searchProducts(
+  query: string,
+  limit: number = 5,
+): Promise<
+  { success: true; data: Product[] } | { success: false; error: string }
+> {
   if (!query || query.length < 2) return { success: true, data: [] };
 
   const rateLimit = await checkRateLimit({

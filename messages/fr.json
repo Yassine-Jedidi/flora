@@ -648,7 +648,7 @@
             "noSessions": "Aucune session active trouvée.",
             "currentBadge": "Actuel",
             "revokeBtn": "Révoquer",
-            "revokeSuccess": "Session révoqué 🔒",
+            "revokeSuccess": "Session révoquée 🔒",
             "revokeError": "Échec de la révocation de la session",
             "changePasswordBtn": "Changer le mot de passe",
             "setPasswordBtn": "Définir le mot de passe",
