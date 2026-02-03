@@ -1,7 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { AdminNav } from "@/components/admin/admin-nav";
-import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {
@@ -12,12 +11,12 @@ export async function generateMetadata() {
     };
 }
 
-export default function AdminLayout({
+export default async function AdminLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const t = useTranslations("Admin.layout");
+    const t = await getTranslations("Admin.layout");
 
     return (
         <div className="min-h-screen flex flex-col bg-[#FDF8FA]">
