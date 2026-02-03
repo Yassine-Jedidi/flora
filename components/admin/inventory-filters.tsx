@@ -213,7 +213,7 @@ export function InventoryFilters({ categories }: InventoryFiltersProps) {
             className="text-gray-400 hover:text-red-500 rounded-full ml-2"
           >
             <X className="w-4 h-4 mr-1" />
-            {t("search")}
+            {t("clear")}
           </Button>
         )}
       </div>

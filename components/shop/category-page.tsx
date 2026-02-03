@@ -70,7 +70,7 @@ export async function CategoryPage({
                     {products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-40">
                             <p className="text-xl font-black text-flora-dark mb-2 text-center">
-                                {category && category !== "all"
+                                {category && ["rings", "bracelets", "necklaces", "earrings", "packs", "all", "sale"].includes(category)
                                     ? t("noResults", { category: t(`titles.${category}`) })
                                     : t("newCollection")}
                             </p>

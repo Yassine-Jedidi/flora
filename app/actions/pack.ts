@@ -182,12 +182,12 @@ export async function updatePack(id: string, values: PackFormValues) {
       return { error: t("itemsNotFound") };
     }
 
+    if (!categoryId) {
+      return { error: t("categoryRequired") };
+    }
+
     // Update the pack with transaction
     await prisma.$transaction(async (tx) => {
-      if (!categoryId) {
-        throw new Error(t("categoryRequired"));
-      }
-
       // 1. Update basic pack info
       await tx.product.update({
         where: { id },

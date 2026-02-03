@@ -238,6 +238,10 @@ export async function updateProduct(id: string, values: ProductFormValues) {
         ? rawDiscountedPrice
         : null;
 
+    if (!categoryId) {
+      return { error: t("categoryRequired") };
+    }
+
     // We do a transaction to ensure everything updates correctly
     await prisma.$transaction(async (tx) => {
       // 1. Update basic product info

@@ -16,10 +16,8 @@ export async function SearchContent({ query }: SearchContentProps) {
     const t = await getTranslations("Search");
 
     // Explicitly handle results to satisfy TypeScript
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const products = (searchResult.success ? (searchResult as any).data : []) || [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const searchError = (!searchResult.success ? (searchResult as any).error : null) || null;
+    const products = (searchResult.success ? searchResult.data : []) ?? [];
+    const searchError = !searchResult.success ? searchResult.error : null;
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
@@ -85,9 +83,8 @@ export async function SearchContent({ query }: SearchContentProps) {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                            {products.map((product: any) => (
-                                <ProductCard key={product.id} product={product} />
+                            {products.map((product) => (
+                                <ProductCard key={product.id} product={product as any} />
                             ))}
                         </div>
                     )}

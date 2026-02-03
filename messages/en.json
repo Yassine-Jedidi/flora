@@ -196,6 +196,7 @@
         "pressEnter": "Press enter to see all results",
         "noResults": "No treasures found matching \"{query}\"",
         "searchFailed": "Search failed",
+        "selectLanguage": "Select language",
         "logoAlt": "Flora Logo"
     },
     "Checkout": {
@@ -366,7 +367,7 @@
         "fastDeliveryTitle": "Fast Delivery",
         "fastDeliveryDesc": "Greater Tunis: 24-48h. Other regions (Sousse, Sfax, Gabes, etc.): 2-4 business days.",
         "codTitle": "Cash on Delivery",
-        "codDesc": "Paiement à la livraison. Pay conveniently in cash when your package arrives door-to-door.",
+        "codDesc": "Pay on delivery. Pay conveniently in cash when your package arrives door-to-door.",
         "coverageTitle": "Nationwide Coverage",
         "coverageDesc": "We deliver to all 24 governorates of Tunisia, from Bizerte to Tataouine.",
         "processTitle": "Delivery Process",
@@ -412,7 +413,7 @@
             "openPackageQ": "Can I open the package before paying?",
             "openPackageA": "Absolutely! We want you to be 100% happy with your purchase. You can inspect your items in front of the courier before finalizing the Cash on Delivery payment.",
             "paymentMethodsQ": "How can I pay?",
-            "paymentMethodsA": "Currently, we offer 'Cash on Delivery' (Paiement à la livraison). You pay the courier in cash when your package arrives at your doorstep.",
+            "paymentMethodsA": "Currently, we offer 'Cash on Delivery' (Payment on delivery). You pay the courier in cash when your package arrives at your doorstep.",
             "bankTransferQ": "Do you accept bank transfers?",
             "bankTransferA": "At the moment, we prioritize cash on delivery for its simplicity and security for our customers. Contact us if you have special requirements."
         },
@@ -503,7 +504,7 @@
             "passwordLabel": "Password",
             "passwordPlaceholder": "••••••••••••",
             "forgotPassword": "Forgot?",
-            "submit": "Sign In",
+            "signIn": "Sign In",
             "noAccount": "Don't have an account?",
             "signUp": "Sign Up",
             "success": "Welcome back to Flora! 🎀",
@@ -524,7 +525,7 @@
             "emailPlaceholder": "hello@flora.tn",
             "passwordLabel": "Password",
             "passwordPlaceholder": "••••••••••••",
-            "submit": "Sign Up",
+            "signUp": "Sign Up",
             "hasAccount": "Already have an account?",
             "signIn": "Sign In",
             "success": "Account created! Welcome to Flora 🎀",
@@ -557,6 +558,8 @@
         "resetPassword": {
             "title": "Reset Password",
             "subtitle": "Choose a strong password to protect your account",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
             "newPasswordLabel": "New Password",
             "confirmPasswordLabel": "Confirm Password",
             "submit": "Set New Password",
@@ -773,6 +776,7 @@
                 "title": "Filters:",
                 "searchPlaceholder": "Search products...",
                 "search": "Search",
+                "clear": "Clear",
                 "allCategories": "All",
                 "loading": "Loading...",
                 "status": {

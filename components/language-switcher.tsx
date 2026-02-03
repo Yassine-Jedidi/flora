@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { cn } from "@/lib/utils";
 import { Globe, Check } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -33,11 +33,16 @@ export function LanguageSwitcher({ variant = "navbar" }: LanguageSwitcherProps) 
         });
     };
 
+    const navT = useTranslations("Navigation");
+
     if (variant === "dropdown") {
         return (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <button className="flex items-center justify-center w-8 h-8 rounded-full bg-pink-50 text-flora-dark hover:bg-pink-100 transition-colors focus:outline-none">
+                    <button
+                        aria-label={navT("selectLanguage")}
+                        className="flex items-center justify-center w-8 h-8 rounded-full bg-pink-50 text-flora-dark hover:bg-pink-100 transition-colors focus:outline-none"
+                    >
                         <Globe className="w-4 h-4" />
                     </button>
                 </DropdownMenuTrigger>

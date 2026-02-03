@@ -382,7 +382,10 @@ export function CheckoutClient() {
                           <Label className="text-flora-dark font-bold ml-1">{t("governorate")}</Label>
                           <Select
                             value={form.watch("governorate")}
-                            onValueChange={(v) => form.setValue("governorate", v, { shouldValidate: true })}
+                            onValueChange={(v) => {
+                              form.setValue("governorate", v, { shouldValidate: true });
+                              form.setValue("city", "", { shouldValidate: true });
+                            }}
                           >
                             <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 h-11 md:h-13 text-flora-dark font-medium text-sm md:text-base">
                               <SelectValue placeholder={t("selectGovernorate")} />
@@ -536,10 +539,12 @@ export function CheckoutClient() {
                       <span>{t("subtotal")}</span>
                       <Price price={totalPrice} size="xs" color="text-white" />
                     </div>
-                    <div className="flex justify-between items-center text-purple-50 font-bold text-xs md:text-sm">
-                      <span>{t("shippingCost")}</span>
-                      <Price price={7.00} size="xs" color="text-white" />
-                    </div>
+                    {shippingCost > 0 && (
+                      <div className="flex justify-between items-center text-purple-50 font-bold text-xs md:text-sm">
+                        <span>{t("shippingCost")}</span>
+                        <Price price={shippingCost} size="xs" color="text-white" />
+                      </div>
+                    )}
                     <div className="h-px bg-white/20 my-3 md:my-4" />
                     <div className="flex justify-between items-end">
                       <div>

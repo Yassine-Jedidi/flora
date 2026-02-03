@@ -206,7 +206,7 @@ export function SignInForm() {
                                         <Loader2 className="w-5 h-5 animate-spin" />
                                     ) : (
                                         <span className="flex items-center gap-2">
-                                            {t("submit")}
+                                            {t("signIn")}
                                         </span>
                                     )}
                                 </Button>

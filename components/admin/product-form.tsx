@@ -182,7 +182,7 @@ export function ProductForm({
         // Immediate redirection to inventory for a smooth, fast experience
         router.push("/admin/inventory");
       } else {
-        toast.error(result.error || t("toasts.errorSave"));
+        toast.error(result.error ? (t(result.error as any) || result.error) : t("toasts.descFail"));
       }
     } catch (error) {
       console.error("Submission error:", error);

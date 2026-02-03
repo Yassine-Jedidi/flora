@@ -79,7 +79,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true, i
                         transition={{ duration: 0.6 }}
                         className="mb-8"
                     >
-                        <span className={`px-5 py-1.5 rounded-full ${isSale ? 'bg-red-0 text-red-500 border-red-100' : 'bg-pink-50/50 text-primary border-pink-100/30'} text-[10px] font-black uppercase tracking-[0.3em] border`}>
+                        <span className={`px-5 py-1.5 rounded-full ${isSale ? 'bg-red-50 text-red-500 border-red-100' : 'bg-pink-50/50 text-primary border-pink-100/30'} text-[10px] font-black uppercase tracking-[0.3em] border`}>
                             {isSale ? t("limited") : t("exclusive")}
                         </span>
                     </motion.div>

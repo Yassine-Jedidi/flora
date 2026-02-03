@@ -196,6 +196,7 @@
         "pressEnter": "Appuyez sur Entrée pour voir tous les résultats",
         "noResults": "Aucun trésor trouvé pour \"{query}\"",
         "searchFailed": "La recherche a échoué",
+        "selectLanguage": "Choisir la langue",
         "logoAlt": "Logo Flora"
     },
     "Checkout": {
@@ -503,7 +504,7 @@
             "passwordLabel": "Mot de passe",
             "passwordPlaceholder": "••••••••••••",
             "forgotPassword": "Oublié ?",
-            "submit": "Se connecter",
+            "signIn": "Se connecter",
             "noAccount": "Pas encore de compte ?",
             "signUp": "S'inscrire",
             "success": "Bon retour chez Flora ! 🎀",
@@ -524,7 +525,7 @@
             "emailPlaceholder": "bonjour@flora.tn",
             "passwordLabel": "Mot de passe",
             "passwordPlaceholder": "••••••••••••",
-            "submit": "S'inscrire",
+            "signUp": "S'inscrire",
             "hasAccount": "Vous avez déjà un compte ?",
             "signIn": "Se connecter",
             "success": "Compte créé ! Bienvenue chez Flora 🎀",
@@ -557,6 +558,8 @@
         "resetPassword": {
             "title": "Réinitialiser le mot de passe",
             "subtitle": "Choisissez un mot de passe fort pour protéger votre compte",
+            "showPassword": "Afficher le mot de passe",
+            "hidePassword": "Masquer le mot de passe",
             "newPasswordLabel": "Nouveau mot de passe",
             "confirmPasswordLabel": "Confirmer le mot de passe",
             "submit": "Définir le nouveau mot de passe",
@@ -773,6 +776,7 @@
                 "title": "Filtres :",
                 "searchPlaceholder": "Rechercher des produits...",
                 "search": "Rechercher",
+                "clear": "Effacer",
                 "allCategories": "Tout",
                 "loading": "Chargement...",
                 "status": {

@@ -26,6 +26,25 @@ function ResetPasswordForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
+    const token = searchParams.get("token");
+
+    if (!token && !error) {
+        return (
+            <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                    <Lock className="w-8 h-8 text-red-500" />
+                </div>
+                <h3 className="text-xl font-black text-flora-dark">{t("invalidLink.title")}</h3>
+                <p className="text-gray-500 font-medium">
+                    {t("invalidLink.message")}
+                </p>
+                <Button asChild className="rounded-xl font-bold w-full h-12 bg-primary text-white">
+                    <Link href="/forgot-password">{t("invalidLink.requestNew")}</Link>
+                </Button>
+            </div>
+        );
+    }
+
     if (error) {
         return (
             <div className="text-center space-y-4">
@@ -43,7 +62,7 @@ function ResetPasswordForm() {
         );
     }
 
-    const token = searchParams.get("token");
+    // token is already declared above
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -96,6 +115,8 @@ function ResetPasswordForm() {
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+                        aria-pressed={showPassword}
                         className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
                     >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
