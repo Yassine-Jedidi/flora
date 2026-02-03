@@ -131,7 +131,10 @@ export async function seedCategories() {
     headers: await headers(),
   });
 
-  if (!session) return;
+  if (!session) {
+    const t = await getTranslations("Errors");
+    return { error: t("unauthorized") };
+  }
 
   for (const cat of defaultCategories) {
     await prisma.category.upsert({

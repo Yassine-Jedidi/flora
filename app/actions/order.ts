@@ -3,7 +3,7 @@
 import prisma from "@/lib/db";
 import { OrderSchema, type OrderValues } from "@/lib/validations/order";
 import { revalidatePath } from "next/cache";
-import { OrderStatus } from "@prisma/client";
+import { Prisma, OrderStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
@@ -47,13 +47,13 @@ export async function createOrder(values: OrderValues) {
       where: { id: { in: productIds } },
     });
 
-    let recomputedTotalPrice = 0;
+    let recomputedTotalPrice = new Prisma.Decimal(0);
     const finalItems = validatedData.items.map((item) => {
       const dbProduct = products.find((p) => p.id === item.productId);
       if (!dbProduct) throw new Error(`Product ${item.productId} not found`);
 
-      const price = dbProduct.discountedPrice || dbProduct.originalPrice;
-      recomputedTotalPrice += Number(price) * item.quantity;
+      const price = dbProduct.discountedPrice ?? dbProduct.originalPrice;
+      recomputedTotalPrice = recomputedTotalPrice.add(price.mul(item.quantity));
 
       return {
         productId: item.productId,
@@ -161,6 +161,24 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
     });
 
     if (!session) {
+      const t = await getTranslations("Errors");
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
+    // Check ownership
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { userId: true },
+    });
+
+    if (!existingOrder) {
+      const t = await getTranslations("Errors.orders");
+      return { error: t("notFound") };
+    }
+
+    const isOwner = existingOrder.userId === session.user.id;
+
+    if (!isOwner) {
       const t = await getTranslations("Errors");
       return { error: t("unauthorized") || "Unauthorized" };
     }

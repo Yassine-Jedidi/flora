@@ -544,10 +544,10 @@ export function ProductDetails({ product }: { product: Product }) {
             <Button
               type="button"
               onClick={onAddToCart}
-              disabled={!product.stock || product.stock === 0}
+              disabled={!product.stock || product.stock <= 0}
               className="h-14 rounded-2xl bg-flora-purple hover:bg-[#8B5CF6] text-white text-base font-black shadow-lg shadow-purple-100 transition-all hover:scale-[1.02] active:scale-95 gap-3 uppercase tracking-tight disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
             >
-              {!product.stock || product.stock === 0 ? (
+              {!product.stock || product.stock <= 0 ? (
                 <span>{t("outOfStock") || "Out of Stock"}</span>
               ) : (
                 <>
