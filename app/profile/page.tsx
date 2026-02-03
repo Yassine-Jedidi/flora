@@ -55,8 +55,10 @@ import {
 } from "@/components/ui/select";
 import { TUNISIA_GOVERNORATES, TUNISIA_LOCATIONS } from "@/lib/constants/tunisia";
 import { UploadButton } from "@/lib/uploadthing";
+import { useTranslations } from "next-intl";
 
 function ProfileContent() {
+    const t = useTranslations("Profile");
     const { data: session, isPending: isSessionPending } = useSession();
     const [addresses, setAddresses] = useState<any[]>([]);
     const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
@@ -177,13 +179,13 @@ function ProfileContent() {
         try {
             const result = await revokeSession(sessionId);
             if (result.success) {
-                toast.success("Session revoked 🔒");
+                toast.success(t("security.revokeSuccess"));
                 loadSessions();
             } else {
-                toast.error(result.error || "Failed to revoke session");
+                toast.error(result.error || t("security.revokeError"));
             }
         } catch (error) {
-            toast.error("An error occurred");
+            toast.error(t("errors.unexpected"));
         }
     };
 
@@ -209,7 +211,7 @@ function ProfileContent() {
             });
         } else {
             if (addresses.length >= 4) {
-                toast.error("You have reached the limit of 4 addresses. Please remove an existing address to add a new one.");
+                toast.error(t("addresses.limitReached"));
                 return;
             }
             setEditingAddress(null);
@@ -228,7 +230,7 @@ function ProfileContent() {
     const handleSaveAddress = async () => {
         // Validation
         if (!addressForm.name || !addressForm.fullName || !addressForm.phoneNumber || !addressForm.governorate || !addressForm.city || !addressForm.detailedAddress) {
-            toast.error("Please fill in all fields.");
+            toast.error(t("addresses.fillAllFields"));
             return;
         }
 
@@ -242,32 +244,32 @@ function ProfileContent() {
             }
 
             if (result.success) {
-                toast.success(editingAddress ? "Address updated! 🎀" : "Address saved! 🎀");
+                toast.success(editingAddress ? t("addresses.updateSuccess") : t("addresses.saveSuccess"));
                 setIsAddressModalOpen(false);
                 loadAddresses();
             } else {
-                toast.error(result.error || "Something went wrong.");
+                toast.error(result.error || t("errors.unexpected"));
             }
         } catch (error) {
-            toast.error("Failed to save address.");
+            toast.error(t("errors.saveAddress"));
         } finally {
             setIsSavingAddress(false);
         }
     };
 
     const handleDeleteAddress = async (id: string, name: string) => {
-        if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+        if (!confirm(t("addresses.card.deleteConfirm", { name }))) return;
 
         try {
             const result = await deleteAddress(id);
             if (result.success) {
-                toast.success("Address deleted.");
+                toast.success(t("addresses.deleteSuccess"));
                 loadAddresses();
             } else {
                 toast.error(result.error);
             }
         } catch (error) {
-            toast.error("Failed to delete address.");
+            toast.error(t("errors.deleteAddress"));
         }
     };
 
@@ -279,19 +281,19 @@ function ProfileContent() {
             });
 
             if (result.success) {
-                toast.success("Default address updated! 🎀");
+                toast.success(t("addresses.defaultSuccess"));
                 loadAddresses();
             } else {
-                toast.error(result.error || "Failed to set default address");
+                toast.error(result.error || t("errors.unexpected"));
             }
         } catch (error) {
-            toast.error("An error occurred");
+            toast.error(t("errors.unexpected"));
         }
     };
 
     const handleUpdateProfile = async () => {
         if (!profileName.trim()) {
-            toast.error("Name cannot be empty");
+            toast.error(t("editProfile.nameEmpty"));
             return;
         }
 
@@ -302,7 +304,7 @@ function ProfileContent() {
                 image: profileImage || undefined
             });
             if (result.success) {
-                toast.success("Profile updated! ✨");
+                toast.success(t("editProfile.success"));
                 setIsProfileModalOpen(false);
                 router.refresh(); // This will refresh the server components
                 // Force a reload to ensure the new image is fetched fresh if needed
@@ -311,7 +313,7 @@ function ProfileContent() {
                 toast.error(result.error);
             }
         } catch (error) {
-            toast.error("Failed to update profile");
+            toast.error(t("errors.updateProfile"));
         } finally {
             setIsUpdatingProfile(false);
         }
@@ -319,22 +321,22 @@ function ProfileContent() {
 
     const handlePasswordChange = async () => {
         if ((hasPassword && !passwordForm.currentPassword) || !passwordForm.newPassword || !passwordForm.confirmPassword) {
-            toast.error("Please fill in all fields.");
+            toast.error(t("passwordModal.fillAllFields"));
             return;
         }
 
         if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-            toast.error("New passwords do not match.");
+            toast.error(t("passwordModal.mismatch"));
             return;
         }
 
         if (passwordForm.newPassword.length < 8) {
-            toast.error("Password must be at least 8 characters long.");
+            toast.error(t("passwordModal.length"));
             return;
         }
 
         if (hasPassword && passwordForm.newPassword === passwordForm.currentPassword) {
-            toast.error("New password cannot be the same as the old password.");
+            toast.error(t("passwordModal.sameAsOld"));
             return;
         }
 
@@ -344,7 +346,7 @@ function ProfileContent() {
             try {
                 const result = await setUserPassword(passwordForm.newPassword);
                 if (result.success) {
-                    toast.success("Password set successfully! 🔒");
+                    toast.success(t("passwordModal.successSet"));
                     setIsChangePasswordModalOpen(false);
                     setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
                     setHasPassword(true);
@@ -353,10 +355,10 @@ function ProfileContent() {
                     // but usually session refresh is enough.
                     router.refresh();
                 } else {
-                    toast.error(result.error || "Failed to set password.");
+                    toast.error(result.error || t("errors.setPassword"));
                 }
             } catch (error) {
-                toast.error("An error occurred while setting password.");
+                toast.error(t("errors.unexpected"));
             }
             setIsChangingPassword(false);
             return;
@@ -370,16 +372,16 @@ function ProfileContent() {
                 revokeOtherSessions: true,
             }, {
                 onSuccess: () => {
-                    toast.success("Password changed successfully! 🔒");
+                    toast.success(t("passwordModal.successChange"));
                     setIsChangePasswordModalOpen(false);
                     setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
                 },
                 onError: (ctx) => {
-                    toast.error(ctx.error.message || "Failed to change password.");
+                    toast.error(ctx.error.message || t("errors.changePassword"));
                 }
             });
         } catch (error) {
-            toast.error("An error occurred.");
+            toast.error(t("errors.unexpected"));
         } finally {
             setIsChangingPassword(false);
         }
@@ -390,7 +392,7 @@ function ProfileContent() {
         try {
             const result = await deleteUserAccount();
             if (result.success) {
-                toast.success("Account deleted successfully. We're sorry to see you go. 🎀");
+                toast.success(t("deleteAccount.success"));
                 await signOut({
                     fetchOptions: {
                         onSuccess: () => {
@@ -399,11 +401,11 @@ function ProfileContent() {
                     }
                 });
             } else {
-                toast.error(result.error || "Failed to delete account.");
+                toast.error(result.error || t("errors.deleteAccount"));
                 setIsDeletingAccount(false);
             }
         } catch (error) {
-            toast.error("An error occurred during account deletion.");
+            toast.error(t("errors.unexpected"));
             setIsDeletingAccount(false);
         }
     };
@@ -457,7 +459,7 @@ function ProfileContent() {
                             </div>
                             <div className="text-center md:text-left flex-1">
                                 <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-flora-dark tracking-tight mb-2 flex items-center justify-center md:justify-start gap-3">
-                                    Hello, {session.user.name.split(' ')[0]}!
+                                    {t("hero.greeting", { name: session.user.name.split(' ')[0] })}
                                     <Bow className="w-6 h-6 md:w-8 md:h-8 text-primary animate-bounce-slow" />
                                 </h1>
                                 <p className="text-gray-500 font-bold flex items-center justify-center md:justify-start gap-2">
@@ -473,7 +475,7 @@ function ProfileContent() {
                                 }}
                                 className="bg-white hover:bg-pink-50 text-flora-dark border border-pink-100 rounded-full px-6 py-4 md:px-8 md:py-6 text-sm md:text-base font-bold flex items-center gap-2 shadow-sm transition-all hover:scale-105"
                             >
-                                Edit Profile
+                                {t("hero.editProfile")}
                             </Button>
                         </div>
                     </div>
@@ -488,21 +490,21 @@ function ProfileContent() {
                                     className="rounded-full px-4 md:px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-[10px] md:text-xs uppercase tracking-widest transition-all h-full"
                                 >
                                     <MapPin className="w-4 h-4 min-[400px]:mr-2" />
-                                    <span className="hidden min-[400px]:inline">Addresses</span>
+                                    <span className="hidden min-[400px]:inline">{t("tabs.addresses")}</span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="account"
                                     className="rounded-full px-4 md:px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-[10px] md:text-xs uppercase tracking-widest transition-all h-full"
                                 >
                                     <User className="w-4 h-4 min-[400px]:mr-2" />
-                                    <span className="hidden min-[400px]:inline">Account</span>
+                                    <span className="hidden min-[400px]:inline">{t("tabs.account")}</span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="security"
                                     className="rounded-full px-4 md:px-8 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg font-black text-[10px] md:text-xs uppercase tracking-widest transition-all h-full"
                                 >
                                     <Shield className="w-4 h-4 min-[400px]:mr-2" />
-                                    <span className="hidden min-[400px]:inline">Security</span>
+                                    <span className="hidden min-[400px]:inline">{t("tabs.security")}</span>
                                 </TabsTrigger>
                             </TabsList>
                         </div>
@@ -511,16 +513,16 @@ function ProfileContent() {
                         <TabsContent value="addresses" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
                                 <div className="lg:col-span-4 space-y-4">
-                                    <h2 className="text-xl md:text-2xl font-black text-flora-dark">Saved Addresses</h2>
+                                    <h2 className="text-xl md:text-2xl font-black text-flora-dark">{t("addresses.title")}</h2>
                                     <p className="text-gray-400 font-bold leading-relaxed">
-                                        Manage your shipping locations for a faster, seamless checkout experience across all your devices.
+                                        {t("addresses.description")}
                                     </p>
                                     <Button
                                         onClick={() => handleOpenAddressModal()}
                                         className="w-full bg-primary hover:bg-[#FF75AA] text-white rounded-xl md:rounded-2xl py-6 md:py-8 font-black text-base md:text-lg shadow-lg shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2"
                                     >
                                         <Plus className="w-5 h-5" />
-                                        Add New Address
+                                        {t("addresses.addBtn")}
                                     </Button>
                                 </div>
 
@@ -536,8 +538,8 @@ function ProfileContent() {
                                             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
                                                 <MapPin className="w-8 h-8 text-pink-200" />
                                             </div>
-                                            <h3 className="text-xl font-black text-flora-dark mb-2">No addresses yet</h3>
-                                            <p className="text-gray-400 font-bold mb-6">You haven&apos;t saved any shipping addresses yet.</p>
+                                            <h3 className="text-xl font-black text-flora-dark mb-2">{t("addresses.empty.title")}</h3>
+                                            <p className="text-gray-400 font-bold mb-6">{t("addresses.empty.message")}</p>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -550,7 +552,7 @@ function ProfileContent() {
                                                     {addr.isDefault && (
                                                         <div className="absolute top-6 right-6">
                                                             <div className="bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-pink-200">
-                                                                Default
+                                                                {t("addresses.card.default")}
                                                             </div>
                                                         </div>
                                                     )}
@@ -581,7 +583,7 @@ function ProfileContent() {
                                                                 className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl md:rounded-2xl bg-gray-50 text-gray-500 font-bold text-xs hover:bg-pink-50 hover:text-primary transition-all group/btn"
                                                             >
                                                                 <Pencil className="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110" />
-                                                                Edit
+                                                                {t("addresses.card.edit")}
                                                             </button>
                                                             {!addr.isDefault && (
                                                                 <button
@@ -602,7 +604,7 @@ function ProfileContent() {
                                                                     >
                                                                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
                                                                     </svg>
-                                                                    Set Default
+                                                                    {t("addresses.card.setDefault")}
                                                                 </button>
                                                             )}
                                                             <button
@@ -624,11 +626,11 @@ function ProfileContent() {
                         {/* Other content placeholders */}
                         <TabsContent value="account" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div className="bg-white rounded-3xl md:rounded-[40px] border border-pink-50 shadow-sm p-5 md:p-8 max-w-2xl mx-auto">
-                                <h3 className="text-xl md:text-2xl font-black text-flora-dark mb-6 md:mb-8">Personal Information</h3>
+                                <h3 className="text-xl md:text-2xl font-black text-flora-dark mb-6 md:mb-8">{t("account.personalInfo")}</h3>
                                 <div className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Your Name</Label>
+                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">{t("account.labelName")}</Label>
                                             <div className="relative group/input cursor-pointer" onClick={() => {
                                                 setProfileName(session.user.name);
                                                 setProfileImage(session.user.image || null);
@@ -645,7 +647,7 @@ function ProfileContent() {
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Email Address</Label>
+                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">{t("account.labelEmail")}</Label>
                                             <div className="relative">
                                                 <Input
                                                     value={session.user.email}
@@ -660,7 +662,7 @@ function ProfileContent() {
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Member Since</Label>
+                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">{t("account.labelMemberSince")}</Label>
                                             <div className="relative">
                                                 <div className="rounded-xl md:rounded-2xl border border-gray-100 bg-gray-50/50 py-4 px-5 flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-400">
@@ -668,16 +670,16 @@ function ProfileContent() {
                                                     </div>
                                                     <div>
                                                         <p className="font-black text-flora-dark text-sm">
-                                                            {new Date(session.user.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                                            {new Date(session.user.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
                                                         </p>
-                                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Joined Flora</p>
+                                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("account.joinedFlora")}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">Phone Number</Label>
+                                            <Label className="font-bold ml-1 text-gray-400 uppercase tracking-widest text-[10px]">{t("account.labelPhone")}</Label>
                                             <div className="relative">
                                                 <div className="rounded-xl md:rounded-2xl border border-gray-100 bg-gray-50/50 py-4 px-5 flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-400">
@@ -685,9 +687,9 @@ function ProfileContent() {
                                                     </div>
                                                     <div>
                                                         <p className="font-black text-flora-dark text-sm">
-                                                            {addresses.find((a: any) => a.isDefault)?.phoneNumber || addresses[0]?.phoneNumber || "No phone added"}
+                                                            {addresses.find((a: any) => a.isDefault)?.phoneNumber || addresses[0]?.phoneNumber || t("account.noPhone")}
                                                         </p>
-                                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Contact</p>
+                                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("account.activeContact")}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -702,7 +704,7 @@ function ProfileContent() {
                                     <div className="space-y-4">
                                         <h4 className="font-black text-flora-dark flex items-center gap-2">
                                             <Shield className="w-5 h-5 text-primary" />
-                                            Linked Accounts
+                                            {t("account.linkedAccounts")}
                                         </h4>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             {isLoadingAccounts ? (
@@ -726,8 +728,8 @@ function ProfileContent() {
                                                             )}
                                                         </div>
                                                         <div>
-                                                            <p className="font-black text-flora-dark capitalize">{acc.providerId === 'credential' ? 'Email Address' : acc.providerId}</p>
-                                                            <p className="text-[10px] text-gray-400 font-bold">Connected {new Date(acc.createdAt).toLocaleDateString()}</p>
+                                                            <p className="font-black text-flora-dark capitalize">{acc.providerId === 'credential' ? t("account.credentialProvider") : acc.providerId}</p>
+                                                            <p className="text-[10px] text-gray-400 font-bold">{t("account.connectedDate", { date: new Date(acc.createdAt).toLocaleDateString() })}</p>
                                                         </div>
                                                         <div className="ml-auto">
                                                             <CheckCircle2 className="w-5 h-5 text-green-500" />
@@ -735,7 +737,7 @@ function ProfileContent() {
                                                     </div>
                                                 ))
                                             ) : (
-                                                <p className="text-gray-400 text-sm">No linked accounts found.</p>
+                                                <p className="text-gray-400 text-sm">{t("account.noLinkedAccounts")}</p>
                                             )}
                                         </div>
                                     </div>
@@ -748,8 +750,8 @@ function ProfileContent() {
                                 <div className="text-center space-y-4">
 
                                     <div>
-                                        <h3 className="text-2xl font-black text-flora-dark mb-2">Security & Privacy</h3>
-                                        <p className="text-gray-400 font-bold">Manage your account security and active devices.</p>
+                                        <h3 className="text-2xl font-black text-flora-dark mb-2">{t("security.title")}</h3>
+                                        <p className="text-gray-400 font-bold">{t("security.description")}</p>
                                     </div>
                                 </div>
 
@@ -757,7 +759,7 @@ function ProfileContent() {
                                     <div className="bg-gray-50/50 rounded-[30px] p-6 border border-gray-100">
                                         <h4 className="font-black text-flora-dark mb-4 flex items-center gap-2">
                                             <Laptop className="w-5 h-5 text-primary" />
-                                            Active Sessions
+                                            {t("security.activeSessions")}
                                         </h4>
 
                                         <div className="space-y-4">
@@ -778,18 +780,18 @@ function ProfileContent() {
                                                             </div>
                                                             <div className="text-left">
                                                                 <p className="font-bold text-flora-dark text-sm">
-                                                                    {sess.userAgent.toLowerCase().includes("windows") ? "Windows PC" :
-                                                                        sess.userAgent.toLowerCase().includes("mac") ? "Macbook" :
-                                                                            sess.userAgent.toLowerCase().includes("iphone") ? "iPhone" :
-                                                                                sess.userAgent.toLowerCase().includes("android") ? "Android Device" : "Unknown Device"}
+                                                                    {sess.userAgent.toLowerCase().includes("windows") ? t("security.devices.windows") :
+                                                                        sess.userAgent.toLowerCase().includes("mac") ? t("security.devices.mac") :
+                                                                            sess.userAgent.toLowerCase().includes("iphone") ? t("security.devices.iphone") :
+                                                                                sess.userAgent.toLowerCase().includes("android") ? t("security.devices.android") : t("security.devices.unknown")}
                                                                 </p>
                                                                 <p className="text-xs text-gray-400 font-medium">
-                                                                    {(sess.ipAddress === "::1" || sess.ipAddress === "127.0.0.1" || sess.ipAddress === "0000:0000:0000:0000:0000:0000:0000:0000") ? "Localhost" : sess.ipAddress} • {new Date(sess.createdAt).toLocaleDateString()}
+                                                                    {(sess.ipAddress === "::1" || sess.ipAddress === "127.0.0.1" || sess.ipAddress === "0000:0000:0000:0000:0000:0000:0000:0000") ? t("security.devices.localhost") : sess.ipAddress} • {new Date(sess.createdAt).toLocaleDateString()}
                                                                 </p>
                                                             </div>
                                                         </div>
                                                         {sess.isCurrent ? (
-                                                            <Badge className="bg-green-100 text-green-600 border-none hover:bg-green-100">Current</Badge>
+                                                            <Badge className="bg-green-100 text-green-600 border-none hover:bg-green-100">{t("security.currentBadge")}</Badge>
                                                         ) : (
                                                             <Button
                                                                 variant="ghost"
@@ -797,13 +799,13 @@ function ProfileContent() {
                                                                 onClick={() => handleRevokeSession(sess.id)}
                                                                 className="text-red-400 hover:text-red-500 hover:bg-red-50 rounded-xl"
                                                             >
-                                                                Revoke
+                                                                {t("security.revokeBtn")}
                                                             </Button>
                                                         )}
                                                     </div>
                                                 ))
                                             ) : (
-                                                <p className="text-gray-400 text-sm text-center">No active sessions found.</p>
+                                                <p className="text-gray-400 text-sm text-center">{t("security.noSessions")}</p>
                                             )}
                                         </div>
                                     </div>
@@ -813,7 +815,7 @@ function ProfileContent() {
                                         variant="outline"
                                         className="w-full rounded-xl md:rounded-2xl py-6 md:py-8 border-gray-100 text-flora-dark font-bold hover:bg-gray-50 flex items-center justify-between px-5 md:px-8 group"
                                     >
-                                        {hasPassword ? "Change Password" : "Set Password"}
+                                        {hasPassword ? t("security.changePasswordBtn") : t("security.setPasswordBtn")}
                                         <ChevronRight className="w-5 h-5 opacity-30 group-hover:translate-x-1 transition-all" />
                                     </Button>
 
@@ -824,7 +826,7 @@ function ProfileContent() {
                                     >
                                         <div className="flex items-center gap-3">
                                             <Trash2 className="w-5 h-5 opacity-50 group-hover:text-red-500 transition-colors" />
-                                            Delete Account
+                                            {t("security.deleteAccountBtn")}
                                         </div>
                                         <ChevronRight className="w-5 h-5 opacity-20 group-hover:translate-x-1 transition-all" />
                                     </Button>
@@ -841,10 +843,10 @@ function ProfileContent() {
                     <div className="p-5 md:p-8 space-y-4 md:space-y-5">
                         <DialogHeader className="space-y-2">
                             <DialogTitle className="text-xl md:text-2xl font-black text-flora-dark text-center tracking-tight">
-                                Saying Goodbye?
+                                {t("deleteAccount.modalTitle")}
                             </DialogTitle>
                             <DialogDescription className="text-gray-500 font-bold text-xs md:text-sm leading-relaxed text-center px-2 md:px-4">
-                                This action is permanent. All your treasures (addresses, wishlist, and profile) will be deleted forever.
+                                {t("deleteAccount.modalDesc")}
                             </DialogDescription>
                         </DialogHeader>
 
@@ -853,9 +855,9 @@ function ProfileContent() {
                                 <Shield className="w-5 h-5 text-red-400" />
                             </div>
                             <div>
-                                <p className="text-[9px] font-black text-red-500 uppercase tracking-widest mb-1">Privacy Notice</p>
+                                <p className="text-[9px] font-black text-red-500 uppercase tracking-widest mb-1">{t("deleteAccount.privacyNotice")}</p>
                                 <p className="text-[11px] font-bold text-red-700/70 leading-relaxed">
-                                    We keep order records for business accounting, but they will be completely unlinked from your email.
+                                    {t("deleteAccount.privacyMessage")}
                                 </p>
                             </div>
                         </div>
@@ -869,12 +871,12 @@ function ProfileContent() {
                                 {isDeletingAccount ? (
                                     <Loader2 className="w-5 h-5 animate-spin" />
                                 ) : (
-                                    "Delete My Account"
+                                    t("deleteAccount.confirmBtn")
                                 )}
                             </Button>
                             <DialogClose asChild>
                                 <Button variant="ghost" className="w-full rounded-full py-4 md:py-7 text-gray-400 font-black uppercase tracking-widest text-[10px] border border-gray-100 shadow-sm hover:bg-gray-50 hover:shadow-md transition-all active:scale-95">
-                                    Actually, I want to stay <Bow className="w-3.5 h-3.5 text-primary ml-1 inline-block" />
+                                    {t("deleteAccount.cancelBtn")} <Bow className="w-3.5 h-3.5 text-primary ml-1 inline-block" />
                                 </Button>
                             </DialogClose>
                         </div>
@@ -890,21 +892,21 @@ function ProfileContent() {
                     <div className="p-5 md:p-6 lg:p-8 space-y-6 max-h-[85vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                         <DialogHeader>
                             <DialogTitle className="text-2xl md:text-3xl font-black text-flora-dark text-center flex items-center justify-center">
-                                {editingAddress ? "Update Address" : "New Address"}
+                                {editingAddress ? t("addresses.modal.titleUpdate") : t("addresses.modal.titleNew")}
                                 <MapPin className="ml-2 w-6 h-6 md:w-8 md:h-8 text-primary" />
                             </DialogTitle>
                             <DialogDescription className="text-center font-bold text-gray-400">
-                                {editingAddress ? "Refine your shipping location details." : "Add a new treasure delivery destination."}
+                                {editingAddress ? t("addresses.modal.descUpdate") : t("addresses.modal.descNew")}
                             </DialogDescription>
                         </DialogHeader>
 
                         <div className="space-y-6">
                             {/* Address Label (Home/Work/Other) */}
                             <div className="space-y-2">
-                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Address Name (e.g., Home, Office)</Label>
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("addresses.modal.labelName")}</Label>
                                 <div className="relative">
                                     <Input
-                                        placeholder="e.g. Home, Work"
+                                        placeholder={t("addresses.modal.placeholderName")}
                                         className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-base md:text-lg text-flora-dark"
                                         value={addressForm.name}
                                         onChange={(e) => setAddressForm({ ...addressForm, name: e.target.value })}
@@ -914,18 +916,18 @@ function ProfileContent() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Full Name</Label>
+                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("addresses.modal.labelFullName")}</Label>
                                     <Input
-                                        placeholder="Who's receiving the package?"
+                                        placeholder={t("addresses.modal.placeholderFullName")}
                                         className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-flora-dark"
                                         value={addressForm.fullName}
                                         onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Phone Number</Label>
+                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("addresses.modal.labelPhone")}</Label>
                                     <Input
-                                        placeholder="Mobile number"
+                                        placeholder={t("addresses.modal.placeholderPhone")}
                                         className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-flora-dark"
                                         value={addressForm.phoneNumber}
                                         onChange={(e) => setAddressForm({ ...addressForm, phoneNumber: e.target.value })}
@@ -935,13 +937,13 @@ function ProfileContent() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-3">
-                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Governorate</Label>
+                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("addresses.modal.labelGov")}</Label>
                                     <Select
                                         value={addressForm.governorate}
                                         onValueChange={(v) => setAddressForm({ ...addressForm, governorate: v, city: "" })}
                                     >
                                         <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 h-12 md:h-14 font-bold text-flora-dark bg-white">
-                                            <SelectValue placeholder="Select" />
+                                            <SelectValue placeholder={t("addresses.modal.selectPlaceholder")} />
                                         </SelectTrigger>
                                         <SelectContent className="rounded-2xl border-pink-100 shadow-xl max-h-60">
                                             {TUNISIA_GOVERNORATES.map((gov) => (
@@ -951,14 +953,14 @@ function ProfileContent() {
                                     </Select>
                                 </div>
                                 <div className="space-y-3">
-                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">City / Delegation</Label>
+                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("addresses.modal.labelCity")}</Label>
                                     <Select
                                         disabled={!selectedGov}
                                         value={addressForm.city}
                                         onValueChange={(v) => setAddressForm({ ...addressForm, city: v })}
                                     >
                                         <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 h-12 md:h-14 font-bold text-flora-dark bg-white">
-                                            <SelectValue placeholder="Select" />
+                                            <SelectValue placeholder={t("addresses.modal.selectPlaceholder")} />
                                         </SelectTrigger>
                                         <SelectContent className="rounded-2xl border-pink-100 shadow-xl max-h-60">
                                             {availableCities.map((city) => (
@@ -970,9 +972,9 @@ function ProfileContent() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Detailed Address</Label>
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("addresses.modal.labelDetailed")}</Label>
                                 <Input
-                                    placeholder="Street name, building, apartment..."
+                                    placeholder={t("addresses.modal.placeholderDetailed")}
                                     className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-flora-dark"
                                     value={addressForm.detailedAddress}
                                     onChange={(e) => setAddressForm({ ...addressForm, detailedAddress: e.target.value })}
@@ -989,7 +991,7 @@ function ProfileContent() {
                                 {isSavingAddress ? (
                                     <Loader2 className="w-7 h-7 animate-spin" />
                                 ) : (
-                                    editingAddress ? "Update Destination" : "Save Destination"
+                                    editingAddress ? t("addresses.modal.submitUpdate") : t("addresses.modal.submitNew")
                                 )}
                             </Button>
                         </div>
@@ -1003,17 +1005,17 @@ function ProfileContent() {
                     <div className="p-5 md:p-6 lg:p-8 space-y-6">
                         <DialogHeader>
                             <DialogTitle className="text-2xl md:text-3xl font-black text-flora-dark text-center flex items-center justify-center gap-2">
-                                Edit Profile
+                                {t("editProfile.title")}
                                 <User className="w-6 h-6 md:w-8 md:h-8 text-primary" />
                             </DialogTitle>
                             <DialogDescription className="text-center font-bold text-gray-400">
-                                Update your personal information.
+                                {t("editProfile.description")}
                             </DialogDescription>
                         </DialogHeader>
 
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Profile Picture</Label>
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("editProfile.profilePicture")}</Label>
                                 <div className="bg-gray-50/50 border border-gray-100 rounded-3xl p-6 flex flex-col items-center gap-4">
                                     <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl bg-white group">
                                         {profileImage ? (
@@ -1034,7 +1036,7 @@ function ProfileContent() {
                                         endpoint="profileImage"
                                         onUploadBegin={() => {
                                             setIsUploadingImage(true);
-                                            toast.info("Uploading image...", { duration: 2000 });
+                                            toast.info(t("editProfile.uploading"), { duration: 2000 });
                                         }}
                                         onClientUploadComplete={async (res) => {
                                             if (res && res[0]) {
@@ -1045,25 +1047,31 @@ function ProfileContent() {
 
                                                 setProfileImage(res[0].url);
                                                 setIsUploadingImage(false);
-                                                toast.success("Image uploaded! Don't forget to save. 📸");
+                                                toast.success(t("editProfile.uploadSuccess"));
                                             }
                                         }}
                                         onUploadError={(error: Error) => {
                                             setIsUploadingImage(false);
-                                            toast.error(`Error uploading: ${error.message}`);
+                                            toast.error(t("editProfile.uploadError", { message: error.message }));
                                         }}
                                         appearance={{
                                             button: `text-xs font-bold px-4 py-2 h-auto rounded-xl ${isUploadingImage ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-primary text-white hover:bg-[#FF75AA]'}`,
                                             allowedContent: "text-[10px] text-gray-400 font-bold"
+                                        }}
+                                        content={{
+                                            button({ ready }) {
+                                                if (ready) return t("editProfile.uploadBtn");
+                                                return t("editProfile.uploading");
+                                            }
                                         }}
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Full Name</Label>
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("editProfile.fullName")}</Label>
                                 <Input
-                                    placeholder="Your full name"
+                                    placeholder={t("editProfile.fullNamePlaceholder")}
                                     className="rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-200 py-4 md:py-7 px-5 font-bold text-base md:text-lg text-flora-dark"
                                     value={profileName}
                                     onChange={(e) => setProfileName(e.target.value)}
@@ -1078,15 +1086,15 @@ function ProfileContent() {
                                 {isUpdatingProfile ? (
                                     <div className="flex items-center gap-2">
                                         <Loader2 className="w-7 h-7 animate-spin" />
-                                        <span>Saving...</span>
+                                        <span>{t("editProfile.saving")}</span>
                                     </div>
                                 ) : isUploadingImage ? (
                                     <div className="flex items-center gap-2">
                                         <Loader2 className="w-7 h-7 animate-spin" />
-                                        <span>Uploading Image...</span>
+                                        <span>{t("editProfile.uploading")}</span>
                                     </div>
                                 ) : (
-                                    "Save Changes"
+                                    t("editProfile.submit")
                                 )}
                             </Button>
                         </div>
@@ -1100,21 +1108,21 @@ function ProfileContent() {
                     <div className="p-5 md:p-6 lg:p-8 space-y-6">
                         <DialogHeader>
                             <DialogTitle className="text-2xl md:text-3xl font-black text-flora-dark text-center flex items-center justify-center gap-2">
-                                {hasPassword ? "Change Password" : "Set Password"}
+                                {hasPassword ? t("passwordModal.titleChange") : t("passwordModal.titleSet")}
                                 <Shield className="w-6 h-6 md:w-8 md:h-8 text-purple-500" />
                             </DialogTitle>
                             <DialogDescription className="text-center font-bold text-gray-400">
-                                {hasPassword ? "Secure your account with a new password." : "Set a password to login with email."}
+                                {hasPassword ? t("passwordModal.descChange") : t("passwordModal.descSet")}
                             </DialogDescription>
                         </DialogHeader>
 
                         <div className="space-y-4">
                             {hasPassword && (
                                 <div className="space-y-2">
-                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Current Password</Label>
+                                    <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("passwordModal.labelCurrent")}</Label>
                                     <Input
                                         type="password"
-                                        placeholder="Enter your current password"
+                                        placeholder={t("passwordModal.placeholderCurrent")}
                                         className="rounded-xl md:rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-4 md:py-7 px-5 font-bold text-base md:text-lg text-flora-dark placeholder:text-purple-200"
                                         value={passwordForm.currentPassword}
                                         onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
@@ -1123,10 +1131,10 @@ function ProfileContent() {
                             )}
 
                             <div className="space-y-2">
-                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">New Password</Label>
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("passwordModal.labelNew")}</Label>
                                 <Input
                                     type="password"
-                                    placeholder="Enter new password"
+                                    placeholder={t("passwordModal.placeholderNew")}
                                     className="rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-7 px-5 font-bold text-lg text-flora-dark placeholder:text-purple-200"
                                     value={passwordForm.newPassword}
                                     onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
@@ -1134,10 +1142,10 @@ function ProfileContent() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">Confirm New Password</Label>
+                                <Label className="text-flora-dark font-black ml-1 uppercase tracking-widest text-[10px]">{t("passwordModal.labelConfirm")}</Label>
                                 <Input
                                     type="password"
-                                    placeholder="Confirm new password"
+                                    placeholder={t("passwordModal.placeholderConfirm")}
                                     className="rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-7 px-5 font-bold text-lg text-flora-dark placeholder:text-purple-200"
                                     value={passwordForm.confirmPassword}
                                     onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
@@ -1152,10 +1160,10 @@ function ProfileContent() {
                                 {isChangingPassword ? (
                                     <div className="flex items-center gap-2">
                                         <Loader2 className="w-7 h-7 animate-spin" />
-                                        <span>Updating...</span>
+                                        <span>{t("passwordModal.loading")}</span>
                                     </div>
                                 ) : (
-                                    hasPassword ? "Update Password" : "Set Password"
+                                    hasPassword ? t("passwordModal.submitChange") : t("passwordModal.submitSet")
                                 )}
                             </Button>
                         </div>

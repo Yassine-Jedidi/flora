@@ -37,7 +37,8 @@ export async function CuratedStyles() {
             <div className="flex flex-col mb-16 gap-4">
                 <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6">
                     <h2 className="text-4xl md:text-6xl font-black text-primary tracking-tighter flex items-center gap-3">
-                        {tHome("exploreStyles")} <Gem className="w-8 h-8 md:w-12 md:h-12 text-primary" />
+                        {tHome("exploreStyles")} <span className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl">🌸</span>
+
                     </h2>
                     <Link
                         href="/shop"

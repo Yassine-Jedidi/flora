@@ -415,5 +415,152 @@
                 "requestNew": "Request New Link"
             }
         }
+    },
+    "Profile": {
+        "hero": {
+            "greeting": "Hello, {name}!",
+            "editProfile": "Edit Profile"
+        },
+        "tabs": {
+            "addresses": "Addresses",
+            "account": "Account",
+            "security": "Security"
+        },
+        "addresses": {
+            "title": "Saved Addresses",
+            "description": "Manage your shipping locations for a faster, seamless checkout experience across all your devices.",
+            "addBtn": "Add New Address",
+            "empty": {
+                "title": "No addresses yet",
+                "message": "You haven't saved any shipping addresses yet."
+            },
+            "card": {
+                "default": "Default",
+                "edit": "Edit",
+                "setDefault": "Set Default",
+                "delete": "Delete",
+                "deleteConfirm": "Are you sure you want to delete \"{name}\"?"
+            },
+            "limitReached": "You have reached the limit of 4 addresses. Please remove an existing address to add a new one.",
+            "saveSuccess": "Address saved! 🎀",
+            "updateSuccess": "Address updated! 🎀",
+            "deleteSuccess": "Address deleted.",
+            "defaultSuccess": "Default address updated! 🎀",
+            "fillAllFields": "Please fill in all fields.",
+            "modal": {
+                "titleNew": "New Address",
+                "titleUpdate": "Update Address",
+                "descNew": "Add a new treasure delivery destination.",
+                "descUpdate": "Refine your shipping location details.",
+                "labelName": "Address Name (e.g., Home, Office)",
+                "placeholderName": "e.g. Home, Work",
+                "labelFullName": "Full Name",
+                "placeholderFullName": "Who's receiving the package?",
+                "labelPhone": "Phone Number",
+                "placeholderPhone": "Mobile number",
+                "labelGov": "Governorate",
+                "labelCity": "City / Delegation",
+                "selectPlaceholder": "Select",
+                "labelDetailed": "Detailed Address",
+                "placeholderDetailed": "Street name, building, apartment...",
+                "submitNew": "Save Destination",
+                "submitUpdate": "Update Destination"
+            }
+        },
+        "account": {
+            "personalInfo": "Personal Information",
+            "labelName": "Your Name",
+            "labelEmail": "Email Address",
+            "labelMemberSince": "Member Since",
+            "labelPhone": "Phone Number",
+            "noPhone": "No phone added",
+            "joinedFlora": "Joined Flora",
+            "activeContact": "Active Contact",
+            "linkedAccounts": "Linked Accounts",
+            "noLinkedAccounts": "No linked accounts found.",
+            "connectedDate": "Connected {date}",
+            "credentialProvider": "Email Address"
+        },
+        "security": {
+            "title": "Security & Privacy",
+            "description": "Manage your account security and active devices.",
+            "activeSessions": "Active Sessions",
+            "noSessions": "No active sessions found.",
+            "currentBadge": "Current",
+            "revokeBtn": "Revoke",
+            "revokeSuccess": "Session revoked 🔒",
+            "revokeError": "Failed to revoke session",
+            "changePasswordBtn": "Change Password",
+            "setPasswordBtn": "Set Password",
+            "deleteAccountBtn": "Delete Account",
+            "devices": {
+                "windows": "Windows PC",
+                "mac": "Macbook",
+                "iphone": "iPhone",
+                "android": "Android Device",
+                "unknown": "Unknown Device",
+                "localhost": "Localhost"
+            }
+        },
+        "deleteAccount": {
+            "modalTitle": "Saying Goodbye?",
+            "modalDesc": "This action is permanent. All your treasures (addresses, wishlist, and profile) will be deleted forever.",
+            "privacyNotice": "Privacy Notice",
+            "privacyMessage": "We keep order records for business accounting, but they will be completely unlinked from your email.",
+            "confirmBtn": "Delete My Account",
+            "cancelBtn": "Actually, I want to stay",
+            "success": "Account deleted successfully. We're sorry to see you go. 🎀"
+        },
+        "editProfile": {
+            "modalTitle": "Edit Profile",
+            "modalDesc": "Update your personal information.",
+            "labelPicture": "Profile Picture",
+            "uploading": "Uploading image...",
+            "uploadSuccess": "Image uploaded! Don't forget to save. 📸",
+            "uploadError": "Error uploading: {message}",
+            "labelName": "Full Name",
+            "placeholderName": "Your full name",
+            "submit": "Save Changes",
+            "loading": "Saving...",
+            "uploadButtonText": "Upload Image",
+            "nameEmpty": "Name cannot be empty",
+            "success": "Profile updated! ✨"
+        },
+        "passwordModal": {
+            "titleChange": "Change Password",
+            "titleSet": "Set Password",
+            "descChange": "Secure your account with a new password.",
+            "descSet": "Set a password to login with email.",
+            "labelCurrent": "Current Password",
+            "placeholderCurrent": "Enter your current password",
+            "labelNew": "New Password",
+            "placeholderNew": "Enter new password",
+            "labelConfirm": "Confirm New Password",
+            "placeholderConfirm": "Confirm new password",
+            "submitChange": "Update Password",
+            "submitSet": "Set Password",
+            "loading": "Updating...",
+            "fillAllFields": "Please fill in all fields.",
+            "mismatch": "New passwords do not match.",
+            "length": "Password must be at least 8 characters long.",
+            "sameAsOld": "New password cannot be the same as the old password.",
+            "successChange": "Password changed successfully! 🔒",
+            "successSet": "Password set successfully! 🔒"
+        },
+        "errors": {
+            "unexpected": "An error occurred",
+            "saveAddress": "Failed to save address.",
+            "deleteAddress": "Failed to delete address.",
+            "updateProfile": "Failed to update profile",
+            "setPassword": "Failed to set password.",
+            "changePassword": "Failed to change password.",
+            "deleteAccount": "Failed to delete account."
+        }
+    },
+    "NotFound": {
+        "title": "Oh no! This treasure",
+        "subtitle": "is missing.",
+        "description": "We couldn't find the page you were looking for. It might have been moved, or it's hiding in another jewelry box! ✨",
+        "backHome": "Back to Home"
     }
 }

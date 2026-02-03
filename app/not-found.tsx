@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { useTranslations } from "next-intl";
 import { Home } from "lucide-react";
 
 export default function NotFound() {
+    const t = useTranslations("NotFound");
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <Navbar />
@@ -30,13 +32,12 @@ export default function NotFound() {
                         </div>
 
                         <h1 className="text-4xl md:text-5xl font-black text-flora-dark mb-6 tracking-tight">
-                            Oh no! This treasure <br />
-                            <span className="text-primary">is missing.</span>
+                            {t("title")} <br />
+                            <span className="text-primary">{t("subtitle")}</span>
                         </h1>
 
                         <p className="text-[#8B7E84] text-lg font-medium mb-12 max-w-md mx-auto leading-relaxed">
-                            We couldn&apos;t find the page you were looking for. It might have been moved,
-                            or it&apos;s hiding in another jewelry box! ✨
+                            {t("description")}
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -45,7 +46,7 @@ export default function NotFound() {
                                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#FF75AA] text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95 text-lg"
                             >
                                 <Home className="w-5 h-5" />
-                                Back to Home
+                                {t("backHome")}
                             </Link>
                         </div>
                     </div>

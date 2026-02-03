@@ -415,5 +415,152 @@
                 "requestNew": "Demander un nouveau lien"
             }
         }
+    },
+    "Profile": {
+        "hero": {
+            "greeting": "Bonjour, {name} !",
+            "editProfile": "Modifier le profil"
+        },
+        "tabs": {
+            "addresses": "Adresses",
+            "account": "Compte",
+            "security": "Sécurité"
+        },
+        "addresses": {
+            "title": "Adresses enregistrées",
+            "description": "Gérez vos lieux de livraison pour une expérience de paiement plus rapide et fluide sur tous vos appareils.",
+            "addBtn": "Ajouter une nouvelle adresse",
+            "empty": {
+                "title": "Aucune adresse pour le moment",
+                "message": "Vous n'avez pas encore enregistré d'adresse de livraison."
+            },
+            "card": {
+                "default": "Par défaut",
+                "edit": "Modifier",
+                "setDefault": "Définir par défaut",
+                "delete": "Supprimer",
+                "deleteConfirm": "Êtes-vous sûr de vouloir supprimer \"{name}\" ?"
+            },
+            "limitReached": "Vous avez atteint la limite de 4 adresses. Veuillez supprimer une adresse existante pour en ajouter une nouvelle.",
+            "saveSuccess": "Adresse enregistrée ! 🎀",
+            "updateSuccess": "Adresse mise à jour ! 🎀",
+            "deleteSuccess": "Adresse supprimée.",
+            "defaultSuccess": "Adresse par défaut mise à jour ! 🎀",
+            "fillAllFields": "Veuillez remplir tous les champs.",
+            "modal": {
+                "titleNew": "Nouvelle adresse",
+                "titleUpdate": "Mettre à jour l'adresse",
+                "descNew": "Ajoutez une nouvelle destination de livraison pour vos trésors.",
+                "descUpdate": "Affinez les détails de votre lieu de livraison.",
+                "labelName": "Nom de l'adresse (ex: Domicile, Bureau)",
+                "placeholderName": "ex: Domicile, Travail",
+                "labelFullName": "Nom complet",
+                "placeholderFullName": "Qui reçoit le colis ?",
+                "labelPhone": "Numéro de téléphone",
+                "placeholderPhone": "Numéro de mobile",
+                "labelGov": "Gouvernorat",
+                "labelCity": "Ville / Délégation",
+                "selectPlaceholder": "Sélectionner",
+                "labelDetailed": "Adresse détaillée",
+                "placeholderDetailed": "Nom de rue, immeuble, appartement...",
+                "submitNew": "Enregistrer la destination",
+                "submitUpdate": "Mettre à jour la destination"
+            }
+        },
+        "account": {
+            "personalInfo": "Informations personnelles",
+            "labelName": "Votre nom",
+            "labelEmail": "Adresse e-mail",
+            "labelMemberSince": "Membre depuis",
+            "labelPhone": "Numéro de téléphone",
+            "noPhone": "Aucun téléphone ajouté",
+            "joinedFlora": "A rejoint Flora",
+            "activeContact": "Contact actif",
+            "linkedAccounts": "Comptes liés",
+            "noLinkedAccounts": "Aucun compte lié trouvé.",
+            "connectedDate": "Connecté le {date}",
+            "credentialProvider": "Adresse e-mail"
+        },
+        "security": {
+            "title": "Sécurité et confidentialité",
+            "description": "Gérez la sécurité de votre compte et vos appareils actifs.",
+            "activeSessions": "Sessions actives",
+            "noSessions": "Aucune session active trouvée.",
+            "currentBadge": "Actuel",
+            "revokeBtn": "Révoquer",
+            "revokeSuccess": "Session révoqué 🔒",
+            "revokeError": "Échec de la révocation de la session",
+            "changePasswordBtn": "Changer le mot de passe",
+            "setPasswordBtn": "Définir le mot de passe",
+            "deleteAccountBtn": "Supprimer le compte",
+            "devices": {
+                "windows": "PC Windows",
+                "mac": "Macbook",
+                "iphone": "iPhone",
+                "android": "Appareil Android",
+                "unknown": "Appareil inconnu",
+                "localhost": "Localhost"
+            }
+        },
+        "deleteAccount": {
+            "modalTitle": "On se quitte ?",
+            "modalDesc": "Cette action est permanente. Tous vos trésors (adresses, liste de souhaits et profil) seront supprimés à jamais.",
+            "privacyNotice": "Avis de confidentialité",
+            "privacyMessage": "Nous conservons les enregistrements de commandes pour la comptabilité, mais ils seront complètement dissociés de votre e-mail.",
+            "confirmBtn": "Supprimer mon compte",
+            "cancelBtn": "En fait, je veux rester",
+            "success": "Compte supprimé avec succès. Nous sommes désolés de vous voir partir. 🎀"
+        },
+        "editProfile": {
+            "modalTitle": "Modifier le profil",
+            "modalDesc": "Mettez à jour vos informations personnelles.",
+            "labelPicture": "Photo de profil",
+            "uploading": "Téléchargement de l'image...",
+            "uploadSuccess": "Image téléchargée ! N'oubliez pas d'enregistrer. 📸",
+            "uploadError": "Erreur lors du téléchargement : {message}",
+            "labelName": "Nom complet",
+            "placeholderName": "Votre nom complet",
+            "submit": "Enregistrer les modifications",
+            "loading": "Enregistrement...",
+            "uploadButtonText": "Télécharger une image",
+            "nameEmpty": "Le nom ne peut pas être vide",
+            "success": "Profil mis à jour ! ✨"
+        },
+        "passwordModal": {
+            "titleChange": "Changer le mot de passe",
+            "titleSet": "Définir le mot de passe",
+            "descChange": "Sécurisez votre compte avec un nouveau mot de passe.",
+            "descSet": "Définissez un mot de passe pour vous connecter par e-mail.",
+            "labelCurrent": "Mot de passe actuel",
+            "placeholderCurrent": "Entrez votre mot de passe actuel",
+            "labelNew": "Nouveau mot de passe",
+            "placeholderNew": "Entrez le nouveau mot de passe",
+            "labelConfirm": "Confirmer le nouveau mot de passe",
+            "placeholderConfirm": "Confirmez le nouveau mot de passe",
+            "submitChange": "Mettre à jour le mot de passe",
+            "submitSet": "Définir le mot de passe",
+            "loading": "Mise à jour...",
+            "fillAllFields": "Veuillez remplir tous les champs.",
+            "mismatch": "Les nouveaux mots de passe ne correspondent pas.",
+            "length": "Le mot de passe doit comporter au moins 8 caractères.",
+            "sameAsOld": "Le nouveau mot de passe ne peut pas être le même que l'ancien.",
+            "successChange": "Mot de passe changé avec succès ! 🔒",
+            "successSet": "Mot de passe défini avec succès ! 🔒"
+        },
+        "errors": {
+            "unexpected": "Une erreur s'est produite",
+            "saveAddress": "Échec de l'enregistrement de l'adresse.",
+            "deleteAddress": "Échec de la suppression de l'adresse.",
+            "updateProfile": "Échec de la mise à jour du profil",
+            "setPassword": "Échec de la définition du mot de passe.",
+            "changePassword": "Échec du changement de mot de passe.",
+            "deleteAccount": "Échec de la suppression du compte."
+        }
+    },
+    "NotFound": {
+        "title": "Oh non ! Ce trésor",
+        "subtitle": "est introuvable.",
+        "description": "Nous n'avons pas pu trouver la page que vous recherchez. Elle a peut-être été déplacée ou se cache dans une autre boîte à bijoux ! ✨",
+        "backHome": "Retour à l'accueil"
     }
 }
