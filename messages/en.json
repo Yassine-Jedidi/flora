@@ -60,6 +60,10 @@
             "title": "My Profile | Flora Accessories",
             "description": "Manage your account, addresses, and security."
         },
+        "checkout": {
+            "title": "Checkout | Flora Accessories",
+            "description": "Complete your purchase securely."
+        },
         "auth": {
             "signIn": {
                 "title": "Sign In | Flora Accessories",

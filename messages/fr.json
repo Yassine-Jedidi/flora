@@ -60,6 +60,10 @@
             "title": "Mon Profil | Flora Accessories",
             "description": "Gérez votre compte, vos adresses et votre sécurité."
         },
+        "checkout": {
+            "title": "Caisse | Flora Accessories",
+            "description": "Complétez votre achat en toute sécurité."
+        },
         "auth": {
             "signIn": {
                 "title": "Connexion | Flora Accessories",
