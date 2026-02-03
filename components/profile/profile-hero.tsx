@@ -38,7 +38,7 @@ export function ProfileHero({ session, onEditProfile }: ProfileHeroProps) {
                 </div>
                 <div className="text-center md:text-left flex-1">
                     <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-flora-dark tracking-tight mb-2 flex items-center justify-center md:justify-start gap-3">
-                        {t("hero.greeting", { name: session.user.name.split(' ')[0] })}
+                        {t("hero.greeting", { name: (session?.user?.name ?? '').split(' ')[0] })}
                         <Bow className="w-6 h-6 md:w-8 md:h-8 text-primary animate-bounce-slow" />
                     </h1>
                     <p className="text-gray-500 font-bold flex items-center justify-center md:justify-start gap-2">

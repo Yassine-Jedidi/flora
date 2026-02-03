@@ -47,42 +47,45 @@ export function SecuritySection({
                                 <Loader2 className="w-6 h-6 animate-spin text-pink-300" />
                             </div>
                         ) : sessions.length > 0 ? (
-                            sessions.map((sess) => (
-                                <div key={sess.id} className="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                                    <div className="flex items-center gap-3">
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${sess.userAgent.toLowerCase().includes("mobile") ? "bg-purple-50" : "bg-blue-50"}`}>
-                                            {sess.userAgent.toLowerCase().includes("mobile") ? (
-                                                <Smartphone className="w-5 h-5 text-purple-400" />
-                                            ) : (
-                                                <Laptop className="w-5 h-5 text-blue-400" />
-                                            )}
+                            sessions.map((sess) => {
+                                const ua = sess.userAgent?.toLowerCase() ?? '';
+                                return (
+                                    <div key={sess.id} className="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${ua.includes("mobile") ? "bg-purple-50" : "bg-blue-50"}`}>
+                                                {ua.includes("mobile") ? (
+                                                    <Smartphone className="w-5 h-5 text-purple-400" />
+                                                ) : (
+                                                    <Laptop className="w-5 h-5 text-blue-400" />
+                                                )}
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="font-bold text-flora-dark text-sm">
+                                                    {ua.includes("windows") ? t("security.devices.windows") :
+                                                        ua.includes("mac") ? t("security.devices.mac") :
+                                                            ua.includes("iphone") ? t("security.devices.iphone") :
+                                                                ua.includes("android") ? t("security.devices.android") : t("security.devices.unknown")}
+                                                </p>
+                                                <p className="text-xs text-gray-400 font-medium">
+                                                    {(sess.ipAddress === "::1" || sess.ipAddress === "127.0.0.1" || sess.ipAddress === "0000:0000:0000:0000:0000:0000:0000:0000") ? t("security.devices.localhost") : sess.ipAddress} • {new Date(sess.createdAt).toLocaleDateString()}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="text-left">
-                                            <p className="font-bold text-flora-dark text-sm">
-                                                {sess.userAgent.toLowerCase().includes("windows") ? t("security.devices.windows") :
-                                                    sess.userAgent.toLowerCase().includes("mac") ? t("security.devices.mac") :
-                                                        sess.userAgent.toLowerCase().includes("iphone") ? t("security.devices.iphone") :
-                                                            sess.userAgent.toLowerCase().includes("android") ? t("security.devices.android") : t("security.devices.unknown")}
-                                            </p>
-                                            <p className="text-xs text-gray-400 font-medium">
-                                                {(sess.ipAddress === "::1" || sess.ipAddress === "127.0.0.1" || sess.ipAddress === "0000:0000:0000:0000:0000:0000:0000:0000") ? t("security.devices.localhost") : sess.ipAddress} • {new Date(sess.createdAt).toLocaleDateString()}
-                                            </p>
-                                        </div>
+                                        {sess.isCurrent ? (
+                                            <Badge className="bg-green-100 text-green-600 border-none hover:bg-green-100">{t("security.currentBadge")}</Badge>
+                                        ) : (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => onRevokeSession(sess.id)}
+                                                className="text-red-400 hover:text-red-500 hover:bg-red-50 rounded-xl"
+                                            >
+                                                {t("security.revokeBtn")}
+                                            </Button>
+                                        )}
                                     </div>
-                                    {sess.isCurrent ? (
-                                        <Badge className="bg-green-100 text-green-600 border-none hover:bg-green-100">{t("security.currentBadge")}</Badge>
-                                    ) : (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => onRevokeSession(sess.id)}
-                                            className="text-red-400 hover:text-red-500 hover:bg-red-50 rounded-xl"
-                                        >
-                                            {t("security.revokeBtn")}
-                                        </Button>
-                                    )}
-                                </div>
-                            ))
+                                );
+                            })
                         ) : (
                             <p className="text-gray-400 text-sm text-center">{t("security.noSessions")}</p>
                         )}

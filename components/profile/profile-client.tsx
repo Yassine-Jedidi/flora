@@ -400,7 +400,7 @@ function ProfileContent() {
                     <ProfileHero
                         session={session}
                         onEditProfile={() => {
-                            setProfileName(session.user.name);
+                            setProfileName(session.user.name ?? "");
                             setProfileImage(session.user.image || null);
                             setIsProfileModalOpen(true);
                         }}
@@ -448,7 +448,7 @@ function ProfileContent() {
                             <AccountSection
                                 session={session}
                                 onEditProfile={() => {
-                                    setProfileName(session.user.name);
+                                    setProfileName(session.user.name ?? "");
                                     setProfileImage(session.user.image || null);
                                     setIsProfileModalOpen(true);
                                 }}

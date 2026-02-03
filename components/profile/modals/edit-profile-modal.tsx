@@ -86,15 +86,18 @@ export function EditProfileModal({
                                         toast.info(t("editProfile.uploading"), { duration: 2000 });
                                     }}
                                     onClientUploadComplete={async (res) => {
-                                        if (res && res[0]) {
-                                            // If we have a previous un-saved upload, delete it
-                                            if (profileImage && profileImage !== session?.user?.image) {
-                                                await deleteUploadedFile(profileImage);
-                                            }
+                                        try {
+                                            if (res && res[0]) {
+                                                // If we have a previous un-saved upload, delete it
+                                                if (profileImage && profileImage !== session?.user?.image) {
+                                                    await deleteUploadedFile(profileImage);
+                                                }
 
-                                            setProfileImage(res[0].url);
+                                                setProfileImage(res[0].url);
+                                                toast.success(t("editProfile.uploadSuccess"));
+                                            }
+                                        } finally {
                                             setIsUploadingImage(false);
-                                            toast.success(t("editProfile.uploadSuccess"));
                                         }
                                     }}
                                     onUploadError={(error: Error) => {

@@ -60,7 +60,7 @@ export function PasswordModal({
                                     type="password"
                                     placeholder={t("passwordModal.placeholderCurrent")}
                                     className="rounded-xl md:rounded-2xl border-purple-100 focus:border-purple-300 focus:ring-purple-200 py-4 md:py-7 px-5 font-bold text-base md:text-lg text-flora-dark placeholder:text-purple-200"
-                                    value={passwordForm.currentPassword}
+                                    value={passwordForm.currentPassword ?? ''}
                                     onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
                                 />
                             </div>
