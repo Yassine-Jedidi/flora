@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, ShoppingBasket, Heart } from "lucide-react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 const FavoritesSheet = dynamic(
   () => import("@/components/favorites-sheet").then((m) => m.FavoritesSheet),
@@ -129,6 +130,8 @@ export function Navbar() {
                   />
                 </Link>
 
+                <LanguageSwitcher />
+
                 {/* Mobile Navigation Links */}
                 <div className="flex flex-col gap-4">
                   <Link
@@ -217,15 +220,15 @@ export function Navbar() {
             <Image
               src="/flora sparkle.png"
               alt={t("logoAlt")}
-              width={180}
-              height={80}
-              className="h-10 md:h-14 w-auto object-contain"
+              width={160}
+              height={70}
+              className="h-9 md:h-12 w-auto object-contain"
               priority
             />
           </Link>
 
           {/* Desktop Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-sm mx-4 relative" ref={searchRef}>
+          <div className="hidden md:flex flex-1 max-w-sm mx-2 relative" ref={searchRef}>
             <div className="relative w-full">
               {isSearching ? (
                 <Loader2 className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-pink-300 animate-spin" />
@@ -323,7 +326,7 @@ export function Navbar() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-8 shrink-0">
+          <div className="hidden lg:flex items-center gap-5 shrink-0">
             <Link
               href="/shop"
               className={`text-xs font-bold transition-colors uppercase tracking-widest ${pathname === "/shop"
@@ -409,6 +412,9 @@ export function Navbar() {
 
             <CartDropdown />
             <FavoritesSheet />
+            <div className="hidden sm:block">
+              <LanguageSwitcher variant="dropdown" />
+            </div>
 
             {isSessionPending ? (
               <div className="w-8 h-8 rounded-full bg-pink-50 animate-pulse flex items-center justify-center">
