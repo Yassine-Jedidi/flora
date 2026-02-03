@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag, PlusCircle, ListTodo, Calculator } from "lucide-react";
+import { ShoppingBag, PlusCircle, PackagePlus, ListTodo, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
@@ -24,7 +24,7 @@ export function AdminNav() {
         {
             href: "/admin/product/new-pack",
             label: t("newPack"),
-            icon: PlusCircle,
+            icon: PackagePlus,
         },
         {
             href: "/admin/inventory",

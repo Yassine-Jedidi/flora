@@ -669,17 +669,17 @@
             "success": "Compte supprimé avec succès. Nous sommes désolés de vous voir partir. 🎀"
         },
         "editProfile": {
-            "modalTitle": "Modifier le profil",
-            "modalDesc": "Mettez à jour vos informations personnelles.",
-            "labelPicture": "Photo de profil",
+            "title": "Modifier le profil",
+            "description": "Mettez à jour vos informations personnelles.",
+            "profilePicture": "Photo de profil",
             "uploading": "Téléchargement de l'image...",
             "uploadSuccess": "Image téléchargée ! N'oubliez pas d'enregistrer. 📸",
             "uploadError": "Erreur lors du téléchargement : {message}",
-            "labelName": "Nom complet",
-            "placeholderName": "Votre nom complet",
+            "fullName": "Nom complet",
+            "fullNamePlaceholder": "Votre nom complet",
             "submit": "Enregistrer les modifications",
-            "loading": "Enregistrement...",
-            "uploadButtonText": "Télécharger une image",
+            "saving": "Enregistrement...",
+            "uploadBtn": "Télécharger une image",
             "nameEmpty": "Le nom ne peut pas être vide",
             "success": "Profil mis à jour ! ✨"
         },
@@ -991,7 +991,9 @@
                 "featured": "Visibilité sur la page d'accueil",
                 "live": "Visibilité sur le site web",
                 "contents": "Sélectionnez les produits inclus dans ce pack.",
-                "noProducts": "Ajoutez des produits pour construire ce pack"
+                "noProducts": "Ajoutez des produits pour construire ce pack",
+                "photoLimit": "Max 4Mo par image",
+                "photoSpecs": "Meilleurs résultats avec des images carrées 1080x1080"
             }
         }
     }

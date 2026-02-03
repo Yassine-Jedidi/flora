@@ -669,17 +669,17 @@
             "success": "Account deleted successfully. We're sorry to see you go. 🎀"
         },
         "editProfile": {
-            "modalTitle": "Edit Profile",
-            "modalDesc": "Update your personal information.",
-            "labelPicture": "Profile Picture",
+            "title": "Edit Profile",
+            "description": "Update your personal information.",
+            "profilePicture": "Profile Picture",
             "uploading": "Uploading image...",
             "uploadSuccess": "Image uploaded! Don't forget to save. 📸",
             "uploadError": "Error uploading: {message}",
-            "labelName": "Full Name",
-            "placeholderName": "Your full name",
+            "fullName": "Full Name",
+            "fullNamePlaceholder": "Your full name",
             "submit": "Save Changes",
-            "loading": "Saving...",
-            "uploadButtonText": "Upload Image",
+            "saving": "Saving...",
+            "uploadBtn": "Upload Image",
             "nameEmpty": "Name cannot be empty",
             "success": "Profile updated! ✨"
         },
@@ -991,7 +991,9 @@
                 "featured": "Home page visibility",
                 "live": "Website visibility",
                 "contents": "Select the products included in this bundle.",
-                "noProducts": "Add products to build this pack"
+                "noProducts": "Add products to build this pack",
+                "photoLimit": "Max 4MB per image",
+                "photoSpecs": "Best results with 1080x1080 square images"
             }
         }
     }
