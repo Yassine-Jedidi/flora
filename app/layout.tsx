@@ -52,18 +52,18 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${nunito.variable} font-sans antialiased`}>
+      <body className={`${nunito.variable} font-sans antialiased text-flora-dark`}>
         <MobileDebug />
         <IOSCompatibilityChecker />
-        <CartProvider>
-          <FavoritesProvider>
-            <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <CartProvider>
+            <FavoritesProvider>
               <ScrollToTop />
               {children}
               <Toaster />
-            </NextIntlClientProvider>
-          </FavoritesProvider>
-        </CartProvider>
+            </FavoritesProvider>
+          </CartProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

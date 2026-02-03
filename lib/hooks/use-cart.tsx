@@ -9,6 +9,7 @@ import {
 } from "react";
 import { CartItem } from "@/lib/types";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 const CART_KEY = "flora_cart";
 
@@ -20,12 +21,17 @@ interface CartContextValue {
   clearCart: () => void;
   totalPrice: number;
   totalItems: number;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations("Shop.product");
+  const ct = useTranslations("Cart");
 
   useEffect(() => {
     const stored = localStorage.getItem(CART_KEY);
@@ -62,7 +68,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
         toast.error(`Only ${existing.stock} items available in stock!`);
         return;
       }
-      toast.success("Item quantity updated in cart!");
+      toast.success(t("addedToCart"), {
+        description: product.name,
+        action: {
+          label: ct("checkout"),
+          onClick: () => setIsOpen(true),
+        },
+      });
       setCart((prev) =>
         prev.map((item) =>
           item.id === product.id
@@ -70,6 +82,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             : item
         )
       );
+      setIsOpen(true);
       return;
     }
 
@@ -78,8 +91,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    toast.success("Added to cart!");
+    toast.success(t("addedToCart"), {
+      description: product.name,
+      action: {
+        label: ct("checkout"),
+        onClick: () => setIsOpen(true),
+      },
+    });
     setCart((prev) => [...prev, product]);
+    setIsOpen(true);
   };
 
   const removeItem = (productId: string) => {
@@ -129,6 +149,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalPrice,
         totalItems,
+        isOpen,
+        setIsOpen,
       }}
     >
       {children}
@@ -143,3 +165,4 @@ export function useCart() {
   }
   return context;
 }
+

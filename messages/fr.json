@@ -259,7 +259,7 @@
         "newCollection": "Nouvelle collection bientôt disponible.",
         "checkBack": "Revenez bientôt pour de nouveaux trésors ! ✨",
         "titles": {
-            "all": "Tout voir",
+            "all": "Boutique",
             "rings": "Bagues",
             "bracelets": "Bracelets",
             "necklaces": "Colliers",
@@ -325,7 +325,7 @@
         "emptySubtitle": "Commencez à ajouter des trésors.",
         "total": "Total",
         "checkout": "Passer à la caisse",
-        "secure": "Paiement sûr et sécurisé",
+        "secure": "Vérifiez votre colis 🌸",
         "removed": "Retiré du panier"
     },
     "Favorites": {

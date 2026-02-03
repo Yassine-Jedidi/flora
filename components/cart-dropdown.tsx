@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { ShoppingBag, X, Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,9 +12,8 @@ import { useTranslations } from "next-intl";
 
 export function CartDropdown() {
   const t = useTranslations("Cart");
-  const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { cart, totalItems, totalPrice, updateQuantity, removeItem } = useCart();
+  const { cart, totalItems, totalPrice, updateQuantity, removeItem, isOpen, setIsOpen } = useCart();
 
   const handleRemove = (id: string, name: string) => {
     removeItem(id);
@@ -34,7 +33,7 @@ export function CartDropdown() {
       document.addEventListener("mousedown", handleClickOutside);
     }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
+  }, [isOpen, setIsOpen]);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -67,13 +66,13 @@ export function CartDropdown() {
             </h3>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1 hover:bg-white rounded-full transition-colors text-gray-400"
+              className="p-1 hover:bg-red-50 hover:text-red-500 rounded-full transition-all text-gray-400"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="max-h-[50vh] md:max-h-96 overflow-y-auto p-4 custom-scrollbar">
+          <div className={cart.length > 0 ? "max-h-[320px] md:max-h-[300px] overflow-y-auto p-4 custom-scrollbar" : ""}>
             {cart.length === 0 ? (
               <div className="py-12 flex flex-col items-center justify-center text-center">
                 <div className="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mb-4">
