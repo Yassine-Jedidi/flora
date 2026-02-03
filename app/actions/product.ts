@@ -327,12 +327,12 @@ export async function updateProduct(id: string, values: ProductFormValues) {
 
 export async function deleteProductImage(url: string) {
   try {
+    const t = await getTranslations("Errors");
     const session = await auth.api.getSession({
       headers: await headers(),
     });
 
-    if (!session) return { error: "Unauthorized" };
-
+    if (!session) return { error: t("unauthorized") || "Unauthorized" };
     const fileKey = url.split("/").pop();
     if (!fileKey) return { error: "Invalid URL" };
 
