@@ -81,20 +81,14 @@ export async function createOrder(values: OrderValues) {
     // Send order confirmation email if user is logged in
     if (session?.user?.email) {
       try {
-        // Fetch product names for the email summary
-        const productIds = validatedData.items.map((item) => item.productId);
-        const products = await prisma.product.findMany({
-          where: { id: { in: productIds } },
-          select: { id: true, name: true },
-        });
-
-        // Map product names to order items
-        const emailItems = validatedData.items.map((item) => {
+        // Map verified items for email (using trusted server-side data)
+        const emailItems = finalItems.map((item) => {
+          // Reuse 'products' from the validation step (line 46)
           const product = products.find((p) => p.id === item.productId);
           return {
             name: product?.name || "Product Item",
             quantity: item.quantity,
-            price: item.price,
+            price: item.price.toNumber(),
           };
         });
 
@@ -107,7 +101,7 @@ export async function createOrder(values: OrderValues) {
           orderId: order.id,
           userEmail: session.user.email,
           userName: session.user.name ?? validatedData.fullName,
-          totalPrice: validatedData.totalPrice,
+          totalPrice: recomputedTotalPrice.toNumber(),
           items: emailItems,
           shippingAddress: {
             fullName: validatedData.fullName,
