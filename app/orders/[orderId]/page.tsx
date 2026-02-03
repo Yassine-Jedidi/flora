@@ -23,53 +23,55 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { SHIPPING_COST } from "@/lib/constants/shipping";
-
-const statusConfig = {
-    PENDING: {
-        label: "Pending Receipt",
-        icon: Clock,
-        className: "bg-yellow-50 text-yellow-600 border-yellow-100",
-        description: "We've received your order and we'll call you shortly for confirmation.",
-    },
-    CONFIRMED: {
-        label: "Order Confirmed",
-        icon: CheckCircle2,
-        className: "bg-blue-50 text-blue-600 border-blue-100",
-        description: "Your order has been confirmed and is being prepared with love.",
-    },
-    SHIPPED: {
-        label: "Shipped",
-        icon: Truck,
-        className: "bg-purple-50 text-purple-600 border-purple-100",
-        description: "Your treasures are on the way! They'll be with you shortly.",
-    },
-    DELIVERED: {
-        label: "Delivered",
-        icon: CheckCircle2,
-        className: "bg-green-50 text-green-600 border-green-100",
-        description: "Your package has arrived. We hope you love your new treasures!",
-    },
-    CANCELLED: {
-        label: "Cancelled",
-        icon: XCircle,
-        className: "bg-red-50 text-red-600 border-red-100",
-        description: "This order has been cancelled.",
-    },
-};
-
-const defaultStatusConfig = {
-    label: "Processing",
-    icon: Clock,
-    className: "bg-gray-50 text-gray-600 border-gray-100",
-    description: "We are processing your order.",
-};
-
-const ORDER_STATUS_SEQUENCE = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'] as const;
-const ORDER_STATUS_WITH_CANCELLED = [...ORDER_STATUS_SEQUENCE, 'CANCELLED'] as const;
+import { useTranslations } from "next-intl";
 
 export default function OrderDetailsPage({ params }: { params: Promise<{ orderId: string }> }) {
+    const t = useTranslations("Orders.details");
     const resolvedParams = use(params);
     const orderId = resolvedParams.orderId;
+
+    const statusConfig = {
+        PENDING: {
+            label: t("statusLabel.pending"),
+            icon: Clock,
+            className: "bg-yellow-50 text-yellow-600 border-yellow-100",
+            description: t("statusDesc.pending"),
+        },
+        CONFIRMED: {
+            label: t("statusLabel.confirmed"),
+            icon: CheckCircle2,
+            className: "bg-blue-50 text-blue-600 border-blue-100",
+            description: t("statusDesc.confirmed"),
+        },
+        SHIPPED: {
+            label: t("statusLabel.shipped"),
+            icon: Truck,
+            className: "bg-purple-50 text-purple-600 border-purple-100",
+            description: t("statusDesc.shipped"),
+        },
+        DELIVERED: {
+            label: t("statusLabel.delivered"),
+            icon: CheckCircle2,
+            className: "bg-green-50 text-green-600 border-green-100",
+            description: t("statusDesc.delivered"),
+        },
+        CANCELLED: {
+            label: t("statusLabel.cancelled"),
+            icon: XCircle,
+            className: "bg-red-50 text-red-600 border-red-100",
+            description: t("statusDesc.cancelled"),
+        },
+    };
+
+    const defaultStatusConfig = {
+        label: t("statusLabel.processing"),
+        icon: Clock,
+        className: "bg-gray-50 text-gray-600 border-gray-100",
+        description: t("statusDesc.processing"),
+    };
+
+    const ORDER_STATUS_SEQUENCE = ['PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'] as const;
+    const ORDER_STATUS_WITH_CANCELLED = [...ORDER_STATUS_SEQUENCE, 'CANCELLED'] as const;
 
     const [order, setOrder] = useState<Awaited<ReturnType<typeof getOrderById>>["order"] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -82,12 +84,12 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
             if (result.success && result.order) {
                 setOrder(result.order);
             } else {
-                setError(result.error || "Failed to load order");
+                setError(result.error || t("errorMessage") || "Failed to load order");
             }
             setIsLoading(false);
         };
         fetchOrder();
-    }, [orderId]);
+    }, [orderId, t]);
 
     if (isLoading) {
         return (
@@ -108,11 +110,11 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                 <main className="flex-1 flex items-center justify-center p-4">
                     <div className="max-w-md w-full text-center">
                         <XCircle className="w-16 h-16 text-red-300 mx-auto mb-4" />
-                        <h2 className="text-2xl font-black text-flora-dark mb-2">Order Not Found</h2>
-                        <p className="text-gray-400 font-bold mb-8">{error || "This order could not be retrieved."}</p>
+                        <h2 className="text-2xl font-black text-flora-dark mb-2">{t("notFoundTitle")}</h2>
+                        <p className="text-gray-400 font-bold mb-8">{error || t("notFoundSubtitle")}</p>
                         <Link href="/orders">
                             <Button className="bg-primary hover:bg-[#FF75AA] text-white rounded-full px-8 py-6 font-black transition-all">
-                                Back to My Orders
+                                {t("backToOrders")}
                             </Button>
                         </Link>
                     </div>
@@ -138,19 +140,19 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                             className="inline-flex items-center text-gray-400 hover:text-primary font-bold mb-6 transition-colors group"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
-                            Back to all orders
+                            {t("backToAll")}
                         </Link>
 
                         <div className="flex flex-wrap items-center justify-between gap-4">
                             <div>
                                 <div className="flex items-center gap-2 mb-2">
                                     <h1 className="text-3xl font-black text-flora-dark tracking-tight">
-                                        Order Details
+                                        {t("title")}
                                     </h1>
                                     <Bow className="w-8 h-8 text-primary shrink-0" />
                                 </div>
                                 <p className="text-gray-400 font-bold">
-                                    Order <span className="text-flora-dark">#{order.id.slice(-8).toUpperCase()}</span> • {format(new Date(order.createdAt), "MMMM d, yyyy")}
+                                    {t("orderNo")} <span className="text-flora-dark">#{order.id.slice(-8).toUpperCase()}</span> • {format(new Date(order.createdAt), "MMMM d, yyyy")}
                                 </p>
                             </div>
                             <Badge className={`rounded-full px-4 py-2 flex items-center gap-2 border shadow-sm ${config.className}`}>
@@ -168,7 +170,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                                 <div className={`absolute top-0 right-0 w-24 h-24 blur-3xl opacity-20 -mr-8 -mt-8 rounded-full ${config.className.split(' ')[0]}`} />
                                 <h3 className="text-lg font-black text-flora-dark mb-2 flex items-center gap-2">
                                     <Package className="w-5 h-5 text-primary" />
-                                    Package Status
+                                    {t("packageStatus")}
                                 </h3>
                                 <p className="text-gray-500 font-bold relative z-10">{config.description}</p>
 
@@ -183,7 +185,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                                             <div key={s} className="flex-1 flex flex-col gap-2">
                                                 <div className={`h-1.5 rounded-full transition-all duration-500 ${isCompleted ? 'bg-primary' : 'bg-gray-100'}`} />
                                                 <span className={`text-[9px] font-black uppercase tracking-tighter text-center ${isCompleted ? 'text-primary' : 'text-gray-300'}`}>
-                                                    {s === 'PENDING' ? 'Received' : s.toLowerCase()}
+                                                    {s === 'PENDING' ? t("steps.received") : t(`steps.${s.toLowerCase()}` as any)}
                                                 </span>
                                             </div>
                                         )
@@ -196,7 +198,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                                 <div className="p-8 border-b border-pink-50 bg-gray-50/30">
                                     <h3 className="text-lg font-black text-flora-dark flex items-center gap-2">
                                         <ShoppingBag className="w-5 h-5 text-primary" />
-                                        Ordered Items
+                                        {t("orderedItems")}
                                     </h3>
                                 </div>
                                 <div className="p-4 space-y-4">
@@ -222,7 +224,7 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                                                             {item.product.name}
                                                         </h4>
                                                         <p className="text-sm font-bold text-gray-400 mt-1">
-                                                            Quantity: <span className="text-primary">{item.quantity}</span>
+                                                            {t("quantity")}: <span className="text-primary">{item.quantity}</span>
                                                         </p>
                                                     </div>
                                                     <Price price={item.price * item.quantity} size="sm" color="text-flora-dark font-black" />
@@ -234,17 +236,18 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
 
                                 {/* Order Summary calculation */}
                                 <div className="p-8 bg-gray-50/50 border-t border-pink-50 space-y-3">
+                                    <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">{t("summary")}</h4>
                                     <div className="flex justify-between items-center text-sm font-bold text-gray-500">
-                                        <span>Items Subtotal</span>
+                                        <span>{t("subtotal")}</span>
                                         <span>{(order.totalPrice - SHIPPING_COST).toFixed(3)} TND</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm font-bold text-gray-500">
-                                        <span>Shipping Cost</span>
+                                        <span>{t("shipping")}</span>
                                         <span>{SHIPPING_COST.toFixed(3)} TND</span>
                                     </div>
                                     <div className="h-px bg-pink-100 my-2" />
                                     <div className="flex justify-between items-center">
-                                        <span className="text-lg font-black text-flora-dark">Total Amount</span>
+                                        <span className="text-lg font-black text-flora-dark">{t("total")}</span>
                                         <Price price={order.totalPrice} size="xl" color="text-primary font-black scale-110 origin-right" />
                                     </div>
                                 </div>
@@ -256,22 +259,22 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                             <div className="bg-white rounded-[32px] p-8 border border-pink-50 shadow-sm sticky top-32">
                                 <h3 className="text-lg font-black text-flora-dark mb-6 flex items-center gap-2">
                                     <MapPin className="w-5 h-5 text-primary" />
-                                    Delivery Details
+                                    {t("deliveryDetails")}
                                 </h3>
 
                                 <div className="space-y-8">
                                     <div className="flex flex-col gap-1">
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Full Name</span>
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("fullName")}</span>
                                         <p className="font-black text-flora-dark">{order.fullName}</p>
                                     </div>
 
                                     <div className="flex flex-col gap-1">
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Phone Number</span>
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("phoneNumber")}</span>
                                         <p className="font-bold text-flora-dark">{order.phoneNumber}</p>
                                     </div>
 
                                     <div className="flex flex-col gap-1">
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Shipping Address</span>
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("address")}</span>
                                         <p className="text-sm font-bold text-flora-dark leading-relaxed">
                                             {order.detailedAddress}<br />
                                             {order.city}, {order.governorate}
@@ -284,8 +287,8 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ orderId
                                                 <Truck className="w-5 h-5 text-primary" />
                                             </div>
                                             <div>
-                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Payment Method</p>
-                                                <p className="text-xs font-black text-flora-dark">Cash on Delivery</p>
+                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("paymentMethod")}</p>
+                                                <p className="text-xs font-black text-flora-dark">{t("cod")}</p>
                                             </div>
                                         </div>
                                     </div>

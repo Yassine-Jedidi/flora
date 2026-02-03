@@ -1,19 +1,21 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-
-const categories = [
-    { label: "All", slug: "all" },
-    { label: "Rings", slug: "rings" },
-    { label: "Bracelets", slug: "bracelets" },
-    { label: "Necklaces", slug: "necklaces" },
-    { label: "Earrings", slug: "earrings" },
-];
+import { useTranslations } from "next-intl";
 
 export function CategoryToggle() {
+    const t = useTranslations("Shop");
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentCategory = searchParams.get("category") || "all";
+
+    const categories = [
+        { label: t("filters.all"), slug: "all" },
+        { label: t("titles.rings"), slug: "rings" },
+        { label: t("titles.bracelets"), slug: "bracelets" },
+        { label: t("titles.necklaces"), slug: "necklaces" },
+        { label: t("titles.earrings"), slug: "earrings" },
+    ];
 
     const handleCategory = (category: string) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -30,7 +32,7 @@ export function CategoryToggle() {
             <div className="flex items-center gap-2">
                 <div className="w-1 h-4 bg-primary rounded-full" />
                 <label className="text-xs font-black text-flora-dark uppercase tracking-[0.2em]">
-                    Filter by Category
+                    {t("filters.category")}
                 </label>
             </div>
             <div className="flex flex-wrap gap-2">

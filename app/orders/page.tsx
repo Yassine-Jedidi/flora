@@ -25,44 +25,45 @@ import { format } from "date-fns";
 import { useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/pagination-control";
 import { motion } from "motion/react";
-
-const statusConfig = {
-    PENDING: {
-        label: "Pending",
-        icon: Clock,
-        className: "bg-yellow-50 text-yellow-600 border-yellow-100",
-    },
-    CONFIRMED: {
-        label: "Confirmed",
-        icon: CheckCircle2,
-        className: "bg-blue-50 text-blue-600 border-blue-100",
-    },
-    SHIPPED: {
-        label: "Shipped",
-        icon: Truck,
-        className: "bg-purple-50 text-purple-600 border-purple-100",
-    },
-    DELIVERED: {
-        label: "Delivered",
-        icon: CheckCircle2,
-        className: "bg-green-50 text-green-600 border-green-100",
-    },
-    CANCELLED: {
-        label: "Cancelled",
-        icon: XCircle,
-        className: "bg-red-50 text-red-600 border-red-100",
-    },
-};
-
-// Default fallback for unknown status values
-const defaultStatusConfig = {
-    label: "Unknown",
-    icon: Clock,
-    className: "bg-gray-50 text-gray-600 border-gray-100",
-};
+import { useTranslations } from "next-intl";
 
 function OrdersContent() {
+    const t = useTranslations("Orders");
     const searchParams = useSearchParams();
+
+    const statusConfig = {
+        PENDING: {
+            label: t("status.pending"),
+            icon: Clock,
+            className: "bg-yellow-50 text-yellow-600 border-yellow-100",
+        },
+        CONFIRMED: {
+            label: t("status.confirmed"),
+            icon: CheckCircle2,
+            className: "bg-blue-50 text-blue-600 border-blue-100",
+        },
+        SHIPPED: {
+            label: t("status.shipped"),
+            icon: Truck,
+            className: "bg-purple-50 text-purple-600 border-purple-100",
+        },
+        DELIVERED: {
+            label: t("status.delivered"),
+            icon: CheckCircle2,
+            className: "bg-green-50 text-green-600 border-green-100",
+        },
+        CANCELLED: {
+            label: t("status.cancelled"),
+            icon: XCircle,
+            className: "bg-red-50 text-red-600 border-red-100",
+        },
+    };
+
+    const defaultStatusConfig = {
+        label: t("status.unknown"),
+        icon: Clock,
+        className: "bg-gray-50 text-gray-600 border-gray-100",
+    };
 
     // Safely parse and validate page number
     const pageParam = searchParams.get("page");
@@ -94,19 +95,19 @@ function OrdersContent() {
                     // Handle API error response
                     setOrders([]);
                     setPagination(null);
-                    setError(result.error || "Failed to load orders");
+                    setError(result.error || t("genericError") || "Failed to load orders");
                 }
             } catch (err) {
                 console.error("[FETCH_ORDERS_ERROR]", err);
                 setOrders([]);
                 setPagination(null);
-                setError("An unexpected error occurred. Please try again later.");
+                setError(t("errorMessage") || "An unexpected error occurred. Please try again later.");
             } finally {
                 setIsLoading(false);
             }
         };
         fetchOrders();
-    }, [page]);
+    }, [page, t]);
 
     return (
         <div className="min-h-screen bg-white flex flex-col font-sans">
@@ -121,24 +122,24 @@ function OrdersContent() {
                             className="inline-flex items-center text-gray-400 hover:text-primary font-bold mb-6 md:mb-8 transition-colors group text-sm md:text-base"
                         >
                             <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
-                            Back to shop
+                            {t("backToShop")}
                         </Link>
 
                         <div className="flex flex-wrap items-center gap-3 mb-2">
                             <h1 className="text-3xl md:text-4xl font-black text-flora-dark tracking-tight">
-                                My Orders
+                                {t("title")}
                             </h1>
                             <div className="flex items-center gap-2">
                                 <Bow className="w-6 h-6 md:w-8 md:h-8 text-primary animate-bounce-slow" />
                                 {pagination && (
                                     <Badge variant="secondary" className="rounded-full px-2.5 py-0.5 md:px-3 md:py-1 h-7 md:h-8 text-xs md:text-sm font-black bg-pink-50 text-pink-500 border border-pink-100">
-                                        {pagination.total} Orders
+                                        {t("count", { count: pagination.total })}
                                     </Badge>
                                 )}
                             </div>
                         </div>
                         <p className="text-gray-400 font-bold text-sm md:text-base">
-                            Review and track your Flora treasures.
+                            {t("subtitle")}
                         </p>
                     </div>
 
@@ -153,7 +154,7 @@ function OrdersContent() {
                             <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
                                 <XCircle className="w-8 h-8 md:w-10 md:h-10 text-red-300" />
                             </div>
-                            <h2 className="text-xl md:text-2xl font-black text-flora-dark mb-2">Oops! Something went wrong</h2>
+                            <h2 className="text-xl md:text-2xl font-black text-flora-dark mb-2">{t("errorTitle")}</h2>
                             <p className="text-gray-400 font-bold mb-8 text-sm md:text-base">
                                 {error}
                             </p>
@@ -161,7 +162,7 @@ function OrdersContent() {
                                 onClick={() => window.location.reload()}
                                 className="bg-primary hover:bg-[#FF75AA] text-white rounded-full px-8 py-4 md:px-10 md:py-6 font-black text-base md:text-lg transition-all shadow-lg shadow-pink-100"
                             >
-                                Try Again
+                                {t("tryAgain")}
                             </Button>
                         </div>
                     ) : orders.length === 0 ? (
@@ -169,13 +170,13 @@ function OrdersContent() {
                             <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
                                 <ShoppingBag className="w-8 h-8 md:w-10 md:h-10 text-pink-200" />
                             </div>
-                            <h2 className="text-xl md:text-2xl font-black text-flora-dark mb-2">No treasures yet!</h2>
+                            <h2 className="text-xl md:text-2xl font-black text-flora-dark mb-2">{t("noOrdersTitle")}</h2>
                             <p className="text-gray-400 font-bold mb-8 text-sm md:text-base">
-                                Your shopping bag is waiting for its first gems.
+                                {t("noOrdersSubtitle")}
                             </p>
                             <Link href="/">
                                 <Button className="bg-primary hover:bg-[#FF75AA] text-white rounded-full px-8 py-4 md:px-10 md:py-6 font-black text-base md:text-lg transition-all shadow-lg shadow-pink-100">
-                                    Start Shopping
+                                    {t("startShopping")}
                                 </Button>
                             </Link>
                         </div>
@@ -195,14 +196,14 @@ function OrdersContent() {
                                         <div className="p-5 md:p-8 border-b border-pink-50 flex flex-wrap items-center justify-between gap-4 bg-gray-50/30">
                                             <div className="flex items-center gap-3 md:gap-4">
                                                 <div className="flex flex-col">
-                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Order ID</span>
+                                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("orderId")}</span>
                                                     <Link href={`/orders/${order.id}`} className="font-black text-flora-dark hover:text-primary transition-colors hover:underline decoration-wavy underline-offset-4">
                                                         #{order.id.slice(-8).toUpperCase()}
                                                     </Link>
                                                 </div>
                                                 <div className="w-px h-6 md:h-8 bg-pink-100" />
                                                 <div className="flex flex-col">
-                                                    <span className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</span>
+                                                    <span className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("date")}</span>
                                                     <div className="flex items-center gap-1.5 font-bold text-flora-dark text-sm md:text-base">
                                                         <Calendar className="w-3 md:w-3.5 h-3 md:h-3.5 text-pink-300" />
                                                         {format(new Date(order.createdAt), "MMM d, yyyy")}
@@ -250,7 +251,7 @@ function OrdersContent() {
                                                                 <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start">
                                                                     <Price price={item.price * item.quantity} size="sm" color="text-flora-dark" />
                                                                     <div className="flex items-center text-[10px] font-black text-primary gap-1 mt-2 lg:opacity-0 lg:group-hover/item:opacity-100 transition-all">
-                                                                        <span className="hidden sm:inline">View Treasure</span>
+                                                                        <span className="hidden sm:inline">{t("viewTreasure")}</span>
                                                                         <ChevronRight className="w-3 h-3" />
                                                                     </div>
                                                                 </div>
@@ -266,13 +267,13 @@ function OrdersContent() {
                                                         <Truck className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
                                                     </div>
                                                     <div>
-                                                        <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Shipping to</p>
+                                                        <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("shippingTo")}</p>
                                                         <p className="text-xs md:text-sm font-bold text-flora-dark">{order.city}, {order.governorate}</p>
                                                     </div>
                                                 </div>
 
                                                 <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start">
-                                                    <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest sm:mb-1">Total amount</p>
+                                                    <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest sm:mb-1">{t("totalAmount")}</p>
                                                     <Price price={order.totalPrice} size="md" color="text-flora-purple font-black" />
                                                 </div>
                                             </div>
@@ -287,7 +288,7 @@ function OrdersContent() {
                                                     >
                                                         <Button asChild variant="outline" className="text-flora-dark border-pink-100 bg-white hover:bg-pink-50 hover:text-flora-dark hover:border-pink-200 rounded-full font-bold text-xs h-10 px-6 transition-all shadow-sm">
                                                             <span>
-                                                                View Full Details
+                                                                {t("viewDetails")}
                                                                 <motion.span
                                                                     className="inline-flex ml-1"
                                                                     variants={{
@@ -341,3 +342,4 @@ export default function OrdersPage() {
         </Suspense>
     );
 }
+

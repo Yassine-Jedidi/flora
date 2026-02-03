@@ -8,15 +8,17 @@ import { useCart } from "@/lib/hooks/use-cart";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Price } from "@/components/shop/price";
+import { useTranslations } from "next-intl";
 
 export function CartDropdown() {
+  const t = useTranslations("Cart");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { cart, totalItems, totalPrice, updateQuantity, removeItem } = useCart();
 
   const handleRemove = (id: string, name: string) => {
     removeItem(id);
-    toast.info("Removed from cart", {
+    toast.info(t("removed"), {
       description: name,
     });
   };
@@ -61,7 +63,7 @@ export function CartDropdown() {
           <div className="p-6 bg-pink-50/30 border-b border-pink-100 flex items-center justify-between">
             <h3 className="font-black text-flora-dark text-xl flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-primary" />
-              My Treasures
+              {t("title")}
             </h3>
             <button
               onClick={() => setIsOpen(false)}
@@ -77,8 +79,8 @@ export function CartDropdown() {
                 <div className="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center mb-4">
                   <ShoppingBag className="w-8 h-8 text-pink-200" />
                 </div>
-                <p className="text-gray-400 font-bold">Your box is empty!</p>
-                <p className="text-xs text-gray-400 mt-1">Start adding some sparkles.</p>
+                <p className="text-gray-400 font-bold">{t("empty")}</p>
+                <p className="text-xs text-gray-400 mt-1">{t("emptySubtitle")}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -156,7 +158,7 @@ export function CartDropdown() {
           {cart.length > 0 && (
             <div className="p-6 bg-white border-t border-pink-50 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-400 font-bold">Total</span>
+                <span className="text-gray-400 font-bold">{t("total")}</span>
                 <Price price={totalPrice} size="lg" />
               </div>
 
@@ -166,12 +168,12 @@ export function CartDropdown() {
                 onClick={() => setIsOpen(false)}
               >
                 <Button className="w-full bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-full font-black py-6 shadow-lg shadow-purple-100 transition-all hover:scale-[1.02]">
-                  Check Out Now
+                  {t("checkout")}
                 </Button>
               </Link>
 
               <p className="text-[10px] text-center text-gray-400 font-bold uppercase tracking-widest">
-                Safe & Secure Checkout
+                {t("secure")}
               </p>
             </div>
           )}

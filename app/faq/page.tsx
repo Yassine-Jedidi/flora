@@ -11,66 +11,70 @@ import {
     Instagram,
 } from "lucide-react";
 import { Metadata } from "next";
+import { useTranslations } from "next-intl";
 
 export const metadata: Metadata = {
     title: "Frequently Asked Questions | Flora Accessories",
     description: "Find answers to common questions about ordering, delivery, and products at Flora Accessories Tunisia.",
 };
 
-const faqCategories = [
-    {
-        icon: <ShoppingBag className="w-5 h-5" />,
-        name: "Orders & Products",
-        questions: [
-            {
-                q: "How do I place an order?",
-                a: "Simply browse our collection, add your favorite treasures to the cart, and proceed to checkout. You don't need an account to shop with us!"
-            },
-            {
-                q: "Are the accessories durable?",
-                a: "Yes! We carefully select our materials to ensure they sparkle for a long time. However, like all jewelry, we recommend keeping them away from water and perfume to maintain their shine."
-            },
-            {
-                q: "What if an item I want is out of stock?",
-                a: "Our treasures go fast! You can follow us on Instagram @flora_.access for restock announcements or contact us to inquire about a specific item."
-            }
-        ]
-    },
-    {
-        icon: <Truck className="w-5 h-5" />,
-        name: "Shipping & Delivery",
-        questions: [
-            {
-                q: "How much does shipping cost?",
-                a: "We offer a flat rate of 7.00 DT for deliveries all across Tunisia."
-            },
-            {
-                q: "How long will it take to get my order?",
-                a: "For Greater Tunis, it usually takes 24-48 hours. For other regions, expect your delivery within 2-4 business days."
-            },
-            {
-                q: "Can I open the package before paying?",
-                a: "Absolutely! We want you to be 100% happy with your purchase. You can inspect your items in front of the courier before finalizing the Cash on Delivery payment."
-            }
-        ]
-    },
-    {
-        icon: <CreditCard className="w-5 h-5" />,
-        name: "Payments",
-        questions: [
-            {
-                q: "How can I pay?",
-                a: "Currently, we offer 'Cash on Delivery' (Paiement à la livraison). You pay the courier in cash when your package arrives at your doorstep."
-            },
-            {
-                q: "Do you accept bank transfers?",
-                a: "At the moment, we prioritize cash on delivery for its simplicity and security for our customers. Contact us if you have special requirements."
-            }
-        ]
-    }
-];
 
 export default function FAQPage() {
+    const t = useTranslations("FAQ");
+
+    const faqCategories = [
+        {
+            icon: <ShoppingBag className="w-5 h-5" />,
+            name: t("categories.orders"),
+            questions: [
+                {
+                    q: t("questions.orderPlacementQ"),
+                    a: t("questions.orderPlacementA")
+                },
+                {
+                    q: t("questions.durabilityQ"),
+                    a: t("questions.durabilityA")
+                },
+                {
+                    q: t("questions.stockQ"),
+                    a: t("questions.stockA")
+                }
+            ]
+        },
+        {
+            icon: <Truck className="w-5 h-5" />,
+            name: t("categories.shipping"),
+            questions: [
+                {
+                    q: t("questions.shippingCostQ"),
+                    a: t("questions.shippingCostA")
+                },
+                {
+                    q: t("questions.deliveryTimeQ"),
+                    a: t("questions.deliveryTimeA")
+                },
+                {
+                    q: t("questions.openPackageQ"),
+                    a: t("questions.openPackageA")
+                }
+            ]
+        },
+        {
+            icon: <CreditCard className="w-5 h-5" />,
+            name: t("categories.payments"),
+            questions: [
+                {
+                    q: t("questions.paymentMethodsQ"),
+                    a: t("questions.paymentMethodsA")
+                },
+                {
+                    q: t("questions.bankTransferQ"),
+                    a: t("questions.bankTransferA")
+                }
+            ]
+        }
+    ];
+
     return (
         <div className="min-h-screen bg-white flex flex-col font-sans">
             <Navbar />
@@ -84,10 +88,12 @@ export default function FAQPage() {
                             <HelpCircle className="w-5 h-5 md:w-6 md:h-6 text-flora-purple" />
                         </div>
                         <h1 className="text-3xl md:text-5xl font-black mb-3 md:mb-4 px-2">
-                            How can we <span className="text-primary">help you?</span>
+                            {t.rich("title", {
+                                span: (chunks) => <span className="text-primary">{chunks}</span>
+                            })}
                         </h1>
                         <p className="text-sm md:text-lg text-gray-500 font-bold max-w-lg mx-auto leading-relaxed px-4">
-                            Find answers to the most common questions about the Flora experience.
+                            {t("subtitle")}
                         </p>
                     </div>
 
@@ -133,9 +139,11 @@ export default function FAQPage() {
                             <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-4 md:mb-6">
                                 <MessageSquare className="w-6 h-6 md:w-8 md:h-8 text-flora-purple" />
                             </div>
-                            <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4 tracking-tight">Still have questions?</h2>
+                            <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4 tracking-tight">
+                                {t("footerTitle")}
+                            </h2>
                             <p className="text-sm md:text-gray-500 font-bold mb-6 md:mb-8 max-w-sm mx-auto">
-                                Can&apos;t find what you&apos;re looking for? Our team is always ready to help you find your perfect match.
+                                {t("footerSubtitle")}
                             </p>
                             <div className="flex items-center justify-center">
                                 <a
@@ -145,7 +153,7 @@ export default function FAQPage() {
                                     className="w-full sm:w-auto bg-flora-purple text-white px-8 md:px-10 py-3.5 md:py-4 rounded-full font-black text-xs md:text-sm shadow-lg shadow-purple-100 hover:bg-[#8B5CF6] transition-all hover:scale-105 flex items-center justify-center gap-2"
                                 >
                                     <Instagram className="w-4 h-4 md:w-5 md:h-5" />
-                                    Message us on Instagram
+                                    {t("footerButton")}
                                 </a>
                             </div>
                         </div>
@@ -154,13 +162,13 @@ export default function FAQPage() {
                     {/* Trust Badges */}
                     <div className="mt-16 md:mt-24 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 grayscale opacity-50">
                         <div className="flex items-center gap-2 font-black text-[10px] md:text-xs uppercase tracking-widest text-flora-dark">
-                            <ShieldCheck className="w-4 h-4" /> Quality Assured
+                            <ShieldCheck className="w-4 h-4" /> {t("trustQuality")}
                         </div>
                         <div className="flex items-center gap-2 font-black text-[10px] md:text-xs uppercase tracking-widest text-flora-dark">
-                            <Truck className="w-4 h-4" /> Nationwide Delivery
+                            <Truck className="w-4 h-4" /> {t("trustDelivery")}
                         </div>
                         <div className="flex items-center gap-2 font-black text-[10px] md:text-xs uppercase tracking-widest text-flora-dark">
-                            <Heart className="w-4 h-4" /> Made with Love
+                            <Heart className="w-4 h-4" /> {t("trustLove")}
                         </div>
                     </div>
                 </div>

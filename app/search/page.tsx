@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/shop/product-card";
 import { CollectionHeader } from "@/components/shop/collection-header";
 import { Bow } from "@/components/icons/bow";
 import { Search } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 export default async function SearchPage({
     searchParams
@@ -13,6 +14,7 @@ export default async function SearchPage({
 }) {
     const { q: query } = await searchParams;
     const searchResult = query ? await searchProducts(query, 40) : { success: true as const, data: [] };
+    const t = await getTranslations("Search");
 
     // Explicitly handle results to satisfy TypeScript
     const products = (searchResult.success ? (searchResult as any).data : []) || [];
@@ -24,8 +26,8 @@ export default async function SearchPage({
 
             <main className="flex-1 pt-32">
                 <CollectionHeader
-                    title={query ? `Results for "${query}"` : "Search"}
-                    subtitle={query ? `We found ${products.length} treasures matching your search` : "Find your next signature piece"}
+                    title={query ? t("resultsFor", { query }) : t("title")}
+                    subtitle={query ? t("foundCount", { count: products.length }) : t("subtitleDefault")}
                     showCollectionWord={false}
                 />
 
@@ -36,12 +38,12 @@ export default async function SearchPage({
                             <div className="flex items-center gap-2">
                                 <div className="w-1 h-4 bg-primary rounded-full" />
                                 <label className="text-sm font-black text-flora-dark uppercase tracking-[0.2em] flex items-center gap-2">
-                                    Search Gallery <Bow className="w-4 h-4 text-primary" />
+                                    {t("gallery")} <Bow className="w-4 h-4 text-primary" />
                                 </label>
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 <div className="bg-white border border-pink-100 text-primary px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
-                                    {products.length} {products.length === 1 ? 'Treasure' : 'Treasures'} Found
+                                    {t("foundSimple", { count: products.length })}
                                 </div>
                             </div>
                         </div>
@@ -56,9 +58,9 @@ export default async function SearchPage({
                                 <Search className="w-10 h-10 text-primary" />
                             </div>
                             <p className="text-xl font-black text-flora-dark mb-2 text-center">
-                                What are you looking for?
+                                {t("lookingFor")}
                             </p>
-                            <p className="text-[#B08B9B] font-medium text-center">Enter a keyword to start searching for treasures. ✨</p>
+                            <p className="text-[#B08B9B] font-medium text-center">{t("enterKeyword")}</p>
                         </div>
                     ) : searchError ? (
                         <div className="flex flex-col items-center justify-center py-40">
@@ -68,7 +70,7 @@ export default async function SearchPage({
                             <p className="text-xl font-black text-flora-dark mb-2 text-center">
                                 {searchError}
                             </p>
-                            <p className="text-[#B08B9B] font-medium text-center tracking-tight">Try again later or search for something else! ⏳</p>
+                            <p className="text-[#B08B9B] font-medium text-center tracking-tight">{t("tryAgain")}</p>
                         </div>
                     ) : products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-40">
@@ -76,9 +78,9 @@ export default async function SearchPage({
                                 <Search className="w-10 h-10 text-primary" />
                             </div>
                             <p className="text-xl font-black text-flora-dark mb-2 text-center">
-                                No treasures found for &quot;{query}&quot;
+                                {t("noResults", { query })}
                             </p>
-                            <p className="text-[#B08B9B] font-medium text-center">Try a different keyword or explore our treasures! ✨</p>
+                            <p className="text-[#B08B9B] font-medium text-center">{t("tryDifferent")}</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">

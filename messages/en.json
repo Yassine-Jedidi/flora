@@ -1,7 +1,17 @@
 {
     "HomePage": {
         "title": "Flora Access",
-        "subtitle": "Timeless elegance for every occasion"
+        "subtitle": "Timeless elegance for every occasion",
+        "sparkleTitle": "Sparkle Every Day",
+        "sparkleSubtitle": "Discover the cutest accessories to brighten up your daily look.",
+        "shopNewArrivals": "Shop New Arrivals",
+        "exploreStyles": "Explore Styles",
+        "exploreAll": "Explore All Collections",
+        "stylesSubtitle": "Find your next signature piece among our most-loved categories.",
+        "collection": "Collection",
+        "trendingNow": "Trending Now",
+        "featuredTreasures": "Featured Treasures",
+        "featuredSubtitle": "Discover our most loved pieces, handpicked just for you."
     },
     "Navigation": {
         "home": "Home",
@@ -75,5 +85,253 @@
         "orderError": "Failed to place order.",
         "validationErrorTitle": "Please check your shipping details",
         "validationErrorDescription": "Some fields are invalid."
+    },
+    "Footer": {
+        "tagline": "Elevating everyday moments with exquisite adornments.",
+        "shop": "Shop",
+        "help": "Help",
+        "shipping": "Shipping",
+        "faq": "FAQ",
+        "contactUs": "Contact Us",
+        "copyright": "© {year} Flora Accessories. Designed with"
+    },
+    "Shop": {
+        "galleryTitle": "The Flora Gallery",
+        "treasuresCount": "{count} Treasures",
+        "noResults": "No {category} found",
+        "newCollection": "New collection arriving soon.",
+        "checkBack": "Check back soon for new treasures! ✨",
+        "titles": {
+            "all": "Shop All",
+            "rings": "Rings",
+            "bracelets": "Bracelets",
+            "necklaces": "Necklaces",
+            "earrings": "Earrings",
+            "packs": "Packs",
+            "sale": "Sale"
+        },
+        "subtitles": {
+            "all": "Explore our entire collection of exquisite adornments",
+            "rings": "Adorn your fingers with a touch of magic and sparkle",
+            "bracelets": "Wrap your wrists in elegance and charm",
+            "necklaces": "Frame your beauty with our delicate chains",
+            "earrings": "Let your ears sparkle with every move",
+            "packs": "Curated sets for every occasion",
+            "sale": "Grab your favorite treasures at a special price"
+        },
+        "badges": {
+            "new": "NEW",
+            "bestseller": "BESTSELLER"
+        },
+        "filters": {
+            "category": "Filter by Category",
+            "sort": "Sort Selection",
+            "all": "All"
+        },
+        "sort": {
+            "popular": "Popular",
+            "newest": "Newest",
+            "priceAsc": "Price: Low to High",
+            "priceDesc": "Price: High to Low"
+        },
+        "pagination": {
+            "viewing": "Viewing page {current} of {total}"
+        },
+        "collection": {
+            "exclusive": "Exclusive Treasures",
+            "limited": "Limited Time Sparkle",
+            "collection": "Collection"
+        },
+        "product": {
+            "backTo": "Back to {category}",
+            "limitedOffer": "Limited Time Offer",
+            "endingIn": "Ending in:",
+            "includes": "This Pack Includes:",
+            "qty": "Qty:",
+            "quantity": "Quantity",
+            "addToCart": "Add to Cart ✨",
+            "addedToCart": "Added to cart",
+            "addToFavorites": "Add to favorites",
+            "qualityGuaranteed": "Quality Guaranteed",
+            "premiumMaterials": "Premium Materials",
+            "fastDelivery": "Fast Delivery",
+            "deliveryTunisia": "Delivery across Tunisia"
+        },
+        "related": {
+            "title": "You might also love",
+            "subtitle": "Discover more handpicked treasures from our collection"
+        }
+    },
+    "Cart": {
+        "title": "My Treasures",
+        "empty": "Your box is empty!",
+        "emptySubtitle": "Start adding some sparkles.",
+        "total": "Total",
+        "checkout": "Check Out Now",
+        "secure": "Safe & Secure Checkout",
+        "removed": "Removed from cart"
+    },
+    "Favorites": {
+        "title": "Your Favorites",
+        "empty": "No favorite items yet. Start adding treasures!",
+        "countSaved": "{count, plural, =0 {No items saved} =1 {1 item saved} other {# items saved}}",
+        "noFavorites": "No favorites yet",
+        "howToSave": "Click the heart icon on products to save them",
+        "viewAll": "View All Favorites →",
+        "removed": "Removed from favorites",
+        "removeTooltip": "Remove from favorites",
+        "backToShop": "Back to Shop",
+        "pageTitle": "Your <span>Treasures</span>",
+        "pageSubtitle": "Your jewelry box is waiting to be filled with sparkles.",
+        "pageSubtitleCount": "You've saved {count} {count, plural, =1 {piece} other {pieces}} that caught your eye.",
+        "emptyTitle": "Your box is empty!",
+        "emptyDescription": "Find pieces you love and tap the heart to save them here. They'll be waiting for you!",
+        "startExploring": "Start Exploring"
+    },
+    "Search": {
+        "title": "Search",
+        "resultsFor": "Results for \"{query}\"",
+        "foundCount": "We found {count} {count, plural, =1 {treasure} other {treasures}} matching your search",
+        "foundSimple": "{count} {count, plural, =1 {Treasure} other {Treasures}} Found",
+        "gallery": "Search Gallery",
+        "lookingFor": "What are you looking for?",
+        "enterKeyword": "Enter a keyword to start searching for treasures. ✨",
+        "tryAgain": "Try again later or search for something else! ⏳",
+        "noResults": "No treasures found for \"{query}\"",
+        "tryDifferent": "Try a different keyword or explore our treasures! ✨",
+        "subtitleDefault": "Find your next signature piece"
+    },
+    "Shipping": {
+        "title": "Shipping & <span>Delivery</span>",
+        "subtitle": "We strive to deliver your Flora treasures as quickly and safely as possible. Here is everything you need to know about our shipping process in Tunisia.",
+        "flatRateTitle": "Flat Rate Shipping",
+        "flatRateDesc": "We offer a flat shipping rate for all orders.",
+        "fastDeliveryTitle": "Fast Delivery",
+        "fastDeliveryDesc": "Greater Tunis: 24-48h. Other regions (Sousse, Sfax, Gabes, etc.): 2-4 business days.",
+        "codTitle": "Cash on Delivery",
+        "codDesc": "Paiement à la livraison. Pay conveniently in cash when your package arrives door-to-door.",
+        "coverageTitle": "Nationwide Coverage",
+        "coverageDesc": "We deliver to all 24 governorates of Tunisia, from Bizerte to Tataouine.",
+        "processTitle": "Delivery Process",
+        "processDesc": "We follow a streamlined process to ensure your order reach you in perfect condition.",
+        "step1Title": "Order Confirmation",
+        "step1Desc": "Once you place your order, we'll send you a confirmation message. Our team might call you to verify the delivery address.",
+        "step2Title": "Processing & Packaging",
+        "step2Desc": "Our team carefully picks and packs your accessories in our signature protective packaging within 1 business day.",
+        "step3Title": "Handover to Carrier",
+        "step3Desc": "Your package is handed over to our trusted delivery partners for the journey.",
+        "step4Title": "Delivery to Your Door",
+        "step4Desc": "The courier will contact you via phone before arrival to ensure you're available to receive your Flora treasure.",
+        "commonQuestions": "Common Questions",
+        "q1": "Can I open the package before paying?",
+        "a1": "Of course! At Flora, we want you to be 100% happy. You can check your items in front of the courier before finalizing the payment.",
+        "q2": "Do you ship to remote areas?",
+        "a2": "Yes, we reach everywhere in Tunisia! Whether you're in Djerba, Nefta, or Tabarka, we'll get your treasure to you.",
+        "needMoreHelp": "Need more help?",
+        "supportWhatsApp": "Support via WhatsApp",
+        "contact": "Contact",
+        "trustTitle": "Quality & Trust Guaranteed",
+        "trustDesc": "Every shipment is handled with the utmost care. We use premium floral-inspired packaging to ensure your accessories arrive in pristine condition, ready to sparkle."
+    },
+    "FAQ": {
+        "title": "How can we <span>help you?</span>",
+        "subtitle": "Find answers to the most common questions about the Flora experience.",
+        "categories": {
+            "orders": "Orders & Products",
+            "shipping": "Shipping & Delivery",
+            "payments": "Payments"
+        },
+        "questions": {
+            "orderPlacementQ": "How do I place an order?",
+            "orderPlacementA": "Simply browse our collection, add your favorite treasures to the cart, and proceed to checkout. You don't need an account to shop with us!",
+            "durabilityQ": "Are the accessories durable?",
+            "durabilityA": "Yes! We carefully select our materials to ensure they sparkle for a long time. However, like all jewelry, we recommend keeping them away from water and perfume to maintain their shine.",
+            "stockQ": "What if an item I want is out of stock?",
+            "stockA": "Our treasures go fast! You can follow us on Instagram @flora_.access for restock announcements or contact us to inquire about a specific item.",
+            "shippingCostQ": "How much does shipping cost?",
+            "shippingCostA": "We offer a flat rate of 7.00 DT for deliveries all across Tunisia.",
+            "deliveryTimeQ": "How long will it take to get my order?",
+            "deliveryTimeA": "For Greater Tunis, it usually takes 24-48 hours. For other regions, expect your delivery within 2-4 business days.",
+            "openPackageQ": "Can I open the package before paying?",
+            "openPackageA": "Absolutely! We want you to be 100% happy with your purchase. You can inspect your items in front of the courier before finalizing the Cash on Delivery payment.",
+            "paymentMethodsQ": "How can I pay?",
+            "paymentMethodsA": "Currently, we offer 'Cash on Delivery' (Paiement à la livraison). You pay the courier in cash when your package arrives at your doorstep.",
+            "bankTransferQ": "Do you accept bank transfers?",
+            "bankTransferA": "At the moment, we prioritize cash on delivery for its simplicity and security for our customers. Contact us if you have special requirements."
+        },
+        "footerTitle": "Still have questions?",
+        "footerSubtitle": "Can't find what you're looking for? Our team is always ready to help you find your perfect match.",
+        "footerButton": "Message us on Instagram",
+        "trustQuality": "Quality Assured",
+        "trustDelivery": "Nationwide Delivery",
+        "trustLove": "Made with Love"
+    },
+    "Orders": {
+        "title": "My Orders",
+        "subtitle": "Review and track your Flora treasures.",
+        "count": "{count, plural, =1 {1 Order} other {# Orders}}",
+        "backToShop": "Back to shop",
+        "orderId": "Order ID",
+        "date": "Date",
+        "status": {
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "shipped": "Shipped",
+            "delivered": "Delivered",
+            "cancelled": "Cancelled",
+            "unknown": "Unknown"
+        },
+        "shippingTo": "Shipping to",
+        "totalAmount": "Total amount",
+        "viewTreasure": "View Treasure",
+        "viewDetails": "View Full Details",
+        "noOrdersTitle": "No treasures yet!",
+        "noOrdersSubtitle": "Your shopping bag is waiting for its first gems.",
+        "startShopping": "Start Shopping",
+        "errorTitle": "Oops! Something went wrong",
+        "tryAgain": "Try Again",
+        "details": {
+            "title": "Order Details",
+            "orderNo": "Order",
+            "backToAll": "Back to all orders",
+            "packageStatus": "Package Status",
+            "orderedItems": "Ordered Items",
+            "quantity": "Quantity",
+            "summary": "Order Summary",
+            "subtotal": "Items Subtotal",
+            "shipping": "Shipping Cost",
+            "total": "Total Amount",
+            "deliveryDetails": "Delivery Details",
+            "fullName": "Full Name",
+            "phoneNumber": "Phone Number",
+            "address": "Shipping Address",
+            "paymentMethod": "Payment Method",
+            "cod": "Cash on Delivery",
+            "notFoundTitle": "Order Not Found",
+            "notFoundSubtitle": "This order could not be retrieved.",
+            "backToOrders": "Back to My Orders",
+            "statusLabel": {
+                "pending": "Pending Receipt",
+                "confirmed": "Order Confirmed",
+                "shipped": "Shipped",
+                "delivered": "Delivered",
+                "cancelled": "Cancelled",
+                "processing": "Processing"
+            },
+            "statusDesc": {
+                "pending": "We've received your order and we'll call you shortly for confirmation.",
+                "confirmed": "Your order has been confirmed and is being prepared with love.",
+                "shipped": "Your treasures are on the way! They'll be with you shortly.",
+                "delivered": "Your package has arrived. We hope you love your new treasures!",
+                "cancelled": "This order has been cancelled.",
+                "processing": "We are processing your order."
+            },
+            "steps": {
+                "received": "Received",
+                "confirmed": "Confirmed",
+                "shipped": "Shipped",
+                "delivered": "Delivered"
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 interface PaginationControlProps {
     total: number;
@@ -17,6 +18,7 @@ export function PaginationControl({
     currentPage,
     showSinglePage = false,
 }: PaginationControlProps) {
+    const t = useTranslations("Shop");
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -99,7 +101,7 @@ export function PaginationControl({
             </div>
 
             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                Viewing page {currentPage} of {totalPages}
+                {t("pagination.viewing", { current: currentPage, total: totalPages })}
             </p>
         </div>
     );

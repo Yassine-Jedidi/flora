@@ -1,4 +1,5 @@
 import { getProductsByCategory, getSaleProducts } from "@/app/actions/get-products";
+import { getTranslations } from "next-intl/server";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/shop/product-card";
@@ -31,6 +32,8 @@ export async function CategoryPage({
         ? await getSaleProducts(sort || "popular", category, currentPage)
         : await getProductsByCategory(categorySlug, sort || "popular", filterCategory, currentPage);
 
+    const t = await getTranslations("Shop");
+
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <Navbar />
@@ -45,12 +48,12 @@ export async function CategoryPage({
                             <div className="flex items-center gap-2">
                                 <div className="w-1 h-4 bg-primary rounded-full" />
                                 <label className="text-sm font-black text-flora-dark uppercase tracking-[0.2em] flex items-center gap-2">
-                                    The Flora Gallery <Bow className="w-4 h-4 text-primary" />
+                                    {t("galleryTitle")} <Bow className="w-4 h-4 text-primary" />
                                 </label>
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 <div className="bg-white border border-pink-100 text-primary px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm">
-                                    {total} Treasures
+                                    {t("treasuresCount", { count: total })}
                                 </div>
                             </div>
                         </div>
@@ -68,10 +71,10 @@ export async function CategoryPage({
                         <div className="flex flex-col items-center justify-center py-40">
                             <p className="text-xl font-black text-flora-dark mb-2 text-center">
                                 {category && category !== "all"
-                                    ? `No ${category} found`
-                                    : "New collection arriving soon."}
+                                    ? t("noResults", { category: t(`titles.${category}`) })
+                                    : t("newCollection")}
                             </p>
-                            <p className="text-gray-400 font-medium text-center">Check back soon for new treasures! ✨</p>
+                            <p className="text-gray-400 font-medium text-center">{t("checkBack")}</p>
                         </div>
                     ) : (
                         <>

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Metadata } from "next";
 import { Price } from "@/components/shop/price";
+import { useTranslations } from "next-intl";
 
 export const metadata: Metadata = {
     title: "Shipping & Delivery | Flora Accessories",
@@ -23,13 +24,15 @@ export const metadata: Metadata = {
 };
 
 export default function ShippingPage() {
+    const t = useTranslations("Shipping");
+
     const deliveryFeatures = [
         {
             icon: <Truck className="w-8 h-8 text-primary" />,
-            title: "Flat Rate Shipping",
+            title: t("flatRateTitle"),
             description: (
                 <div className="flex flex-col gap-1">
-                    <span>We offer a flat shipping rate for all orders.</span>
+                    <span>{t("flatRateDesc")}</span>
                     <Price price={7.00} size="sm" className="mt-1" />
                 </div>
             ),
@@ -37,43 +40,43 @@ export default function ShippingPage() {
         },
         {
             icon: <Clock className="w-8 h-8 text-flora-purple" />,
-            title: "Fast Delivery",
-            description: "Greater Tunis: 24-48h. Other regions (Sousse, Sfax, Gabes, etc.): 2-4 business days.",
+            title: t("fastDeliveryTitle"),
+            description: t("fastDeliveryDesc"),
             bg: "bg-purple-50"
         },
         {
             icon: <CreditCard className="w-8 h-8 text-blue-400" />,
-            title: "Cash on Delivery",
-            description: "Paiement à la livraison. Pay conveniently in cash when your package arrives door-to-door.",
+            title: t("codTitle"),
+            description: t("codDesc"),
             bg: "bg-blue-50"
         },
         {
             icon: <MapPin className="w-8 h-8 text-green-400" />,
-            title: "Nationwide Coverage",
-            description: "We deliver to all 24 governorates of Tunisia, from Bizerte to Tataouine.",
+            title: t("coverageTitle"),
+            description: t("coverageDesc"),
             bg: "bg-green-50"
         }
     ];
 
     const steps = [
         {
-            title: "Order Confirmation",
-            description: "Once you place your order, we'll send you a confirmation message. Our team might call you to verify the delivery address.",
+            title: t("step1Title"),
+            description: t("step1Desc"),
             icon: <CheckCircle2 className="w-5 h-5" />
         },
         {
-            title: "Processing & Packaging",
-            description: "Our team carefully picks and packs your accessories in our signature protective packaging within 1 business day.",
+            title: t("step2Title"),
+            description: t("step2Desc"),
             icon: <Package className="w-5 h-5" />
         },
         {
-            title: "Handover to Carrier",
-            description: "Your package is handed over to our trusted delivery partners for the journey.",
+            title: t("step3Title"),
+            description: t("step3Desc"),
             icon: <Truck className="w-5 h-5" />
         },
         {
-            title: "Delivery to Your Door",
-            description: "The courier will contact you via phone before arrival to ensure you're available to receive your Flora treasure.",
+            title: t("step4Title"),
+            description: t("step4Desc"),
             icon: <MapPin className="w-5 h-5" />
         }
     ];
@@ -91,11 +94,12 @@ export default function ShippingPage() {
                             <Truck className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                         </div>
                         <h1 className="text-3xl md:text-6xl font-black tracking-tight mb-4 md:mb-6">
-                            Shipping & <span className="text-primary">Delivery</span>
+                            {t.rich("title", {
+                                span: (chunks) => <span className="text-primary">{chunks}</span>
+                            })}
                         </h1>
                         <p className="text-base md:text-lg text-gray-500 font-medium leading-relaxed px-4">
-                            We strive to deliver your Flora treasures as quickly and safely as possible.
-                            Here is everything you need to know about our shipping process in Tunisia.
+                            {t("subtitle")}
                         </p>
                     </div>
 
@@ -126,10 +130,10 @@ export default function ShippingPage() {
                             <div>
                                 <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4 flex items-center gap-2 md:gap-3">
                                     <Calendar className="w-6 h-6 md:w-8 md:h-8 text-flora-purple" />
-                                    Delivery Process
+                                    {t("processTitle")}
                                 </h2>
                                 <p className="text-gray-500 font-bold text-sm md:text-base">
-                                    We follow a streamlined process to ensure your order reach you in perfect condition.
+                                    {t("processDesc")}
                                 </p>
                             </div>
 
@@ -157,17 +161,17 @@ export default function ShippingPage() {
                             <div>
                                 <h2 className="text-2xl md:text-3xl font-black mb-4 md:mb-6 flex items-center gap-2 md:gap-3">
                                     <HelpCircle className="w-6 h-6 md:w-8 md:h-8 text-primary" />
-                                    Common Questions
+                                    {t("commonQuestions")}
                                 </h2>
 
                                 <div className="space-y-4 md:space-y-6">
                                     <div className="bg-white p-5 md:p-6 rounded-2xl md:rounded-3xl shadow-sm border border-pink-50">
                                         <h4 className="font-black mb-2 text-sm md:text-base flex items-center gap-2">
                                             <Eye className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
-                                            Can I open the package before paying?
+                                            {t("q1")}
                                         </h4>
                                         <p className="text-xs md:text-sm text-gray-500 font-medium">
-                                            Of course! At Flora, we want you to be 100% happy. You can check your items in front of the courier before finalizing the payment.
+                                            {t("a1")}
                                         </p>
                                     </div>
 
@@ -175,10 +179,10 @@ export default function ShippingPage() {
                                     <div className="bg-white p-5 md:p-6 rounded-2xl md:rounded-3xl shadow-sm border border-pink-50">
                                         <h4 className="font-black mb-2 text-sm md:text-base flex items-center gap-2">
                                             <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 text-primary" />
-                                            Do you ship to remote areas?
+                                            {t("q2")}
                                         </h4>
                                         <p className="text-xs md:text-sm text-gray-500 font-medium">
-                                            Yes, we reach everywhere in Tunisia! Whether you&apos;re in Djerba, Nefta, or Tabarka, we&apos;ll get your treasure to you.
+                                            {t("a2")}
                                         </p>
                                     </div>
                                 </div>
@@ -191,8 +195,8 @@ export default function ShippingPage() {
                                             <MessageSquare className="w-5 h-5 md:w-6 md:h-6" />
                                         </div>
                                         <div>
-                                            <h4 className="font-black text-sm md:text-base">Need more help?</h4>
-                                            <p className="text-[11px] md:text-sm text-white/80 font-bold tracking-tight">Support via WhatsApp</p>
+                                            <h4 className="font-black text-sm md:text-base">{t("needMoreHelp")}</h4>
+                                            <p className="text-[11px] md:text-sm text-white/80 font-bold tracking-tight">{t("supportWhatsApp")}</p>
                                         </div>
                                     </div>
                                     <a
@@ -202,7 +206,7 @@ export default function ShippingPage() {
                                         className="sm:ml-auto w-full sm:w-auto text-center justify-center bg-white text-primary px-5 md:px-6 py-2 rounded-full font-black text-xs hover:bg-pink-50 transition-colors flex items-center gap-2"
                                     >
                                         <Instagram className="w-4 h-4" />
-                                        Contact
+                                        {t("contact")}
                                     </a>
                                 </div>
                             </div>
@@ -217,10 +221,9 @@ export default function ShippingPage() {
 
                         <div className="relative z-10 px-2 md:px-0">
                             <ShieldCheck className="w-10 h-10 md:w-12 md:h-12 text-white mx-auto mb-4 md:mb-6" />
-                            <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4">Quality & Trust Guaranteed</h2>
+                            <h2 className="text-2xl md:text-3xl font-black mb-3 md:mb-4">{t("trustTitle")}</h2>
                             <p className="text-purple-50 max-w-2xl mx-auto text-xs md:text-base font-medium leading-relaxed">
-                                Every shipment is handled with the utmost care. We use premium floral-inspired packaging
-                                to ensure your accessories arrive in pristine condition, ready to sparkle.
+                                {t("trustDesc")}
                             </p>
                         </div>
                     </div>

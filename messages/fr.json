@@ -1,7 +1,17 @@
 {
     "HomePage": {
         "title": "Flora Access",
-        "subtitle": "Élégance intemporelle pour toutes les occasions"
+        "subtitle": "Élégance intemporelle pour toutes les occasions",
+        "sparkleTitle": "Brillez chaque jour",
+        "sparkleSubtitle": "Découvrez les accessoires les plus mignons pour illuminer votre look quotidien.",
+        "shopNewArrivals": "Voir les nouveautés",
+        "exploreStyles": "Explorez les styles",
+        "exploreAll": "Tout explorer",
+        "stylesSubtitle": "Trouvez votre prochaine pièce signature parmi nos catégories préférées.",
+        "collection": "Collection",
+        "trendingNow": "Tendance actuelle",
+        "featuredTreasures": "Trésors en vedette",
+        "featuredSubtitle": "Découvrez nos pièces les plus aimées, sélectionnées rien que pour vous."
     },
     "Navigation": {
         "home": "Accueil",
@@ -75,5 +85,253 @@
         "orderError": "Échec de la commande.",
         "validationErrorTitle": "Veuillez vérifier vos détails de livraison",
         "validationErrorDescription": "Certains champs sont invalides."
+    },
+    "Footer": {
+        "tagline": "Élever les moments du quotidien avec des parures exquises.",
+        "shop": "Boutique",
+        "help": "Aide",
+        "shipping": "Livraison",
+        "faq": "FAQ",
+        "contactUs": "Contactez-nous",
+        "copyright": "© {year} Flora Accessories. Conçu avec"
+    },
+    "Shop": {
+        "galleryTitle": "La Galerie Flora",
+        "treasuresCount": "{count} Trésors",
+        "noResults": "Aucun article trouvé dans {category}",
+        "newCollection": "Nouvelle collection bientôt disponible.",
+        "checkBack": "Revenez bientôt pour de nouveaux trésors ! ✨",
+        "titles": {
+            "all": "Tout voir",
+            "rings": "Bagues",
+            "bracelets": "Bracelets",
+            "necklaces": "Colliers",
+            "earrings": "Boucles d'oreilles",
+            "packs": "Packs",
+            "sale": "Soldes"
+        },
+        "subtitles": {
+            "all": "Explorez toute notre collection de parures exquises",
+            "rings": "Ornez vos doigts d'une touche de magie et d'éclat",
+            "bracelets": "Enveloppez vos poignets d'élégance et de charme",
+            "necklaces": "Sublimez votre beauté avec nos chaînes délicates",
+            "earrings": "Laissez vos oreilles briller à chaque mouvement",
+            "packs": "Ensembles sélectionnés pour toutes les occasions",
+            "sale": "Profitez de vos trésors préférés à un prix spécial"
+        },
+        "badges": {
+            "new": "NOUVEAU",
+            "bestseller": "BEST-SELLER"
+        },
+        "filters": {
+            "category": "Filtrer par catégorie",
+            "sort": "Trier par",
+            "all": "Tous"
+        },
+        "sort": {
+            "popular": "Populaire",
+            "newest": "Nouveautés",
+            "priceAsc": "Prix : Croissant",
+            "priceDesc": "Prix : Décroissant"
+        },
+        "pagination": {
+            "viewing": "Affichage de la page {current} sur {total}"
+        },
+        "collection": {
+            "exclusive": "Trésors exclusifs",
+            "limited": "Éclat à durée limitée",
+            "collection": "Collection"
+        },
+        "product": {
+            "backTo": "Retour aux {category}",
+            "limitedOffer": "Offre à durée limitée",
+            "endingIn": "Se termine dans :",
+            "includes": "Ce pack comprend :",
+            "qty": "Qté :",
+            "quantity": "Quantité",
+            "addToCart": "Ajouter au panier ✨",
+            "addedToCart": "Ajouté au panier",
+            "addToFavorites": "Ajouter aux favoris",
+            "qualityGuaranteed": "Qualité Garantie",
+            "premiumMaterials": "Matériaux Premium",
+            "fastDelivery": "Livraison Rapide",
+            "deliveryTunisia": "Livraison sur toute la Tunisie"
+        },
+        "related": {
+            "title": "Vous pourriez aussi aimer",
+            "subtitle": "Découvrez d'autres trésors sélectionnés de notre collection"
+        }
+    },
+    "Cart": {
+        "title": "Mes Trésors",
+        "empty": "Votre panier est vide !",
+        "emptySubtitle": "Commencez à ajouter des trésors.",
+        "total": "Total",
+        "checkout": "Passer à la caisse",
+        "secure": "Paiement sûr et sécurisé",
+        "removed": "Retiré du panier"
+    },
+    "Favorites": {
+        "title": "Vos Favoris",
+        "empty": "Aucun article favori pour le moment. Commencez à ajouter des trésors !",
+        "countSaved": "{count, plural, =0 {Aucun article enregistré} =1 {1 article enregistré} other {# articles enregistrés}}",
+        "noFavorites": "Pas encore de favoris",
+        "howToSave": "Cliquez sur l'icône cœur des produits pour les enregistrer",
+        "viewAll": "Voir tous les favoris →",
+        "removed": "Retiré des favoris",
+        "removeTooltip": "Retirer des favoris",
+        "backToShop": "Retour à la boutique",
+        "pageTitle": "Vos <span>Trésors</span>",
+        "pageSubtitle": "Votre boîte à bijoux attend d'être remplie d'éclat.",
+        "pageSubtitleCount": "Vous avez enregistré {count} {count, plural, =1 {pièce} other {pièces}} qui ont attiré votre attention.",
+        "emptyTitle": "Votre boîte est vide !",
+        "emptyDescription": "Trouvez des pièces que vous aimez et appuyez sur le cœur pour les enregistrer ici. Elles vous attendront !",
+        "startExploring": "Commencer à explorer"
+    },
+    "Search": {
+        "title": "Recherche",
+        "resultsFor": "Résultats pour \"{query}\"",
+        "foundCount": "Nous avons trouvé {count} {count, plural, =1 {trésor} other {trésors}} correspondant à votre recherche",
+        "foundSimple": "{count} {count, plural, =1 {trésor trouvé} other {trésors trouvés}}",
+        "gallery": "Galerie de recherche",
+        "lookingFor": "Que recherchez-vous ?",
+        "enterKeyword": "Entrez un mot-clé pour commencer à chercher des trésors. ✨",
+        "tryAgain": "Réessayez plus tard ou cherchez autre chose ! ⏳",
+        "noResults": "Aucun trésor trouvé pour \"{query}\"",
+        "tryDifferent": "Essayez un mot-clé différent ou explorez nos trésors ! ✨",
+        "subtitleDefault": "Trouvez votre prochaine pièce signature"
+    },
+    "Shipping": {
+        "title": "Expédition & <span>Livraison</span>",
+        "subtitle": "Nous nous efforçons de livrer vos trésors Flora aussi rapidement et sûrement que possible. Voici tout ce que vous devez savoir sur notre processus d'expédition en Tunisie.",
+        "flatRateTitle": "Livraison à tarif fixe",
+        "flatRateDesc": "Nous offrons un tarif d'expédition fixe pour toutes les commandes.",
+        "fastDeliveryTitle": "Livraison Rapide",
+        "fastDeliveryDesc": "Grand Tunis : 24-48h. Autres régions (Sousse, Sfax, Gabès, etc.) : 2-4 jours ouvrables.",
+        "codTitle": "Paiement à la livraison",
+        "codDesc": "Payez commodément en espèces à l'arrivée de votre colis à domicile.",
+        "coverageTitle": "Couverture nationale",
+        "coverageDesc": "Nous livrons dans les 24 gouvernorats de la Tunisie, de Bizerte à Tataouine.",
+        "processTitle": "Processus de livraison",
+        "processDesc": "Nous suivons un processus simplifié pour garantir que votre commande vous parvienne en parfait état.",
+        "step1Title": "Confirmation de commande",
+        "step1Desc": "Une fois votre commande passée, nous vous enverrons un message de confirmation. Notre équipe pourrait vous appeler pour vérifier l'adresse de livraison.",
+        "step2Title": "Traitement & Emballage",
+        "step2Desc": "Notre équipe sélectionne et emballe soigneusement vos accessoires dans notre emballage protecteur signature en 1 jour ouvrable.",
+        "step3Title": "Remise au transporteur",
+        "step3Desc": "Votre colis est remis à nos partenaires de livraison de confiance pour le voyage.",
+        "step4Title": "Livraison à votre porte",
+        "step4Desc": "Le coursier vous contactera par téléphone avant son arrivée pour s'assurer que vous êtes disponible pour recevoir votre trésor Flora.",
+        "commonQuestions": "Questions courantes",
+        "q1": "Puis-je ouvrir le colis avant de payer ?",
+        "a1": "Bien sûr ! Chez Flora, nous voulons que vous soyez 100% satisfait. Vous pouvez vérifier vos articles devant le coursier avant de finaliser le paiement.",
+        "q2": "Livrez-vous dans les zones reculées ?",
+        "a2": "Oui, nous atteignons toute la Tunisie ! Que vous soyez à Djerba, Nefta ou Tataouine, nous vous ferons parvenir votre trésor.",
+        "needMoreHelp": "Besoin d'aide ?",
+        "supportWhatsApp": "Support via WhatsApp",
+        "contact": "Contact",
+        "trustTitle": "Qualité & Confiance Garanties",
+        "trustDesc": "Chaque envoi est traité avec le plus grand soin. Nous utilisons un emballage premium inspiré par les fleurs pour garantir que vos accessoires arrivent en parfait état, prêts à briller."
+    },
+    "FAQ": {
+        "title": "Comment pouvons-nous <span>vous aider ?</span>",
+        "subtitle": "Trouvez des réponses aux questions les plus courantes sur l'expérience Flora.",
+        "categories": {
+            "orders": "Commandes & Produits",
+            "shipping": "Expédition & Livraison",
+            "payments": "Paiements"
+        },
+        "questions": {
+            "orderPlacementQ": "Comment puis-je passer une commande ?",
+            "orderPlacementA": "Parcourez simplement notre collection, ajoutez vos trésors préférés au panier et passez à la caisse. Vous n'avez pas besoin de compte pour acheter chez nous !",
+            "durabilityQ": "Les accessoires sont-ils durables ?",
+            "durabilityA": "Oui ! Nous sélectionnons soigneusement nos matériaux pour garantir qu'ils brillent longtemps. Cependant, comme tous les bijoux, nous recommandons de les tenir éloignés de l'eau et du parfum pour maintenir leur éclat.",
+            "stockQ": "Que se passe-t-il si un article que je veux est en rupture de stock ?",
+            "stockA": "Nos trésors partent vite ! Vous pouvez nous suivre sur Instagram @flora_.access pour les annonces de réapprovisionnement ou nous contacter pour vous renseigner sur un article spécifique.",
+            "shippingCostQ": "Combien coûte la livraison ?",
+            "shippingCostA": "Nous offrons un tarif fixe de 7,00 DT pour les livraisons dans toute la Tunisie.",
+            "deliveryTimeQ": "Combien de temps faudra-t-il pour recevoir ma commande ?",
+            "deliveryTimeA": "Pour le Grand Tunis, cela prend généralement 24-48 heures. Pour les autres régions, attendez votre livraison dans un délai de 2 à 4 jours ouvrables.",
+            "openPackageQ": "Puis-je ouvrir le colis avant de payer ?",
+            "openPackageA": "Absolument ! Nous voulons que vous soyez 100% satisfait de votre achat. Vous pouvez inspecter vos articles devant le coursier avant de finaliser le paiement en espèces à la livraison.",
+            "paymentMethodsQ": "Comment puis-je payer ?",
+            "paymentMethodsA": "Actuellement, nous proposons le 'Paiement à la livraison'. Vous payez le coursier en espèces lorsque votre colis arrive à votre porte.",
+            "bankTransferQ": "Acceptez-vous les virements bancaires ?",
+            "bankTransferA": "Pour le moment, nous privilégions le paiement à la livraison pour sa simplicité et sa sécurité pour nos clients. Contactez-nous si vous avez des exigences particulières."
+        },
+        "footerTitle": "Vous avez encore des questions ?",
+        "footerSubtitle": "Vous ne trouvez pas ce que vous cherchez ? Notre équipe est toujours prête à vous aider à trouver votre partenaire idéal.",
+        "footerButton": "Envoyez-nous un message sur Instagram",
+        "trustQuality": "Qualité Garantie",
+        "trustDelivery": "Livraison Nationale",
+        "trustLove": "Fait avec Amour"
+    },
+    "Orders": {
+        "title": "Mes Commandes",
+        "subtitle": "Consultez et suivez vos trésors Flora.",
+        "count": "{count, plural, =1 {1 Commande} other {# Commandes}}",
+        "backToShop": "Retour à la boutique",
+        "orderId": "ID Commande",
+        "date": "Date",
+        "status": {
+            "pending": "En attente",
+            "confirmed": "Confirmée",
+            "shipped": "Expédiée",
+            "delivered": "Livrée",
+            "cancelled": "Annulée",
+            "unknown": "Inconnue"
+        },
+        "shippingTo": "Expédié à",
+        "totalAmount": "Montant total",
+        "viewTreasure": "Voir le trésor",
+        "viewDetails": "Voir les détails",
+        "noOrdersTitle": "Pas encore de trésors !",
+        "noOrdersSubtitle": "Votre panier attend ses premières perles.",
+        "startShopping": "Commencer vos achats",
+        "errorTitle": "Oups ! Quelque chose s'est mal passé",
+        "tryAgain": "Réessayer",
+        "details": {
+            "title": "Détails de la commande",
+            "orderNo": "Commande",
+            "backToAll": "Retour à toutes les commandes",
+            "packageStatus": "Statut du colis",
+            "orderedItems": "Articles commandés",
+            "quantity": "Quantité",
+            "summary": "Résumé de la commande",
+            "subtotal": "Sous-total des articles",
+            "shipping": "Frais de livraison",
+            "total": "Montant total",
+            "deliveryDetails": "Détails de livraison",
+            "fullName": "Nom complet",
+            "phoneNumber": "Numéro de téléphone",
+            "address": "Adresse de livraison",
+            "paymentMethod": "Mode de paiement",
+            "cod": "Paiement à la livraison",
+            "notFoundTitle": "Commande non trouvée",
+            "notFoundSubtitle": "Cette commande n'a pas pu être récupérée.",
+            "backToOrders": "Retour à mes commandes",
+            "statusLabel": {
+                "pending": "Réception en attente",
+                "confirmed": "Commande confirmée",
+                "shipped": "Expédiée",
+                "delivered": "Livrée",
+                "cancelled": "Annulée",
+                "processing": "Traitement en cours"
+            },
+            "statusDesc": {
+                "pending": "Nous avons reçu votre commande et nous vous appellerons sous peu pour confirmation.",
+                "confirmed": "Votre commande a été confirmée et est préparée avec amour.",
+                "shipped": "Vos trésors sont en route ! Ils seront chez vous sous peu.",
+                "delivered": "Votre colis est arrivé. Nous espérons que vous aimerez vos nouveaux trésors !",
+                "cancelled": "Cette commande a été annulée.",
+                "processing": "Nous traitons votre commande."
+            },
+            "steps": {
+                "received": "Reçue",
+                "confirmed": "Confirmée",
+                "shipped": "Expédiée",
+                "delivered": "Livrée"
+            }
+        }
     }
 }

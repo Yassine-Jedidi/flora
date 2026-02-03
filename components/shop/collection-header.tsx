@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 
 interface CollectionHeaderProps {
     title: string;
@@ -10,6 +11,7 @@ interface CollectionHeaderProps {
 }
 
 export function CollectionHeader({ title, subtitle, showCollectionWord = true, isSale = false }: CollectionHeaderProps) {
+    const t = useTranslations("Shop.collection");
     return (
         <div className="relative overflow-hidden bg-white pt-12 pb-12 flex items-center justify-center">
             {/* Simple Dotted Pattern Background */}
@@ -75,7 +77,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true, i
                         className="mb-8"
                     >
                         <span className={`px-5 py-1.5 rounded-full ${isSale ? 'bg-red-50 text-red-500 border-red-100' : 'bg-pink-50/50 text-primary border-pink-100/30'} text-[10px] font-black uppercase tracking-[0.3em] border`}>
-                            {isSale ? 'Limited Time Sparkle' : 'Exclusive Treasures'}
+                            {isSale ? t("limited") : t("exclusive")}
                         </span>
                     </motion.div>
 
@@ -97,7 +99,7 @@ export function CollectionHeader({ title, subtitle, showCollectionWord = true, i
                                     transition={{ duration: 0.8, delay: 0.2 }}
                                     className="text-primary drop-shadow-sm whitespace-nowrap"
                                 >
-                                    Collection
+                                    {t("collection")}
                                 </motion.span>
                             )}
                         </h1>

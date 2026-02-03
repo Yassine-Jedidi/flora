@@ -1,11 +1,20 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export function SortToggle() {
+    const t = useTranslations("Shop");
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentSort = searchParams.get("sort") || "popular";
+
+    const sortOptions = [
+        { label: t("sort.popular"), value: "popular" },
+        { label: t("sort.newest"), value: "newest" },
+        { label: t("sort.priceAsc"), value: "price-asc" },
+        { label: t("sort.priceDesc"), value: "price-desc" }
+    ];
 
     const handleSort = (sort: string) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -18,16 +27,11 @@ export function SortToggle() {
             <div className="flex items-center gap-2">
                 <div className="w-1 h-4 bg-primary rounded-full" />
                 <label className="text-xs font-black text-flora-dark uppercase tracking-[0.2em]">
-                    Sort Selection
+                    {t("filters.sort")}
                 </label>
             </div>
             <div className="flex flex-wrap gap-2">
-                {[
-                    { label: "Popular", value: "popular" },
-                    { label: "Newest", value: "newest" },
-                    { label: "Price: Low to High", value: "price-asc" },
-                    { label: "Price: High to Low", value: "price-desc" }
-                ].map((sort) => (
+                {sortOptions.map((sort) => (
                     <button
                         key={sort.value}
                         onClick={() => handleSort(sort.value)}
