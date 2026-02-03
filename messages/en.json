@@ -6,7 +6,31 @@
         },
         "admin": {
             "title": "Admin Dashboard | Flora",
-            "description": "Manage your jewelry collection and orders."
+            "description": "Manage your jewelry collection and orders.",
+            "newProduct": {
+                "title": "New Product | Flora Admin",
+                "description": "Add a new treasure to your collection."
+            },
+            "editProduct": {
+                "title": "Edit Product | Flora Admin",
+                "description": "Update product details."
+            },
+            "newPack": {
+                "title": "New Pack | Flora Admin",
+                "description": "Create a new value bundle."
+            },
+            "editPack": {
+                "title": "Edit Pack | Flora Admin",
+                "description": "Update pack details."
+            },
+            "orders": {
+                "title": "Manage Orders | Flora Admin",
+                "description": "View and manage customer orders."
+            },
+            "inventory": {
+                "title": "Inventory Management | Flora Admin",
+                "description": "Manage your product catalog."
+            }
         },
         "sale": {
             "title": "Sale Collection | Flora Accessories",
@@ -19,6 +43,66 @@
         "shipping": {
             "title": "Shipping & Delivery | Flora Accessories",
             "description": "Learn about our shipping policy, delivery times, and costs for orders across Tunisia."
+        },
+        "search": {
+            "title": "Search Treasures | Flora Accessories",
+            "description": "Search for your favorite jewelry and accessories at Flora."
+        },
+        "favorites": {
+            "title": "Your Favorites | Flora Accessories",
+            "description": "View the treasures you've saved to your favorites."
+        },
+        "orders": {
+            "title": "My Orders | Flora Accessories",
+            "description": "Track and manage your treasure orders."
+        },
+        "profile": {
+            "title": "My Profile | Flora Accessories",
+            "description": "Manage your account, addresses, and security."
+        },
+        "auth": {
+            "signIn": {
+                "title": "Sign In | Flora Accessories",
+                "description": "Sign in to your account to manage your orders and favorites."
+            },
+            "signUp": {
+                "title": "Sign Up | Flora Accessories",
+                "description": "Create an account to start your journey with Flora."
+            },
+            "forgotPassword": {
+                "title": "Forgot Password | Flora Accessories",
+                "description": "Reset your account password."
+            },
+            "resetPassword": {
+                "title": "Reset Password | Flora Accessories",
+                "description": "Set a new password for your account."
+            }
+        },
+        "categories": {
+            "all": {
+                "title": "All Treasures | Flora Accessories",
+                "description": "Explore our complete collection of unique jewelry and accessories."
+            },
+            "rings": {
+                "title": "Rings | Flora Accessories",
+                "description": "Discover our beautiful collection of elegant rings."
+            },
+            "bracelets": {
+                "title": "Bracelets | Flora Accessories",
+                "description": "Find the perfect bracelet to complement your style."
+            },
+            "necklaces": {
+                "title": "Necklaces | Flora Accessories",
+                "description": "Explore our curated collection of stunning necklaces."
+            },
+            "earrings": {
+                "title": "Earrings | Flora Accessories",
+                "description": "Discover elegant earrings for every occasion."
+            },
+            "packs": {
+                "title": "Special Packs | Flora Accessories",
+                "description": "Save more with our curated jewelry and accessory packs."
+            }
         }
     },
     "Errors": {
@@ -723,7 +807,8 @@
                     "description": "This will permanently remove {name} from your beautiful inventory. This action cannot be undone.",
                     "cancel": "Cancel",
                     "confirm": "Yes, delete it",
-                    "success": "Accessory deleted successfully! ✨"
+                    "success": "Accessory deleted successfully! ✨",
+                    "error": "Failed to delete product"
                 },
                 "pagination": {
                     "previous": "Previous",

@@ -6,7 +6,31 @@
         },
         "admin": {
             "title": "Tableau de Bord Admin | Flora",
-            "description": "Gérez votre collection de bijoux et vos commandes."
+            "description": "Gérez votre collection de bijoux et vos commandes.",
+            "newProduct": {
+                "title": "Nouveau Produit | Admin Flora",
+                "description": "Ajoutez un nouveau trésor à votre collection."
+            },
+            "editProduct": {
+                "title": "Modifier le Produit | Admin Flora",
+                "description": "Mettre à jour les détails du produit."
+            },
+            "newPack": {
+                "title": "Nouveau Pack | Admin Flora",
+                "description": "Créez un nouveau lot de valeur."
+            },
+            "editPack": {
+                "title": "Modifier le Pack | Admin Flora",
+                "description": "Mettre à jour les détails du pack."
+            },
+            "orders": {
+                "title": "Gérer les Commandes | Admin Flora",
+                "description": "Consultez et gérez les commandes des clients."
+            },
+            "inventory": {
+                "title": "Gestion de l'Inventaire | Admin Flora",
+                "description": "Gérez votre catalogue de produits."
+            }
         },
         "sale": {
             "title": "Collection en Solde | Flora Accessories",
@@ -19,6 +43,66 @@
         "shipping": {
             "title": "Expédition & Livraison | Flora Accessories",
             "description": "Découvrez notre politique d'expédition, les délais de livraison et les coûts pour les commandes dans toute la Tunisie."
+        },
+        "search": {
+            "title": "Rechercher des Trésors | Flora Accessories",
+            "description": "Recherchez vos bijoux et accessoires préférés sur Flora."
+        },
+        "favorites": {
+            "title": "Vos Favoris | Flora Accessories",
+            "description": "Consultez les trésors que vous avez enregistrés dans vos favoris."
+        },
+        "orders": {
+            "title": "Mes Commandes | Flora Accessories",
+            "description": "Suivez et gérez vos commandes de trésors."
+        },
+        "profile": {
+            "title": "Mon Profil | Flora Accessories",
+            "description": "Gérez votre compte, vos adresses et votre sécurité."
+        },
+        "auth": {
+            "signIn": {
+                "title": "Connexion | Flora Accessories",
+                "description": "Connectez-vous à votre compte pour gérer vos commandes et vos favoris."
+            },
+            "signUp": {
+                "title": "Inscription | Flora Accessories",
+                "description": "Créez un compte pour commencer votre voyage avec Flora."
+            },
+            "forgotPassword": {
+                "title": "Mot de Passe Oublié | Flora Accessories",
+                "description": "Réinitialisez le mot de passe de votre compte."
+            },
+            "resetPassword": {
+                "title": "Réinitialiser le Mot de Passe | Flora Accessories",
+                "description": "Définissez un nouveau mot de passe pour votre compte."
+            }
+        },
+        "categories": {
+            "all": {
+                "title": "Tous les Trésors | Flora Accessories",
+                "description": "Explorez notre collection complète de bijoux et accessoires uniques."
+            },
+            "rings": {
+                "title": "Bagues | Flora Accessories",
+                "description": "Découvrez notre magnifique collection de bagues élégantes."
+            },
+            "bracelets": {
+                "title": "Bracelets | Flora Accessories",
+                "description": "Trouvez le bracelet parfait pour compléter votre style."
+            },
+            "necklaces": {
+                "title": "Colliers | Flora Accessories",
+                "description": "Explorez notre collection de colliers étincelants."
+            },
+            "earrings": {
+                "title": "Boucles d'oreilles | Flora Accessories",
+                "description": "Découvrez des boucles d'oreilles élégantes pour chaque occasion."
+            },
+            "packs": {
+                "title": "Packs Spéciaux | Flora Accessories",
+                "description": "Économisez plus avec nos packs de bijoux et accessoires."
+            }
         }
     },
     "Errors": {
@@ -723,7 +807,8 @@
                     "description": "Cela supprimera définitivement {name} de votre bel inventaire. Cette action est irréversible.",
                     "cancel": "Annuler",
                     "confirm": "Oui, supprimer",
-                    "success": "L'accessoire a été supprimé avec succès ! ✨"
+                    "success": "L'accessoire a été supprimé avec succès ! ✨",
+                    "error": "Échec de la suppression du produit"
                 },
                 "pagination": {
                     "previous": "Précédent",

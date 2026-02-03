@@ -1,5 +1,14 @@
 import { ProductForm } from "@/components/admin/product-form";
 import { getCategories, seedCategories } from "@/app/actions/product";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.admin.newProduct");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 export default async function NewProductPage() {
     // Fetch Categories

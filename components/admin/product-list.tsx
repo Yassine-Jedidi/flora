@@ -61,7 +61,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
         toast.success(t("delete.success"));
         router.refresh();
       } else {
-        toast.error(result.error || "Error deleting product");
+        toast.error(result.error || t("delete.error"));
       }
     } catch (error) {
       console.error("Delete error:", error);

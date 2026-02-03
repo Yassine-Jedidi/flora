@@ -3,6 +3,15 @@ import { getAvailableProducts } from "@/app/actions/pack";
 import { PackForm } from "@/components/admin/pack-form";
 import { notFound } from "next/navigation";
 import { Product, ProductImage } from "@/lib/types";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.admin.editPack");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 interface EditPackPageProps {
     params: Promise<{ id: string }>;

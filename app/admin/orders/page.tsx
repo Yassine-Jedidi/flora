@@ -1,6 +1,15 @@
 import { getOrders, getOrderGovernorates } from "@/app/actions/get-orders";
 import { OrderList } from "@/components/admin/order-list";
 import { OrderFilters } from "@/components/admin/order-filters";
+import { getTranslations } from "next-intl/server";
+
+export async function generateMetadata() {
+    const t = await getTranslations("Metadata.admin.orders");
+    return {
+        title: t("title"),
+        description: t("description")
+    };
+}
 
 interface OrdersPageProps {
     searchParams: Promise<{
