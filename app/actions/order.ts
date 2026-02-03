@@ -41,6 +41,27 @@ export async function createOrder(values: OrderValues) {
 
     const validatedData = validatedFields.data;
 
+    // Security: Re-calculate prices from DB to prevent tampering
+    const productIds = validatedData.items.map((item) => item.productId);
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+    });
+
+    let recomputedTotalPrice = 0;
+    const finalItems = validatedData.items.map((item) => {
+      const dbProduct = products.find((p) => p.id === item.productId);
+      if (!dbProduct) throw new Error(`Product ${item.productId} not found`);
+
+      const price = dbProduct.discountedPrice || dbProduct.originalPrice;
+      recomputedTotalPrice += Number(price) * item.quantity;
+
+      return {
+        productId: item.productId,
+        quantity: item.quantity,
+        price: price,
+      };
+    });
+
     const order = await prisma.order.create({
       data: {
         userId: session?.user?.id,
@@ -49,14 +70,10 @@ export async function createOrder(values: OrderValues) {
         governorate: validatedData.governorate,
         city: validatedData.city,
         detailedAddress: validatedData.detailedAddress,
-        totalPrice: validatedData.totalPrice,
+        totalPrice: recomputedTotalPrice,
         status: "PENDING",
         items: {
-          create: validatedData.items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-          })),
+          create: finalItems,
         },
       },
     });
@@ -139,6 +156,15 @@ export async function createOrder(values: OrderValues) {
 
 export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      const t = await getTranslations("Errors");
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
     const order = await prisma.order.update({
       where: { id: orderId },
       data: { status },

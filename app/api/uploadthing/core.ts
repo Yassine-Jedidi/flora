@@ -18,13 +18,14 @@ export const ourFileRouter = {
       maxFileCount: 4,
     },
   })
-    // Set permissions and file types for this FileRoute
-    .middleware(async () => {
+    .middleware(async ({ req }) => {
       // This code runs on your server before upload
-      // Here you can check if the user is an admin
+      const session = await auth.api.getSession({
+        headers: req.headers,
+      });
 
-      // For now, we return a fake user ID
-      return { userId: "admin" };
+      if (!session) throw new Error("Unauthorized");
+      return { userId: session.user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
