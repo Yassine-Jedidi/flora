@@ -210,23 +210,9 @@ export function ProductForm({
     }
   };
 
-  const removeImage = async (urlToRemove: string) => {
-    setIsDeleting(true);
-    // Optimistically update UI
+  const removeImage = (urlToRemove: string) => {
     const updatedImages = images.filter((url) => url !== urlToRemove);
     form.setValue("images", updatedImages, { shouldValidate: true });
-
-    // Delete from storage in background
-    try {
-      // Import this from actions if not already imported
-      const { deleteProductImage } = await import("@/app/actions/product");
-      await deleteProductImage(urlToRemove);
-      toast.success(t("toasts.imageDeleted"));
-    } catch {
-      toast.error(t("toasts.imageDeleteFail"));
-    } finally {
-      setIsDeleting(false);
-    }
   };
 
   const onInvalid = (errors: unknown) => {

@@ -281,6 +281,14 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       return { error: t("categoryRequired") };
     }
 
+    // 0. Get current images for cleanup
+    const currentProduct = await prisma.product.findUnique({
+      where: { id },
+      include: { images: true },
+    });
+    const currentImages = currentProduct?.images.map((img) => img.url) || [];
+    const removedImages = currentImages.filter((url) => !images.includes(url));
+
     // We do a transaction to ensure everything updates correctly
     await prisma.$transaction(async (tx) => {
       // 1. Update basic product info
@@ -300,8 +308,6 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       });
 
       // 2. Refresh images (simplest approach: delete and recreate references)
-      // Note: We don't delete from UploadThing here as some images might still be in use
-      // A more robust app would compare and delete unused ones from UT
       await tx.productImage.deleteMany({
         where: { productId: id },
       });
@@ -313,6 +319,23 @@ export async function updateProduct(id: string, values: ProductFormValues) {
         })),
       });
     });
+
+    // Cleanup orphaned images from UploadThing
+    if (removedImages.length > 0) {
+      const fileKeys = removedImages
+        .map((url) => url.split("/").pop())
+        .filter(Boolean) as string[];
+      if (fileKeys.length > 0) {
+        try {
+          await utapi.deleteFiles(fileKeys);
+        } catch (utError) {
+          console.error(
+            "Failed to delete removed files from UploadThing:",
+            utError,
+          );
+        }
+      }
+    }
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");

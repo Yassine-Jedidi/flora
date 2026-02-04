@@ -4,6 +4,9 @@ import prisma from "@/lib/db";
 import { PackSchema, PackFormValues } from "@/lib/validations/pack";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
+import { UTApi } from "uploadthing/server";
+
+const utapi = new UTApi();
 
 export async function createPack(values: PackFormValues) {
   try {
@@ -186,6 +189,16 @@ export async function updatePack(id: string, values: PackFormValues) {
       return { error: t("categoryRequired") };
     }
 
+    // 0. Get current images for cleanup
+    const currentPack = await prisma.product.findUnique({
+      where: { id },
+      include: { images: true },
+    });
+    const currentImages = currentPack?.images.map((img) => img.url) || [];
+    const removedImages = currentImages.filter(
+      (url) => !(images || []).includes(url),
+    );
+
     // Update the pack with transaction
     await prisma.$transaction(async (tx) => {
       // 1. Update basic pack info
@@ -229,6 +242,23 @@ export async function updatePack(id: string, values: PackFormValues) {
         })),
       });
     });
+
+    // Cleanup orphaned images from UploadThing
+    if (removedImages.length > 0) {
+      const fileKeys = removedImages
+        .map((url) => url.split("/").pop())
+        .filter(Boolean) as string[];
+      if (fileKeys.length > 0) {
+        try {
+          await utapi.deleteFiles(fileKeys);
+        } catch (utError) {
+          console.error(
+            "Failed to delete removed files from UploadThing:",
+            utError,
+          );
+        }
+      }
+    }
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");
