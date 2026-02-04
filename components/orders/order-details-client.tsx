@@ -240,6 +240,7 @@ export function OrderDetailsClient({ params }: { params: Promise<{ orderId: stri
                                                         src={item.product.images[0].url}
                                                         alt={item.product.name}
                                                         fill
+                                                        sizes="80px"
                                                         className="object-cover"
                                                     />
                                                 )}

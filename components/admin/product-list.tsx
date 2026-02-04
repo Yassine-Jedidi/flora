@@ -131,6 +131,7 @@ export function ProductList({ products, pagination }: ProductListProps) {
                             src={product.images[0].url}
                             alt={product.name}
                             fill
+                            sizes="48px"
                             className="object-cover"
                           />
                         ) : (

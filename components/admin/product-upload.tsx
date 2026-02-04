@@ -46,6 +46,7 @@ export function ProductUpload() {
                                 src={url}
                                 alt={`Product ${index + 1}`}
                                 fill
+                                sizes="(max-width: 768px) 50vw, 25vw"
                                 className="object-cover"
                             />
                         </div>

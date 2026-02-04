@@ -371,6 +371,7 @@ export function PackForm({
                                             src={url}
                                             alt="Pack"
                                             fill
+                                            sizes="(max-width: 768px) 50vw, 25vw"
                                             className="object-cover transition-transform group-hover:scale-110"
                                         />
                                         <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -636,6 +637,7 @@ export function PackForm({
                                                                     src={img.url}
                                                                     alt={`${product.name} ${i + 1}`}
                                                                     fill
+                                                                    sizes="64px"
                                                                     className="object-cover"
                                                                 />
                                                             </div>

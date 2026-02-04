@@ -267,6 +267,7 @@ function OrdersContent() {
                                                                     src={item.product.images[0].url}
                                                                     alt={item.product.name}
                                                                     fill
+                                                                    sizes="(max-width: 768px) 80px, 96px"
                                                                     className="object-cover transition-transform group-hover/item:scale-110"
                                                                 />
                                                             )}

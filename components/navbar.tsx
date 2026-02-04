@@ -430,6 +430,7 @@ export function Navbar() {
                           src={session.user.image}
                           alt={session.user.name}
                           fill
+                          sizes="28px"
                           className="object-cover group-hover:scale-110 transition-transform"
                         />
                       </div>

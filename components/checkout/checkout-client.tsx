@@ -490,7 +490,7 @@ export function CheckoutClient() {
                     {cart.map((item) => (
                       <div key={item.id} className="flex gap-3 md:gap-4">
                         <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-lg md:rounded-xl overflow-hidden bg-white/10 shrink-0 border border-white/5">
-                          {item.image && <Image src={item.image} alt={item.name} fill className="object-cover" />}
+                          {item.image && <Image src={item.image} alt={item.name} fill sizes="64px" className="object-cover" />}
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start gap-2">

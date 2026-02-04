@@ -517,6 +517,7 @@ export function ProductForm({
                       src={url}
                       alt="Product"
                       fill
+                      sizes="(max-width: 768px) 50vw, 25vw"
                       className="object-cover transition-transform group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
