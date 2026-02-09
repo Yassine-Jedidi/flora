@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
     "192.168.1.65",
     "192.168.1.*", // Allow all devices on local network
   ],
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
+  },
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200], // Optimized for most mobile/desktop screens
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384], // Small thumbnails/icons

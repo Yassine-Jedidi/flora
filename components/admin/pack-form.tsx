@@ -284,7 +284,7 @@ export function PackForm({
     };
 
     const onInvalid = (errors: unknown) => {
-        console.log("Form Errors:", errors);
+        // Form validation errors handled by react-hook-form
     };
 
     const handleAddProduct = () => {

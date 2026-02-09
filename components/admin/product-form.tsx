@@ -170,7 +170,6 @@ export function ProductForm({
         return;
       }
 
-      console.log("Form Values:", values);
       const result = initialData
         ? await updateProduct(initialData.id, values)
         : await createProduct(values);
@@ -216,7 +215,7 @@ export function ProductForm({
   };
 
   const onInvalid = (errors: unknown) => {
-    console.log("Form Errors:", errors);
+    // Form validation errors handled by react-hook-form
   };
 
   return (
