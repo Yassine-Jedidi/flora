@@ -16,17 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  TUNISIA_GOVERNORATES,
-  TUNISIA_LOCATIONS,
-} from "@/lib/constants/tunisia";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { LocationSelector } from "./location-selector";
 import {
   ShoppingBag,
   ArrowLeft,
@@ -68,7 +58,6 @@ export function CheckoutClient() {
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
-  const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
 
   const form = useForm<AddressValues>({
     resolver: zodResolver(AddressSchema),
@@ -82,16 +71,21 @@ export function CheckoutClient() {
     },
   });
 
+  // Register fields that are handled manually or conditionally
+  useEffect(() => {
+    const fields: (keyof AddressValues)[] = ["fullName", "governorate", "city"];
+    fields.forEach(field => form.register(field));
+  }, [form]);
+
   // Load addresses if logged in
   useEffect(() => {
     const fetchAddresses = async () => {
       if (session) {
-        setIsLoadingAddresses(true);
         const result = await getAddresses();
         if (result.success && result.data) {
           setSavedAddresses(result.data);
           // Auto-select default address
-          const defaultAddr = result.data.find((a: any) => a.isDefault) || result.data[0];
+          const defaultAddr = (result.data as any[]).find((a) => a.isDefault) || result.data[0];
           if (defaultAddr) {
             setSelectedAddressId(defaultAddr.id);
             // Pre-fill form with selected address
@@ -111,9 +105,7 @@ export function CheckoutClient() {
           setIsAddingNewAddress(true);
           form.setValue("fullName", session.user.name || "");
         }
-        setIsLoadingAddresses(false);
       } else {
-        setIsLoadingAddresses(false);
         setIsAddingNewAddress(true);
       }
     };
@@ -137,10 +129,6 @@ export function CheckoutClient() {
   const shippingCost = cart.length > 0 ? SHIPPING_COST : 0;
   const finalTotal = totalPrice + shippingCost;
 
-  const selectedGov = form.watch("governorate");
-  const availableCities = selectedGov
-    ? TUNISIA_LOCATIONS[selectedGov] || []
-    : [];
 
   const onSubmit = async (values: AddressValues) => {
     if (cart.length === 0) return;
@@ -229,7 +217,10 @@ export function CheckoutClient() {
 
               <form
                 onSubmit={form.handleSubmit(onSubmit, (errors) => {
-                  console.error("Form Validation Errors:", errors);
+                  console.error("Form Validation Errors:", {
+                    errors,
+                    values: form.getValues()
+                  });
                   // Find the first error to show in toast
                   const errorMessages = Object.values(errors);
                   if (errorMessages.length > 0) {
@@ -377,51 +368,16 @@ export function CheckoutClient() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label className="text-flora-dark font-bold ml-1">{t("governorate")}</Label>
-                          <Select
-                            value={form.watch("governorate")}
-                            onValueChange={(v) => {
-                              form.setValue("governorate", v, { shouldValidate: true });
-                              form.setValue("city", "", { shouldValidate: true });
-                            }}
-                          >
-                            <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 h-11 md:h-13 text-flora-dark font-medium text-sm md:text-base">
-                              <SelectValue placeholder={t("selectGovernorate")} />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-xl md:rounded-2xl border-pink-100">
-                              {TUNISIA_GOVERNORATES.map((gov) => (
-                                <SelectItem key={gov} value={gov}>{gov}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {form.formState.errors.governorate && (
-                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form.formState.errors.governorate.message}</p>
-                          )}
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label className="text-flora-dark font-bold ml-1">{t("city")}</Label>
-                          <Select
-                            disabled={!selectedGov}
-                            value={form.watch("city")}
-                            onValueChange={(v) => form.setValue("city", v, { shouldValidate: true })}
-                          >
-                            <SelectTrigger className="w-full rounded-xl md:rounded-2xl border-pink-100 focus:ring-pink-300 h-11 md:h-13 text-flora-dark font-medium text-sm md:text-base">
-                              <SelectValue placeholder={t("selectCity")} />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-xl md:rounded-2xl border-pink-100">
-                              {availableCities.map((city) => (
-                                <SelectItem key={city} value={city}>{city}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {form.formState.errors.city && (
-                            <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form.formState.errors.city.message}</p>
-                          )}
-                        </div>
-                      </div>
+                      <LocationSelector
+                        governorate={form.watch("governorate")}
+                        city={form.watch("city")}
+                        onGovernorateChange={(v) => form.setValue("governorate", v, { shouldValidate: true })}
+                        onCityChange={(v) => form.setValue("city", v, { shouldValidate: true })}
+                        errors={{
+                          governorate: form.formState.errors.governorate?.message,
+                          city: form.formState.errors.city?.message,
+                        }}
+                      />
 
                       <div className="space-y-2">
                         <Label htmlFor="detailedAddress" className="text-flora-dark font-bold ml-1">{t("detailedAddress")}</Label>

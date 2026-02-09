@@ -100,7 +100,29 @@ export async function checkRateLimit(config: RateLimitConfig) {
   const realIp = headerList.get("x-real-ip");
 
   // Get the first IP from x-forwarded-for (most likely the real client)
-  const clientIp = forwardedFor?.split(",")[0]?.trim() || realIp || "anonymous";
+  let clientIp = forwardedFor?.split(",")[0]?.trim() || realIp || "";
+
+  if (!clientIp) {
+    // Detect when both headers are missing
+    const userAgent = headerList.get("user-agent") || "unknown";
+    console.warn(
+      `[RateLimit] Missing IP headers for key: ${config.key}. User-Agent: ${userAgent}`,
+    );
+
+    // Security-sensitive endpoints are rejected if they can't be identified
+    const sensitiveKeys = ["order-creation", "profile-update", "file-delete"];
+    if (sensitiveKeys.includes(config.key)) {
+      return {
+        success: false,
+        retryAfter: 60,
+        message: "Identification headers missing",
+      } as RateLimitResult;
+    }
+
+    // Assign a safer per-request fallback for non-sensitive endpoints
+    // This prevents shared bucket "double-dipping" or blocking valid anonymous traffic
+    clientIp = `req_${Math.random().toString(36).slice(2)}`;
+  }
 
   // Create a composite key that's harder to spoof by including user-agent
   const userAgent = headerList.get("user-agent") || "";
