@@ -61,7 +61,7 @@ export async function proxy(request: NextRequest) {
       });
 
       if (!rateLimit.success) {
-        return NextResponse.redirect(new URL("/", request.url));
+        return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
       }
 
       if (queryKey === adminKey && adminKey !== undefined) {
@@ -76,7 +76,7 @@ export async function proxy(request: NextRequest) {
       }
     }
 
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
   }
 
   return NextResponse.next();
