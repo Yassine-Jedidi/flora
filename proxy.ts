@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { auth } from "@/lib/auth";
+import db from "@/lib/db";
 
 export default async function middleware(request: NextRequest) {
   return await proxy(request);
@@ -42,41 +43,27 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // 2. Admin Route Protection
+  // 2. Admin Route Protection using better-auth
   if (path.startsWith("/admin")) {
-    const adminKey = process.env.ADMIN_KEY;
-    const authCookie = request.cookies.get("flora_admin_auth")?.value;
-    const queryKey = request.nextUrl.searchParams.get("key");
+    const session = await auth.api.getSession({
+      headers: request.headers,
+    });
 
-    if (authCookie === adminKey && adminKey !== undefined) {
-      return NextResponse.next();
+    if (!session) {
+      return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
     }
 
-    if (queryKey !== null) {
-      // If someone is trying a key, rate limit them
-      const rateLimit = await checkRateLimit({
-        key: "admin-key-attempt",
-        window: 60 * 60 * 24 * 7, // 7 days
-        max: 3, // 3 attempts per 7 days
-      });
+    // Query database directly for role
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true } as any,
+    });
 
-      if (!rateLimit.success) {
-        return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
-      }
-
-      if (queryKey === adminKey && adminKey !== undefined) {
-        const response = NextResponse.redirect(new URL("/admin", request.url));
-        response.cookies.set("flora_admin_auth", adminKey, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 60 * 60 * 24 * 30,
-        });
-        return response;
-      }
+    if (!user || (user as any).role !== "admin") {
+      return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
     }
 
-    return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
+    return NextResponse.next();
   }
 
   return NextResponse.next();

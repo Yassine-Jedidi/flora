@@ -109,4 +109,19 @@ export const auth = betterAuth({
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     },
   },
+  callbacks: {
+    session: async (session: any) => {
+      const user = await db.user.findUnique({
+        where: { id: session.user.id },
+        select: { role: true } as any,
+      });
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          role: (user as any)?.role || "user",
+        },
+      };
+    },
+  },
 });
