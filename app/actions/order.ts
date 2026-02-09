@@ -12,12 +12,19 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function createOrder(values: OrderValues) {
   try {
-    // Check rate limit inside try block for unified error handling
     const t = await getTranslations("Errors.orders");
+    
+    // Get session first to use userId for rate limiting (prevents IP spoofing)
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+    
+    // Check rate limit with userId if authenticated
     const rateLimit = await checkRateLimit({
       key: "order-creation",
       window: 60 * 10, // 10 minutes
       max: 3, // 3 orders every 10 minutes
+      userId: session?.user?.id,
     });
 
     if (!rateLimit.success) {
@@ -25,10 +32,6 @@ export async function createOrder(values: OrderValues) {
         error: t("rateLimit", { message: rateLimit.message || "" }),
       };
     }
-
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
 
     // Validate all fields including items and totalPrice
     const validatedFields = OrderSchema.safeParse(values);

@@ -11,13 +11,19 @@ import { getTranslations } from "next-intl/server";
 const utapi = new UTApi();
 
 export async function updateProfile(values: { name: string; image?: string }) {
+  const tProfile = await getTranslations("Errors.profile");
+  
+  // Get session first to use userId for rate limiting (prevents IP spoofing)
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  
   const rateLimit = await checkRateLimit({
     key: "profile-update",
     window: 3600, // 1 hour
     max: 10, // 10 updates per hour
+    userId: session?.user?.id,
   });
-
-  const tProfile = await getTranslations("Errors.profile");
 
   if (!rateLimit.success) {
     return {
@@ -27,10 +33,6 @@ export async function updateProfile(values: { name: string; image?: string }) {
   }
 
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
     if (!session) {
       const t = await getTranslations("Errors");
       return { success: false, error: t("unauthenticated") };
@@ -80,13 +82,24 @@ export async function updateProfile(values: { name: string; image?: string }) {
 }
 
 export async function deleteUploadedFile(fileUrl: string) {
+  const tProfile = await getTranslations("Errors.profile");
+  
+  // Get session first to use userId for rate limiting (prevents IP spoofing)
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  
+  if (!session) {
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("unauthenticated") };
+  }
+  
   const rateLimit = await checkRateLimit({
     key: "file-delete",
     window: 3600, // 1 hour
     max: 20, // 20 deletions per hour
+    userId: session.user.id,
   });
-
-  const tProfile = await getTranslations("Errors.profile");
 
   if (!rateLimit.success) {
     return {
@@ -96,15 +109,6 @@ export async function deleteUploadedFile(fileUrl: string) {
   }
 
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session) {
-      const t = await getTranslations("Errors");
-      return { success: false, error: t("unauthenticated") };
-    }
-
     if (!fileUrl.includes("utfs.io")) {
       return { success: false, error: "Invalid file URL" };
     }
