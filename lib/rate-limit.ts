@@ -5,6 +5,7 @@ interface RateLimitConfig {
   key: string; // Unique key for this rate limit (e.g. "order-creation", "search")
   window: number; // Window in seconds
   max: number; // Max allowed requests in window
+  userId?: string; // Optional user ID for authenticated users (prevents IP spoofing)
 }
 
 export function formatRetryAfter(seconds: number): string {
@@ -19,17 +20,21 @@ export function formatRetryAfter(seconds: number): string {
   return `${seconds} second${seconds > 1 ? "s" : ""}`;
 }
 
-export async function checkRateLimit(config: RateLimitConfig) {
-  const headerList = await headers();
-  const ip = headerList.get("x-forwarded-for") || "anonymous";
-  const rateLimitKey = `${ip}|${config.key}`;
+type RateLimitResult =
+  | { success: true; remaining: number }
+  | { success: false; retryAfter: number; message: string; remaining?: never };
+
+async function executeRateLimit(
+  rateLimitKey: string,
+  config: RateLimitConfig,
+): Promise<RateLimitResult> {
   const now = BigInt(Date.now());
   const windowMs = BigInt(config.window * 1000);
 
   // Use a transaction to ensure atomic updates
   const result = await db.$transaction(async (tx) => {
     const record = await tx.rateLimit.findUnique({
-      where: { id: rateLimitKey }, // We can use the key as ID for faster lookups
+      where: { id: rateLimitKey },
     });
 
     if (!record) {
@@ -41,7 +46,7 @@ export async function checkRateLimit(config: RateLimitConfig) {
           lastRequest: now,
         },
       });
-      return { success: true, remaining: config.max - 1 };
+      return { success: true, remaining: config.max - 1 } as RateLimitResult;
     }
 
     const timePassed = now - record.lastRequest;
@@ -55,7 +60,7 @@ export async function checkRateLimit(config: RateLimitConfig) {
           lastRequest: now,
         },
       });
-      return { success: true, remaining: config.max - 1 };
+      return { success: true, remaining: config.max - 1 } as RateLimitResult;
     }
 
     if (record.count >= config.max) {
@@ -66,7 +71,7 @@ export async function checkRateLimit(config: RateLimitConfig) {
         success: false,
         retryAfter: waitTime,
         message: formatRetryAfter(waitTime),
-      };
+      } as RateLimitResult;
     }
 
     // Increment count
@@ -77,8 +82,47 @@ export async function checkRateLimit(config: RateLimitConfig) {
       },
     });
 
-    return { success: true, remaining: config.max - (record.count + 1) };
+    return {
+      success: true,
+      remaining: config.max - (record.count + 1),
+    } as RateLimitResult;
   });
 
   return result;
+}
+
+export async function checkRateLimit(config: RateLimitConfig) {
+  // Always calculate the IP-based identifier first
+  const headerList = await headers();
+
+  // x-forwarded-for can contain multiple IPs: "client, proxy1, proxy2"
+  const forwardedFor = headerList.get("x-forwarded-for");
+  const realIp = headerList.get("x-real-ip");
+
+  // Get the first IP from x-forwarded-for (most likely the real client)
+  const clientIp = forwardedFor?.split(",")[0]?.trim() || realIp || "anonymous";
+
+  // Create a composite key that's harder to spoof by including user-agent
+  const userAgent = headerList.get("user-agent") || "";
+  const ipHash = `${clientIp}:${userAgent.slice(0, 50)}`;
+
+  const ipRateLimitKey = `${ipHash}|${config.key}`;
+
+  // Execute IP rate limit check
+  const ipResult = await executeRateLimit(ipRateLimitKey, config);
+
+  // If authenticated, also enforce the user-specific rate limit
+  if (config.userId) {
+    const userRateLimitKey = `${config.userId}|${config.key}`;
+    const userResult = await executeRateLimit(userRateLimitKey, config);
+
+    // Return the more restrictive result (failure first, then lower remaining)
+    if (!userResult.success) return userResult;
+    if (!ipResult.success) return ipResult;
+
+    return userResult.remaining < ipResult.remaining ? userResult : ipResult;
+  }
+
+  // For unauthenticated users, just return the IP result
+  return ipResult;
 }

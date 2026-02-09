@@ -459,10 +459,18 @@ export async function searchProducts(
 > {
   if (!query || query.length < 2) return { success: true, data: [] };
 
+  // Get session for authenticated rate limiting (prevents IP spoofing)
+  const { auth } = await import("@/lib/auth");
+  const { headers } = await import("next/headers");
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  
   const rateLimit = await checkRateLimit({
     key: "product-search",
     window: 60,
     max: 30,
+    userId: session?.user?.id,
   });
 
   if (!rateLimit.success) {
