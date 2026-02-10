@@ -305,8 +305,8 @@ export function ProductDetails({ product }: { product: Product }) {
 
       {/* Product Info */}
       <div className="flex flex-col gap-8">
-        {/* Limited Offer Timer */}
-        {timeLeft && (
+        {/* Limited Offer Timer — only when in stock AND has a discount */}
+        {timeLeft && (product.stock ?? 0) > 0 && product.discountedPrice && product.discountedPrice < product.originalPrice && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}

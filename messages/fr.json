@@ -307,13 +307,14 @@
             "includes": "Ce pack comprend :",
             "qty": "Qté :",
             "quantity": "Quantité",
-            "addToCart": "Ajouter au panier ✨",
+            "addToCart": "Ajouter au panier",
             "addedToCart": "Ajouté au panier",
             "addToFavorites": "Ajouter aux favoris",
             "qualityGuaranteed": "Qualité Garantie",
             "premiumMaterials": "Matériaux Premium",
             "fastDelivery": "Livraison Rapide",
-            "deliveryTunisia": "Livraison sur toute la Tunisie"
+            "deliveryTunisia": "Livraison sur toute la Tunisie",
+            "outOfStock": "Rupture de Stock"
         },
         "related": {
             "title": "Vous pourriez aussi aimer",
