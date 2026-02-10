@@ -10,6 +10,7 @@ import { MobileDebug } from "@/components/mobile-debug";
 import { IOSCompatibilityChecker } from "@/components/ios-compatibility-checker";
 
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -64,6 +65,7 @@ export default async function RootLayout({
             </FavoritesProvider>
           </CartProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
