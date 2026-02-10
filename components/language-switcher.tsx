@@ -109,12 +109,12 @@ export function LanguageSwitcher({ variant = "navbar" }: LanguageSwitcherProps) 
 
     // Navbar variant - more compact pill
     return (
-        <div className="flex items-center gap-1 px-3 py-1.5 bg-pink-50/50 rounded-full border border-pink-100">
+        <div className="inline-flex items-center p-0.5 bg-pink-50/50 rounded-full border border-pink-100 min-w-[100px]">
             <button
                 onClick={() => switchLanguage("en")}
                 disabled={isPending}
                 className={cn(
-                    "px-2 py-0.5 text-[10px] font-black uppercase tracking-wider transition-all rounded-full",
+                    "flex-1 text-center py-1.5 px-3 text-[10px] font-black uppercase tracking-wider transition-all rounded-full",
                     locale === "en"
                         ? "bg-primary text-white"
                         : "text-gray-500 hover:text-primary"
@@ -122,12 +122,11 @@ export function LanguageSwitcher({ variant = "navbar" }: LanguageSwitcherProps) 
             >
                 EN
             </button>
-            <span className="text-gray-300 text-xs">|</span>
             <button
                 onClick={() => switchLanguage("fr")}
                 disabled={isPending}
                 className={cn(
-                    "px-2 py-0.5 text-[10px] font-black uppercase tracking-wider transition-all rounded-full",
+                    "flex-1 text-center py-1.5 px-3 text-[10px] font-black uppercase tracking-wider transition-all rounded-full",
                     locale === "fr"
                         ? "bg-primary text-white"
                         : "text-gray-500 hover:text-primary"

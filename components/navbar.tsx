@@ -120,7 +120,7 @@ export function Navbar() {
                 <SheetTitle>{t("menuTitle")}</SheetTitle>
               </VisuallyHidden>
               <div className="flex flex-col gap-6 mt-8">
-                <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex justify-center">
                   <Image
                     src="/flora sparkle.png"
                     alt={t("logoAlt")}
@@ -130,7 +130,9 @@ export function Navbar() {
                   />
                 </Link>
 
-                <LanguageSwitcher />
+                <div className="flex justify-center">
+                  <LanguageSwitcher />
+                </div>
 
                 {/* Mobile Navigation Links */}
                 <div className="flex flex-col gap-4">
