@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { TUNISIA_GOVERNORATES, TUNISIA_LOCATIONS } from "@/lib/constants/tunisia";
+import { getGovernorates, getDelegations } from "@/lib/locations-data";
 
 interface AddressModalProps {
     isOpen: boolean;
@@ -50,7 +51,8 @@ export function AddressModal({
     const t = useTranslations("Profile");
 
     const selectedGov = addressForm.governorate;
-    const availableCities = selectedGov ? TUNISIA_LOCATIONS[selectedGov] || [] : [];
+    const governorates = useMemo(() => getGovernorates(), []);
+    const availableCities = useMemo(() => getDelegations(selectedGov), [selectedGov]);
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -112,7 +114,7 @@ export function AddressModal({
                                         <SelectValue placeholder={t("addresses.modal.selectPlaceholder")} />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-2xl border-pink-100 shadow-xl max-h-60">
-                                        {TUNISIA_GOVERNORATES.map((gov) => (
+                                        {governorates.map((gov) => (
                                             <SelectItem key={gov} value={gov} className="font-bold text-flora-dark rounded-xl my-1">{gov}</SelectItem>
                                         ))}
                                     </SelectContent>
