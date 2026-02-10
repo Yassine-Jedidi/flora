@@ -440,6 +440,8 @@
             "unknown": "Unknown"
         },
         "shippingTo": "Shipping to",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
         "totalAmount": "Total amount",
         "viewTreasure": "View Treasure",
         "viewDetails": "View Full Details",
@@ -744,7 +746,8 @@
                 "total": "Total",
                 "location": "Location",
                 "status": "Status",
-                "empty": "No orders found."
+                "empty": "No orders found.",
+                "ship": "ship"
             },
             "filters": {
                 "searchPlaceholder": "Search by customer name or phone...",

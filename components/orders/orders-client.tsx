@@ -26,6 +26,7 @@ import { useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/pagination-control";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
 import { useSession } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -297,20 +298,34 @@ function OrdersContent() {
                                                 ))}
                                             </div>
 
-                                            <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-dashed border-pink-100 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="bg-purple-50 p-2.5 md:p-3 rounded-2xl">
-                                                        <Truck className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("shippingTo")}</p>
-                                                        <p className="text-xs md:text-sm font-bold text-flora-dark">{order.city}, {order.governorate}</p>
+                                            <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-dashed border-pink-100 flex flex-col gap-6">
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="bg-purple-50 p-2.5 md:p-3 rounded-2xl">
+                                                            <Truck className="w-4 h-4 md:w-5 md:h-5 text-purple-400" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("shippingTo")}</p>
+                                                            <p className="text-xs md:text-sm font-bold text-flora-dark">{order.city}, {order.governorate}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start">
-                                                    <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest sm:mb-1">{t("totalAmount")}</p>
-                                                    <Price price={order.totalPrice} size="md" color="text-flora-purple font-black" />
+                                                {/* Order Price Summary */}
+                                                <div className="bg-gray-50/50 rounded-2xl p-4 space-y-2">
+                                                    <div className="flex justify-between items-center text-xs md:text-sm font-bold text-gray-400">
+                                                        <span>{t("subtotal")}</span>
+                                                        <Price price={order.totalPrice - SHIPPING_COST} size="xs" color="text-gray-500" />
+                                                    </div>
+                                                    <div className="flex justify-between items-center text-xs md:text-sm font-bold text-gray-400">
+                                                        <span>{t("shipping")}</span>
+                                                        <Price price={SHIPPING_COST} size="xs" color="text-gray-500" />
+                                                    </div>
+                                                    <div className="h-px bg-pink-100 my-1" />
+                                                    <div className="flex justify-between items-center">
+                                                        <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("totalAmount")}</p>
+                                                        <Price price={order.totalPrice} size="md" color="text-flora-purple font-black" />
+                                                    </div>
                                                 </div>
                                             </div>
 

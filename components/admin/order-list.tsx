@@ -14,6 +14,7 @@ import { OrderStatusToggle } from "./order-status-toggle";
 import { OrderStatus } from "@prisma/client";
 import { PaginationControl } from "@/components/ui/pagination-control";
 import { useTranslations } from "next-intl";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
 
 interface OrderListProps {
   orders: Order[];
@@ -108,8 +109,18 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                         ))}
                       </div>
                     </TableCell>
-                    <TableCell className="font-bold text-primary text-xs md:text-sm px-2 md:px-4 py-3 md:py-4">
-                      {Number(order.totalPrice).toFixed(2)} DT
+                    <TableCell className="text-xs md:text-sm px-2 md:px-4 py-3 md:py-4">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-gray-400">
+                          {(Number(order.totalPrice) - SHIPPING_COST).toFixed(2)} DT
+                        </span>
+                        <span className="text-gray-400">
+                          + {SHIPPING_COST.toFixed(2)} {t("ship")}
+                        </span>
+                        <span className="font-bold text-primary border-t border-pink-100 pt-0.5 mt-0.5">
+                          {Number(order.totalPrice).toFixed(2)} DT
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col text-sm text-gray-600">

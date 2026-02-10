@@ -440,6 +440,8 @@
             "unknown": "Inconnue"
         },
         "shippingTo": "Expédié à",
+        "subtotal": "Sous-total",
+        "shipping": "Livraison",
         "totalAmount": "Montant total",
         "viewTreasure": "Voir le trésor",
         "viewDetails": "Voir les détails",
@@ -744,7 +746,8 @@
                 "total": "Total",
                 "location": "Lieu",
                 "status": "Statut",
-                "empty": "Aucune commande trouvée."
+                "empty": "Aucune commande trouvée.",
+                "ship": "livr."
             },
             "filters": {
                 "searchPlaceholder": "Rechercher par nom de client ou téléphone...",

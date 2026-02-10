@@ -9,16 +9,17 @@ import { headers, cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 
 import { checkRateLimit } from "@/lib/rate-limit";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
 
 export async function createOrder(values: OrderValues) {
   try {
     const t = await getTranslations("Errors.orders");
-    
+
     // Get session first to use userId for rate limiting (prevents IP spoofing)
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    
+
     // Check rate limit with userId if authenticated
     const rateLimit = await checkRateLimit({
       key: "order-creation",
@@ -50,13 +51,13 @@ export async function createOrder(values: OrderValues) {
       where: { id: { in: productIds } },
     });
 
-    let recomputedTotalPrice = new Prisma.Decimal(0);
+    let recomputedSubtotal = new Prisma.Decimal(0);
     const finalItems = validatedData.items.map((item) => {
       const dbProduct = products.find((p) => p.id === item.productId);
       if (!dbProduct) throw new Error(`Product ${item.productId} not found`);
 
       const price = dbProduct.discountedPrice ?? dbProduct.originalPrice;
-      recomputedTotalPrice = recomputedTotalPrice.add(price.mul(item.quantity));
+      recomputedSubtotal = recomputedSubtotal.add(price.mul(item.quantity));
 
       return {
         productId: item.productId,
@@ -64,6 +65,11 @@ export async function createOrder(values: OrderValues) {
         price: price,
       };
     });
+
+    // Total price = items subtotal + shipping cost
+    const recomputedTotalPrice = recomputedSubtotal.add(
+      new Prisma.Decimal(SHIPPING_COST),
+    );
 
     const order = await prisma.order.create({
       data: {
