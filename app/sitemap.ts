@@ -166,7 +166,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${BASE_URL}/product/${product.id}`,
     lastModified: product.updatedAt,
     changeFrequency: "weekly" as const,
-    priority: 0.6,
+    priority: 0.8,
     alternates: {
       languages: {
         "fr-TN": `${BASE_URL}/product/${product.id}`,
