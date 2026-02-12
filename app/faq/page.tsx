@@ -1,5 +1,6 @@
 import { FAQClient } from "@/components/faq/faq-client";
 import { getTranslations } from "next-intl/server";
+import { BASE_URL } from "@/lib/constants/site";
 
 export async function generateMetadata() {
     const t = await getTranslations("Metadata.faq");
@@ -31,13 +32,13 @@ export default function FAQPage() {
                                 "@type": "ListItem",
                                 "position": 1,
                                 "name": "Accueil",
-                                "item": "https://www.floraaccess.tn"
+                                "item": BASE_URL
                             },
                             {
                                 "@type": "ListItem",
                                 "position": 2,
                                 "name": "FAQ",
-                                "item": "https://www.floraaccess.tn/faq"
+                                "item": `${BASE_URL}/faq`
                             }
                         ]
                     })

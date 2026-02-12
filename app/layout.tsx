@@ -18,10 +18,10 @@ const nunito = Nunito({
 });
 
 import { getTranslations } from "next-intl/server";
+import { BASE_URL } from "@/lib/constants/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata.root");
-  const BASE_URL = "https://www.floraaccess.tn";
 
   return {
     metadataBase: new URL(BASE_URL),
@@ -115,8 +115,8 @@ export default async function RootLayout({
                     "@context": "https://schema.org",
                     "@type": "Organization",
                     "name": "FloraAccess",
-                    "url": "https://www.floraaccess.tn",
-                    "logo": "https://www.floraaccess.tn/logo.png",
+                    "url": BASE_URL,
+                    "logo": `${BASE_URL}/logo.png`,
                     "sameAs": [
                       "https://www.instagram.com/flora_.access/"
                     ]

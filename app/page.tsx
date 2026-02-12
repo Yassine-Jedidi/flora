@@ -5,6 +5,7 @@ import { CuratedStyles } from "@/components/home/curated-styles";
 import { FeaturedSection } from "@/components/home/featured-section";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
+import { BASE_URL } from "@/lib/constants/site";
 
 function HomeSkeleton() {
   return (
@@ -34,10 +35,10 @@ export default function Home() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
-            "url": "https://www.floraaccess.tn",
+            "url": BASE_URL,
             "potentialAction": {
               "@type": "SearchAction",
-              "target": "https://www.floraaccess.tn/search?q={search_term_string}",
+              "target": `${BASE_URL}/search?q={search_term_string}`,
               "query-input": "required name=search_term_string"
             }
           })

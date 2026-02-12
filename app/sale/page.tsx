@@ -1,10 +1,10 @@
 import { CategoryPage } from "@/components/shop/category-page";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
+import { BASE_URL } from "@/lib/constants/site";
 
 export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("Metadata.sale");
-    const BASE_URL = "https://www.floraaccess.tn";
 
     return {
         title: t("title"),

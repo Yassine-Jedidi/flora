@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://www.floraaccess.tn";
+import { BASE_URL } from "@/lib/constants/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {

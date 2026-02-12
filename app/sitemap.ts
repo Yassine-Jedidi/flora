@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import db from "@/lib/db";
-
-const BASE_URL = "https://www.floraaccess.tn";
+import { BASE_URL } from "@/lib/constants/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages

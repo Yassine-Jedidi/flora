@@ -1,5 +1,6 @@
 import { SearchContent } from "@/components/search/search-content";
 import { getTranslations } from "next-intl/server";
+import { BASE_URL } from "@/lib/constants/site";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Suspense } from "react";
@@ -62,13 +63,13 @@ export default async function SearchPage({
                                 "@type": "ListItem",
                                 "position": 1,
                                 "name": "Accueil",
-                                "item": "https://www.floraaccess.tn"
+                                "item": BASE_URL
                             },
                             {
                                 "@type": "ListItem",
                                 "position": 2,
                                 "name": "Recherche",
-                                "item": "https://www.floraaccess.tn/search"
+                                "item": `${BASE_URL}/search`
                             }
                         ]
                     })

@@ -10,6 +10,7 @@ import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
+import { BASE_URL } from "@/lib/constants/site";
 
 export async function generateMetadata({
     params
@@ -42,7 +43,7 @@ export async function generateMetadata({
             title: `${product.name} | FloraAccess`,
             description: description,
             type: "article",
-            url: `https://www.floraaccess.tn/product/${product.id}`,
+            url: `${BASE_URL}/product/${product.id}`,
             images: product.images.map(image => ({
                 url: image.url,
                 width: 1200,
@@ -127,7 +128,7 @@ export default async function ProductPage({
         "sku": productForLd.id,
         "offers": {
             "@type": "Offer",
-            "url": `https://www.floraaccess.tn/product/${productForLd.id}`,
+            "url": `${BASE_URL}/product/${productForLd.id}`,
             "priceCurrency": "TND",
             "price": productForLd.discountedPrice ? productForLd.discountedPrice.toString() : productForLd.originalPrice.toString(),
             "availability": productForLd.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -166,19 +167,19 @@ export default async function ProductPage({
                                     "@type": "ListItem",
                                     "position": 1,
                                     "name": "Accueil",
-                                    "item": "https://www.floraaccess.tn"
+                                    "item": BASE_URL
                                 },
                                 {
                                     "@type": "ListItem",
                                     "position": 2,
                                     "name": productForLd.category.name,
-                                    "item": `https://www.floraaccess.tn/${productForLd.category.slug}`
+                                    "item": `${BASE_URL}/${productForLd.category.slug}`
                                 },
                                 {
                                     "@type": "ListItem",
                                     "position": 3,
                                     "name": productForLd.name,
-                                    "item": `https://www.floraaccess.tn/product/${productForLd.id}`
+                                    "item": `${BASE_URL}/product/${productForLd.id}`
                                 }
                             ]
                         }

@@ -1,4 +1,5 @@
 import { getProductsByCategory, getSaleProducts } from "@/app/actions/get-products";
+import { BASE_URL } from "@/lib/constants/site";
 import { getTranslations } from "next-intl/server";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -139,13 +140,13 @@ export async function CategoryPage({
                                 "@type": "ListItem",
                                 "position": 1,
                                 "name": "Accueil",
-                                "item": "https://www.floraaccess.tn"
+                                "item": BASE_URL
                             },
                             {
                                 "@type": "ListItem",
                                 "position": 2,
                                 "name": title,
-                                "item": `https://www.floraaccess.tn/${categorySlug}`
+                                "item": `${BASE_URL}/${categorySlug}`
                             }
                         ]
                     })
