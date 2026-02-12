@@ -32,7 +32,7 @@ export const auth = betterAuth({
         );
 
       const mailOptions = {
-        from: `"Flora Access" <${process.env.SMTP_USER}>`,
+        from: `"Flora Access" <${process.env.EMAIL_FROM}>`,
         to: data.user.email,
         subject: "Reset your Flora password",
         html: `

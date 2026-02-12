@@ -7,20 +7,23 @@ import { SHIPPING_COST } from "@/lib/constants/shipping";
 // as email notifications are core functionality for this e-commerce application.
 const smtpUser = process.env.SMTP_USER;
 const gmailAppPassword = process.env.GMAIL_APP_PASSWORD;
+const emailFrom = process.env.EMAIL_FROM;
 
-if (!smtpUser || !gmailAppPassword) {
+if (!smtpUser || !gmailAppPassword || !emailFrom) {
   throw new Error(
-    "SMTP configuration error: SMTP_USER and GMAIL_APP_PASSWORD environment variables must be defined.",
+    "SMTP configuration error: SMTP_USER, GMAIL_APP_PASSWORD, and EMAIL_FROM environment variables must be defined.",
   );
 }
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: smtpUser,
-    pass: gmailAppPassword,
+    user: process.env.SMTP_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
   },
 });
+
+const EMAIL_FROM = `"Flora Access" <${process.env.EMAIL_FROM}>`;
 
 interface OrderEmailData {
   orderId: string;
@@ -44,7 +47,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
   const itemsSubtotal = data.totalPrice - SHIPPING_COST;
 
   const mailOptions = {
-    from: `"Flora Access" <${process.env.SMTP_USER}>`,
+    from: EMAIL_FROM,
     to: data.userEmail,
     subject: `Order Received! #${data.orderId.slice(-6).toUpperCase()}`,
     html: `
@@ -171,7 +174,7 @@ export async function sendOrderDeliveredEmail(data: {
   userName: string;
 }) {
   const mailOptions = {
-    from: `"Flora Access" <${process.env.SMTP_USER}>`,
+    from: EMAIL_FROM,
     to: data.userEmail,
     subject: `Your Flora treasure has arrived! 🌸`,
     html: `
