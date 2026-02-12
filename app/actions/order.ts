@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { Prisma, OrderStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { headers, cookies } from "next/headers";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 
 import { checkRateLimit } from "@/lib/rate-limit";
 import { SHIPPING_COST } from "@/lib/constants/shipping";
@@ -102,6 +102,7 @@ export async function createOrder(values: OrderValues) {
         });
 
         const { sendOrderConfirmationEmail } = await import("@/lib/mail");
+        const locale = await getLocale();
 
         // Fire-and-forget pattern: We intentionally don't await to avoid blocking the UI.
         // The catch handler is properly attached and will log any email sending errors.
@@ -118,7 +119,8 @@ export async function createOrder(values: OrderValues) {
             city: validatedData.city,
             detailedAddress: validatedData.detailedAddress,
           },
-        }).catch((err) => console.error("Email background error:", err));
+          locale,
+        }).catch((err: Error) => console.error("Email background error:", err));
       } catch (emailError) {
         console.error(
           "Failed to initiate order confirmation email:",
@@ -203,6 +205,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
     if (status === "DELIVERED" && order.user?.email) {
       try {
         const { sendOrderDeliveredEmail } = await import("@/lib/mail");
+        const locale = await getLocale();
 
         // Fire-and-forget pattern: Email sending happens in the background.
         // Errors are logged but don't affect the order status update success.
@@ -210,7 +213,8 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
           orderId: order.id,
           userEmail: order.user.email,
           userName: order.user.name ?? "there",
-        }).catch((err) =>
+          locale,
+        }).catch((err: Error) =>
           console.error("Delivered Email background error:", err),
         );
       } catch (emailError) {
