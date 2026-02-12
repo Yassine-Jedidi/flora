@@ -67,8 +67,73 @@ export default async function ProductPage({
 
     const t = await getTranslations("Shop.product");
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "image": product.images.map(img => img.url),
+        "description": product.description,
+        "sku": product.id,
+        "offers": {
+            "@type": "Offer",
+            "url": `https://www.floraaccess.tn/product/${product.id}`,
+            "priceCurrency": "TND",
+            "price": product.discountedPrice ? product.discountedPrice.toString() : product.originalPrice.toString(),
+            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+            "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "7.000",
+                    "currency": "TND"
+                },
+                "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "TN"
+                }
+            }
+        },
+        "brand": {
+            "@type": "Brand",
+            "name": "FloraAccess"
+        }
+    };
+
     return (
         <div className="min-h-screen flex flex-col bg-white">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify([
+                        jsonLd,
+                        {
+                            "@context": "https://schema.org",
+                            "@type": "BreadcrumbList",
+                            "itemListElement": [
+                                {
+                                    "@type": "ListItem",
+                                    "position": 1,
+                                    "name": "Accueil",
+                                    "item": "https://www.floraaccess.tn"
+                                },
+                                {
+                                    "@type": "ListItem",
+                                    "position": 2,
+                                    "name": product.category.name,
+                                    "item": `https://www.floraaccess.tn/${product.category.slug}`
+                                },
+                                {
+                                    "@type": "ListItem",
+                                    "position": 3,
+                                    "name": product.name,
+                                    "item": `https://www.floraaccess.tn/product/${product.id}`
+                                }
+                            ]
+                        }
+                    ])
+                }}
+            />
             <Navbar />
 
             <main className="flex-1 pt-32 pb-24">

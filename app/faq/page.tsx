@@ -10,5 +10,32 @@ export async function generateMetadata() {
 }
 
 export default function FAQPage() {
-    return <FAQClient />;
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "Accueil",
+                                "item": "https://www.floraaccess.tn"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": "FAQ",
+                                "item": "https://www.floraaccess.tn/faq"
+                            }
+                        ]
+                    })
+                }}
+            />
+            <FAQClient />
+        </>
+    );
 }

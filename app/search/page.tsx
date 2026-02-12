@@ -21,5 +21,32 @@ export default async function SearchPage({
     searchParams: Promise<{ q?: string }>
 }) {
     const { q } = await searchParams;
-    return <SearchContent query={q} />;
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "Accueil",
+                                "item": "https://www.floraaccess.tn"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": "Recherche",
+                                "item": "https://www.floraaccess.tn/search"
+                            }
+                        ]
+                    })
+                }}
+            />
+            <SearchContent query={q} />
+        </>
+    );
 }

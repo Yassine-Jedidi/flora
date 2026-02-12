@@ -36,6 +36,29 @@ export async function CategoryPage({
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "Accueil",
+                                "item": "https://www.floraaccess.tn"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": title,
+                                "item": `https://www.floraaccess.tn/${categorySlug}`
+                            }
+                        ]
+                    })
+                }}
+            />
             <Navbar />
 
             <main className="flex-1 pt-32">

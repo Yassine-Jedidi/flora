@@ -103,6 +103,21 @@ export default async function RootLayout({
             <FavoritesProvider>
               <ScrollToTop />
               {children}
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "Organization",
+                    "name": "FloraAccess",
+                    "url": "https://www.floraaccess.tn",
+                    "logo": "https://www.floraaccess.tn/logo.png",
+                    "sameAs": [
+                      "https://www.instagram.com/flora_.access/"
+                    ]
+                  })
+                }}
+              />
               <Toaster />
             </FavoritesProvider>
           </CartProvider>
