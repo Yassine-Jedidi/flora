@@ -1027,5 +1027,11 @@
                 "photoSpecs": "Meilleurs résultats avec des images carrées 1080x1080"
             }
         }
+    },
+    "Error": {
+        "title": "Oups ! Quelque chose s'est mal passé",
+        "description": "Nous avons rencontré une erreur inattendue. Nos artisans travaillent pour réparer cela.",
+        "retry": "Réessayer",
+        "backHome": "Retour à l'accueil"
     }
 }

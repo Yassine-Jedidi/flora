@@ -1027,5 +1027,11 @@
                 "photoSpecs": "Best results with 1080x1080 square images"
             }
         }
+    },
+    "Error": {
+        "title": "Oops! Something went wrong",
+        "description": "We encountered an unexpected error. Our artisans are working to fix it.",
+        "retry": "Try Again",
+        "backHome": "Back to Home"
     }
 }
