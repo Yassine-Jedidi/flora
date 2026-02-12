@@ -34,6 +34,8 @@ export async function getAddresses() {
   }
 }
 
+import { AddressSchema } from "@/lib/validations/order";
+
 export async function createAddress(values: {
   name: string;
   fullName: string;
@@ -50,6 +52,13 @@ export async function createAddress(values: {
   if (!session) {
     const t = await getTranslations("Errors");
     return { success: false, error: t("unauthenticated") };
+  }
+
+  // Validate values
+  const validatedFields = AddressSchema.safeParse(values);
+  if (!validatedFields.success) {
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("validation") };
   }
 
   try {
@@ -110,6 +119,13 @@ export async function updateAddress(
   if (!session) {
     const t = await getTranslations("Errors");
     return { success: false, error: t("unauthenticated") };
+  }
+
+  // Validate partial values
+  const validatedFields = AddressSchema.partial().safeParse(values);
+  if (!validatedFields.success) {
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("validation") };
   }
 
   try {

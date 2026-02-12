@@ -10,14 +10,21 @@ import { getTranslations } from "next-intl/server";
 
 const utapi = new UTApi();
 
+import * as z from "zod";
+
+const ProfileSchema = z.object({
+  name: z.string().min(2).max(50),
+  image: z.string().optional(),
+});
+
 export async function updateProfile(values: { name: string; image?: string }) {
   const tProfile = await getTranslations("Errors.profile");
-  
+
   // Get session first to use userId for rate limiting (prevents IP spoofing)
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  
+
   const rateLimit = await checkRateLimit({
     key: "profile-update",
     window: 3600, // 1 hour
@@ -30,6 +37,13 @@ export async function updateProfile(values: { name: string; image?: string }) {
       success: false,
       error: tProfile("rateLimit", { message: rateLimit.message || "" }),
     };
+  }
+
+  // Validate values
+  const validatedFields = ProfileSchema.safeParse(values);
+  if (!validatedFields.success) {
+    const t = await getTranslations("Errors");
+    return { success: false, error: t("validation") };
   }
 
   try {
@@ -83,17 +97,17 @@ export async function updateProfile(values: { name: string; image?: string }) {
 
 export async function deleteUploadedFile(fileUrl: string) {
   const tProfile = await getTranslations("Errors.profile");
-  
+
   // Get session first to use userId for rate limiting (prevents IP spoofing)
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  
+
   if (!session) {
     const t = await getTranslations("Errors");
     return { success: false, error: t("unauthenticated") };
   }
-  
+
   const rateLimit = await checkRateLimit({
     key: "file-delete",
     window: 3600, // 1 hour
