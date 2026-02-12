@@ -32,16 +32,36 @@ export default function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "url": BASE_URL,
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": `${BASE_URL}/search?q={search_term_string}`,
-              "query-input": "required name=search_term_string"
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "url": BASE_URL,
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": `${BASE_URL}/search?q={search_term_string}`,
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "FloraAccess",
+              "url": BASE_URL,
+              "logo": `${BASE_URL}/logo.png`,
+              "sameAs": [
+                "https://www.instagram.com/flora_.access/",
+                "https://www.tiktok.com/@floraaccess",
+                "https://www.facebook.com/people/Flora-Accessories/61586066246480/"
+              ],
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "areaServed": "TN",
+                "availableLanguage": ["French", "English"]
+              }
             }
-          })
+          ])
         }}
       />
       <Navbar />
