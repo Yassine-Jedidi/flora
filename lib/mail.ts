@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
 import { escapeHtml } from "@/lib/utils";
-import { SHIPPING_COST } from "@/lib/constants/shipping";
 
 /**
  *
@@ -35,6 +34,7 @@ interface OrderEmailData {
   userEmail: string;
   userName: string;
   totalPrice: number;
+  shippingCost: number;
   items: {
     name: string;
     quantity: number;
@@ -238,7 +238,7 @@ const Button = (url: string, text: string) => `
 export async function sendOrderConfirmationEmail(data: OrderEmailData) {
   const locale = getLocale(data.locale);
   const t = TRANSLATIONS[locale];
-  const itemsSubtotal = data.totalPrice - SHIPPING_COST;
+  const itemsSubtotal = data.totalPrice - data.shippingCost;
   const orderIdShort = data.orderId.slice(-8).toUpperCase();
   const dateFormatted = new Date().toLocaleDateString(
     locale === "fr" ? "fr-FR" : "en-GB",
@@ -297,7 +297,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
         <!-- Shipping -->
         <tr>
           <td style="padding-bottom: 8px; font-size: 14px; color: #999;">${t.orderConfirmation.shipping}</td>
-          <td align="right" style="padding-bottom: 8px; font-size: 14px; color: #999;">${SHIPPING_COST.toFixed(3)} TND</td>
+          <td align="right" style="padding-bottom: 8px; font-size: 14px; color: #999;">${data.shippingCost.toFixed(3)} TND</td>
         </tr>
 
         <!-- Total -->

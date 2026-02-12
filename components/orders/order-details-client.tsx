@@ -21,7 +21,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SHIPPING_COST } from "@/lib/constants/shipping";
+
 import { useTranslations, useFormatter } from "next-intl";
 import { useSession } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
@@ -271,11 +271,11 @@ export function OrderDetailsClient({ params }: { params: Promise<{ orderId: stri
                                     <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">{t("summary")}</h4>
                                     <div className="flex justify-between items-center text-sm font-bold text-gray-500">
                                         <span>{t("subtotal")}</span>
-                                        <span>{(order.totalPrice - SHIPPING_COST).toFixed(3)} TND</span>
+                                        <span>{(order.totalPrice - order.shippingCost).toFixed(3)} TND</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm font-bold text-gray-500">
                                         <span>{t("shipping")}</span>
-                                        <span>{SHIPPING_COST.toFixed(3)} TND</span>
+                                        <span>{order.shippingCost.toFixed(3)} TND</span>
                                     </div>
                                     <div className="h-px bg-pink-100 my-2" />
                                     <div className="flex justify-between items-center">

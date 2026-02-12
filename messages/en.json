@@ -409,7 +409,7 @@
             "stockQ": "What if an item I want is out of stock?",
             "stockA": "Our treasures go fast! You can follow us on Instagram @flora_.access for restock announcements or contact us to inquire about a specific item.",
             "shippingCostQ": "How much does shipping cost?",
-            "shippingCostA": "We offer a flat rate of 7.00 DT for deliveries all across Tunisia.",
+            "shippingCostA": "We offer a flat rate of {cost} DT for deliveries all across Tunisia.",
             "deliveryTimeQ": "How long will it take to get my order?",
             "deliveryTimeA": "For Greater Tunis, it usually takes 24-48 hours. For other regions, expect your delivery within 2-4 business days.",
             "openPackageQ": "Can I open the package before paying?",

@@ -69,5 +69,6 @@ export interface Order {
   totalPrice: number;
   status: string;
   createdAt: string | Date;
+  shippingCost: number;
   items: OrderItem[];
 }

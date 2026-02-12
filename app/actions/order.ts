@@ -67,9 +67,8 @@ export async function createOrder(values: OrderValues) {
     });
 
     // Total price = items subtotal + shipping cost
-    const recomputedTotalPrice = recomputedSubtotal.add(
-      new Prisma.Decimal(SHIPPING_COST),
-    );
+    const shippingCost = new Prisma.Decimal(SHIPPING_COST);
+    const recomputedTotalPrice = recomputedSubtotal.add(shippingCost);
 
     // Get user's locale to store with the order
     const locale = await getLocale();
@@ -83,6 +82,7 @@ export async function createOrder(values: OrderValues) {
         city: validatedData.city,
         detailedAddress: validatedData.detailedAddress,
         totalPrice: recomputedTotalPrice,
+        shippingCost: shippingCost,
         status: "PENDING",
         language: locale,
         items: {
@@ -115,6 +115,7 @@ export async function createOrder(values: OrderValues) {
           userEmail: session.user.email,
           userName: session.user.name ?? validatedData.fullName,
           totalPrice: recomputedTotalPrice.toNumber(),
+          shippingCost: shippingCost.toNumber(),
           items: emailItems,
           shippingAddress: {
             fullName: validatedData.fullName,
@@ -283,6 +284,7 @@ export async function getUserOrders(page: number = 1, pageSize: number = 10) {
       orders: orders.map((order) => ({
         ...order,
         totalPrice: order.totalPrice.toNumber(),
+        shippingCost: order.shippingCost.toNumber(),
         items: order.items.map((item) => ({
           ...item,
           price: item.price.toNumber(),
@@ -345,6 +347,7 @@ export async function getOrderById(orderId: string) {
       order: {
         ...order,
         totalPrice: order.totalPrice.toNumber(),
+        shippingCost: order.shippingCost.toNumber(),
         items: order.items.map((item) => ({
           ...item,
           price: item.price.toNumber(),

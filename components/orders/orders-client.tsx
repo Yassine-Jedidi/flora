@@ -25,7 +25,7 @@ import { useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/pagination-control";
 import { motion } from "motion/react";
 import { useTranslations, useFormatter } from "next-intl";
-import { SHIPPING_COST } from "@/lib/constants/shipping";
+
 import { useSession } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -319,11 +319,11 @@ function OrdersContent() {
                                                 <div className="bg-gray-50/50 rounded-2xl p-4 space-y-2">
                                                     <div className="flex justify-between items-center text-xs md:text-sm font-bold text-gray-400">
                                                         <span>{t("subtotal")}</span>
-                                                        <Price price={order.totalPrice - SHIPPING_COST} size="xs" color="text-gray-500" />
+                                                        <Price price={order.totalPrice - order.shippingCost} size="xs" color="text-gray-500" />
                                                     </div>
                                                     <div className="flex justify-between items-center text-xs md:text-sm font-bold text-gray-400">
                                                         <span>{t("shipping")}</span>
-                                                        <Price price={SHIPPING_COST} size="xs" color="text-gray-500" />
+                                                        <Price price={order.shippingCost} size="xs" color="text-gray-500" />
                                                     </div>
                                                     <div className="h-px bg-pink-100 my-1" />
                                                     <div className="flex justify-between items-center">

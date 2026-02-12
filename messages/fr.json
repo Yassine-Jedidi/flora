@@ -409,7 +409,7 @@
             "stockQ": "Que se passe-t-il si un article que je veux est en rupture de stock ?",
             "stockA": "Nos trésors partent vite ! Vous pouvez nous suivre sur Instagram @flora_.access pour les annonces de réapprovisionnement ou nous contacter pour vous renseigner sur un article spécifique.",
             "shippingCostQ": "Combien coûte la livraison ?",
-            "shippingCostA": "Nous offrons un tarif fixe de 7,00 DT pour les livraisons dans toute la Tunisie.",
+            "shippingCostA": "Nous offrons un tarif fixe de {cost} DT pour les livraisons dans toute la Tunisie.",
             "deliveryTimeQ": "Combien de temps faudra-t-il pour recevoir ma commande ?",
             "deliveryTimeA": "Pour le Grand Tunis, cela prend généralement 24-48 heures. Pour les autres régions, attendez votre livraison dans un délai de 2 à 4 jours ouvrables.",
             "openPackageQ": "Puis-je ouvrir le colis avant de payer ?",

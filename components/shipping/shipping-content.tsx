@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Price } from "@/components/shop/price";
 import { useTranslations } from "next-intl";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
 
 export function ShippingContent() {
     const t = useTranslations("Shipping");
@@ -27,7 +28,7 @@ export function ShippingContent() {
             description: (
                 <div className="flex flex-col gap-1">
                     <span>{t("flatRateDesc")}</span>
-                    <Price price={7.00} size="sm" className="mt-1" />
+                    <Price price={SHIPPING_COST} size="sm" className="mt-1" />
                 </div>
             ),
             bg: "bg-pink-50"

@@ -13,6 +13,7 @@ import {
     Instagram,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
 
 export function FAQClient() {
     const t = useTranslations("FAQ");
@@ -42,7 +43,7 @@ export function FAQClient() {
             questions: [
                 {
                     q: t("questions.shippingCostQ"),
-                    a: t("questions.shippingCostA")
+                    a: t("questions.shippingCostA", { cost: SHIPPING_COST.toFixed(2) })
                 },
                 {
                     q: t("questions.deliveryTimeQ"),
