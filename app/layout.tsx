@@ -55,9 +55,9 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [
         {
           url: "/logo.png",
-          width: 800,
-          height: 600,
-          alt: "FloraAccess Jewelry",
+          width: 1200,
+          height: 630,
+          alt: "FloraAccess - Bijoux et Accessoires de Luxe en Tunisie",
         },
       ],
       locale: "fr_TN",
