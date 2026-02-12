@@ -50,7 +50,7 @@ import {
 
 export function CheckoutClient() {
   const { cart, totalPrice, clearCart, updateQuantity, removeItem } = useCart();
-  const { data: session } = useSession();
+  const { data: session, isPending: isSessionPending } = useSession();
   const t = useTranslations("Checkout");
 
   const [isPending, setIsPending] = useState(false);
@@ -60,6 +60,7 @@ export function CheckoutClient() {
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [isAddingNewAddress, setIsAddingNewAddress] = useState(false);
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
 
   const form = useForm<AddressValues>({
     resolver: zodResolver(AddressSchema),
@@ -82,37 +83,47 @@ export function CheckoutClient() {
   // Load addresses if logged in
   useEffect(() => {
     const fetchAddresses = async () => {
+      if (isSessionPending) return;
+
       if (session) {
-        const result = await getAddresses();
-        if (result.success && result.data) {
-          setSavedAddresses(result.data);
-          // Auto-select default address
-          const defaultAddr = (result.data as any[]).find((a) => a.isDefault) || result.data[0];
-          if (defaultAddr) {
-            setSelectedAddressId(defaultAddr.id);
-            // Pre-fill form with selected address
-            form.reset({
-              fullName: defaultAddr.fullName || session.user.name || "",
-              phoneNumber: defaultAddr.phoneNumber,
-              governorate: defaultAddr.governorate,
-              city: defaultAddr.city,
-              detailedAddress: defaultAddr.detailedAddress,
-              saveAddress: false,
-            });
+        setIsLoadingAddresses(true);
+        try {
+          const result = await getAddresses();
+          if (result.success && result.data && (result.data as any[]).length > 0) {
+            setSavedAddresses(result.data);
+            const data = result.data as any[];
+            // Auto-select default address
+            const defaultAddr = data.find((a) => a.isDefault) || data[0];
+            if (defaultAddr) {
+              setSelectedAddressId(defaultAddr.id);
+              setIsAddingNewAddress(false);
+              // Pre-fill form with selected address
+              form.reset({
+                fullName: defaultAddr.fullName || session.user.name || "",
+                phoneNumber: defaultAddr.phoneNumber,
+                governorate: defaultAddr.governorate,
+                city: defaultAddr.city,
+                detailedAddress: defaultAddr.detailedAddress,
+                saveAddress: false,
+              });
+            }
           } else {
             setIsAddingNewAddress(true);
             form.setValue("fullName", session.user.name || "");
           }
-        } else {
+        } catch (error) {
+          console.error("Failed to fetch addresses:", error);
           setIsAddingNewAddress(true);
-          form.setValue("fullName", session.user.name || "");
+        } finally {
+          setIsLoadingAddresses(false);
         }
       } else {
         setIsAddingNewAddress(true);
+        setIsLoadingAddresses(false);
       }
     };
     fetchAddresses();
-  }, [session, form]);
+  }, [session, isSessionPending, form]);
 
   const handleRemove = (id: string, name: string) => {
     setItemToRemove({ id, name });
@@ -130,7 +141,6 @@ export function CheckoutClient() {
 
   const shippingCost = cart.length > 0 ? SHIPPING_COST : 0;
   const finalTotal = totalPrice + shippingCost;
-
 
   const onSubmit = async (values: AddressValues) => {
     if (cart.length === 0) return;
@@ -257,7 +267,16 @@ export function CheckoutClient() {
                     </h2>
                   </div>
 
-                  {session && savedAddresses.length > 0 && !isAddingNewAddress && (
+                  {isLoadingAddresses ? (
+                    <div className="space-y-4 mb-6 animate-in fade-in duration-500">
+                      <div className="h-3 w-32 bg-gray-100 animate-pulse rounded-full ml-1" />
+                      <div className="grid grid-cols-1 gap-4">
+                        {[1, 2].map((i) => (
+                          <div key={i} className="h-32 md:h-40 bg-gray-50/50 animate-pulse rounded-[1.5rem] md:rounded-3xl border-2 border-gray-100" />
+                        ))}
+                      </div>
+                    </div>
+                  ) : session && savedAddresses.length > 0 && !isAddingNewAddress ? (
                     <div className="space-y-4 mb-6 animate-in fade-in slide-in-from-top-4 duration-300">
                       <p className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
                         {t("selectSavedAddress")}
@@ -323,9 +342,9 @@ export function CheckoutClient() {
                         {t("shipToNewAddress")}
                       </Button>
                     </div>
-                  )}
+                  ) : null}
 
-                  {(isAddingNewAddress || !session || savedAddresses.length === 0) && (
+                  {!isLoadingAddresses && (isAddingNewAddress || !session || savedAddresses.length === 0) && (
                     <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
                       {session && savedAddresses.length > 0 && (
                         <div className="flex justify-between items-center mb-2">
@@ -467,7 +486,7 @@ export function CheckoutClient() {
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start gap-2">
                             <p className="text-xs md:text-sm font-black text-white truncate">{item.name}</p>
-                            <button onClick={() => handleRemove(item.id, item.name)} className="text-white/40 hover:text-white transition-colors shrink-0">
+                            <button type="button" onClick={() => handleRemove(item.id, item.name)} className="text-white/40 hover:text-white transition-colors shrink-0">
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
