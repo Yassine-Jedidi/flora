@@ -13,7 +13,7 @@ const utapi = new UTApi();
 import * as z from "zod";
 
 const ProfileSchema = z.object({
-  name: z.string().min(2).max(50),
+  name: z.string().min(3).max(50),
   image: z.string().optional(),
 });
 
@@ -253,8 +253,18 @@ export async function setUserPassword(password: string) {
       return { success: false, error: t("unauthenticated") };
     }
 
-    // Safety check for method existence
-    if (!(auth.api as any).setPassword) {
+    // setPassword is a documented better-auth server API for social-only users
+    // TypeScript types don't fully expose it, so we use a targeted type assertion
+    const setPasswordFn = (
+      auth.api as unknown as {
+        setPassword: (opts: {
+          body: { newPassword: string };
+          headers: Headers;
+        }) => Promise<void>;
+      }
+    ).setPassword;
+
+    if (!setPasswordFn) {
       console.error("auth.api.setPassword is not available");
       return {
         success: false,
@@ -262,7 +272,7 @@ export async function setUserPassword(password: string) {
       };
     }
 
-    await (auth.api as any).setPassword({
+    await setPasswordFn({
       body: {
         newPassword: password,
       },

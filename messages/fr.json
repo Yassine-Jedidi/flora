@@ -515,7 +515,13 @@
             "error": "E-mail ou mot de passe invalide",
             "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
             "validationError": "Échec de la connexion",
-            "validationDesc": "Veuillez vérifier votre e-mail et votre mot de passe."
+            "validationDesc": "Veuillez vérifier votre e-mail et votre mot de passe.",
+            "validation": {
+                "emailInvalid": "Adresse e-mail invalide",
+                "maxEmail": "L'e-mail ne peut pas dépasser 50 caractères",
+                "passwordRequired": "Le mot de passe est requis",
+                "maxPassword": "Le mot de passe ne peut pas dépasser 32 caractères"
+            }
         },
         "signUp": {
             "title": "Créer un compte",
@@ -539,7 +545,7 @@
             "validationError": "Échec de l'inscription",
             "validationDesc": "Veuillez vérifier les détails de votre compte.",
             "validation": {
-                "nameMin": "Le nom doit comporter au moins 2 caractères",
+                "nameMin": "Le nom doit comporter au moins 3 caractères",
                 "maxName": "Le nom ne peut pas dépasser 50 caractères",
                 "emailInvalid": "Adresse e-mail invalide",
                 "maxEmail": "L'e-mail ne peut pas dépasser 50 caractères",

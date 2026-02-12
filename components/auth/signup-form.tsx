@@ -30,7 +30,7 @@ export function SignUpForm() {
     const [isLoading, setIsLoading] = useState(false);
 
     const signUpSchema = z.object({
-        name: z.string().min(2, t("validation.nameMin")).max(50, t("validation.maxName")),
+        name: z.string().min(3, t("validation.nameMin")).max(50, t("validation.maxName")),
         email: z.email(t("validation.emailInvalid")).max(50, t("validation.maxEmail")),
         password: z.string().min(8, t("validation.passwordMin")).max(32, t("validation.maxPassword")),
     });

@@ -515,7 +515,13 @@
             "error": "Invalid email or password",
             "unexpectedError": "An unexpected error occurred. Please try again.",
             "validationError": "Sign in failed",
-            "validationDesc": "Please check your email and password."
+            "validationDesc": "Please check your email and password.",
+            "validation": {
+                "emailInvalid": "Invalid email address",
+                "maxEmail": "Email cannot exceed 50 characters",
+                "passwordRequired": "Password is required",
+                "maxPassword": "Password cannot exceed 32 characters"
+            }
         },
         "signUp": {
             "title": "Create Account",
@@ -539,7 +545,7 @@
             "validationError": "Sign up failed",
             "validationDesc": "Please check your account details.",
             "validation": {
-                "nameMin": "Name must be at least 2 characters",
+                "nameMin": "Name must be at least 3 characters",
                 "maxName": "Name cannot exceed 50 characters",
                 "emailInvalid": "Invalid email address",
                 "maxEmail": "Email cannot exceed 50 characters",
