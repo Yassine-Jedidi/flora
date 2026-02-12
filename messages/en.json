@@ -197,6 +197,11 @@
         "noResults": "No treasures found matching \"{query}\"",
         "searchFailed": "Search failed",
         "selectLanguage": "Select language",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "openSearch": "Open search",
+        "clearSearch": "Clear search",
+        "userProfile": "User profile",
         "logoAlt": "FloraAccess Logo - Jewelry and Accessories Tunisia"
     },
     "Checkout": {
@@ -315,7 +320,9 @@
             "premiumMaterials": "Premium Materials",
             "fastDelivery": "Fast Delivery",
             "deliveryTunisia": "Delivery across Tunisia",
-            "outOfStock": "Out of Stock"
+            "outOfStock": "Out of Stock",
+            "increaseQuantity": "Increase quantity",
+            "decreaseQuantity": "Decrease quantity"
         },
         "related": {
             "title": "You might also love",
@@ -329,10 +336,16 @@
         "total": "Total",
         "checkout": "Check Out Now",
         "secure": "Verify your package 🌸",
+        "openCart": "Open cart",
+        "closeCart": "Close cart",
+        "increaseQuantity": "Increase quantity",
+        "decreaseQuantity": "Decrease quantity",
+        "removeItem": "Remove item",
         "removed": "Removed from cart"
     },
     "Favorites": {
         "title": "Your Favorites",
+        "openFavorites": "Open favorites",
         "empty": "No favorite items yet. Start adding treasures!",
         "countSaved": "{count, plural, =0 {No items saved} =1 {1 item saved} other {# items saved}}",
         "noFavorites": "No favorites yet",

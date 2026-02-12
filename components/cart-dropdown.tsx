@@ -42,6 +42,7 @@ export function CartDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className={`relative rounded-full p-2 transition-all duration-300 ${isOpen ? "bg-pink-100/50 text-primary" : "hover:bg-pink-50 text-flora-dark"
           }`}
+        aria-label={t("openCart")}
       >
         <ShoppingBag className="h-5 w-5" />
         {totalItems > 0 && (
@@ -67,6 +68,7 @@ export function CartDropdown() {
             <button
               onClick={() => setIsOpen(false)}
               className="p-1 hover:bg-red-50 hover:text-red-500 rounded-full transition-all text-gray-400"
+              aria-label={t("closeCart")}
             >
               <X className="w-4 h-4" />
             </button>
@@ -127,6 +129,7 @@ export function CartDropdown() {
                               }
                             }}
                             className="w-5 h-5 rounded-full hover:bg-pink-50 flex items-center justify-center text-gray-400"
+                            aria-label={t("decreaseQuantity")}
                           >
                             <Minus className="w-3 h-3" />
                           </button>
@@ -135,6 +138,7 @@ export function CartDropdown() {
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             disabled={item.quantity >= item.stock}
                             className="w-5 h-5 rounded-full hover:bg-pink-50 flex items-center justify-center text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed"
+                            aria-label={t("increaseQuantity")}
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -143,6 +147,7 @@ export function CartDropdown() {
                         <button
                           onClick={() => handleRemove(item.id, item.name)}
                           className="opacity-0 group-hover/item:opacity-100 p-1.5 text-gray-300 hover:text-red-500 transition-all"
+                          aria-label={t("removeItem")}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

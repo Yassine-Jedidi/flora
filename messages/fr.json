@@ -197,6 +197,11 @@
         "noResults": "Aucun trésor trouvé pour \"{query}\"",
         "searchFailed": "La recherche a échoué",
         "selectLanguage": "Choisir la langue",
+        "openMenu": "Ouvrir le menu",
+        "closeMenu": "Fermer le menu",
+        "openSearch": "Ouvrir la recherche",
+        "clearSearch": "Effacer la recherche",
+        "userProfile": "Profil utilisateur",
         "logoAlt": "Logo FloraAccess - Bijoux et Accessoires Tunisie"
     },
     "Checkout": {
@@ -315,7 +320,9 @@
             "premiumMaterials": "Matériaux Premium",
             "fastDelivery": "Livraison Rapide",
             "deliveryTunisia": "Livraison sur toute la Tunisie",
-            "outOfStock": "Rupture de Stock"
+            "outOfStock": "Rupture de Stock",
+            "increaseQuantity": "Augmenter la quantité",
+            "decreaseQuantity": "Diminuer la quantité"
         },
         "related": {
             "title": "Vous pourriez aussi aimer",
@@ -329,10 +336,16 @@
         "total": "Total",
         "checkout": "Passer à la caisse",
         "secure": "Vérifiez votre colis 🌸",
+        "openCart": "Ouvrir le panier",
+        "closeCart": "Fermer le panier",
+        "increaseQuantity": "Augmenter la quantité",
+        "decreaseQuantity": "Diminuer la quantité",
+        "removeItem": "Retirer l'article",
         "removed": "Retiré du panier"
     },
     "Favorites": {
         "title": "Vos Favoris",
+        "openFavorites": "Ouvrir les favoris",
         "empty": "Aucun article favori pour le moment. Commencez à ajouter des trésors !",
         "countSaved": "{count, plural, =0 {Aucun article enregistré} =1 {1 article enregistré} other {# articles enregistrés}}",
         "noFavorites": "Pas encore de favoris",

@@ -48,7 +48,10 @@ export function FavoritesSheet() {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <button className="relative p-2 text-flora-dark transition-colors group/nav-heart">
+        <button
+          className="relative p-2 text-flora-dark transition-colors group/nav-heart"
+          aria-label={t("openFavorites")}
+        >
           <Heart className="w-5 h-5 text-primary fill-primary transition-transform group-hover/nav-heart:scale-110" />
           {favorites.length > 0 && (
             <span className="absolute top-0 right-0 bg-flora-purple text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm group-hover/nav-heart:-translate-y-1 transition-transform">
@@ -153,7 +156,7 @@ export function FavoritesSheet() {
                 <button
                   onClick={() => handleRemove(product.id, product.name)}
                   className="self-start p-2 text-gray-400 hover:text-red-500 transition-colors hover:bg-red-50 rounded-lg"
-                  title={t("removeTooltip")}
+                  aria-label={t("removeTooltip")}
                 >
                   <X className="w-5 h-5" />
                 </button>

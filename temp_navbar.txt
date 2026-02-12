@@ -1,0 +1,120 @@
+﻿"use client";
+
+import { Search, ShoppingBag, User, X, Loader2, Menu, Gift, Percent } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { VisuallyHidden } from "@/components/ui/visually-hidden";
+import { Button } from "@/components/ui/button";
+import { Bow } from "@/components/icons/bow";
+import { searchProducts } from "@/app/actions/get-products";
+import { useSession, signOut } from "@/lib/auth-client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOut, ShoppingBasket, Heart } from "lucide-react";
+import { LanguageSwitcher } from "@/components/language-switcher";
+
+const FavoritesSheet = dynamic(
+  () => import("@/components/favorites-sheet").then((m) => m.FavoritesSheet),
+  { ssr: false }
+);
+
+const CartDropdown = dynamic(
+  () => import("@/components/cart-dropdown").then((m) => m.CartDropdown),
+  { ssr: false }
+);
+
+interface SearchResult {
+  id: string;
+  name: string;
+  originalPrice: number;
+  discountedPrice: number | null;
+  images: { url: string }[];
+}
+
+export function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const { data: session, isPending: isSessionPending } = useSession();
+  const t = useTranslations("Navigation");
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchQuery.length >= 2) {
+        setIsSearching(true);
+        setSearchError(null);
+        const result = await searchProducts(searchQuery);
+        if (result.success) {
+          setSearchResults(result.data || []);
+        } else {
+          setSearchResults([]);
+          setSearchError(result.error || t("searchFailed"));
+        }
+        setIsSearching(false);
+        setShowDropdown(true);
+      } else {
+        setSearchResults([]);
+        setShowDropdown(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Node;
+
+      // If ref is null (not rendered), consider it "outside"
+      const outsideDesktop = !searchRef.current || !searchRef.current.contains(target);
+      const outsideMobile = !mobileSearchRef.current || !mobileSearchRef.current.contains(target);
+
+      if (outsideDesktop && outsideMobile) {
+        setShowDropdown(false);
+        // Only close mobile search if it's actually open
+        if (mobileSearchOpen) setMobileSearchOpen(false);
+      }
+    }
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [mobileSearchOpen]);
+
+  const handleProductClick = (id: string) => {
+    setShowDropdown(false);
+    setSearchQuery("");
+    router.push(`/product/${id}`);
+  };
+
+  return (
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-100">
+      <div className="bg-white/80 backdrop-blur-md rounded-full border border-pink-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] px-4 md:px-6">
+        <div className="flex h-16 items-center justify-between gap-2 md:gap-4">
+          {/* Mobile Menu Button */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <button className="lg:hidden rounded-full bg-pink-50 p-2 text-flora-dark hover:bg-pink-100 transition-colors">
+                <Menu className="h-4 w-4" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px] sm:w-[320px]">
+              <VisuallyHidden>
+                <SheetTitle>{t("menuTitle")}</SheetTitle>

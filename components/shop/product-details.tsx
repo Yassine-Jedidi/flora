@@ -518,6 +518,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   if (current > 1) form.setValue("quantity", current - 1);
                 }}
                 className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-pink-50 text-gray-400 hover:text-primary transition-all active:scale-90"
+                aria-label={t("decreaseQuantity")}
               >
                 <Minus className="w-4 h-4" />
               </button>
@@ -533,6 +534,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   }
                 }}
                 className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-pink-50 text-gray-400 hover:text-primary transition-all active:scale-90"
+                aria-label={t("increaseQuantity")}
               >
                 <Plus className="w-4 h-4" />
               </button>

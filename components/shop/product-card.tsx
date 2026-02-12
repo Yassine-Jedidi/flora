@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/hooks/use-cart";
+import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { ProductBadge } from "./product-badge";
 import { Price } from "./price";
@@ -22,6 +23,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const t = useTranslations("Shop");
   const hasDiscount =
     product.discountedPrice && product.discountedPrice < product.originalPrice;
   const discountPercentage = hasDiscount
@@ -148,6 +150,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             className="w-12 h-12 rounded-full bg-flora-purple/10 hover:bg-flora-purple/20 text-flora-purple flex items-center justify-center transition-all shadow-sm hover:scale-110"
+            aria-label={t("product.addToCart")}
           >
             <ShoppingBag className="w-5 h-5" />
           </button>
