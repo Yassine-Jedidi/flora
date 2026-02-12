@@ -57,14 +57,27 @@ export async function generateMetadata({
 export default async function ShopPage({
     searchParams
 }: {
-    searchParams: Promise<{ sort?: string }>
+    searchParams: Promise<{ sort?: string; category?: string }>
 }) {
+    const { category } = await searchParams;
     const t = await getTranslations("Shop");
+    const tTitles = await getTranslations("Shop.titles");
+
+    const isValidCategory = category && ["rings", "bracelets", "necklaces", "earrings", "packs"].includes(category);
+
+    const title = isValidCategory
+        ? tTitles(category)
+        : t("titles.all");
+
+    const subtitle = isValidCategory
+        ? t(`subtitles.${category}`)
+        : t("subtitles.all");
+
     return (
         <CategoryPage
             categorySlug="all"
-            title={t("titles.all")}
-            subtitle={t("subtitles.all")}
+            title={title}
+            subtitle={subtitle}
             searchParams={searchParams}
         />
     );
