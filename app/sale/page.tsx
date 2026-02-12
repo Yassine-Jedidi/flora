@@ -11,6 +11,11 @@ export async function generateMetadata(): Promise<Metadata> {
         description: t("description"),
         alternates: {
             canonical: "/sale",
+            languages: {
+                "fr-TN": "/sale",
+                "en-TN": "/sale",
+                "x-default": "/sale",
+            },
         },
         openGraph: {
             title: `${t("title")} | FloraAccess`,

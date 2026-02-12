@@ -32,6 +32,11 @@ export async function generateMetadata({
         description: description,
         alternates: {
             canonical: `/product/${product.id}`,
+            languages: {
+                "fr-TN": `/product/${product.id}`,
+                "en-TN": `/product/${product.id}`,
+                "x-default": `/product/${product.id}`,
+            },
         },
         openGraph: {
             title: `${product.name} | FloraAccess`,
@@ -54,35 +59,78 @@ export async function generateMetadata({
     };
 }
 
+async function ProductContentWrapper({ productId }: { productId: string }) {
+    const product = await getProduct(productId);
+    if (!product || !product.isLive) return notFound();
+    const t = await getTranslations("Shop.product");
+
+    return (
+        <div className="container mx-auto px-4">
+            {/* Breadcrumbs / Back navigation */}
+            <div className="mb-12">
+                <Link
+                    href={`/${product.category.slug}`}
+                    className="inline-flex items-center gap-2 text-sm font-bold text-[#8B7E84] hover:text-primary transition-colors group"
+                >
+                    <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-pink-50 transition-colors">
+                        <ChevronLeft className="w-4 h-4 text-[#8B7E84] group-hover:text-primary" />
+                    </div>
+                    {t("backTo", { category: product.category.name })}
+                </Link>
+            </div>
+
+            <ProductDetails product={product} />
+
+            {/* Related Products Section wrapped in Suspense */}
+            <Suspense fallback={<RelatedProductsSkeleton />}>
+                <RelatedProducts categoryId={product.categoryId} productId={product.id} />
+            </Suspense>
+        </div>
+    );
+}
+
+function ProductPageSkeleton() {
+    return (
+        <div className="container mx-auto px-4 animate-pulse">
+            <div className="h-8 w-48 bg-gray-100 rounded-full mb-12" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+                <div className="aspect-square bg-gray-100 rounded-[3rem]" />
+                <div className="space-y-6">
+                    <div className="h-4 w-24 bg-gray-100 rounded-full" />
+                    <div className="h-12 w-full bg-gray-100 rounded-xl" />
+                    <div className="h-8 w-32 bg-gray-100 rounded-xl" />
+                    <div className="h-32 w-full bg-gray-100 rounded-2xl" />
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default async function ProductPage({
     params
 }: {
     params: Promise<{ productId: string }>
 }) {
     const { productId } = await params;
+    const productForLd = await getProduct(productId);
 
-    // We only await the main product data
-    const product = await getProduct(productId);
-
-    if (!product || !product.isLive) {
+    if (!productForLd || !productForLd.isLive) {
         return notFound();
     }
-
-    const t = await getTranslations("Shop.product");
 
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": product.name,
-        "image": product.images.map(img => img.url),
-        "description": product.description,
-        "sku": product.id,
+        "name": productForLd.name,
+        "image": productForLd.images.map(img => img.url),
+        "description": productForLd.description,
+        "sku": productForLd.id,
         "offers": {
             "@type": "Offer",
-            "url": `https://www.floraaccess.tn/product/${product.id}`,
+            "url": `https://www.floraaccess.tn/product/${productForLd.id}`,
             "priceCurrency": "TND",
-            "price": product.discountedPrice ? product.discountedPrice.toString() : product.originalPrice.toString(),
-            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "price": productForLd.discountedPrice ? productForLd.discountedPrice.toString() : productForLd.originalPrice.toString(),
+            "availability": productForLd.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
             "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
             "shippingDetails": {
                 "@type": "OfferShippingDetails",
@@ -123,14 +171,14 @@ export default async function ProductPage({
                                 {
                                     "@type": "ListItem",
                                     "position": 2,
-                                    "name": product.category.name,
-                                    "item": `https://www.floraaccess.tn/${product.category.slug}`
+                                    "name": productForLd.category.name,
+                                    "item": `https://www.floraaccess.tn/${productForLd.category.slug}`
                                 },
                                 {
                                     "@type": "ListItem",
                                     "position": 3,
-                                    "name": product.name,
-                                    "item": `https://www.floraaccess.tn/product/${product.id}`
+                                    "name": productForLd.name,
+                                    "item": `https://www.floraaccess.tn/product/${productForLd.id}`
                                 }
                             ]
                         }
@@ -140,27 +188,9 @@ export default async function ProductPage({
             <Navbar />
 
             <main className="flex-1 pt-32 pb-24">
-                <div className="container mx-auto px-4">
-                    {/* Breadcrumbs / Back navigation */}
-                    <div className="mb-12">
-                        <Link
-                            href={`/${product.category.slug}`}
-                            className="inline-flex items-center gap-2 text-sm font-bold text-[#8B7E84] hover:text-primary transition-colors group"
-                        >
-                            <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-pink-50 transition-colors">
-                                <ChevronLeft className="w-4 h-4 text-[#8B7E84] group-hover:text-primary" />
-                            </div>
-                            {t("backTo", { category: product.category.name })}
-                        </Link>
-                    </div>
-
-                    <ProductDetails product={product} />
-
-                    {/* Related Products Section wrapped in Suspense */}
-                    <Suspense fallback={<RelatedProductsSkeleton />}>
-                        <RelatedProducts categoryId={product.categoryId} productId={product.id} />
-                    </Suspense>
-                </div>
+                <Suspense fallback={<ProductPageSkeleton />}>
+                    <ProductContentWrapper productId={productId} />
+                </Suspense>
             </main>
 
             <Footer />

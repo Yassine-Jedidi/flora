@@ -25,6 +25,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(BASE_URL),
+    alternates: {
+      canonical: BASE_URL,
+      languages: {
+        "fr-TN": BASE_URL,
+        "en-TN": BASE_URL,
+        "x-default": BASE_URL,
+      },
+    },
     title: {
       default: t("title"),
       template: `%s | FloraAccess`,

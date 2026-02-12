@@ -5,7 +5,15 @@ export async function generateMetadata() {
     const t = await getTranslations("Metadata.shipping");
     return {
         title: t("title"),
-        description: t("description")
+        description: t("description"),
+        alternates: {
+            canonical: "/shipping",
+            languages: {
+                "fr-TN": "/shipping",
+                "en-TN": "/shipping",
+                "x-default": "/shipping",
+            },
+        },
     };
 }
 

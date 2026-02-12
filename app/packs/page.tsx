@@ -8,6 +8,11 @@ export async function generateMetadata() {
         description: t("description"),
         alternates: {
             canonical: "/packs",
+            languages: {
+                "fr-TN": "/packs",
+                "en-TN": "/packs",
+                "x-default": "/packs",
+            },
         },
         openGraph: {
             title: `${t("title")} | FloraAccess`,

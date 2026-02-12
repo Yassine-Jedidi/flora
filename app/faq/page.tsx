@@ -5,7 +5,15 @@ export async function generateMetadata() {
     const t = await getTranslations("Metadata.faq");
     return {
         title: t("title"),
-        description: t("description")
+        description: t("description"),
+        alternates: {
+            canonical: "/faq",
+            languages: {
+                "fr-TN": "/faq",
+                "en-TN": "/faq",
+                "x-default": "/faq",
+            },
+        },
     };
 }
 
