@@ -47,6 +47,9 @@ export async function generateMetadata(): Promise<Metadata> {
       address: false,
       telephone: false,
     },
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
     openGraph: {
       title: t("title"),
       description: t("description"),
