@@ -540,8 +540,11 @@
             "validationDesc": "Veuillez vérifier les détails de votre compte.",
             "validation": {
                 "nameMin": "Le nom doit comporter au moins 2 caractères",
+                "maxName": "Le nom ne peut pas dépasser 50 caractères",
                 "emailInvalid": "Adresse e-mail invalide",
-                "passwordMin": "Le mot de passe doit comporter au moins 8 caractères"
+                "maxEmail": "L'e-mail ne peut pas dépasser 50 caractères",
+                "passwordMin": "Le mot de passe doit comporter au moins 8 caractères",
+                "maxPassword": "Le mot de passe ne peut pas dépasser 32 caractères"
             }
         },
         "forgotPassword": {

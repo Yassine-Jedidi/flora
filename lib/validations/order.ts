@@ -2,9 +2,14 @@ import * as z from "zod";
 
 // Base address fields used in the form UI
 export const AddressSchema = z.object({
-  fullName: z.string().min(3, {
-    message: "Name must contain at least 3 characters.",
-  }),
+  fullName: z
+    .string()
+    .min(3, {
+      message: "Name must contain at least 3 characters.",
+    })
+    .max(50, {
+      message: "Name cannot exceed 50 characters.",
+    }),
   phoneNumber: z
     .string()
     .length(8, {
@@ -19,9 +24,14 @@ export const AddressSchema = z.object({
   city: z.string().min(1, {
     message: "Please select a city/delegation.",
   }),
-  detailedAddress: z.string().min(3, {
-    message: "Address must be more detailed.",
-  }),
+  detailedAddress: z
+    .string()
+    .min(3, {
+      message: "Address must be more detailed.",
+    })
+    .max(150, {
+      message: "Address cannot exceed 150 characters.",
+    }),
   saveAddress: z.boolean().optional(),
 });
 

@@ -30,8 +30,8 @@ export function SignInForm() {
     const [isLoading, setIsLoading] = useState(false);
 
     const signInSchema = z.object({
-        email: z.string().email(t("validationDesc")),
-        password: z.string().min(1, t("validationDesc")),
+        email: z.email(t("validationDesc")).max(50, t("validationDesc")),
+        password: z.string().min(1, t("validationDesc")).max(32, t("validationDesc")),
     });
 
     type SignInValues = z.infer<typeof signInSchema>;
