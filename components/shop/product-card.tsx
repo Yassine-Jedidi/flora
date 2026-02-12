@@ -20,9 +20,10 @@ import { Product } from "@/lib/types";
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const t = useTranslations("Shop");
   const hasDiscount =
     product.discountedPrice && product.discountedPrice < product.originalPrice;
@@ -96,6 +97,7 @@ export function ProductCard({ product }: ProductCardProps) {
             style={{
               borderRadius: 'inherit',
             }}
+            priority={priority}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-50">
