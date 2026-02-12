@@ -110,19 +110,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     },
     {
-      url: `${BASE_URL}/search`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.5,
-      alternates: {
-        languages: {
-          "fr-TN": `${BASE_URL}/search`,
-          "en-TN": `${BASE_URL}/search`,
-          "x-default": `${BASE_URL}/search`,
-        },
-      },
-    },
-    {
       url: `${BASE_URL}/faq`,
       lastModified: new Date(),
       changeFrequency: "monthly",

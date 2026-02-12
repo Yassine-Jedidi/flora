@@ -17,6 +17,10 @@ export async function generateMetadata({
     return {
         title: q ? `${q} | ${t("title")}` : t("title"),
         description: t("description"),
+        robots: {
+            index: false,
+            follow: true,
+        },
         alternates: {
             canonical: "/search",
             languages: {

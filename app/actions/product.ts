@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db";
 import { ProductSchema, ProductFormValues } from "@/lib/validations/product";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -93,7 +93,10 @@ export async function createProduct(values: ProductFormValues) {
     });
 
     revalidatePath("/admin/inventory");
-    revalidatePath("/"); // Revalidate home page if products are shown there
+    revalidatePath("/");
+    revalidateTag("products", "max");
+    revalidateTag("featured-products", "max");
+    revalidateTag("category-images", "max");
 
     return { success: tProduct("toasts.successCreate"), productId: product.id };
   } catch (error) {
@@ -196,6 +199,10 @@ export async function deleteProduct(id: string) {
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");
+    revalidateTag("products", "max");
+    revalidateTag("featured-products", "max");
+    revalidateTag("category-images", "max");
+    revalidateTag(`product-${id}`, "max");
 
     return { success: tProduct("toasts.successDelete") };
   } catch (error) {
@@ -339,6 +346,10 @@ export async function updateProduct(id: string, values: ProductFormValues) {
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");
+    revalidateTag("products", "max");
+    revalidateTag("featured-products", "max");
+    revalidateTag("category-images", "max");
+    revalidateTag(`product-${id}`, "max");
 
     return { success: tProduct("toasts.successUpdate") };
   } catch (error) {
