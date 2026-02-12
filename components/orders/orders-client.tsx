@@ -21,11 +21,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
 import { useSearchParams } from "next/navigation";
 import { PaginationControl } from "@/components/ui/pagination-control";
 import { motion } from "motion/react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { SHIPPING_COST } from "@/lib/constants/shipping";
 import { useSession } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
@@ -34,6 +33,7 @@ import { useRef } from "react";
 
 function OrdersContent() {
     const t = useTranslations("Orders");
+    const format = useFormatter();
     const searchParams = useSearchParams();
 
     const statusConfig = {
@@ -242,7 +242,11 @@ function OrdersContent() {
                                                     <span className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">{t("date")}</span>
                                                     <div className="flex items-center gap-1.5 font-bold text-flora-dark text-sm md:text-base">
                                                         <Calendar className="w-3 md:w-3.5 h-3 md:h-3.5 text-pink-300" />
-                                                        {format(new Date(order.createdAt), "MMM d, yyyy")}
+                                                        {format.dateTime(new Date(order.createdAt), {
+                                                            year: 'numeric',
+                                                            month: 'short',
+                                                            day: 'numeric'
+                                                        })}
                                                     </div>
                                                 </div>
                                             </div>

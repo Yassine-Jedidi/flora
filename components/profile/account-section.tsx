@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { User, Mail, Calendar, Phone, Shield, Pencil, CheckCircle2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ export function AccountSection({
     isLoadingAccounts
 }: AccountSectionProps) {
     const t = useTranslations("Profile");
+    const format = useFormatter();
 
     return (
         <div className="bg-white rounded-3xl md:rounded-[40px] border border-pink-50 shadow-sm p-5 md:p-8 max-w-2xl mx-auto">
@@ -64,7 +65,11 @@ export function AccountSection({
                                 </div>
                                 <div>
                                     <p className="font-black text-flora-dark text-sm">
-                                        {new Date(session.user.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+                                        {format.dateTime(new Date(session.user.createdAt), {
+                                            month: 'long',
+                                            day: 'numeric',
+                                            year: 'numeric'
+                                        })}
                                     </p>
                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("account.joinedFlora")}</p>
                                 </div>
@@ -119,7 +124,13 @@ export function AccountSection({
                                     </div>
                                     <div>
                                         <p className="font-black text-flora-dark capitalize">{acc.providerId === 'credential' ? t("account.credentialProvider") : acc.providerId}</p>
-                                        <p className="text-[10px] text-gray-400 font-bold">{t("account.connectedDate", { date: new Date(acc.createdAt).toLocaleDateString() })}</p>
+                                        <p className="text-[10px] text-gray-400 font-bold">{t("account.connectedDate", {
+                                            date: format.dateTime(new Date(acc.createdAt), {
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })
+                                        })}</p>
                                     </div>
                                     <div className="ml-auto">
                                         <CheckCircle2 className="w-5 h-5 text-green-500" />

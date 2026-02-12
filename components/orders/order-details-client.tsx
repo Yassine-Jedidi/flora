@@ -21,9 +21,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { format } from "date-fns";
 import { SHIPPING_COST } from "@/lib/constants/shipping";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { useSession } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
 import { useRef } from "react";
@@ -31,6 +30,7 @@ import { useRef } from "react";
 
 export function OrderDetailsClient({ params }: { params: Promise<{ orderId: string }> }) {
     const t = useTranslations("Orders.details");
+    const format = useFormatter();
     const resolvedParams = use(params);
     const orderId = resolvedParams.orderId;
 
@@ -179,7 +179,11 @@ export function OrderDetailsClient({ params }: { params: Promise<{ orderId: stri
                                     <Bow className="w-8 h-8 text-primary shrink-0" />
                                 </div>
                                 <p className="text-gray-400 font-bold">
-                                    {t("orderNo")} <span className="text-flora-dark">#{order.id.slice(-8).toUpperCase()}</span> • {format(new Date(order.createdAt), "MMMM d, yyyy")}
+                                    {t("orderNo")} <span className="text-flora-dark">#{order.id.slice(-8).toUpperCase()}</span> • {format.dateTime(new Date(order.createdAt), {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
                                 </p>
                             </div>
                             <Badge className={`rounded-full px-4 py-2 flex items-center gap-2 border shadow-sm ${config.className}`}>

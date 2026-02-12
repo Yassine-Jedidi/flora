@@ -1,10 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 import { Laptop, Smartphone, Shield, Loader2, ChevronRight, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bow } from "@/components/icons/bow";
 
 interface SecuritySectionProps {
     sessions: any[];
@@ -24,6 +23,7 @@ export function SecuritySection({
     hasPassword
 }: SecuritySectionProps) {
     const t = useTranslations("Profile");
+    const format = useFormatter();
 
     return (
         <div className="bg-white rounded-3xl md:rounded-[40px] border border-pink-50 shadow-sm p-5 md:p-8 max-w-2xl mx-auto space-y-8">
@@ -67,7 +67,11 @@ export function SecuritySection({
                                                                 ua.includes("android") ? t("security.devices.android") : t("security.devices.unknown")}
                                                 </p>
                                                 <p className="text-xs text-gray-400 font-medium">
-                                                    {(sess.ipAddress === "::1" || sess.ipAddress === "127.0.0.1" || sess.ipAddress === "0000:0000:0000:0000:0000:0000:0000:0000") ? t("security.devices.localhost") : sess.ipAddress} • {new Date(sess.createdAt).toLocaleDateString()}
+                                                    {(sess.ipAddress === "::1" || sess.ipAddress === "127.0.0.1" || sess.ipAddress === "0000:0000:0000:0000:0000:0000:0000:0000") ? t("security.devices.localhost") : sess.ipAddress} • {format.dateTime(new Date(sess.createdAt), {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric'
+                                                    })}
                                                 </p>
                                             </div>
                                         </div>

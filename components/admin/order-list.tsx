@@ -8,12 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { format } from "date-fns";
+import { useTranslations, useFormatter } from "next-intl";
 import { Order } from "@/lib/types";
 import { OrderStatusToggle } from "./order-status-toggle";
 import { OrderStatus } from "@prisma/client";
 import { PaginationControl } from "@/components/ui/pagination-control";
-import { useTranslations } from "next-intl";
 import { SHIPPING_COST } from "@/lib/constants/shipping";
 
 interface OrderListProps {
@@ -27,6 +26,7 @@ interface OrderListProps {
 
 export function OrderList({ orders, pagination }: OrderListProps) {
   const t = useTranslations("Admin.orders.table");
+  const format = useFormatter();
 
   return (
     <div className="space-y-4">
@@ -75,10 +75,18 @@ export function OrderList({ orders, pagination }: OrderListProps) {
                     <TableCell className="font-medium text-gray-600 whitespace-nowrap text-xs md:text-sm px-2 md:px-4 py-3 md:py-4">
                       <div className="flex flex-col">
                         <span>
-                          {format(new Date(order.createdAt), "MMM d, yyyy")}
+                          {format.dateTime(new Date(order.createdAt), {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
                         </span>
                         <span className="text-xs text-gray-400">
-                          {format(new Date(order.createdAt), "HH:mm")}
+                          {format.dateTime(new Date(order.createdAt), {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                          })}
                         </span>
                       </div>
                     </TableCell>
