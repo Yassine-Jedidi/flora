@@ -13,96 +13,109 @@ interface ProductFilters {
   stock?: "all" | "inStock" | "lowStock" | "outOfStock";
 }
 
-export const getProducts = cache(
-  async (page: number = 1, pageSize: number = 10, filters?: ProductFilters) => {
-    try {
-      const skip = (page - 1) * pageSize;
+import { unstable_cache } from "next/cache";
 
-      // Build where clause based on filters
-      const where: Prisma.ProductWhereInput = {};
+export const getProducts = async (
+  page: number = 1,
+  pageSize: number = 10,
+  filters?: ProductFilters,
+) => {
+  return unstable_cache(
+    async () => {
+      try {
+        const skip = (page - 1) * pageSize;
 
-      if (filters?.search) {
-        where.name = {
-          contains: filters.search,
-          mode: "insensitive",
+        // Build where clause based on filters
+        const where: Prisma.ProductWhereInput = {};
+
+        if (filters?.search) {
+          where.name = {
+            contains: filters.search,
+            mode: "insensitive",
+          };
+        }
+
+        if (filters?.category && filters.category !== "all") {
+          where.categoryId = filters.category;
+        }
+
+        if (filters?.status && filters.status !== "all") {
+          if (filters.status === "live") {
+            where.isLive = true;
+            where.isArchived = false;
+          } else if (filters.status === "paused") {
+            where.isLive = false;
+          } else if (filters.status === "archived") {
+            where.isArchived = true;
+          }
+        }
+
+        if (filters?.stock && filters.stock !== "all") {
+          if (filters.stock === "inStock") {
+            where.stock = { gt: 5 };
+          } else if (filters.stock === "lowStock") {
+            where.stock = { gt: 0, lte: 5 };
+          } else if (filters.stock === "outOfStock") {
+            where.stock = 0;
+          }
+        }
+
+        const [total, products] = await prisma.$transaction([
+          prisma.product.count({ where }),
+          prisma.product.findMany({
+            where,
+            include: {
+              category: true,
+              images: true,
+              _count: {
+                select: { packItems: true },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+            take: pageSize,
+            skip: skip,
+          }),
+        ]);
+
+        // Convert Decimal to number for Client Component serialization
+        const mappedProducts = products.map((product) => ({
+          ...product,
+          originalPrice: Number(product.originalPrice),
+          discountedPrice: product.discountedPrice
+            ? Number(product.discountedPrice)
+            : null,
+          createdAt: product.createdAt.toISOString(),
+          updatedAt: product.updatedAt.toISOString(),
+          isNew:
+            new Date(product.createdAt).getTime() >
+            Date.now() - 7 * 24 * 60 * 60 * 1000,
+        }));
+
+        return {
+          products: mappedProducts,
+          total,
+          totalPages: Math.ceil(total / pageSize),
+          currentPage: page,
+        };
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        return {
+          products: [],
+          total: 0,
+          totalPages: 0,
+          currentPage: 1,
         };
       }
-
-      if (filters?.category && filters.category !== "all") {
-        where.categoryId = filters.category;
-      }
-
-      if (filters?.status && filters.status !== "all") {
-        if (filters.status === "live") {
-          where.isLive = true;
-          where.isArchived = false;
-        } else if (filters.status === "paused") {
-          where.isLive = false;
-        } else if (filters.status === "archived") {
-          where.isArchived = true;
-        }
-      }
-
-      if (filters?.stock && filters.stock !== "all") {
-        if (filters.stock === "inStock") {
-          where.stock = { gt: 5 };
-        } else if (filters.stock === "lowStock") {
-          where.stock = { gt: 0, lte: 5 };
-        } else if (filters.stock === "outOfStock") {
-          where.stock = 0;
-        }
-      }
-
-      const [total, products] = await prisma.$transaction([
-        prisma.product.count({ where }),
-        prisma.product.findMany({
-          where,
-          include: {
-            category: true,
-            images: true,
-            _count: {
-              select: { packItems: true },
-            },
-          },
-          orderBy: {
-            createdAt: "desc",
-          },
-          take: pageSize,
-          skip: skip,
-        }),
-      ]);
-
-      // Convert Decimal to number for Client Component serialization
-      const mappedProducts = products.map((product) => ({
-        ...product,
-        originalPrice: Number(product.originalPrice),
-        discountedPrice: product.discountedPrice
-          ? Number(product.discountedPrice)
-          : null,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt.toISOString(),
-        isNew:
-          new Date(product.createdAt).getTime() >
-          Date.now() - 7 * 24 * 60 * 60 * 1000,
-      }));
-
-      return {
-        products: mappedProducts,
-        total,
-        totalPages: Math.ceil(total / pageSize),
-        currentPage: page,
-      };
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      return {
-        products: [],
-        total: 0,
-        totalPages: 0,
-        currentPage: 1,
-      };
-    }
-  },
-);
+    },
+    [`products-${page}-${pageSize}-${JSON.stringify(filters)}`],
+    {
+      revalidate: 3600, // Cache for 1 hour
+      tags: ["products"],
+    },
+  )();
+};
 
 export const getCategories = cache(async () => {
   try {
@@ -355,101 +368,113 @@ export const getRelatedProducts = cache(
   },
 );
 
-export const getProduct = cache(async (id: string): Promise<Product | null> => {
-  try {
-    const product = await prisma.product.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        originalPrice: true,
-        discountedPrice: true,
-        stock: true,
-        isFeatured: true,
-        isArchived: true,
-        isLive: true,
-        categoryId: true,
-        category: {
+export const getProduct = async (id: string): Promise<Product | null> => {
+  return unstable_cache(
+    async () => {
+      try {
+        const product = await prisma.product.findUnique({
+          where: { id },
           select: {
             id: true,
             name: true,
-            slug: true,
-          },
-        },
-        images: {
-          select: {
-            id: true,
-            url: true,
-          },
-        },
-        createdAt: true,
-        packItems: {
-          select: {
-            id: true,
-            quantity: true,
-            item: {
+            description: true,
+            originalPrice: true,
+            discountedPrice: true,
+            stock: true,
+            isFeatured: true,
+            isArchived: true,
+            isLive: true,
+            categoryId: true,
+            category: {
               select: {
                 id: true,
                 name: true,
-                originalPrice: true,
-                discountedPrice: true,
-                categoryId: true,
-                category: {
+                slug: true,
+              },
+            },
+            images: {
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+            createdAt: true,
+            packItems: {
+              select: {
+                id: true,
+                quantity: true,
+                item: {
                   select: {
                     id: true,
                     name: true,
+                    originalPrice: true,
+                    discountedPrice: true,
+                    categoryId: true,
+                    category: {
+                      select: {
+                        id: true,
+                        name: true,
+                      },
+                    },
+                    images: {
+                      take: 1,
+                      select: {
+                        id: true,
+                        url: true,
+                      },
+                    },
+                    description: true,
+                    stock: true,
+                    isFeatured: true,
+                    isArchived: true,
+                    isLive: true,
+                    createdAt: true,
                   },
                 },
-                images: {
-                  take: 1,
-                  select: {
-                    id: true,
-                    url: true,
-                  },
-                },
-                description: true,
-                stock: true,
-                isFeatured: true,
-                isArchived: true,
-                isLive: true,
-                createdAt: true,
               },
             },
           },
-        },
-      },
-    });
+        });
 
-    if (!product) return null;
+        if (!product) return null;
 
-    return {
-      ...product,
-      originalPrice: Number(product.originalPrice),
-      discountedPrice: product.discountedPrice
-        ? Number(product.discountedPrice)
-        : null,
-      createdAt: product.createdAt.toISOString(),
-      isNew:
-        new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
-      packItems: product.packItems.map((pi) => ({
-        ...pi,
-        itemId: pi.item.id,
-        item: {
-          ...pi.item,
-          originalPrice: Number(pi.item.originalPrice),
-          discountedPrice: pi.item.discountedPrice
-            ? Number(pi.item.discountedPrice)
+        // Convert Decimal to number for Client Component serialization
+        const mappedProduct = {
+          ...product,
+          originalPrice: Number(product.originalPrice),
+          discountedPrice: product.discountedPrice
+            ? Number(product.discountedPrice)
             : null,
-        },
-      })),
-    };
-  } catch (error) {
-    console.error(`Error fetching product ${id}:`, error);
-    return null;
-  }
-});
+          createdAt: product.createdAt.toISOString(),
+          isNew:
+            new Date(product.createdAt).getTime() >
+            Date.now() - 7 * 24 * 60 * 60 * 1000,
+          packItems: product.packItems.map((pi) => ({
+            ...pi,
+            itemId: pi.item.id,
+            item: {
+              ...pi.item,
+              originalPrice: Number(pi.item.originalPrice),
+              discountedPrice: pi.item.discountedPrice
+                ? Number(pi.item.discountedPrice)
+                : null,
+            },
+          })),
+        };
+
+        return mappedProduct;
+      } catch (error) {
+        console.error(`Error fetching product ${id}:`, error);
+        return null;
+      }
+    },
+    [`product-${id}`],
+    {
+      revalidate: 3600,
+      tags: [`product-${id}`],
+    },
+  )();
+};
 
 export const searchProducts = cache(
   async (
@@ -598,91 +623,110 @@ export const searchProducts = cache(
   },
 );
 
-export const getFeaturedProducts = cache(async (): Promise<Product[]> => {
-  try {
-    const products = await prisma.product.findMany({
-      where: {
-        isFeatured: true,
-        isArchived: false,
-        isLive: true,
-      },
-      select: {
-        id: true,
-        name: true,
-        originalPrice: true,
-        discountedPrice: true,
-        stock: true,
-        isFeatured: true,
-        isArchived: true,
-        isLive: true,
-        categoryId: true,
-        description: true,
-        category: {
+export const getFeaturedProducts = async (): Promise<Product[]> => {
+  return unstable_cache(
+    async () => {
+      try {
+        const products = await prisma.product.findMany({
+          where: {
+            isFeatured: true,
+            isArchived: false,
+            isLive: true,
+          },
           select: {
             id: true,
             name: true,
-            slug: true,
+            originalPrice: true,
+            discountedPrice: true,
+            stock: true,
+            isFeatured: true,
+            isArchived: true,
+            isLive: true,
+            categoryId: true,
+            description: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+            images: {
+              take: 1,
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+            createdAt: true,
           },
-        },
-        images: {
-          take: 1,
-          select: {
-            id: true,
-            url: true,
+          orderBy: {
+            createdAt: "desc",
           },
-        },
-        createdAt: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: 8,
-    });
+          take: 8,
+        });
 
-    return products.map((product) => ({
-      ...product,
-      originalPrice: Number(product.originalPrice),
-      discountedPrice: product.discountedPrice
-        ? Number(product.discountedPrice)
-        : null,
-      createdAt: product.createdAt.toISOString(),
-      isNew:
-        new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
-    }));
-  } catch (error) {
-    console.error("Error fetching featured products:", error);
-    return [];
-  }
-});
-
-export const getCategoryImages = cache(async () => {
-  const categories = ["rings", "bracelets", "necklaces", "earrings"];
-  const images: Record<string, string> = {};
-
-  for (const slug of categories) {
-    try {
-      const product = await prisma.product.findFirst({
-        where: {
-          category: { slug },
-          isArchived: false,
-          isLive: true,
-          images: { some: {} },
-        },
-        include: { images: true },
-        orderBy: { createdAt: "desc" },
-      });
-
-      if (product?.images[0]) {
-        images[slug] = product.images[0].url;
+        // Convert Decimal to number for Client Component serialization
+        return products.map((product) => ({
+          ...product,
+          originalPrice: Number(product.originalPrice),
+          discountedPrice: product.discountedPrice
+            ? Number(product.discountedPrice)
+            : null,
+          createdAt: product.createdAt.toISOString(),
+          isNew:
+            new Date(product.createdAt).getTime() >
+            Date.now() - 7 * 24 * 60 * 60 * 1000,
+        }));
+      } catch (error) {
+        console.error("Error fetching featured products:", error);
+        return [];
       }
-    } catch {
-      console.error(`Error fetching image for ${slug}`);
-    }
-  }
+    },
+    ["featured-products"],
+    {
+      revalidate: 3600,
+      tags: ["featured-products"],
+    },
+  )();
+};
 
-  return images;
-});
+export const getCategoryImages = async () => {
+  return unstable_cache(
+    async () => {
+      const categories = ["rings", "bracelets", "necklaces", "earrings"];
+      const images: Record<string, string> = {};
+
+      for (const slug of categories) {
+        try {
+          const product = await prisma.product.findFirst({
+            where: {
+              category: { slug },
+              isArchived: false,
+              isLive: true,
+              images: { some: {} },
+            },
+            include: { images: true },
+            orderBy: { createdAt: "desc" },
+          });
+
+          if (product?.images[0]) {
+            images[slug] = product.images[0].url;
+          }
+        } catch {
+          console.error(`Error fetching image for ${slug}`);
+        }
+      }
+
+      return images;
+    },
+    ["category-images"],
+    {
+      revalidate: 3600,
+      tags: ["category-images"],
+    },
+  )();
+};
 
 export const getSaleProducts = cache(
   async (
