@@ -9,6 +9,9 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: t("title"),
         description: t("description"),
+        alternates: {
+            canonical: "/sale",
+        },
         openGraph: {
             title: `${t("title")} | FloraAccess`,
             description: t("description"),

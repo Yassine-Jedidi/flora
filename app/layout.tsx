@@ -39,9 +39,6 @@ export async function generateMetadata(): Promise<Metadata> {
       address: false,
       telephone: false,
     },
-    alternates: {
-      canonical: "/",
-    },
     openGraph: {
       title: t("title"),
       description: t("description"),
