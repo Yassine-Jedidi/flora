@@ -6,7 +6,15 @@ export async function generateMetadata() {
   const t = await getTranslations("Metadata.favorites");
   return {
     title: t("title"),
-    description: t("description")
+    description: t("description"),
+    alternates: {
+      canonical: "/favorites",
+      languages: {
+        "fr-TN": "/favorites",
+        "en-TN": "/favorites",
+        "x-default": "/favorites",
+      },
+    }
   };
 }
 

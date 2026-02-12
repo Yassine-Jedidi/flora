@@ -13,100 +13,98 @@ interface ProductFilters {
   stock?: "all" | "inStock" | "lowStock" | "outOfStock";
 }
 
-export async function getProducts(
-  page: number = 1,
-  pageSize: number = 10,
-  filters?: ProductFilters,
-) {
-  try {
-    const skip = (page - 1) * pageSize;
+export const getProducts = cache(
+  async (page: number = 1, pageSize: number = 10, filters?: ProductFilters) => {
+    try {
+      const skip = (page - 1) * pageSize;
 
-    // Build where clause based on filters
-    const where: Prisma.ProductWhereInput = {};
+      // Build where clause based on filters
+      const where: Prisma.ProductWhereInput = {};
 
-    if (filters?.search) {
-      where.name = {
-        contains: filters.search,
-        mode: "insensitive",
+      if (filters?.search) {
+        where.name = {
+          contains: filters.search,
+          mode: "insensitive",
+        };
+      }
+
+      if (filters?.category && filters.category !== "all") {
+        where.categoryId = filters.category;
+      }
+
+      if (filters?.status && filters.status !== "all") {
+        if (filters.status === "live") {
+          where.isLive = true;
+          where.isArchived = false;
+        } else if (filters.status === "paused") {
+          where.isLive = false;
+        } else if (filters.status === "archived") {
+          where.isArchived = true;
+        }
+      }
+
+      if (filters?.stock && filters.stock !== "all") {
+        if (filters.stock === "inStock") {
+          where.stock = { gt: 5 };
+        } else if (filters.stock === "lowStock") {
+          where.stock = { gt: 0, lte: 5 };
+        } else if (filters.stock === "outOfStock") {
+          where.stock = 0;
+        }
+      }
+
+      const [total, products] = await prisma.$transaction([
+        prisma.product.count({ where }),
+        prisma.product.findMany({
+          where,
+          include: {
+            category: true,
+            images: true,
+            _count: {
+              select: { packItems: true },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: pageSize,
+          skip: skip,
+        }),
+      ]);
+
+      // Convert Decimal to number for Client Component serialization
+      const mappedProducts = products.map((product) => ({
+        ...product,
+        originalPrice: Number(product.originalPrice),
+        discountedPrice: product.discountedPrice
+          ? Number(product.discountedPrice)
+          : null,
+        createdAt: product.createdAt.toISOString(),
+        updatedAt: product.updatedAt.toISOString(),
+        isNew:
+          new Date(product.createdAt).getTime() >
+          Date.now() - 7 * 24 * 60 * 60 * 1000,
+      }));
+
+      return {
+        products: mappedProducts,
+        total,
+        totalPages: Math.ceil(total / pageSize),
+        currentPage: page,
+      };
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return {
+        products: [],
+        total: 0,
+        totalPages: 0,
+        currentPage: 1,
       };
     }
+  },
+);
 
-    if (filters?.category && filters.category !== "all") {
-      where.categoryId = filters.category;
-    }
-
-    if (filters?.status && filters.status !== "all") {
-      if (filters.status === "live") {
-        where.isLive = true;
-        where.isArchived = false;
-      } else if (filters.status === "paused") {
-        where.isLive = false;
-      } else if (filters.status === "archived") {
-        where.isArchived = true;
-      }
-    }
-
-    if (filters?.stock && filters.stock !== "all") {
-      if (filters.stock === "inStock") {
-        where.stock = { gt: 5 };
-      } else if (filters.stock === "lowStock") {
-        where.stock = { gt: 0, lte: 5 };
-      } else if (filters.stock === "outOfStock") {
-        where.stock = 0;
-      }
-    }
-
-    const [total, products] = await prisma.$transaction([
-      prisma.product.count({ where }),
-      prisma.product.findMany({
-        where,
-        include: {
-          category: true,
-          images: true,
-          _count: {
-            select: { packItems: true },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: pageSize,
-        skip: skip,
-      }),
-    ]);
-
-    // Convert Decimal to number for Client Component serialization
-    const mappedProducts = products.map((product) => ({
-      ...product,
-      originalPrice: Number(product.originalPrice),
-      discountedPrice: product.discountedPrice
-        ? Number(product.discountedPrice)
-        : null,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
-      isNew:
-        new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
-    }));
-
-    return {
-      products: mappedProducts,
-      total,
-      totalPages: Math.ceil(total / pageSize),
-      currentPage: page,
-    };
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return {
-      products: [],
-      total: 0,
-      totalPages: 0,
-      currentPage: 1,
-    };
-  }
-}
-
-export async function getCategories() {
+export const getCategories = cache(async () => {
   try {
     return await prisma.category.findMany({
       orderBy: { name: "asc" },
@@ -115,9 +113,9 @@ export async function getCategories() {
     console.error("Error fetching categories:", error);
     return [];
   }
-}
+});
 
-export async function getAllProducts() {
+export const getAllProducts = cache(async () => {
   try {
     const products = await prisma.product.findMany({
       include: {
@@ -146,7 +144,7 @@ export async function getAllProducts() {
     console.error("Error fetching products:", error);
     return [];
   }
-}
+});
 
 export const getProductsByCategory = cache(
   async (
@@ -298,65 +296,64 @@ export const getProductsByCategory = cache(
   },
 );
 
-export async function getRelatedProducts(
-  categoryId: string,
-  excludeProductId: string,
-): Promise<Product[]> {
-  try {
-    const products = await prisma.product.findMany({
-      where: {
-        categoryId,
-        id: { not: excludeProductId },
-        isArchived: false,
-        isLive: true,
-      },
-      select: {
-        id: true,
-        name: true,
-        originalPrice: true,
-        discountedPrice: true,
-        stock: true,
-        isFeatured: true,
-        isArchived: true,
-        isLive: true,
-        categoryId: true,
-        description: true,
-        category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-          },
+export const getRelatedProducts = cache(
+  async (categoryId: string, excludeProductId: string): Promise<Product[]> => {
+    try {
+      const products = await prisma.product.findMany({
+        where: {
+          categoryId,
+          id: { not: excludeProductId },
+          isArchived: false,
+          isLive: true,
         },
-        images: {
-          take: 1,
-          select: {
-            id: true,
-            url: true,
+        select: {
+          id: true,
+          name: true,
+          originalPrice: true,
+          discountedPrice: true,
+          stock: true,
+          isFeatured: true,
+          isArchived: true,
+          isLive: true,
+          categoryId: true,
+          description: true,
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+            },
           },
+          images: {
+            take: 1,
+            select: {
+              id: true,
+              url: true,
+            },
+          },
+          createdAt: true,
         },
-        createdAt: true,
-      },
-      take: 4,
-      orderBy: { createdAt: "desc" },
-    });
+        take: 4,
+        orderBy: { createdAt: "desc" },
+      });
 
-    return products.map((product) => ({
-      ...product,
-      originalPrice: Number(product.originalPrice),
-      discountedPrice: product.discountedPrice
-        ? Number(product.discountedPrice)
-        : null,
-      createdAt: product.createdAt.toISOString(),
-      isNew:
-        new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
-    }));
-  } catch (error) {
-    console.error("Error fetching related products:", error);
-    return [];
-  }
-}
+      return products.map((product) => ({
+        ...product,
+        originalPrice: Number(product.originalPrice),
+        discountedPrice: product.discountedPrice
+          ? Number(product.discountedPrice)
+          : null,
+        createdAt: product.createdAt.toISOString(),
+        isNew:
+          new Date(product.createdAt).getTime() >
+          Date.now() - 7 * 24 * 60 * 60 * 1000,
+      }));
+    } catch (error) {
+      console.error("Error fetching related products:", error);
+      return [];
+    }
+  },
+);
 
 export const getProduct = cache(async (id: string): Promise<Product | null> => {
   try {
@@ -454,150 +451,152 @@ export const getProduct = cache(async (id: string): Promise<Product | null> => {
   }
 });
 
-export async function searchProducts(
-  query: string,
-  limit: number = 5,
-): Promise<
-  { success: true; data: Product[] } | { success: false; error: string }
-> {
-  if (!query || query.length < 2) return { success: true, data: [] };
+export const searchProducts = cache(
+  async (
+    query: string,
+    limit: number = 5,
+  ): Promise<
+    { success: true; data: Product[] } | { success: false; error: string }
+  > => {
+    if (!query || query.length < 2) return { success: true, data: [] };
 
-  // Get session for authenticated rate limiting (prevents IP spoofing)
-  const { auth } = await import("@/lib/auth");
-  const { headers } = await import("next/headers");
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  const rateLimit = await checkRateLimit({
-    key: "product-search",
-    window: 60,
-    max: 30,
-    userId: session?.user?.id,
-  });
-
-  if (!rateLimit.success) {
-    return {
-      success: false,
-      error: `Too many searches. Please try again in ${rateLimit.message}.`,
-    };
-  }
-
-  try {
-    const normalizedQuery = query.toLowerCase().trim();
-    const singularQuery = normalizedQuery.endsWith("s")
-      ? normalizedQuery.slice(0, -1)
-      : normalizedQuery;
-
-    // Fetch a larger pool of potential matches to rank them in memory
-    const products = await prisma.product.findMany({
-      where: {
-        OR: [
-          { name: { contains: normalizedQuery, mode: "insensitive" } },
-          { description: { contains: normalizedQuery, mode: "insensitive" } },
-          {
-            category: {
-              name: { contains: normalizedQuery, mode: "insensitive" },
-            },
-          },
-          {
-            category: {
-              slug: { contains: normalizedQuery, mode: "insensitive" },
-            },
-          },
-        ],
-        isArchived: false,
-        isLive: true,
-      },
-      include: {
-        category: true,
-        images: true,
-      },
-      take: Math.max(20, limit * 2), // Pool size for ranking
+    // Get session for authenticated rate limiting (prevents IP spoofing)
+    const { auth } = await import("@/lib/auth");
+    const { headers } = await import("next/headers");
+    const session = await auth.api.getSession({
+      headers: await headers(),
     });
 
-    const scoredProducts = products.map((product) => {
-      let score = 0;
-      const name = product.name.toLowerCase();
-      const description = product.description.toLowerCase();
-      const categoryName = product.category.name.toLowerCase();
-      const categorySlug = product.category.slug.toLowerCase();
+    const rateLimit = await checkRateLimit({
+      key: "product-search",
+      window: 60,
+      max: 30,
+      userId: session?.user?.id,
+    });
 
-      // 1. Category matches (High priority)
-      if (
-        categoryName === normalizedQuery ||
-        categorySlug === normalizedQuery ||
-        categoryName === singularQuery ||
-        categorySlug === singularQuery
-      ) {
-        score += 100;
-      }
-
-      // 2. Exact name match
-      if (name === normalizedQuery) {
-        score += 150;
-      }
-
-      // 3. Standalone word match in name
-      const nameWords = name.split(/\s+/);
-      if (
-        nameWords.includes(normalizedQuery) ||
-        nameWords.includes(singularQuery)
-      ) {
-        score += 80;
-      }
-
-      // 4. Starts with match
-      if (name.startsWith(normalizedQuery)) {
-        score += 40;
-      }
-
-      // 5. Basic contains in name
-      if (name.includes(normalizedQuery)) {
-        score += 20;
-      }
-
-      // 6. Contains in description
-      if (description.includes(normalizedQuery)) {
-        score += 5;
-      }
-
-      // 7. Featured boost
-      if (product.isFeatured) {
-        score += 10;
-      }
-
+    if (!rateLimit.success) {
       return {
-        ...product,
-        searchScore: score,
-        originalPrice: Number(product.originalPrice),
-        discountedPrice: product.discountedPrice
-          ? Number(product.discountedPrice)
-          : null,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt.toISOString(),
-        isNew:
-          new Date(product.createdAt).getTime() >
-          Date.now() - 7 * 24 * 60 * 60 * 1000,
+        success: false,
+        error: `Too many searches. Please try again in ${rateLimit.message}.`,
       };
-    });
+    }
 
-    // Sort by score descending and take requested limit
-    const finalResults = scoredProducts
-      .sort((a, b) => b.searchScore - a.searchScore)
-      .slice(0, limit)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      .map(({ searchScore, ...product }) => product);
+    try {
+      const normalizedQuery = query.toLowerCase().trim();
+      const singularQuery = normalizedQuery.endsWith("s")
+        ? normalizedQuery.slice(0, -1)
+        : normalizedQuery;
 
-    return { success: true, data: finalResults };
-  } catch (error) {
-    console.error("Error searching products:", error);
-    return {
-      success: false,
-      error: "Something went wrong. Please try again later.",
-    };
-  }
-}
+      // Fetch a larger pool of potential matches to rank them in memory
+      const products = await prisma.product.findMany({
+        where: {
+          OR: [
+            { name: { contains: normalizedQuery, mode: "insensitive" } },
+            { description: { contains: normalizedQuery, mode: "insensitive" } },
+            {
+              category: {
+                name: { contains: normalizedQuery, mode: "insensitive" },
+              },
+            },
+            {
+              category: {
+                slug: { contains: normalizedQuery, mode: "insensitive" },
+              },
+            },
+          ],
+          isArchived: false,
+          isLive: true,
+        },
+        include: {
+          category: true,
+          images: true,
+        },
+        take: Math.max(20, limit * 2), // Pool size for ranking
+      });
+
+      const scoredProducts = products.map((product) => {
+        let score = 0;
+        const name = product.name.toLowerCase();
+        const description = product.description.toLowerCase();
+        const categoryName = product.category.name.toLowerCase();
+        const categorySlug = product.category.slug.toLowerCase();
+
+        // 1. Category matches (High priority)
+        if (
+          categoryName === normalizedQuery ||
+          categorySlug === normalizedQuery ||
+          categoryName === singularQuery ||
+          categorySlug === singularQuery
+        ) {
+          score += 100;
+        }
+
+        // 2. Exact name match
+        if (name === normalizedQuery) {
+          score += 150;
+        }
+
+        // 3. Standalone word match in name
+        const nameWords = name.split(/\s+/);
+        if (
+          nameWords.includes(normalizedQuery) ||
+          nameWords.includes(singularQuery)
+        ) {
+          score += 80;
+        }
+
+        // 4. Starts with match
+        if (name.startsWith(normalizedQuery)) {
+          score += 40;
+        }
+
+        // 5. Basic contains in name
+        if (name.includes(normalizedQuery)) {
+          score += 20;
+        }
+
+        // 6. Contains in description
+        if (description.includes(normalizedQuery)) {
+          score += 5;
+        }
+
+        // 7. Featured boost
+        if (product.isFeatured) {
+          score += 10;
+        }
+
+        return {
+          ...product,
+          searchScore: score,
+          originalPrice: Number(product.originalPrice),
+          discountedPrice: product.discountedPrice
+            ? Number(product.discountedPrice)
+            : null,
+          createdAt: product.createdAt.toISOString(),
+          updatedAt: product.updatedAt.toISOString(),
+          isNew:
+            new Date(product.createdAt).getTime() >
+            Date.now() - 7 * 24 * 60 * 60 * 1000,
+        };
+      });
+
+      // Sort by score descending and take requested limit
+      const finalResults = scoredProducts
+        .sort((a, b) => b.searchScore - a.searchScore)
+        .slice(0, limit)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .map(({ searchScore, ...product }) => product);
+
+      return { success: true, data: finalResults };
+    } catch (error) {
+      console.error("Error searching products:", error);
+      return {
+        success: false,
+        error: "Something went wrong. Please try again later.",
+      };
+    }
+  },
+);
 
 export const getFeaturedProducts = cache(async (): Promise<Product[]> => {
   try {
@@ -657,7 +656,7 @@ export const getFeaturedProducts = cache(async (): Promise<Product[]> => {
   }
 });
 
-export async function getCategoryImages() {
+export const getCategoryImages = cache(async () => {
   const categories = ["rings", "bracelets", "necklaces", "earrings"];
   const images: Record<string, string> = {};
 
@@ -683,7 +682,7 @@ export async function getCategoryImages() {
   }
 
   return images;
-}
+});
 
 export const getSaleProducts = cache(
   async (
