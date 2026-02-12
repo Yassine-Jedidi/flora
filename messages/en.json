@@ -237,6 +237,7 @@
         "orderCompleted": "Order Completed!",
         "orderSuccessMessage": "Your order has been placed successfully. We'll contact you soon for confirmation.",
         "backToShop": "Back to Shop",
+        "followOrder": "Follow your order",
         "removedFromCart": "Removed from cart",
         "orderSuccessToast": "Order placed successfully! ✨",
         "genericError": "Something went wrong.",
@@ -472,7 +473,7 @@
             "notFoundSubtitle": "This order could not be retrieved.",
             "backToOrders": "Back to My Orders",
             "statusLabel": {
-                "pending": "Pending Receipt",
+                "pending": "Pending",
                 "confirmed": "Order Confirmed",
                 "shipped": "Shipped",
                 "delivered": "Delivered",

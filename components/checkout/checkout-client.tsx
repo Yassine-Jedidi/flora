@@ -30,6 +30,7 @@ import {
   Trash2,
   ShoppingCart,
   MapPin,
+  PackageSearch,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,6 +55,7 @@ export function CheckoutClient() {
 
   const [isPending, setIsPending] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
   const [itemToRemove, setItemToRemove] = useState<{ id: string, name: string } | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -148,6 +150,7 @@ export function CheckoutClient() {
       });
 
       if (result.success) {
+        setOrderId(result.orderId || null);
         setSuccess(true);
         clearCart();
         toast.success(t("orderSuccessToast"));
@@ -178,11 +181,24 @@ export function CheckoutClient() {
             <p className="text-sm md:text-base text-gray-500 font-bold mb-8">
               {t("orderSuccessMessage")}
             </p>
-            <Link href="/">
-              <Button className="bg-flora-purple hover:bg-[#8B5CF6] text-white rounded-full px-8 py-4 md:px-10 md:py-6 font-black text-base md:text-lg transition-all shadow-lg shadow-purple-100">
-                {t("backToShop")}
-              </Button>
-            </Link>
+
+            <div className="flex flex-col items-center gap-4">
+              {orderId && (
+                <Link href={`/orders/${orderId}`} className="w-full sm:w-auto">
+                  <Button className="w-full sm:min-w-[240px] bg-primary hover:bg-[#FF75AA] text-white rounded-full py-6 px-10 font-black text-lg shadow-lg shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
+                    <PackageSearch className="w-5 h-5" />
+                    {t("followOrder")}
+                  </Button>
+                </Link>
+              )}
+
+              <Link href="/" className="w-full sm:w-auto">
+                <Button variant="ghost" className="w-full sm:min-w-[200px] text-gray-400 hover:text-flora-purple font-bold py-3 px-8 rounded-full transition-all flex items-center justify-center gap-2 group">
+                  <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                  {t("backToShop")}
+                </Button>
+              </Link>
+            </div>
           </div>
         </main>
         <Footer />

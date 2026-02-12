@@ -49,7 +49,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
   const mailOptions = {
     from: EMAIL_FROM,
     to: data.userEmail,
-    subject: `Order Received! #${data.orderId.slice(-6).toUpperCase()}`,
+    subject: `Order Received! #${data.orderId.slice(-8).toUpperCase()}`,
     html: `
       <div style="background-color: #fafafa; padding: 40px 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1a1a1a;">
         <div style="max-width: 520px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; border: 1px solid #f0f0f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
@@ -71,7 +71,7 @@ export async function sendOrderConfirmationEmail(data: OrderEmailData) {
               <tr>
                 <td>
                   <p style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 4px;">Order Number</p>
-                  <p style="font-size: 16px; font-weight: 700; margin: 0;">#${data.orderId.slice(-6).toUpperCase()}</p>
+                  <p style="font-size: 16px; font-weight: 700; margin: 0;">#${data.orderId.slice(-8).toUpperCase()}</p>
                 </td>
                 <td align="right">
                     <p style="font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 4px;">Date</p>
@@ -186,7 +186,7 @@ export async function sendOrderDeliveredEmail(data: {
               <span style="font-size: 40px;">🎁</span>
             </div>
             <h1 style="font-size: 26px; font-weight: 800; margin: 0 0 8px; color: #000;">It&apos;s Here!</h1>
-            <p style="font-size: 16px; color: #666; margin: 0;">Hi ${escapeHtml(data.userName)}, your order <b>#${data.orderId.slice(-6).toUpperCase()}</b> has been delivered.</p>
+            <p style="font-size: 16px; color: #666; margin: 0;">Hi ${escapeHtml(data.userName)}, your order <b>#${data.orderId.slice(-8).toUpperCase()}</b> has been delivered.</p>
           </div>
 
           <!-- Message -->

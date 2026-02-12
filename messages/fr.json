@@ -237,6 +237,7 @@
         "orderCompleted": "Commande Terminée !",
         "orderSuccessMessage": "Votre commande a été passée avec succès. Nous vous contacterons bientôt pour confirmation.",
         "backToShop": "Retour à la boutique",
+        "followOrder": "Suivre votre commande",
         "removedFromCart": "Retiré du panier",
         "orderSuccessToast": "Commande passée avec succès ! ✨",
         "genericError": "Quelque chose s'est mal passé.",
@@ -472,7 +473,7 @@
             "notFoundSubtitle": "Cette commande n'a pas pu être récupérée.",
             "backToOrders": "Retour à mes commandes",
             "statusLabel": {
-                "pending": "Réception en attente",
+                "pending": "En attente",
                 "confirmed": "Commande confirmée",
                 "shipped": "Expédiée",
                 "delivered": "Livrée",
