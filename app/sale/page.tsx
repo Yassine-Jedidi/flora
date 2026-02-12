@@ -2,11 +2,32 @@ import { CategoryPage } from "@/components/shop/category-page";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
     const t = await getTranslations("Metadata.sale");
+    const BASE_URL = "https://www.floraaccess.tn";
+
     return {
         title: t("title"),
-        description: t("description")
+        description: t("description"),
+        openGraph: {
+            title: `${t("title")} | FloraAccess`,
+            description: t("description"),
+            url: `${BASE_URL}/sale`,
+            images: [
+                {
+                    url: "/logo.png",
+                    width: 800,
+                    height: 600,
+                    alt: "FloraAccess Sale Collection",
+                },
+            ],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: t("title"),
+            description: t("description"),
+            images: ["/logo.png"],
+        },
     };
 }
 

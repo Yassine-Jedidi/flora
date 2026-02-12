@@ -19,18 +19,60 @@ const nunito = Nunito({
 
 import { getTranslations } from "next-intl/server";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Metadata.root");
+  const BASE_URL = "https://www.floraaccess.tn";
 
   return {
-    title: t("title"),
+    metadataBase: new URL(BASE_URL),
+    title: {
+      default: t("title"),
+      template: `%s | FloraAccess`,
+    },
     description: t("description"),
+    keywords: ["jewelry", "accessories", "rings", "necklaces", "bracelets", "earrings", "Tunisia", "FloraAccess"],
+    authors: [{ name: "FloraAccess" }],
+    creator: "FloraAccess",
+    publisher: "FloraAccess",
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      title: t("title"),
+      description: t("description"),
+      url: BASE_URL,
+      siteName: "FloraAccess",
+      images: [
+        {
+          url: "/logo.png",
+          width: 800,
+          height: 600,
+          alt: "FloraAccess Jewelry",
+        },
+      ],
+      locale: "fr_TN",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
+      images: ["/logo.png"],
+      creator: "@floraaccess",
+    },
     icons: {
       icon: "/favicon.ico",
       apple: "/apple-icon.png",
     },
     appleWebApp: {
       title: "FloraAccess",
+      statusBarStyle: "default",
+      capable: true,
     },
   };
 }
