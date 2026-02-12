@@ -71,6 +71,9 @@ export async function createOrder(values: OrderValues) {
       new Prisma.Decimal(SHIPPING_COST),
     );
 
+    // Get user's locale to store with the order
+    const locale = await getLocale();
+
     const order = await prisma.order.create({
       data: {
         userId: session?.user?.id,
@@ -81,6 +84,7 @@ export async function createOrder(values: OrderValues) {
         detailedAddress: validatedData.detailedAddress,
         totalPrice: recomputedTotalPrice,
         status: "PENDING",
+        language: locale,
         items: {
           create: finalItems,
         },
@@ -102,7 +106,6 @@ export async function createOrder(values: OrderValues) {
         });
 
         const { sendOrderConfirmationEmail } = await import("@/lib/mail");
-        const locale = await getLocale();
 
         // Fire-and-forget pattern: We intentionally don't await to avoid blocking the UI.
         // The catch handler is properly attached and will log any email sending errors.
@@ -205,15 +208,15 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
     if (status === "DELIVERED" && order.user?.email) {
       try {
         const { sendOrderDeliveredEmail } = await import("@/lib/mail");
-        const locale = await getLocale();
 
         // Fire-and-forget pattern: Email sending happens in the background.
         // Errors are logged but don't affect the order status update success.
+        // Uses the language stored at order creation time, not the admin's browser locale.
         sendOrderDeliveredEmail({
           orderId: order.id,
           userEmail: order.user.email,
           userName: order.user.name ?? "there",
-          locale,
+          locale: order.language,
         }).catch((err: Error) =>
           console.error("Delivered Email background error:", err),
         );

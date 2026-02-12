@@ -99,6 +99,7 @@ model Order {
   items           OrderItem[]
   totalPrice      Decimal     @db.Decimal(10, 3)
   status          OrderStatus @default(PENDING)
+  language        String      @default("fr") // User's locale at time of order (en/fr)
   
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
