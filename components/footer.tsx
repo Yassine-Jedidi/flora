@@ -19,7 +19,7 @@ export function Footer() {
             <div className="flex items-center gap-2">
               <Image
                 src="/flora sparkle.png"
-                alt="Flora Logo"
+                alt={`${tNav("logoAlt")} - FloraAccess Jewelry Tunisia`}
                 width={120}
                 height={40}
                 className="h-24 w-auto object-contain"

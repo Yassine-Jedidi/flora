@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight, ShoppingBag, Gem } from "lucide-react";
+import { ChevronRight, ShoppingBag } from "lucide-react";
 import { getCategoryImages } from "@/app/actions/get-products";
 import { getTranslations } from "next-intl/server";
 
@@ -71,7 +71,7 @@ export async function CuratedStyles() {
                                 {imageUrl ? (
                                     <Image
                                         src={imageUrl}
-                                        alt={category.name}
+                                        alt={`${category.name} collection | FloraAccess Jewelry Tunisia`}
                                         fill
                                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"
