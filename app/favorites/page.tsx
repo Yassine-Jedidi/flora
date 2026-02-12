@@ -14,7 +14,8 @@ export async function generateMetadata() {
         "en-TN": "/favorites",
         "x-default": "/favorites",
       },
-    }
+    },
+    robots: { index: false, follow: false }
   };
 }
 
