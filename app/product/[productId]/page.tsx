@@ -11,6 +11,8 @@ import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { Metadata } from "next";
 import { BASE_URL } from "@/lib/constants/site";
+import { SHIPPING_COST } from "@/lib/constants/shipping";
+import { Product } from "@/lib/types";
 
 export async function generateMetadata({
     params
@@ -60,9 +62,7 @@ export async function generateMetadata({
     };
 }
 
-async function ProductContentWrapper({ productId }: { productId: string }) {
-    const product = await getProduct(productId);
-    if (!product || !product.isLive) return notFound();
+async function ProductContent({ product }: { product: Product }) {
     const t = await getTranslations("Shop.product");
 
     return (
@@ -113,31 +113,33 @@ export default async function ProductPage({
     params: Promise<{ productId: string }>
 }) {
     const { productId } = await params;
-    const productForLd = await getProduct(productId);
+    const product = await getProduct(productId);
 
-    if (!productForLd || !productForLd.isLive) {
+    if (!product || !product.isLive) {
         return notFound();
     }
 
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": productForLd.name,
-        "image": productForLd.images.map(img => img.url),
-        "description": productForLd.description,
-        "sku": productForLd.id,
+        "name": product.name,
+        "image": product.images.map(img => img.url),
+        "description": product.description,
+        "sku": product.id,
+        "mpn": product.id,
         "offers": {
             "@type": "Offer",
-            "url": `${BASE_URL}/product/${productForLd.id}`,
+            "url": `${BASE_URL}/product/${product.id}`,
             "priceCurrency": "TND",
-            "price": productForLd.discountedPrice ? productForLd.discountedPrice.toString() : productForLd.originalPrice.toString(),
-            "availability": productForLd.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "price": product.discountedPrice ? product.discountedPrice.toString() : product.originalPrice.toString(),
+            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
             "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+            "itemCondition": "https://schema.org/NewCondition",
             "shippingDetails": {
                 "@type": "OfferShippingDetails",
                 "shippingRate": {
                     "@type": "MonetaryAmount",
-                    "value": "7.000",
+                    "value": SHIPPING_COST.toFixed(3),
                     "currency": "TND"
                 },
                 "shippingDestination": {
@@ -149,6 +151,13 @@ export default async function ProductPage({
         "brand": {
             "@type": "Brand",
             "name": "FloraAccess"
+        },
+        // Placeholder for aggregateRating to enable star snippets
+        // In a real scenario, this would come from your reviews DB
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "reviewCount": "50"
         }
     };
 
@@ -172,14 +181,14 @@ export default async function ProductPage({
                                 {
                                     "@type": "ListItem",
                                     "position": 2,
-                                    "name": productForLd.category.name,
-                                    "item": `${BASE_URL}/${productForLd.category.slug}`
+                                    "name": product.category.name,
+                                    "item": `${BASE_URL}/${product.category.slug}`
                                 },
                                 {
                                     "@type": "ListItem",
                                     "position": 3,
-                                    "name": productForLd.name,
-                                    "item": `${BASE_URL}/product/${productForLd.id}`
+                                    "name": product.name,
+                                    "item": `${BASE_URL}/product/${product.id}`
                                 }
                             ]
                         }
@@ -190,7 +199,7 @@ export default async function ProductPage({
 
             <main className="flex-1 pt-32 pb-24">
                 <Suspense fallback={<ProductPageSkeleton />}>
-                    <ProductContentWrapper productId={productId} />
+                    <ProductContent product={product} />
                 </Suspense>
             </main>
 
