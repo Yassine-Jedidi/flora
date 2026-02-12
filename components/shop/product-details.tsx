@@ -188,7 +188,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
                   <Image
                     src={img.url}
-                    alt={`${product.name} - Image ${idx + 1}`}
+                    alt={`${product.name} - ${product.category?.name || 'Jewelry'} FloraAccess Tunisia (Image ${idx + 1})`}
                     fill
                     sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 520px"
                     className="object-cover"

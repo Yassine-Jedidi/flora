@@ -87,7 +87,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {product.images[0] ? (
           <Image
             src={product.images[0].url}
-            alt={product.name}
+            alt={`${product.name} - ${product.category?.name || ''} FloraAccess Jewelry Tunisia`}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
