@@ -1,6 +1,6 @@
 import { getOrders, getOrderGovernorates } from "@/app/actions/get-orders";
-import { OrderList } from "@/components/admin/order-list";
-import { OrderFilters } from "@/components/admin/order-filters";
+import { OrderList } from "@/components/admin/orders/order-list";
+import { OrderFilters } from "@/components/admin/orders/order-filters";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {

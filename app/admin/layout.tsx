@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { AdminNav } from "@/components/admin/admin-nav";
+import { AdminNav } from "@/components/admin/layout/admin-nav";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {

@@ -126,10 +126,15 @@ export function OrderDesktopTable({ orders }: OrderDesktopTableProps) {
                                     </div>
                                 </TableCell>
                                 <TableCell className="px-4 py-5">
-                                    <div className="flex items-center gap-2 max-w-[220px]">
-                                        <MapPin className="w-3.5 h-3.5 text-pink-400 shrink-0" />
-                                        <div className="text-[12px] font-black text-flora-dark truncate" title={`${order.governorate}, ${order.city} • ${order.detailedAddress}`}>
-                                            {order.governorate}, {order.city} <span className="text-[10px] opacity-50 font-normal ml-0.5">• {order.detailedAddress}</span>
+                                    <div className="flex items-start gap-2 max-w-[220px]">
+                                        <MapPin className="w-3.5 h-3.5 text-pink-400 shrink-0 mt-0.5" />
+                                        <div className="flex flex-col min-w-0" title={`${order.governorate}, ${order.city} • ${order.detailedAddress}`}>
+                                            <span className="text-[13px] font-black text-flora-dark truncate">
+                                                {order.governorate}, {order.city}
+                                            </span>
+                                            <span className="text-[10px] text-gray-400 font-medium truncate leading-tight">
+                                                {order.detailedAddress}
+                                            </span>
                                         </div>
                                     </div>
                                 </TableCell>

@@ -1,6 +1,6 @@
 import { getProducts, getCategories } from "@/app/actions/get-products";
-import { ProductList } from "@/components/admin/product-list";
-import { InventoryFilters } from "@/components/admin/inventory-filters";
+import { ProductList } from "@/components/admin/inventory/product-list";
+import { InventoryFilters } from "@/components/admin/inventory/inventory-filters";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {

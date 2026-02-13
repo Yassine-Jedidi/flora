@@ -1,4 +1,4 @@
-import { ProductForm } from "@/components/admin/product-form";
+import { ProductForm } from "@/components/admin/inventory/product-form";
 import { getCategories } from "@/app/actions/get-products";
 import { seedCategories } from "@/app/actions/product";
 import { getTranslations } from "next-intl/server";
