@@ -193,7 +193,7 @@ export function CheckoutClient() {
             </p>
 
             <div className="flex flex-col items-center gap-4">
-              {orderId && (
+              {orderId && session && (
                 <Link href={`/orders/${orderId}`} className="w-full sm:w-auto">
                   <Button className="w-full sm:min-w-[240px] bg-primary hover:bg-[#FF75AA] text-white rounded-full py-6 px-10 font-black text-lg shadow-lg shadow-pink-100 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3">
                     <PackageSearch className="w-5 h-5" />
