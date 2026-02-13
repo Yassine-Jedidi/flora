@@ -18,7 +18,6 @@ export async function createPack(values: PackFormValues) {
       headers: await headers(),
     });
 
-<<<<<<< HEAD
     if (!session) {
       return { error: t("unauthorized") || "Unauthorized" };
     }
@@ -29,9 +28,6 @@ export async function createPack(values: PackFormValues) {
     });
 
     if (user?.role !== "admin") {
-=======
-    if (!session || (session.user as { role?: string }).role !== "admin") {
->>>>>>> 7635f971ccbb9867d2404b0fc9b7174ccb86820c
       return { error: t("unauthorized") || "Unauthorized" };
     }
     const validatedFields = PackSchema.safeParse(values);

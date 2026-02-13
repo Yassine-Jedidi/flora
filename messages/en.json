@@ -771,7 +771,7 @@
                 "location": "Location",
                 "status": "Status",
                 "empty": "No orders found.",
-                "ship": "ship"
+                "ship": "ship."
             },
             "filters": {
                 "searchPlaceholder": "Search by customer name or phone...",
