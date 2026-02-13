@@ -1,6 +1,6 @@
 import { getCategories, getProduct } from "@/app/actions/get-products";
 import { getAvailableProducts } from "@/app/actions/pack";
-import { PackForm } from "@/components/admin/pack-form";
+import { PackForm } from "@/components/admin/inventory/pack-form";
 import { notFound } from "next/navigation";
 import { Product, ProductImage } from "@/lib/types";
 import { getTranslations } from "next-intl/server";

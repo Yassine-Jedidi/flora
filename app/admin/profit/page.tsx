@@ -1,5 +1,5 @@
 import { getAllProducts } from "@/app/actions/get-products";
-import { ProfitCalculator } from "@/components/admin/profit-calculator";
+import { ProfitCalculator } from "@/components/admin/profit/profit-calculator";
 
 export default async function ProfitPage() {
     const products = await getAllProducts();

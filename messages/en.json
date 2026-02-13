@@ -771,7 +771,11 @@
                 "location": "Location",
                 "status": "Status",
                 "empty": "No orders found.",
-                "ship": "ship"
+                "ship": "ship",
+                "treasure": "Treasure",
+                "treasures": "Treasures",
+                "shipping": "Shipping",
+                "totalToCollect": "Total to collect"
             },
             "filters": {
                 "searchPlaceholder": "Search by customer name or phone...",
@@ -822,6 +826,10 @@
             "list": {
                 "empty": "No accessories listed yet. Start by adding one above! ✨",
                 "title": "Recent Inventory",
+                "units": "units",
+                "editProduct": "Edit Product",
+                "noTreasuresFound": "No treasures found",
+                "emptySelection": "Your inventory is empty for this selection. Try adjusting your filters!",
                 "table": {
                     "product": "Product",
                     "category": "Category",
