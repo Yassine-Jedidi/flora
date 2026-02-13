@@ -1,7 +1,8 @@
 import { CategoryPage } from "@/components/shop/category-page";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 
 export async function generateMetadata() {
+    const locale = await getLocale();
     const t = await getTranslations("Metadata.categories.packs");
     return {
         title: t("title"),
@@ -22,12 +23,12 @@ export async function generateMetadata() {
             images: [
                 {
                     url: "/logo.png",
-                    width: 1200,
-                    height: 630,
+                    width: 587,
+                    height: 581,
                     alt: "FloraAccess Jewelry Tunisia",
                 },
             ],
-            locale: "fr_TN",
+            locale: locale.replace("-", "_"),
             type: "website",
         },
         twitter: {
@@ -42,7 +43,7 @@ export async function generateMetadata() {
 export default async function PacksPage({
     searchParams
 }: {
-    searchParams: Promise<{ sort?: string }>
+    searchParams: Promise<{ sort?: string; category?: string; page?: string }>
 }) {
     const t = await getTranslations("Shop");
     return (

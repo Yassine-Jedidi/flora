@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { useTranslations } from "next-intl";
 import { AlertCircle, RefreshCcw, Home } from "lucide-react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default function GlobalError({
@@ -15,7 +11,17 @@ export default function GlobalError({
     error: Error & { digest?: string };
     reset: () => void;
 }) {
-    const t = useTranslations("Error");
+    // Hardcoded translations as a fallback since NextIntlClientProvider 
+    // is not available in global-error
+    const t = (key: string) => {
+        const messages: Record<string, string> = {
+            title: "Oups ! Quelque chose s'est mal passé",
+            description: "Nous avons rencontré une erreur inattendue. Nos artisans travaillent pour réparer cela.",
+            retry: "Réessayer",
+            backHome: "Retour à l'accueil",
+        };
+        return messages[key] || key;
+    };
 
     useEffect(() => {
         // Log the error to an error reporting service

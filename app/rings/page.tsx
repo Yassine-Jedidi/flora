@@ -1,8 +1,9 @@
 import { CategoryPage } from "@/components/shop/category-page";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { BASE_URL } from "@/lib/constants/site";
 
 export async function generateMetadata() {
+    const locale = await getLocale();
     const t = await getTranslations("Metadata.categories.rings");
 
     return {
@@ -23,11 +24,13 @@ export async function generateMetadata() {
             images: [
                 {
                     url: "/logo.png",
-                    width: 800,
-                    height: 600,
+                    width: 587,
+                    height: 581,
                     alt: "FloraAccess Rings Collection",
                 },
             ],
+            locale: locale.replace("-", "_"),
+            type: "website",
         },
         twitter: {
             card: "summary_large_image",
@@ -41,7 +44,7 @@ export async function generateMetadata() {
 export default async function RingsPage({
     searchParams
 }: {
-    searchParams: Promise<{ sort?: string }>
+    searchParams: Promise<{ sort?: string; category?: string; page?: string }>
 }) {
     const t = await getTranslations("Shop");
     return (

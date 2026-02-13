@@ -1,23 +1,25 @@
 import { CategoryPage } from "@/components/shop/category-page";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { BASE_URL } from "@/lib/constants/site";
+import { isValidCategory } from "@/lib/constants/categories";
 
 export async function generateMetadata({
     searchParams
 }: {
     searchParams: Promise<{ category?: string }>
 }) {
+    const locale = await getLocale();
     const { category } = await searchParams;
     const t = await getTranslations("Metadata.categories.all");
     const tTitles = await getTranslations("Shop.titles");
 
-    const isValidCategory = category && ["rings", "bracelets", "necklaces", "earrings", "packs"].includes(category);
+    const isValid = isValidCategory(category);
 
-    const dynamicTitle = isValidCategory
+    const dynamicTitle = isValid
         ? `${tTitles(category)} | FloraAccess`
         : t("title");
 
-    const canonicalUrl = isValidCategory
+    const canonicalUrl = isValid
         ? `/shop?category=${category}`
         : "/shop";
 
@@ -39,11 +41,13 @@ export async function generateMetadata({
             images: [
                 {
                     url: "/logo.png",
-                    width: 800,
-                    height: 600,
+                    width: 587,
+                    height: 581,
                     alt: "FloraAccess Collection",
                 },
             ],
+            locale: locale.replace("-", "_"),
+            type: "website",
         },
         twitter: {
             card: "summary_large_image",
@@ -57,19 +61,19 @@ export async function generateMetadata({
 export default async function ShopPage({
     searchParams
 }: {
-    searchParams: Promise<{ sort?: string; category?: string }>
+    searchParams: Promise<{ sort?: string; category?: string; page?: string }>
 }) {
     const { category } = await searchParams;
     const t = await getTranslations("Shop");
     const tTitles = await getTranslations("Shop.titles");
 
-    const isValidCategory = category && ["rings", "bracelets", "necklaces", "earrings", "packs"].includes(category);
+    const isValid = isValidCategory(category);
 
-    const title = isValidCategory
-        ? tTitles(category)
+    const title = isValid
+        ? tTitles(category as string)
         : t("titles.all");
 
-    const subtitle = isValidCategory
+    const subtitle = isValid
         ? t(`subtitles.${category}`)
         : t("subtitles.all");
 

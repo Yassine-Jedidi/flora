@@ -15,6 +15,30 @@ interface ProductFilters {
 
 import { unstable_cache } from "next/cache";
 
+const mapProductForClient = <
+  T extends {
+    originalPrice: unknown;
+    discountedPrice: unknown;
+    createdAt: Date;
+    updatedAt?: Date;
+  },
+>(
+  product: T,
+) => {
+  return {
+    ...product,
+    originalPrice: Number(product.originalPrice),
+    discountedPrice: product.discountedPrice
+      ? Number(product.discountedPrice)
+      : null,
+    createdAt: product.createdAt.toISOString(),
+    ...(product.updatedAt && { updatedAt: product.updatedAt.toISOString() }),
+    isNew:
+      new Date(product.createdAt).getTime() >
+      Date.now() - 7 * 24 * 60 * 60 * 1000,
+  };
+};
+
 export const getProducts = async (
   page: number = 1,
   pageSize: number = 10,
@@ -80,18 +104,7 @@ export const getProducts = async (
         ]);
 
         // Convert Decimal to number for Client Component serialization
-        const mappedProducts = products.map((product) => ({
-          ...product,
-          originalPrice: Number(product.originalPrice),
-          discountedPrice: product.discountedPrice
-            ? Number(product.discountedPrice)
-            : null,
-          createdAt: product.createdAt.toISOString(),
-          updatedAt: product.updatedAt.toISOString(),
-          isNew:
-            new Date(product.createdAt).getTime() >
-            Date.now() - 7 * 24 * 60 * 60 * 1000,
-        }));
+        const mappedProducts = products.map(mapProductForClient);
 
         return {
           products: mappedProducts,
@@ -117,139 +130,162 @@ export const getProducts = async (
   )();
 };
 
-export const getCategories = cache(async () => {
-  try {
-    return await prisma.category.findMany({
-      orderBy: { name: "asc" },
-    });
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
-});
-
-export const getAllProducts = cache(async () => {
-  try {
-    const products = await prisma.product.findMany({
-      include: {
-        category: true,
-        images: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    // Convert Decimal to number for Client Component serialization
-    return products.map((product) => ({
-      ...product,
-      originalPrice: Number(product.originalPrice),
-      discountedPrice: product.discountedPrice
-        ? Number(product.discountedPrice)
-        : null,
-      createdAt: product.createdAt.toISOString(),
-      updatedAt: product.updatedAt.toISOString(),
-      isNew:
-        new Date(product.createdAt).getTime() >
-        Date.now() - 7 * 24 * 60 * 60 * 1000,
-    }));
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return [];
-  }
-});
-
-export const getProductsByCategory = cache(
-  async (
-    categorySlug: string,
-    sort?: string,
-    filterCategory?: string,
-    page: number = 1,
-    pageSize: number = 12,
-  ) => {
-    try {
-      const skip = (page - 1) * pageSize;
-
-      // We'll build the base WHERE clause for Prisma
-      const where: Prisma.ProductWhereInput = {
-        isArchived: false,
-        isLive: true,
-      };
-
-      if (categorySlug !== "all") {
-        where.category = {
-          slug: categorySlug,
-        };
-      } else if (filterCategory && filterCategory !== "all") {
-        where.category = {
-          slug: filterCategory,
-        };
+export const getCategories = async () => {
+  return unstable_cache(
+    async () => {
+      try {
+        return await prisma.category.findMany({
+          orderBy: { name: "asc" },
+        });
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        return [];
       }
+    },
+    ["categories"],
+    {
+      revalidate: 3600,
+      tags: ["categories"],
+    },
+  )();
+};
 
-      // Determine the ORDER BY clause for Prisma or manual sort
-      let orderBy:
-        | Prisma.ProductOrderByWithRelationInput
-        | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
-
-      // If sorting by price, we need to handle the effective price (discounted or original)
-      // Since Prisma findMany doesn't support sorting by a calculated field like COALESCE(discountedPrice, originalPrice),
-      // we have two options: Raw query or fetch IDs first. Raw query is most efficient for pagination.
-      if (sort === "price-asc" || sort === "price" || sort === "price-desc") {
-        const direction = sort === "price-desc" ? "DESC" : "ASC";
-        const categoryFilter =
-          categorySlug !== "all"
-            ? categorySlug
-            : filterCategory && filterCategory !== "all"
-              ? filterCategory
-              : null;
-
-        // Get IDs using raw SQL to handle the COALESCE sorting across the entire table
-        const orderedProducts: { id: string }[] = await prisma.$queryRaw`
-        SELECT p.id 
-        FROM "Product" p
-        ${
-          categoryFilter
-            ? Prisma.sql`
-          JOIN "Category" c ON p."categoryId" = c.id 
-          WHERE c.slug = ${categoryFilter} AND p."isArchived" = false AND p."isLive" = true
-        `
-            : Prisma.sql`
-          WHERE p."isArchived" = false AND p."isLive" = true
-        `
-        }
-        ORDER BY COALESCE(p."discountedPrice", p."originalPrice") ${Prisma.raw(direction)}
-        LIMIT ${pageSize} OFFSET ${skip}
-      `;
-
-        const ids = orderedProducts.map((p) => p.id);
-
-        // Now fetch full product details for these IDs, maintaining the order
+export const getAllProducts = async () => {
+  return unstable_cache(
+    async () => {
+      try {
         const products = await prisma.product.findMany({
-          where: { id: { in: ids } },
           include: {
             category: true,
             images: true,
           },
+          orderBy: {
+            createdAt: "desc",
+          },
         });
 
-        // Prisma's IN operator doesn't preserve order, so we re-sort them based on the ID order from raw query
-        const sortedProducts = ids
-          .map((id) => products.find((p) => p.id === id)!)
-          .filter(Boolean);
-        const total = await prisma.product.count({ where });
+        // Convert Decimal to number for Client Component serialization
+        return products.map(mapProductForClient);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        return [];
+      }
+    },
+    ["all-products"],
+    {
+      revalidate: 3600,
+      tags: ["products"],
+    },
+  )();
+};
 
-        const mappedProducts = sortedProducts.map((product) => ({
-          ...product,
-          originalPrice: Number(product.originalPrice),
-          discountedPrice: product.discountedPrice
-            ? Number(product.discountedPrice)
-            : null,
-          createdAt: product.createdAt.toISOString(),
-          updatedAt: product.updatedAt.toISOString(),
-          isNew:
-            new Date(product.createdAt).getTime() >
-            Date.now() - 7 * 24 * 60 * 60 * 1000,
-        }));
+export const getProductsByCategory = async (
+  categorySlug: string,
+  sort?: string,
+  filterCategory?: string,
+  page: number = 1,
+  pageSize: number = 12,
+) => {
+  return unstable_cache(
+    async () => {
+      try {
+        const skip = (page - 1) * pageSize;
+
+        // We'll build the base WHERE clause for Prisma
+        const where: Prisma.ProductWhereInput = {
+          isArchived: false,
+          isLive: true,
+        };
+
+        if (categorySlug !== "all") {
+          where.category = {
+            slug: categorySlug,
+          };
+        } else if (filterCategory && filterCategory !== "all") {
+          where.category = {
+            slug: filterCategory,
+          };
+        }
+
+        // Determine the ORDER BY clause for Prisma or manual sort
+        let orderBy:
+          | Prisma.ProductOrderByWithRelationInput
+          | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
+
+        // If sorting by price, we need to handle the effective price (discounted or original)
+        if (sort === "price-asc" || sort === "price" || sort === "price-desc") {
+          const direction = sort === "price-desc" ? "DESC" : "ASC";
+          const categoryFilter =
+            categorySlug !== "all"
+              ? categorySlug
+              : filterCategory && filterCategory !== "all"
+                ? filterCategory
+                : null;
+
+          const orderedProducts: { id: string }[] = await prisma.$queryRaw`
+          SELECT p.id 
+          FROM "Product" p
+          ${
+            categoryFilter
+              ? Prisma.sql`
+            JOIN "Category" c ON p."categoryId" = c.id 
+            WHERE c.slug = ${categoryFilter} AND p."isArchived" = false AND p."isLive" = true
+          `
+              : Prisma.sql`
+            WHERE p."isArchived" = false AND p."isLive" = true
+          `
+          }
+          ORDER BY COALESCE(p."discountedPrice", p."originalPrice") ${Prisma.raw(direction)}
+          LIMIT ${pageSize} OFFSET ${skip}
+        `;
+
+          const ids = orderedProducts.map((p) => p.id);
+
+          const products = await prisma.product.findMany({
+            where: { id: { in: ids } },
+            include: {
+              category: true,
+              images: true,
+            },
+          });
+
+          const sortedProducts = ids
+            .map((id) => products.find((p) => p.id === id)!)
+            .filter(Boolean);
+          const total = await prisma.product.count({ where });
+
+          const mappedProducts = sortedProducts.map(mapProductForClient);
+
+          return {
+            products: mappedProducts,
+            total,
+            totalPages: Math.ceil(total / pageSize),
+            currentPage: page,
+          };
+        }
+
+        // Default Prisma logic for non-price sorts
+        if (sort === "popular") {
+          orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
+        } else if (sort === "newest") {
+          orderBy = { createdAt: "desc" };
+        }
+
+        const [total, products] = await prisma.$transaction([
+          prisma.product.count({ where }),
+          prisma.product.findMany({
+            where,
+            include: {
+              category: true,
+              images: true,
+            },
+            orderBy,
+            take: pageSize,
+            skip,
+          }),
+        ]);
+
+        const mappedProducts = products.map(mapProductForClient);
 
         return {
           products: mappedProducts,
@@ -257,116 +293,82 @@ export const getProductsByCategory = cache(
           totalPages: Math.ceil(total / pageSize),
           currentPage: page,
         };
+      } catch (error) {
+        console.error(
+          `Error fetching products for category ${categorySlug}:`,
+          error,
+        );
+        return { products: [], total: 0, totalPages: 0, currentPage: 1 };
       }
+    },
+    [
+      `products-category-${categorySlug}-${sort}-${filterCategory}-${page}-${pageSize}`,
+    ],
+    {
+      revalidate: 3600,
+      tags: ["products", `products-category-${categorySlug}`],
+    },
+  )();
+};
 
-      // Default Prisma logic for non-price sorts
-      if (sort === "popular") {
-        orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
-      } else if (sort === "newest") {
-        orderBy = { createdAt: "desc" };
+export const getRelatedProducts = async (
+  categoryId: string,
+  excludeProductId: string,
+): Promise<Product[]> => {
+  return unstable_cache(
+    async () => {
+      try {
+        const products = await prisma.product.findMany({
+          where: {
+            categoryId,
+            id: { not: excludeProductId },
+            isArchived: false,
+            isLive: true,
+          },
+          select: {
+            id: true,
+            name: true,
+            originalPrice: true,
+            discountedPrice: true,
+            stock: true,
+            isFeatured: true,
+            isArchived: true,
+            isLive: true,
+            categoryId: true,
+            description: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+            images: {
+              take: 1,
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+            createdAt: true,
+          },
+          take: 4,
+          orderBy: { createdAt: "desc" },
+        });
+
+        return products.map(mapProductForClient);
+      } catch (error) {
+        console.error("Error fetching related products:", error);
+        return [];
       }
-
-      const [total, products] = await prisma.$transaction([
-        prisma.product.count({ where }),
-        prisma.product.findMany({
-          where,
-          include: {
-            category: true,
-            images: true,
-          },
-          orderBy,
-          take: pageSize,
-          skip,
-        }),
-      ]);
-
-      const mappedProducts = products.map((product) => ({
-        ...product,
-        originalPrice: Number(product.originalPrice),
-        discountedPrice: product.discountedPrice
-          ? Number(product.discountedPrice)
-          : null,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt.toISOString(),
-        isNew:
-          new Date(product.createdAt).getTime() >
-          Date.now() - 7 * 24 * 60 * 60 * 1000,
-      }));
-
-      return {
-        products: mappedProducts,
-        total,
-        totalPages: Math.ceil(total / pageSize),
-        currentPage: page,
-      };
-    } catch (error) {
-      console.error(
-        `Error fetching products for category ${categorySlug}:`,
-        error,
-      );
-      return { products: [], total: 0, totalPages: 0, currentPage: 1 };
-    }
-  },
-);
-
-export const getRelatedProducts = cache(
-  async (categoryId: string, excludeProductId: string): Promise<Product[]> => {
-    try {
-      const products = await prisma.product.findMany({
-        where: {
-          categoryId,
-          id: { not: excludeProductId },
-          isArchived: false,
-          isLive: true,
-        },
-        select: {
-          id: true,
-          name: true,
-          originalPrice: true,
-          discountedPrice: true,
-          stock: true,
-          isFeatured: true,
-          isArchived: true,
-          isLive: true,
-          categoryId: true,
-          description: true,
-          category: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-          images: {
-            take: 1,
-            select: {
-              id: true,
-              url: true,
-            },
-          },
-          createdAt: true,
-        },
-        take: 4,
-        orderBy: { createdAt: "desc" },
-      });
-
-      return products.map((product) => ({
-        ...product,
-        originalPrice: Number(product.originalPrice),
-        discountedPrice: product.discountedPrice
-          ? Number(product.discountedPrice)
-          : null,
-        createdAt: product.createdAt.toISOString(),
-        isNew:
-          new Date(product.createdAt).getTime() >
-          Date.now() - 7 * 24 * 60 * 60 * 1000,
-      }));
-    } catch (error) {
-      console.error("Error fetching related products:", error);
-      return [];
-    }
-  },
-);
+    },
+    [`related-products-${categoryId}-${excludeProductId}`],
+    {
+      revalidate: 3600,
+      tags: ["products", `related-products-${excludeProductId}`],
+    },
+  )();
+};
 
 export const getProduct = async (id: string): Promise<Product | null> => {
   return unstable_cache(
@@ -440,25 +442,11 @@ export const getProduct = async (id: string): Promise<Product | null> => {
 
         // Convert Decimal to number for Client Component serialization
         const mappedProduct = {
-          ...product,
-          originalPrice: Number(product.originalPrice),
-          discountedPrice: product.discountedPrice
-            ? Number(product.discountedPrice)
-            : null,
-          createdAt: product.createdAt.toISOString(),
-          isNew:
-            new Date(product.createdAt).getTime() >
-            Date.now() - 7 * 24 * 60 * 60 * 1000,
+          ...mapProductForClient(product),
           packItems: product.packItems.map((pi) => ({
             ...pi,
             itemId: pi.item.id,
-            item: {
-              ...pi.item,
-              originalPrice: Number(pi.item.originalPrice),
-              discountedPrice: pi.item.discountedPrice
-                ? Number(pi.item.discountedPrice)
-                : null,
-            },
+            item: mapProductForClient(pi.item),
           })),
         };
 
@@ -590,18 +578,10 @@ export const searchProducts = cache(
           score += 10;
         }
 
+        const mappedProduct = mapProductForClient(product);
         return {
-          ...product,
+          ...mappedProduct,
           searchScore: score,
-          originalPrice: Number(product.originalPrice),
-          discountedPrice: product.discountedPrice
-            ? Number(product.discountedPrice)
-            : null,
-          createdAt: product.createdAt.toISOString(),
-          updatedAt: product.updatedAt.toISOString(),
-          isNew:
-            new Date(product.createdAt).getTime() >
-            Date.now() - 7 * 24 * 60 * 60 * 1000,
         };
       });
 
@@ -667,17 +647,7 @@ export const getFeaturedProducts = async (): Promise<Product[]> => {
         });
 
         // Convert Decimal to number for Client Component serialization
-        return products.map((product) => ({
-          ...product,
-          originalPrice: Number(product.originalPrice),
-          discountedPrice: product.discountedPrice
-            ? Number(product.discountedPrice)
-            : null,
-          createdAt: product.createdAt.toISOString(),
-          isNew:
-            new Date(product.createdAt).getTime() >
-            Date.now() - 7 * 24 * 60 * 60 * 1000,
-        }));
+        return products.map(mapProductForClient);
       } catch (error) {
         console.error("Error fetching featured products:", error);
         return [];
@@ -728,91 +698,105 @@ export const getCategoryImages = async () => {
   )();
 };
 
-export const getSaleProducts = cache(
-  async (
-    sort?: string,
-    categorySlug?: string,
-    page: number = 1,
-    pageSize: number = 12,
-  ) => {
-    try {
-      const skip = (page - 1) * pageSize;
-      let orderBy:
-        | Prisma.ProductOrderByWithRelationInput
-        | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
+export const getSaleProducts = async (
+  sort?: string,
+  categorySlug?: string,
+  page: number = 1,
+  pageSize: number = 12,
+) => {
+  return unstable_cache(
+    async () => {
+      try {
+        const skip = (page - 1) * pageSize;
+        let orderBy:
+          | Prisma.ProductOrderByWithRelationInput
+          | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
 
-      if (sort === "popular") {
-        orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
-      } else if (sort === "newest") {
-        orderBy = { createdAt: "desc" };
-      } else if (sort === "price-asc" || sort === "price") {
-        orderBy = { originalPrice: "asc" };
-      } else if (sort === "price-desc") {
-        orderBy = { originalPrice: "desc" };
-      }
-
-      const where: Prisma.ProductWhereInput = {
-        discountedPrice: {
-          not: null,
-        },
-        isArchived: false,
-        isLive: true,
-      };
-
-      if (categorySlug && categorySlug !== "all") {
-        where.category = {
-          slug: categorySlug,
-        };
-      }
-
-      // Handle effective price sorting for sale items
-      if (sort === "price-asc" || sort === "price" || sort === "price-desc") {
-        const direction = sort === "price-desc" ? "DESC" : "ASC";
-
-        const orderedProducts: { id: string }[] = await prisma.$queryRaw`
-        SELECT p.id 
-        FROM "Product" p
-        ${
-          categorySlug && categorySlug !== "all"
-            ? Prisma.sql`
-          JOIN "Category" c ON p."categoryId" = c.id 
-          WHERE c.slug = ${categorySlug} AND p."discountedPrice" IS NOT NULL AND p."isArchived" = false AND p."isLive" = true
-        `
-            : Prisma.sql`
-          WHERE p."discountedPrice" IS NOT NULL AND p."isArchived" = false AND p."isLive" = true
-        `
+        if (sort === "popular") {
+          orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
+        } else if (sort === "newest") {
+          orderBy = { createdAt: "desc" };
+        } else if (sort === "price-asc" || sort === "price") {
+          orderBy = { originalPrice: "asc" };
+        } else if (sort === "price-desc") {
+          orderBy = { originalPrice: "desc" };
         }
-        ORDER BY COALESCE(p."discountedPrice", p."originalPrice") ${Prisma.raw(direction)}
-        LIMIT ${pageSize} OFFSET ${skip}
-      `;
 
-        const ids = orderedProducts.map((p) => p.id);
-
-        const products = await prisma.product.findMany({
-          where: { id: { in: ids } },
-          include: {
-            category: true,
-            images: true,
+        const where: Prisma.ProductWhereInput = {
+          discountedPrice: {
+            not: null,
           },
-        });
+          isArchived: false,
+          isLive: true,
+        };
 
-        const sortedProducts = ids
-          .map((id) => products.find((p) => p.id === id)!)
-          .filter(Boolean);
-        const total = await prisma.product.count({ where });
+        if (categorySlug && categorySlug !== "all") {
+          where.category = {
+            slug: categorySlug,
+          };
+        }
 
-        const mappedProducts = sortedProducts.map((product) => ({
-          ...product,
-          originalPrice: Number(product.originalPrice),
-          discountedPrice: product.discountedPrice
-            ? Number(product.discountedPrice)
-            : null,
-          createdAt: product.createdAt.toISOString(),
-          updatedAt: product.updatedAt.toISOString(),
-          isNew:
-            new Date(product.createdAt).getTime() >
-            Date.now() - 7 * 24 * 60 * 60 * 1000,
-        }));
+        // Handle effective price sorting for sale items
+        if (sort === "price-asc" || sort === "price" || sort === "price-desc") {
+          const direction = sort === "price-desc" ? "DESC" : "ASC";
+
+          const orderedProducts: { id: string }[] = await prisma.$queryRaw`
+          SELECT p.id 
+          FROM "Product" p
+          ${
+            categorySlug && categorySlug !== "all"
+              ? Prisma.sql`
+            JOIN "Category" c ON p."categoryId" = c.id 
+            WHERE c.slug = ${categorySlug} AND p."discountedPrice" IS NOT NULL AND p."isArchived" = false AND p."isLive" = true
+          `
+              : Prisma.sql`
+            WHERE p."discountedPrice" IS NOT NULL AND p."isArchived" = false AND p."isLive" = true
+          `
+          }
+          ORDER BY COALESCE(p."discountedPrice", p."originalPrice") ${Prisma.raw(direction)}
+          LIMIT ${pageSize} OFFSET ${skip}
+        `;
+
+          const ids = orderedProducts.map((p) => p.id);
+
+          const products = await prisma.product.findMany({
+            where: { id: { in: ids } },
+            include: {
+              category: true,
+              images: true,
+            },
+          });
+
+          const sortedProducts = ids
+            .map((id) => products.find((p) => p.id === id)!)
+            .filter(Boolean);
+          const total = await prisma.product.count({ where });
+
+          const mappedProducts = sortedProducts.map(mapProductForClient);
+
+          return {
+            products: mappedProducts,
+            total,
+            totalPages: Math.ceil(total / pageSize),
+            currentPage: page,
+          };
+        }
+
+        const [total, products] = await prisma.$transaction([
+          prisma.product.count({ where }),
+          prisma.product.findMany({
+            where,
+            include: {
+              category: true,
+              images: true,
+            },
+            orderBy,
+            take: pageSize,
+            skip,
+          }),
+        ]);
+
+        const mappedProducts = products.map(mapProductForClient);
 
         return {
           products: mappedProducts,
@@ -820,49 +804,20 @@ export const getSaleProducts = cache(
           totalPages: Math.ceil(total / pageSize),
           currentPage: page,
         };
+      } catch (error) {
+        console.error("Error fetching sale products:", error);
+        return {
+          products: [],
+          total: 0,
+          totalPages: 0,
+          currentPage: 1,
+        };
       }
-
-      const [total, products] = await prisma.$transaction([
-        prisma.product.count({ where }),
-        prisma.product.findMany({
-          where,
-          include: {
-            category: true,
-            images: true,
-          },
-          orderBy,
-          take: pageSize,
-          skip,
-        }),
-      ]);
-
-      const mappedProducts = products.map((product) => ({
-        ...product,
-        originalPrice: Number(product.originalPrice),
-        discountedPrice: product.discountedPrice
-          ? Number(product.discountedPrice)
-          : null,
-        createdAt: product.createdAt.toISOString(),
-        updatedAt: product.updatedAt.toISOString(),
-        isNew:
-          new Date(product.createdAt).getTime() >
-          Date.now() - 7 * 24 * 60 * 60 * 1000,
-      }));
-
-      return {
-        products: mappedProducts,
-        total,
-        totalPages: Math.ceil(total / pageSize),
-        currentPage: page,
-      };
-    } catch (error) {
-      console.error("Error fetching sale products:", error);
-      return {
-        products: [],
-        total: 0,
-        totalPages: 0,
-        currentPage: 1,
-      };
-    }
-  },
-);
+    },
+    [`sale-products-${sort}-${categorySlug}-${page}-${pageSize}`],
+    {
+      revalidate: 3600,
+      tags: ["products", "sale-products"],
+    },
+  )();
+};
