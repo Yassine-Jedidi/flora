@@ -54,7 +54,7 @@ export function OrderMobileCard({ order }: OrderMobileCardProps) {
                 </div>
                 <div className="flex flex-col min-w-0">
                     <span className="font-black text-flora-dark text-[15px] truncate tracking-tight">{order.fullName}</span>
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500 font-bold mt-0.5">
+                    <div className="group flex items-center gap-1.5 text-xs text-gray-500 font-bold mt-0.5">
                         <Phone className="w-3.5 h-3.5 text-pink-400 opacity-70" />
                         <span className="group-hover:text-pink-500">{order.phoneNumber}</span>
                     </div>
@@ -84,7 +84,7 @@ export function OrderMobileCard({ order }: OrderMobileCardProps) {
                     <div className="flex items-center gap-2">
                         <Package className={cn("w-4 h-4", isExpanded ? "text-pink-300" : "text-pink-500")} />
                         <span className="text-xs font-black uppercase tracking-wider">
-                            {order.items.length} {order.items.length === 1 ? 'Treasure' : 'Treasures'}
+                            {order.items.length} {order.items.length === 1 ? t("treasure") : t("treasures")}
                         </span>
                     </div>
                     <ChevronDown className={cn("w-4 h-4 transition-transform duration-300", isExpanded && "rotate-180")} />
@@ -96,13 +96,13 @@ export function OrderMobileCard({ order }: OrderMobileCardProps) {
                             <div key={item.id} className="flex justify-between gap-4 text-xs">
                                 <span className="text-gray-600 font-bold truncate flex-1 leading-tight">{item.product.name}</span>
                                 <span className="font-black whitespace-nowrap text-flora-dark bg-white px-2 py-0.5 rounded shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
-                                    {item.quantity} × {Number(item.price).toFixed(2)}
+                                    {item.quantity} × {Number(item.price).toFixed(3)} DT
                                 </span>
                             </div>
                         ))}
                         <div className="pt-3 mt-1 border-t border-gray-200/50 flex justify-between items-center">
-                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Shipping</span>
-                            <span className="text-xs font-bold text-gray-500 italic">+{Number(order.shippingCost).toFixed(2)} {t("ship")}</span>
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t("shipping")}</span>
+                            <span className="text-xs font-bold text-gray-500 italic">+{Number(order.shippingCost).toFixed(3)} DT</span>
                         </div>
                     </div>
                 )}
@@ -111,10 +111,10 @@ export function OrderMobileCard({ order }: OrderMobileCardProps) {
             {/* Footer: Price Summary */}
             <div className="flex justify-between items-center pt-2 px-1">
                 <div className="flex flex-col">
-                    <span className="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-black">Total to collect</span>
+                    <span className="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-black">{t("totalToCollect")}</span>
                 </div>
                 <div className="text-2xl font-black text-primary flex items-baseline gap-1">
-                    {Number(order.totalPrice).toFixed(2)}
+                    {Number(order.totalPrice).toFixed(3)}
                     <span className="text-[12px] font-black opacity-70">DT</span>
                 </div>
             </div>

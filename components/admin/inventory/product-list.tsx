@@ -58,9 +58,9 @@ export function ProductList({ products, pagination }: ProductListProps) {
             <div className="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <Package className="w-10 h-10 text-pink-300" />
             </div>
-            <h3 className="text-flora-dark font-black text-xl mb-2">No treasures found</h3>
+            <h3 className="text-flora-dark font-black text-xl mb-2">{t("noTreasuresFound")}</h3>
             <p className="text-gray-400 font-medium max-w-xs mx-auto">
-              Your inventory is empty for this selection. Try adjusting your filters!
+              {t("emptySelection")}
             </p>
           </div>
         ) : (

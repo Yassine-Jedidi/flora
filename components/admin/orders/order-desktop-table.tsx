@@ -117,11 +117,11 @@ export function OrderDesktopTable({ orders }: OrderDesktopTableProps) {
                                 <TableCell className="px-4 py-5">
                                     <div className="flex flex-col gap-0.5">
                                         <div className="text-[9px] text-gray-400 flex items-center gap-1 font-medium italic">
-                                            <span>{(Number(order.totalPrice) - (order.shippingCost || 0)).toFixed(2)}</span>
-                                            <span className="text-[8px] opacity-70">+{(order.shippingCost || 0).toFixed(0)} {t("ship")}</span>
+                                            <span>{(Number(order.totalPrice) - (order.shippingCost || 0)).toFixed(3)}</span>
+                                            <span className="text-[8px] opacity-70">+{(order.shippingCost || 0).toFixed(3)} DT</span>
                                         </div>
                                         <span className="font-black text-primary text-base tracking-tight whitespace-nowrap">
-                                            {Number(order.totalPrice).toFixed(2)} <span className="text-[10px] font-bold">DT</span>
+                                            {Number(order.totalPrice).toFixed(3)} <span className="text-[10px] font-bold">DT</span>
                                         </span>
                                     </div>
                                 </TableCell>

@@ -85,15 +85,15 @@ export function InventoryMobileCard({ product, onDelete, isDeleting }: Inventory
             <div className="grid grid-cols-2 gap-3 bg-gray-50/50 p-3 rounded-2xl border border-gray-100">
                 <div className="flex flex-col gap-1">
                     <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                        <Layers className="w-3 h-3" /> Stock
+                        <Layers className="w-3 h-3" /> {t("table.stock")}
                     </span>
                     <span className={`text-[13px] font-black ${product.stock <= 5 ? "text-red-500" : "text-flora-dark"}`}>
-                        {product.stock} units
+                        {product.stock} {t("units")}
                     </span>
                 </div>
                 <div className="flex flex-col gap-1 items-end">
                     <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-                        <TrendingUp className="w-3 h-3" /> Status
+                        <TrendingUp className="w-3 h-3" /> {t("table.status")}
                     </span>
                     <div className="flex gap-1.5 justify-end">
                         {product.isArchived ? (
@@ -129,7 +129,7 @@ export function InventoryMobileCard({ product, onDelete, isDeleting }: Inventory
                         ? `/admin/product/edit-pack/${product.id}`
                         : `/admin/product/edit/${product.id}`}>
                         <Pencil className="w-3.5 h-3.5" />
-                        Edit Product
+                        {t("editProduct")}
                     </Link>
                 </Button>
 

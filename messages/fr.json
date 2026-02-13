@@ -771,7 +771,11 @@
                 "location": "Lieu",
                 "status": "Statut",
                 "empty": "Aucune commande trouvée.",
-                "ship": "livr."
+                "ship": "livr",
+                "treasure": "Trésor",
+                "treasures": "Trésors",
+                "shipping": "Livraison",
+                "totalToCollect": "Total à collecter"
             },
             "filters": {
                 "searchPlaceholder": "Rechercher par nom de client ou téléphone...",
@@ -822,6 +826,10 @@
             "list": {
                 "empty": "Aucun accessoire listé pour le moment. Commencez par en ajouter un ci-dessus ! ✨",
                 "title": "Inventaire Récent",
+                "units": "unités",
+                "editProduct": "Modifier le Produit",
+                "noTreasuresFound": "Aucun trésor trouvé",
+                "emptySelection": "Votre inventaire est vide pour cette sélection. Essayez d'ajuster vos filtres !",
                 "table": {
                     "product": "Produit",
                     "category": "Catégorie",
