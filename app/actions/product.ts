@@ -14,7 +14,16 @@ export async function createProduct(values: ProductFormValues) {
       headers: await headers(),
     });
 
-    if (!session) {
+    if (!session || (session.user as { role?: string }).role !== "admin") {
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true },
+    });
+
+    if (user?.role !== "admin" && user?.role !== "ADMIN") {
       return { error: t("unauthorized") || "Unauthorized" };
     }
 
@@ -120,7 +129,7 @@ export async function seedCategories() {
     headers: await headers(),
   });
 
-  if (!session) {
+  if (!session || (session.user as { role?: string }).role !== "admin") {
     const t = await getTranslations("Errors");
     return { error: t("unauthorized") };
   }
@@ -144,7 +153,7 @@ export async function deleteProduct(id: string) {
       headers: await headers(),
     });
 
-    if (!session) {
+    if (!session || (session.user as { role?: string }).role !== "admin") {
       return { error: t("unauthorized") || "Unauthorized" };
     }
 
@@ -213,7 +222,7 @@ export async function updateProduct(id: string, values: ProductFormValues) {
       headers: await headers(),
     });
 
-    if (!session) {
+    if (!session || (session.user as { role?: string }).role !== "admin") {
       return { error: t("unauthorized") || "Unauthorized" };
     }
 
@@ -352,7 +361,9 @@ export async function deleteProductImage(url: string) {
       headers: await headers(),
     });
 
-    if (!session) return { error: t("unauthorized") || "Unauthorized" };
+    if (!session || (session.user as { role?: string }).role !== "admin") {
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
     const fileKey = url.split("/").pop();
     if (!fileKey) return { error: "Invalid URL" };
 

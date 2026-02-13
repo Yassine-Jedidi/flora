@@ -9,7 +9,7 @@ A modern e-commerce platform for jewelry built with Next.js, featuring rings, ne
 - **Shopping Cart** - Add items, manage quantities, and proceed to checkout
 - **Favorites** - Save items for later
 - **Search** - Find products quickly
-- **Admin Dashboard** - Manage products, inventory, orders, and view profit analytics
+- **Management Dashboard** - Manage products, inventory, orders, and view profit analytics
 - **Responsive Design** - Works seamlessly on mobile and desktop
 - **Internationalization** - Multi-language support
 - **AI Integration** - AI-powered features for enhanced user experience
@@ -44,13 +44,13 @@ git clone <repository-url>
 cd flora
 ```
 
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
+1. Configure environment variables:
 
 ```bash
 cp .env.example .env
@@ -60,25 +60,26 @@ Fill in the required environment variables:
 
 - `DATABASE_URL` - Your Neon PostgreSQL connection string
 - `UPLOADTHING_TOKEN` - Your UploadThing token
-- `ADMIN_KEY` - Secret key for admin access
-- `BETTER_AUTH_SECRET` - Secret for authentication
-- `OPENAI_API_KEY` - For AI features
-- `EMAIL_USER` & `EMAIL_PASS` - For email notifications
+- `BETTER_AUTH_SECRET` - Secret for authentication (generate with `npx better-auth secret`)
+- `NEXT_PUBLIC_APP_URL` - The base URL of your application (e.g., <http://localhost:3000>)
+- `OPENROUTER_API_KEY` - For AI product description enhancement
+- `SMTP_USER` & `GMAIL_APP_PASSWORD` - For email notifications via Gmail
+- `EMAIL_FROM` - The sender email address
 
-4. Set up the database:
+1. Set up the database:
 
 ```bash
 npx prisma migrate dev
 npx prisma generate
 ```
 
-5. Run the development server:
+1. Run the development server:
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser.
+Open <http://localhost:3000> with your browser.
 
 ## Deployment
 
@@ -100,20 +101,21 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 - Add all required environment variables
 - The build will automatically run `prisma generate` via the `postinstall` script
 - After the first deployment, run migrations:
-  ```bash
-  npx prisma migrate deploy
-  ```
+
+```bash
+npx prisma migrate deploy
+```
 
 ## Project Structure
 
-```
+```text
 ├── app/                    # Next.js app router pages
-│   ├── admin/             # Admin dashboard routes
+│   ├── dashboard/         # Management dashboard routes
 │   ├── api/               # API routes
 │   ├── shop/              # Product pages
 │   └── ...
 ├── components/            # React components
-│   ├── admin/            # Admin-specific components
+│   ├── management/        # Dashboard-specific components
 │   └── ui/               # UI components
 ├── lib/                   # Utility functions and configurations
 │   ├── auth.ts           # Authentication config
@@ -133,15 +135,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 ## Environment Variables
 
-| Variable             | Description                             |
-| -------------------- | --------------------------------------- |
-| `DATABASE_URL`       | PostgreSQL connection string            |
-| `UPLOADTHING_TOKEN`  | UploadThing API token                   |
-| `ADMIN_KEY`          | Secret key for admin dashboard access   |
-| `BETTER_AUTH_SECRET` | Secret for Better Auth                  |
-| `OPENAI_API_KEY`     | OpenAI API key for AI features          |
-| `EMAIL_USER`         | Email address for notifications         |
-| `EMAIL_PASS`         | Email password or app-specific password |
+| Variable              | Description                            |
+| --------------------- | -------------------------------------- |
+| `DATABASE_URL`        | PostgreSQL connection string           |
+| `UPLOADTHING_TOKEN`   | UploadThing API token                  |
+| `BETTER_AUTH_SECRET`  | Secret for Better Auth                 |
+| `NEXT_PUBLIC_APP_URL` | Base URL of the application            |
+| `OPENROUTER_API_KEY`  | OpenRouter API key for AI features     |
+| `SMTP_USER`           | SMTP username (Gmail address)          |
+| `GMAIL_APP_PASSWORD`  | App-specific password for Gmail        |
+| `EMAIL_FROM`          | Sender email address for notifications |
+| `CRON_SECRET`         | Security key for cron jobs             |
 
 ## Contributing
 

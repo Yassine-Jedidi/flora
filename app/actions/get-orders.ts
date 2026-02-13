@@ -2,6 +2,8 @@
 
 import prisma from "@/lib/db";
 import { Prisma, OrderStatus } from "@prisma/client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export interface OrderFilters {
   search?: string;
@@ -22,6 +24,38 @@ export async function getOrders(
   filters?: OrderFilters,
 ) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return {
+        orders: [],
+        total: 0,
+        totalPages: 0,
+        currentPage: 1,
+        error: "Unauthorized",
+      };
+    }
+
+    // Direct DB check to avoid stale session roles
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true },
+    });
+
+    const isAdmin = user?.role === "admin";
+
+    if (!isAdmin) {
+      return {
+        orders: [],
+        total: 0,
+        totalPages: 0,
+        currentPage: 1,
+        error: "Unauthorized",
+      };
+    }
+
     const skip = (page - 1) * pageSize;
 
     // Build where clause based on filters
@@ -131,6 +165,22 @@ export async function getOrders(
 // Get unique governorates for filter dropdown
 export async function getOrderGovernorates(): Promise<string[]> {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      return [];
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true },
+    });
+
+    if (user?.role !== "admin") {
+      return [];
+    }
     const governorates = await prisma.order.findMany({
       select: { governorate: true },
       distinct: ["governorate"],

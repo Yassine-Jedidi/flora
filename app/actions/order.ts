@@ -5,7 +5,7 @@ import { OrderSchema, type OrderValues } from "@/lib/validations/order";
 import { revalidatePath } from "next/cache";
 import { Prisma, OrderStatus } from "@prisma/client";
 import { auth } from "@/lib/auth";
-import { headers, cookies } from "next/headers";
+import { headers } from "next/headers";
 import { getTranslations, getLocale } from "next-intl/server";
 
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -187,10 +187,13 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
 
     const isOwner = existingOrder.userId === session.user.id;
 
-    // Check if user is admin via cookie (same auth system as /admin routes)
-    const adminCookie = (await cookies()).get("flora_admin_auth")?.value;
-    const isAdmin =
-      adminCookie === process.env.ADMIN_KEY && adminCookie !== undefined;
+    // Direct DB check for role to avoid stale sessions
+    const userRole = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true },
+    });
+
+    const isAdmin = userRole?.role === "admin";
 
     if (!isOwner && !isAdmin) {
       const t = await getTranslations("Errors");

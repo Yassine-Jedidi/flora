@@ -5,6 +5,8 @@ import { PackSchema, PackFormValues } from "@/lib/validations/pack";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { UTApi } from "uploadthing/server";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const utapi = new UTApi();
 
@@ -12,6 +14,26 @@ export async function createPack(values: PackFormValues) {
   try {
     const t = await getTranslations("Errors");
     const tPack = await getTranslations("Admin.packForm");
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+<<<<<<< HEAD
+    if (!session) {
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { role: true },
+    });
+
+    if (user?.role !== "admin") {
+=======
+    if (!session || (session.user as { role?: string }).role !== "admin") {
+>>>>>>> 7635f971ccbb9867d2404b0fc9b7174ccb86820c
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
     const validatedFields = PackSchema.safeParse(values);
 
     if (!validatedFields.success) {
@@ -121,6 +143,13 @@ export async function updatePack(id: string, values: PackFormValues) {
   try {
     const t = await getTranslations("Errors");
     const tPack = await getTranslations("Admin.packForm");
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session || (session.user as { role?: string }).role !== "admin") {
+      return { error: t("unauthorized") || "Unauthorized" };
+    }
     const validatedFields = PackSchema.safeParse(values);
 
     if (!validatedFields.success) {
