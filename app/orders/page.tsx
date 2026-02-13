@@ -5,7 +5,8 @@ export async function generateMetadata() {
     const t = await getTranslations("Metadata.orders");
     return {
         title: t("title"),
-        description: t("description")
+        description: t("description"),
+        robots: { index: false, follow: false }
     };
 }
 

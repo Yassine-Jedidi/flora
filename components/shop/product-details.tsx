@@ -188,7 +188,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   <Skeleton className="absolute inset-0 w-full h-full bg-gray-100" />
                   <Image
                     src={img.url}
-                    alt={`${product.name} - Image ${idx + 1}`}
+                    alt={`${product.name} - ${product.category?.name || 'Jewelry'} FloraAccess Tunisia (Image ${idx + 1})`}
                     fill
                     sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 520px"
                     className="object-cover"
@@ -518,6 +518,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   if (current > 1) form.setValue("quantity", current - 1);
                 }}
                 className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-pink-50 text-gray-400 hover:text-primary transition-all active:scale-90"
+                aria-label={t("decreaseQuantity")}
               >
                 <Minus className="w-4 h-4" />
               </button>
@@ -533,6 +534,7 @@ export function ProductDetails({ product }: { product: Product }) {
                   }
                 }}
                 className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-pink-50 text-gray-400 hover:text-primary transition-all active:scale-90"
+                aria-label={t("increaseQuantity")}
               >
                 <Plus className="w-4 h-4" />
               </button>

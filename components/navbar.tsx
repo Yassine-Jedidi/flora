@@ -78,7 +78,7 @@ export function Navbar() {
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
+  }, [searchQuery, t]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -111,7 +111,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <button className="lg:hidden rounded-full bg-pink-50 p-2 text-flora-dark hover:bg-pink-100 transition-colors">
+              <button className="lg:hidden rounded-full bg-pink-50 p-2 text-flora-dark hover:bg-pink-100 transition-colors" aria-label={t("openMenu")}>
                 <Menu className="h-4 w-4" />
               </button>
             </SheetTrigger>
@@ -254,7 +254,7 @@ export function Navbar() {
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-400 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-400 transition-colors" aria-label={t("clearSearch")}
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -407,7 +407,7 @@ export function Navbar() {
             {/* Mobile Search Button */}
             <button
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-              className="md:hidden rounded-full bg-pink-50 p-2 text-flora-dark hover:bg-pink-100 transition-colors"
+              className="md:hidden rounded-full bg-pink-50 p-2 text-flora-dark hover:bg-pink-100 transition-colors" aria-label={t("openSearch")}
             >
               <Search className="h-4 w-4" />
             </button>
@@ -425,7 +425,7 @@ export function Navbar() {
             ) : session ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="rounded-full bg-white p-0 text-flora-dark border-2 border-white hover:border-pink-50 transition-all duration-300 shadow-md overflow-hidden outline-none ring-offset-2 focus:ring-2 focus:ring-pink-200 group">
+                  <button className="rounded-full bg-white p-0 text-flora-dark border-2 border-white hover:border-pink-50 transition-all duration-300 shadow-md overflow-hidden outline-none ring-offset-2 focus:ring-2 focus:ring-pink-200 group" aria-label={t("userProfile")}>
                     {session.user.image ? (
                       <div className="relative w-7 h-7 rounded-full overflow-hidden">
                         <Image

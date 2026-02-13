@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 export function SparkleBanner() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -24,6 +25,17 @@ export function SparkleBanner() {
             className="relative min-h-[70vh] flex items-center justify-center overflow-hidden rounded-3xl w-[95%] max-w-7xl mx-auto md:my-4 border border-pink-500/10 shadow-2xl bg-black isolate"
             style={{ maskImage: "radial-gradient(white, black)", WebkitMaskImage: "-webkit-radial-gradient(white, black)" }}
         >
+            <div className="absolute inset-0 w-full h-full">
+                <Image
+                    src="/sparkle-bg.webp"
+                    alt="FloraAccess Jewelry Collection Tunisia ✨"
+                    fill
+                    priority
+                    className="object-cover object-center scale-105 pointer-events-none"
+                    sizes="95vw"
+                />
+            </div>
+
             <video
                 ref={videoRef}
                 autoPlay
@@ -31,8 +43,7 @@ export function SparkleBanner() {
                 loop
                 playsInline
                 preload="metadata"
-                poster="/sparkle-bg.webp"
-                className="absolute inset-0 w-full h-full object-cover object-center scale-105 pointer-events-none"
+                className="absolute inset-0 w-full h-full object-cover object-center scale-105 pointer-events-none z-0"
             >
                 <source src="/bg-video.mp4" type="video/mp4" />
             </video>

@@ -35,6 +35,7 @@ export default function FavoriteButton({
   return (
     <button
       onClick={handleToggleFavorite}
+      aria-label={active ? "Remove from favorites" : "Add to favorites"}
       className={cn(
         "absolute top-4 right-4 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md hover:scale-110 hover:bg-pink-50 transition-all z-20 group/heart",
         className

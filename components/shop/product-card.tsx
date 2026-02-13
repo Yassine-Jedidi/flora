@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/hooks/use-cart";
+import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { ProductBadge } from "./product-badge";
 import { Price } from "./price";
@@ -19,9 +20,11 @@ import { Product } from "@/lib/types";
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
+  const t = useTranslations("Shop");
   const hasDiscount =
     product.discountedPrice && product.discountedPrice < product.originalPrice;
   const discountPercentage = hasDiscount
@@ -87,13 +90,14 @@ export function ProductCard({ product }: ProductCardProps) {
         {product.images[0] ? (
           <Image
             src={product.images[0].url}
-            alt={product.name}
+            alt={`${product.name} - ${product.category?.name || ''} FloraAccess Jewelry Tunisia`}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
             style={{
               borderRadius: 'inherit',
             }}
+            priority={priority}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-50">
@@ -148,6 +152,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             className="w-12 h-12 rounded-full bg-flora-purple/10 hover:bg-flora-purple/20 text-flora-purple flex items-center justify-center transition-all shadow-sm hover:scale-110"
+            aria-label={t("product.addToCart")}
           >
             <ShoppingBag className="w-5 h-5" />
           </button>
