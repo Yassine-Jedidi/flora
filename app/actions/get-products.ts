@@ -664,7 +664,13 @@ export const getFeaturedProducts = async (): Promise<Product[]> => {
 export const getCategoryImages = async () => {
   return unstable_cache(
     async () => {
-      const categories = ["rings", "bracelets", "necklaces", "earrings"];
+      const categories = [
+        "rings",
+        "bracelets",
+        "necklaces",
+        "earrings",
+        "packs",
+      ];
       const images: Record<string, string> = {};
 
       for (const slug of categories) {

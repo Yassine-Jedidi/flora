@@ -128,6 +128,8 @@ export async function CategoryPage({
     const { sort, category, page } = await searchParams;
     const currentPage = page ? parseInt(page) : 1;
 
+    const tNav = await getTranslations("Navigation");
+
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <script
@@ -140,7 +142,7 @@ export async function CategoryPage({
                             {
                                 "@type": "ListItem",
                                 "position": 1,
-                                "name": "Accueil",
+                                "name": tNav("home"),
                                 "item": BASE_URL
                             },
                             {

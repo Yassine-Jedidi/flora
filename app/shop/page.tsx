@@ -38,6 +38,7 @@ export async function generateMetadata({
             title: dynamicTitle,
             description: t("description"),
             url: `${BASE_URL}${canonicalUrl}`,
+            siteName: "FloraAccess",
             images: [
                 {
                     url: "/logo.png",

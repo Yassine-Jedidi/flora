@@ -22,6 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
             title: `${t("title")} | FloraAccess`,
             description: t("description"),
             url: `${BASE_URL}/sale`,
+            siteName: "FloraAccess",
             images: [
                 {
                     url: "/logo.png",
