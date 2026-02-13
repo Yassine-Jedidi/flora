@@ -23,7 +23,8 @@ interface InventoryPageProps {
 
 export default async function InventoryPage({ searchParams }: InventoryPageProps) {
     const params = await searchParams;
-    const page = Number(params?.page) || 1;
+    const parsedPage = Number(params?.page);
+    const page = isNaN(parsedPage) || parsedPage < 1 ? 1 : Math.floor(parsedPage);
 
     const filters = {
         search: params?.search,

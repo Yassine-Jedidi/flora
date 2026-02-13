@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
         },
         twitter: {
             card: "summary_large_image",
-            title: t("title"),
+            title: `${t("title")} | FloraAccess`,
             description: t("description"),
             images: ["/logo.png"],
         },

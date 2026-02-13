@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { ProductForm } from "@/components/admin/product-form";
-import { getCategories, seedCategories } from "@/app/actions/product";
-import { getProduct } from "@/app/actions/get-products";
+import { seedCategories } from "@/app/actions/product";
+import { getProduct, getCategories } from "@/app/actions/get-products";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {

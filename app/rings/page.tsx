@@ -21,6 +21,7 @@ export async function generateMetadata() {
             title: `${t("title")} | FloraAccess`,
             description: t("description"),
             url: `${BASE_URL}/rings`,
+            siteName: "FloraAccess",
             images: [
                 {
                     url: "/logo.png",
@@ -34,7 +35,7 @@ export async function generateMetadata() {
         },
         twitter: {
             card: "summary_large_image",
-            title: t("title"),
+            title: `${t("title")} | FloraAccess`,
             description: t("description"),
             images: ["/logo.png"],
         },

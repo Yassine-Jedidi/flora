@@ -29,7 +29,11 @@ export default function GlobalError({
     }, [error]);
 
     return (
-        <html>
+        <html lang="en">
+            <head>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </head>
             <body className="min-h-screen flex flex-col bg-white font-sans antialiased text-[#5D5056] relative overflow-hidden">
                 <main className="flex-1 flex flex-col items-center justify-center relative pt-20 pb-20">
                     {/* Decorative Background Elements */}

@@ -126,7 +126,8 @@ export async function CategoryPage({
     isSale = false
 }: CategoryPageProps) {
     const { sort, category, page } = await searchParams;
-    const currentPage = page ? parseInt(page) : 1;
+    const parsedPage = page ? parseInt(page, 10) : 1;
+    const currentPage = isNaN(parsedPage) || parsedPage < 1 ? 1 : parsedPage;
 
     const tNav = await getTranslations("Navigation");
 

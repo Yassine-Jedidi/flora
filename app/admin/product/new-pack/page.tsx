@@ -1,4 +1,5 @@
-import { getCategories, seedCategories } from "@/app/actions/product";
+import { seedCategories } from "@/app/actions/product";
+import { getCategories } from "@/app/actions/get-products";
 import { getAvailableProducts } from "@/app/actions/pack";
 import { PackForm } from "@/components/admin/pack-form";
 import { getTranslations } from "next-intl/server";
