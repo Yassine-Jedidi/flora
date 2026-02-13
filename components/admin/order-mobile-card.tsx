@@ -67,7 +67,8 @@ export function OrderMobileCard({ order }: OrderMobileCardProps) {
                     <MapPin className="w-4 h-4 text-pink-500" />
                 </div>
                 <div className="text-[13px] font-black text-flora-dark truncate flex-1 min-w-0">
-                    {order.governorate}, {order.city} • {order.detailedAddress}
+                    {order.governorate}, {order.city}
+                    <span className="font-medium opacity-80 ml-1">• {order.detailedAddress}</span>
                 </div>
             </div>
 
