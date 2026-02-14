@@ -15,29 +15,37 @@ interface ProductFilters {
 
 import { unstable_cache } from "next/cache";
 
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 
 const mapProductForClient = <
   T extends {
     originalPrice: unknown;
     discountedPrice: unknown;
-    createdAt: Date;
-    updatedAt?: Date;
+    createdAt: Date | string;
+    updatedAt?: Date | string;
   },
 >(
   product: T,
 ) => {
+  const createdAtDate =
+    typeof product.createdAt === "string"
+      ? new Date(product.createdAt)
+      : product.createdAt;
+  const updatedAtDate = product.updatedAt
+    ? typeof product.updatedAt === "string"
+      ? new Date(product.updatedAt)
+      : product.updatedAt
+    : undefined;
+
   return {
     ...product,
     originalPrice: Number(product.originalPrice),
     discountedPrice: product.discountedPrice
       ? Number(product.discountedPrice)
       : null,
-    createdAt: product.createdAt.toISOString(),
-    ...(product.updatedAt && { updatedAt: product.updatedAt.toISOString() }),
-    isNew:
-      new Date(product.createdAt).getTime() >
-      Date.now() - 7 * 24 * 60 * 60 * 1000,
+    createdAt: createdAtDate.toISOString(),
+    ...(updatedAtDate && { updatedAt: updatedAtDate.toISOString() }),
+    isNew: createdAtDate.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000,
   };
 };
 
@@ -388,61 +396,17 @@ export const getProduct = async (id: string): Promise<Product | null> => {
       try {
         const product = await prisma.product.findUnique({
           where: { id },
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            originalPrice: true,
-            discountedPrice: true,
-            stock: true,
-            isFeatured: true,
-            isArchived: true,
-            isLive: true,
-            categoryId: true,
-            category: {
-              select: {
-                id: true,
-                name: true,
-                slug: true,
-              },
-            },
-            images: {
-              select: {
-                id: true,
-                url: true,
-              },
-            },
-            createdAt: true,
+          include: {
+            category: true,
+            images: true,
             packItems: {
-              select: {
-                id: true,
-                quantity: true,
+              include: {
                 item: {
-                  select: {
-                    id: true,
-                    name: true,
-                    originalPrice: true,
-                    discountedPrice: true,
-                    categoryId: true,
-                    category: {
-                      select: {
-                        id: true,
-                        name: true,
-                      },
-                    },
+                  include: {
+                    category: true,
                     images: {
                       take: 1,
-                      select: {
-                        id: true,
-                        url: true,
-                      },
                     },
-                    description: true,
-                    stock: true,
-                    isFeatured: true,
-                    isArchived: true,
-                    isLive: true,
-                    createdAt: true,
                   },
                 },
               },
@@ -452,8 +416,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
 
         if (!product) return null;
 
-        // Convert Decimal to number for Client Component serialization
-        const mappedProduct = {
+        return {
           ...mapProductForClient(product),
           packItems: product.packItems.map((pi) => ({
             ...pi,
@@ -461,8 +424,6 @@ export const getProduct = async (id: string): Promise<Product | null> => {
             item: mapProductForClient(pi.item),
           })),
         };
-
-        return mappedProduct;
       } catch (error) {
         console.error(`Error fetching product ${id}:`, error);
         return null;
@@ -471,7 +432,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
     [`product-${id}-${CACHE_VERSION}`],
     {
       revalidate: 3600,
-      tags: [`product-${id}`],
+      tags: [`product-${id}`, "products"],
     },
   )();
 };
