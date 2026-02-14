@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db";
 import { PackSchema, PackFormValues } from "@/lib/validations/pack";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { UTApi } from "uploadthing/server";
 import { auth } from "@/lib/auth";
@@ -125,7 +125,10 @@ export async function createPack(values: PackFormValues) {
     });
 
     revalidatePath("/admin/inventory");
-    revalidatePath("/"); // Revalidate home page if products are shown there
+    revalidatePath("/");
+    revalidateTag("products", "max");
+    revalidateTag("featured-products", "max");
+    revalidateTag("category-images", "max");
 
     return { success: tPack("toasts.successCreate"), packId: pack.id };
   } catch (error) {
@@ -287,6 +290,10 @@ export async function updatePack(id: string, values: PackFormValues) {
 
     revalidatePath("/admin/inventory");
     revalidatePath("/");
+    revalidateTag("products", "max");
+    revalidateTag("featured-products", "max");
+    revalidateTag("category-images", "max");
+    revalidateTag(`product-${id}`, "max");
 
     return { success: tPack("toasts.successUpdate") };
   } catch (error) {
