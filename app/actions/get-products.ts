@@ -15,6 +15,8 @@ interface ProductFilters {
 
 import { unstable_cache } from "next/cache";
 
+const CACHE_VERSION = "v4";
+
 const mapProductForClient = <
   T extends {
     originalPrice: unknown;
@@ -84,24 +86,22 @@ export const getProducts = async (
           }
         }
 
-        const [total, products] = await prisma.$transaction([
-          prisma.product.count({ where }),
-          prisma.product.findMany({
-            where,
-            include: {
-              category: true,
-              images: true,
-              _count: {
-                select: { packItems: true },
-              },
+        const total = await prisma.product.count({ where });
+        const products = await prisma.product.findMany({
+          where,
+          include: {
+            category: true,
+            images: true,
+            _count: {
+              select: { packItems: true },
             },
-            orderBy: {
-              createdAt: "desc",
-            },
-            take: pageSize,
-            skip: skip,
-          }),
-        ]);
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: pageSize,
+          skip: skip,
+        });
 
         // Convert Decimal to number for Client Component serialization
         const mappedProducts = products.map(mapProductForClient);
@@ -122,7 +122,9 @@ export const getProducts = async (
         };
       }
     },
-    [`products-${page}-${pageSize}-${JSON.stringify(filters)}`],
+    [
+      `products-${page}-${pageSize}-${JSON.stringify(filters)}-${CACHE_VERSION}`,
+    ],
     {
       revalidate: 3600, // Cache for 1 hour
       tags: ["products"],
@@ -142,7 +144,7 @@ export const getCategories = async () => {
         return [];
       }
     },
-    ["categories"],
+    ["categories", CACHE_VERSION],
     {
       revalidate: 3600,
       tags: ["categories"],
@@ -171,7 +173,7 @@ export const getAllProducts = async () => {
         return [];
       }
     },
-    ["all-products"],
+    ["all-products", CACHE_VERSION],
     {
       revalidate: 3600,
       tags: ["products"],
@@ -191,36 +193,42 @@ export const getProductsByCategory = async (
       try {
         const skip = (page - 1) * pageSize;
 
-        // We'll build the base WHERE clause for Prisma
+        // Build where clause based on category ID instead of nested slug for better performance and reliability
         const where: Prisma.ProductWhereInput = {
           isArchived: false,
           isLive: true,
         };
 
-        if (categorySlug !== "all") {
-          where.category = {
-            slug: categorySlug,
-          };
-        } else if (filterCategory && filterCategory !== "all") {
-          where.category = {
-            slug: filterCategory,
-          };
+        // If a specific category slug is provided (and not "all")
+        const targetSlug =
+          categorySlug !== "all"
+            ? categorySlug
+            : filterCategory !== "all"
+              ? filterCategory
+              : undefined;
+
+        if (targetSlug) {
+          const category = await prisma.category.findUnique({
+            where: { slug: targetSlug },
+            select: { id: true },
+          });
+
+          if (category) {
+            where.categoryId = category.id;
+          } else if (categorySlug !== "all") {
+            // Category not found but was requested
+            return { products: [], total: 0, totalPages: 0, currentPage: 1 };
+          }
         }
 
-        // Determine the ORDER BY clause for Prisma or manual sort
+        // Determine the ORDER BY clause
         let orderBy:
           | Prisma.ProductOrderByWithRelationInput
-          | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
+          | Prisma.ProductOrderByWithRelationInput[];
 
-        // If sorting by price, we need to handle the effective price (discounted or original)
         if (sort === "price-asc" || sort === "price" || sort === "price-desc") {
           const direction = sort === "price-desc" ? "DESC" : "ASC";
-          const categoryFilter =
-            categorySlug !== "all"
-              ? categorySlug
-              : filterCategory && filterCategory !== "all"
-                ? filterCategory
-                : null;
+          const categoryFilter = targetSlug || null;
 
           const orderedProducts: { id: string }[] = await prisma.$queryRaw`
           SELECT p.id 
@@ -241,6 +249,11 @@ export const getProductsByCategory = async (
 
           const ids = orderedProducts.map((p) => p.id);
 
+          if (ids.length === 0) {
+            return { products: [], total: 0, totalPages: 0, currentPage: page };
+          }
+
+          const total = await prisma.product.count({ where });
           const products = await prisma.product.findMany({
             where: { id: { in: ids } },
             include: {
@@ -252,7 +265,6 @@ export const getProductsByCategory = async (
           const sortedProducts = ids
             .map((id) => products.find((p) => p.id === id)!)
             .filter(Boolean);
-          const total = await prisma.product.count({ where });
 
           const mappedProducts = sortedProducts.map(mapProductForClient);
 
@@ -269,21 +281,21 @@ export const getProductsByCategory = async (
           orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
         } else if (sort === "newest") {
           orderBy = { createdAt: "desc" };
+        } else {
+          orderBy = { createdAt: "desc" };
         }
 
-        const [total, products] = await prisma.$transaction([
-          prisma.product.count({ where }),
-          prisma.product.findMany({
-            where,
-            include: {
-              category: true,
-              images: true,
-            },
-            orderBy,
-            take: pageSize,
-            skip,
-          }),
-        ]);
+        const total = await prisma.product.count({ where });
+        const products = await prisma.product.findMany({
+          where,
+          include: {
+            category: true,
+            images: true,
+          },
+          orderBy: orderBy || { createdAt: "desc" },
+          take: pageSize,
+          skip,
+        });
 
         const mappedProducts = products.map(mapProductForClient);
 
@@ -302,7 +314,7 @@ export const getProductsByCategory = async (
       }
     },
     [
-      `products-category-${categorySlug}-${sort}-${filterCategory}-${page}-${pageSize}`,
+      `products-category-${categorySlug}-${sort || "popular"}-${filterCategory || "all"}-${page}-${pageSize}-${CACHE_VERSION}`,
     ],
     {
       revalidate: 3600,
@@ -362,7 +374,7 @@ export const getRelatedProducts = async (
         return [];
       }
     },
-    [`related-products-${categoryId}-${excludeProductId}`],
+    [`related-products-${categoryId}-${excludeProductId}-${CACHE_VERSION}`],
     {
       revalidate: 3600,
       tags: ["products", `related-products-${excludeProductId}`],
@@ -456,7 +468,7 @@ export const getProduct = async (id: string): Promise<Product | null> => {
         return null;
       }
     },
-    [`product-${id}`],
+    [`product-${id}-${CACHE_VERSION}`],
     {
       revalidate: 3600,
       tags: [`product-${id}`],
@@ -653,7 +665,7 @@ export const getFeaturedProducts = async (): Promise<Product[]> => {
         return [];
       }
     },
-    ["featured-products"],
+    ["featured-products", CACHE_VERSION],
     {
       revalidate: 3600,
       tags: ["featured-products"],
@@ -696,7 +708,7 @@ export const getCategoryImages = async () => {
 
       return images;
     },
-    ["category-images"],
+    ["category-images", CACHE_VERSION],
     {
       revalidate: 3600,
       tags: ["category-images"],
@@ -714,19 +726,6 @@ export const getSaleProducts = async (
     async () => {
       try {
         const skip = (page - 1) * pageSize;
-        let orderBy:
-          | Prisma.ProductOrderByWithRelationInput
-          | Prisma.ProductOrderByWithRelationInput[] = { createdAt: "desc" };
-
-        if (sort === "popular") {
-          orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
-        } else if (sort === "newest") {
-          orderBy = { createdAt: "desc" };
-        } else if (sort === "price-asc" || sort === "price") {
-          orderBy = { originalPrice: "asc" };
-        } else if (sort === "price-desc") {
-          orderBy = { originalPrice: "desc" };
-        }
 
         const where: Prisma.ProductWhereInput = {
           discountedPrice: {
@@ -737,9 +736,33 @@ export const getSaleProducts = async (
         };
 
         if (categorySlug && categorySlug !== "all") {
-          where.category = {
-            slug: categorySlug,
-          };
+          const category = await prisma.category.findUnique({
+            where: { slug: categorySlug },
+            select: { id: true },
+          });
+
+          if (category) {
+            where.categoryId = category.id;
+          } else {
+            return { products: [], total: 0, totalPages: 0, currentPage: 1 };
+          }
+        }
+
+        // Determine the ORDER BY clause
+        let orderBy:
+          | Prisma.ProductOrderByWithRelationInput
+          | Prisma.ProductOrderByWithRelationInput[];
+
+        if (sort === "popular") {
+          orderBy = [{ isFeatured: "desc" }, { createdAt: "desc" }];
+        } else if (sort === "newest") {
+          orderBy = { createdAt: "desc" };
+        } else if (sort === "price-asc" || sort === "price") {
+          orderBy = { originalPrice: "asc" };
+        } else if (sort === "price-desc") {
+          orderBy = { originalPrice: "desc" };
+        } else {
+          orderBy = { createdAt: "desc" };
         }
 
         // Handle effective price sorting for sale items
@@ -765,6 +788,11 @@ export const getSaleProducts = async (
 
           const ids = orderedProducts.map((p) => p.id);
 
+          if (ids.length === 0) {
+            return { products: [], total: 0, totalPages: 0, currentPage: page };
+          }
+
+          const total = await prisma.product.count({ where });
           const products = await prisma.product.findMany({
             where: { id: { in: ids } },
             include: {
@@ -776,7 +804,6 @@ export const getSaleProducts = async (
           const sortedProducts = ids
             .map((id) => products.find((p) => p.id === id)!)
             .filter(Boolean);
-          const total = await prisma.product.count({ where });
 
           const mappedProducts = sortedProducts.map(mapProductForClient);
 
@@ -788,19 +815,17 @@ export const getSaleProducts = async (
           };
         }
 
-        const [total, products] = await prisma.$transaction([
-          prisma.product.count({ where }),
-          prisma.product.findMany({
-            where,
-            include: {
-              category: true,
-              images: true,
-            },
-            orderBy,
-            take: pageSize,
-            skip,
-          }),
-        ]);
+        const total = await prisma.product.count({ where });
+        const products = await prisma.product.findMany({
+          where,
+          include: {
+            category: true,
+            images: true,
+          },
+          orderBy: orderBy || { createdAt: "desc" },
+          take: pageSize,
+          skip,
+        });
 
         const mappedProducts = products.map(mapProductForClient);
 
@@ -820,7 +845,9 @@ export const getSaleProducts = async (
         };
       }
     },
-    [`sale-products-${sort}-${categorySlug}-${page}-${pageSize}`],
+    [
+      `sale-products-${sort || "popular"}-${categorySlug || "all"}-${page}-${pageSize}-${CACHE_VERSION}`,
+    ],
     {
       revalidate: 3600,
       tags: ["products", "sale-products"],
