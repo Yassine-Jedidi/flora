@@ -160,8 +160,10 @@ const sendEmail = async (to: string, subject: string, html: string) => {
       html,
     });
     console.log(`Email sent to ${to} [${subject}]`);
+    return { success: true };
   } catch (error) {
     console.error(`Error sending email to ${to}:`, error);
+    return { success: false, error: "Failed to send email" };
   }
 };
 
