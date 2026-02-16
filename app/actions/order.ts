@@ -115,16 +115,27 @@ export async function createOrder(values: OrderValues) {
         },
       });
 
-      // Decrement stock for each item
+      // Decrement stock for each item (conditional to prevent overselling)
       for (const item of finalItems) {
-        await tx.product.update({
-          where: { id: item.productId },
+        const product = products.find((p: { id: string; name: string }) => p.id === item.productId);
+        const result = await tx.product.updateMany({
+          where: {
+            id: item.productId,
+            stock: { gte: item.quantity },
+          },
           data: {
             stock: {
               decrement: item.quantity,
             },
           },
         });
+
+        if (result.count === 0) {
+          throw Object.assign(
+            new Error(t("outOfStock", { product: product?.name || "Unknown", stock: product?.stock || 0 })),
+            { code: "outOfStock" }
+          );
+        }
       }
 
       return { order, finalItems, products, recomputedTotalPrice, shippingCost };
