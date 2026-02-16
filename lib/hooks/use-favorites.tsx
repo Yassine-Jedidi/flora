@@ -69,7 +69,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
               toast.success("Favorites synced to your account!");
             } else {
               // Sync failed - keep local storage intact and log the error
-              console.error("Failed to sync favorites:", syncResult.error);
+              console.error("Failed to sync favorites:", "error" in syncResult ? syncResult.error : "Unknown error");
               toast.error("Failed to sync favorites. Your items are saved locally.");
             }
           } catch (error) {
