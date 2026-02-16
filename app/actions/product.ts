@@ -17,7 +17,7 @@ export async function createProduct(values: ProductFormValues) {
     const { error, session } = await requireAdmin();
 
     if (error || !session) {
-      return { error: t("unauthorized") || "Unauthorized" };
+      return { error: error || t("unauthorized") };
     }
 
     const tProduct = await getTranslations("Admin.productForm");
@@ -139,7 +139,7 @@ export async function deleteProduct(id: string) {
     const { error, session } = await requireAdmin();
 
     if (error || !session) {
-      return { error: t("unauthorized") || "Unauthorized" };
+      return { error: error || t("unauthorized") };
     }
 
     // 1. Find the product and its images first
@@ -206,7 +206,7 @@ export async function updateProduct(id: string, values: ProductFormValues) {
     const { error, session } = await requireAdmin();
 
     if (error || !session) {
-      return { error: t("unauthorized") || "Unauthorized" };
+      return { error: error || t("unauthorized") };
     }
 
     const tProduct = await getTranslations("Admin.productForm");
@@ -343,7 +343,7 @@ export async function deleteProductImage(url: string) {
     const { error, session } = await requireAdmin();
 
     if (error || !session) {
-      return { error: t("unauthorized") || "Unauthorized" };
+      return { error: error || t("unauthorized") };
     }
     const fileKey = url.split("/").pop();
     if (!fileKey) return { error: "Invalid URL" };

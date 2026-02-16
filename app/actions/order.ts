@@ -70,10 +70,10 @@ export async function createOrder(values: OrderValues) {
       for (const item of validatedData.items) {
         const product = products.find((p) => p.id === item.productId);
         if (!product) {
-          throw new Error(t("productNotFound"));
+          throw Object.assign(new Error(t("productNotFound")), { code: "productNotFound" });
         }
         if (product.stock < item.quantity) {
-          throw new Error(t("outOfStock", { product: product.name, stock: product.stock }));
+          throw Object.assign(new Error(t("outOfStock", { product: product.name, stock: product.stock })), { code: "outOfStock" });
         }
       }
 
@@ -199,11 +199,8 @@ export async function createOrder(values: OrderValues) {
     const t = await getTranslations("Errors.orders");
 
     // Preserve specific error messages for user-facing validation errors
-    if (error instanceof Error) {
-      const message = error.message;
-      if (message.includes("productNotFound") || message.includes("outOfStock")) {
-        return { error: message };
-      }
+    if (error instanceof Error && "code" in error && (error.code === "productNotFound" || error.code === "outOfStock")) {
+      return { error: error.message };
     }
 
     return { error: t("createError") };

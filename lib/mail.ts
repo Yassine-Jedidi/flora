@@ -151,6 +151,12 @@ const TRANSLATIONS = {
 
 const getLocale = (locale?: string): Locale => (locale === "fr" ? "fr" : "en");
 
+const maskEmail = (email: string): string => {
+  const [local, domain] = email.split("@");
+  if (!domain) return "***";
+  return `${local[0]}***@${domain}`;
+};
+
 const sendEmail = async (to: string, subject: string, html: string) => {
   try {
     await transporter.sendMail({
@@ -159,10 +165,10 @@ const sendEmail = async (to: string, subject: string, html: string) => {
       subject,
       html,
     });
-    console.log(`Email sent to ${to} [${subject}]`);
+    console.log(`Email sent to ${maskEmail(to)} [${subject}]`);
     return { success: true };
   } catch (error) {
-    console.error(`Error sending email to ${to}:`, error);
+    console.error(`Error sending email to ${maskEmail(to)}:`, error);
     return { success: false, error: "Failed to send email" };
   }
 };

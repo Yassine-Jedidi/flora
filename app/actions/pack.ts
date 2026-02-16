@@ -16,7 +16,7 @@ export async function createPack(values: PackFormValues) {
     const { error, session } = await requireAdmin();
 
     if (error || !session) {
-      return { error: t("unauthorized") || "Unauthorized" };
+      return { error: error || t("unauthorized") };
     }
 
     const validatedFields = PackSchema.safeParse(values);
@@ -134,7 +134,7 @@ export async function updatePack(id: string, values: PackFormValues) {
     const { error, session } = await requireAdmin();
 
     if (error || !session) {
-      return { error: t("unauthorized") || "Unauthorized" };
+      return { error: error || t("unauthorized") };
     }
     const validatedFields = PackSchema.safeParse(values);
 

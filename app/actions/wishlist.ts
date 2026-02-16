@@ -139,7 +139,7 @@ export async function syncWishlist(productIds: string[]) {
 
   try {
     // Use transaction to atomically check count and sync items
-    await db.$transaction(async (tx) => {
+    const txResult = await db.$transaction(async (tx) => {
       // Get current count within transaction
       const currentCount = await tx.wishlist.count({
         where: {
@@ -173,10 +173,17 @@ export async function syncWishlist(productIds: string[]) {
           update: {},
         });
       }
+
+      return { success: true, message: "Items synced successfully" };
     });
 
-    revalidatePath("/profile");
-    return { success: true };
+    // Only revalidate and return success if items were actually synced
+    if (txResult && txResult.success) {
+      revalidatePath("/profile");
+      return { success: true, message: txResult.message };
+    }
+
+    return txResult;
   } catch (error) {
     console.error("[SYNC_WISHLIST]", error);
     const t = await getTranslations("Errors");
