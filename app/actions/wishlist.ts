@@ -138,46 +138,52 @@ export async function syncWishlist(productIds: string[]) {
   }
 
   try {
-    // Get current count
-    const currentCount = await db.wishlist.count({
-      where: {
-        userId: session.user.id,
-      },
-    });
-
-    const remainingSlots = 20 - currentCount;
-    if (remainingSlots <= 0) {
-      return {
-        success: true,
-        message: "Wishlist full, sync skipped for some items",
-      };
-    }
-
-    const idsToSync = productIds.slice(0, remainingSlots);
-
-    for (const productId of idsToSync) {
-      // Upsert to avoid duplicates and errors
-      const exists = await db.wishlist.findUnique({
+    // Use transaction to atomically check count and sync items
+    const txResult = await db.$transaction(async (tx) => {
+      // Get current count within transaction
+      const currentCount = await tx.wishlist.count({
         where: {
-          userId_productId: {
-            userId: session.user.id,
-            productId,
-          },
+          userId: session.user.id,
         },
       });
 
-      if (!exists) {
-        await db.wishlist.create({
-          data: {
+      const remainingSlots = 20 - currentCount;
+      if (remainingSlots <= 0) {
+        return {
+          success: true,
+          message: "Wishlist full, sync skipped for some items",
+        };
+      }
+
+      const idsToSync = productIds.slice(0, remainingSlots);
+
+      // Upsert each item within the transaction to avoid race conditions
+      for (const productId of idsToSync) {
+        await tx.wishlist.upsert({
+          where: {
+            userId_productId: {
+              userId: session.user.id,
+              productId,
+            },
+          },
+          create: {
             userId: session.user.id,
             productId,
           },
+          update: {},
         });
       }
+
+      return { success: true, message: "Items synced successfully" };
+    });
+
+    // Only revalidate and return success if items were actually synced
+    if (txResult && txResult.success) {
+      revalidatePath("/profile");
+      return { success: true, message: txResult.message };
     }
 
-    revalidatePath("/profile");
-    return { success: true };
+    return txResult;
   } catch (error) {
     console.error("[SYNC_WISHLIST]", error);
     const t = await getTranslations("Errors");

@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import db from "@/lib/db";
+import { Prisma } from "@prisma/client";
+
+type UserWithRole = Prisma.UserGetPayload<{
+  select: { role: true };
+}>;
 
 export default async function middleware(request: NextRequest) {
   return await proxy(request);
@@ -56,10 +61,10 @@ export async function proxy(request: NextRequest) {
     // Query database directly for role
     const user = await db.user.findUnique({
       where: { id: session.user.id },
-      select: { role: true } as any,
-    });
+      select: { role: true },
+    }) as UserWithRole | null;
 
-    if (!user || (user as any).role !== "admin") {
+    if (!user || user.role?.toLowerCase() !== "admin") {
       return NextResponse.rewrite(new URL("/not-found", request.url), { status: 404 });
     }
 

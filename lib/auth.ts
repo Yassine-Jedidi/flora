@@ -1,7 +1,12 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { Prisma } from "@prisma/client";
 import db from "@/lib/db";
 import { sendPasswordResetEmail } from "@/lib/mail";
+
+type UserWithRole = Prisma.UserGetPayload<{
+  select: { role: true };
+}>;
 
 export const auth = betterAuth({
   database: prismaAdapter(db, {
@@ -74,13 +79,13 @@ export const auth = betterAuth({
     session: async (session: any) => {
       const user = await db.user.findUnique({
         where: { id: session.user.id },
-        select: { role: true } as any,
-      });
+        select: { role: true },
+      }) as UserWithRole | null;
       return {
         ...session,
         user: {
           ...session.user,
-          role: (user as any)?.role || "user",
+          role: user?.role || "user",
         },
       };
     },
