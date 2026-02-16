@@ -6,24 +6,17 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { requireAdmin } from "@/lib/permissions";
+import { UTApi } from "uploadthing/server";
+
+const utapi = new UTApi();
 
 export async function createProduct(values: ProductFormValues) {
   try {
     const t = await getTranslations("Errors");
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { error, session } = await requireAdmin();
 
-    if (!session || (session.user as { role?: string }).role !== "admin") {
-      return { error: t("unauthorized") || "Unauthorized" };
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { role: true },
-    });
-
-    if (user?.role?.toLowerCase() !== "admin") {
+    if (error || !session) {
       return { error: t("unauthorized") || "Unauthorized" };
     }
 
@@ -125,24 +118,10 @@ export async function seedCategories() {
     { name: "Packs", slug: "packs" },
   ];
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const { error, session } = await requireAdmin();
 
-  if (!session || (session.user as { role?: string }).role !== "admin") {
-    const t = await getTranslations("Errors");
-    return { error: t("unauthorized") };
-  }
-
-  // Verify admin role in database (not just session)
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { role: true },
-  });
-
-  if (user?.role?.toLowerCase() !== "admin") {
-    const t = await getTranslations("Errors");
-    return { error: t("unauthorized") };
+  if (error || !session) {
+    return { error };
   }
 
   for (const cat of defaultCategories) {
@@ -153,18 +132,13 @@ export async function seedCategories() {
     });
   }
 }
-import { UTApi } from "uploadthing/server";
-
-const utapi = new UTApi();
 
 export async function deleteProduct(id: string) {
   try {
     const t = await getTranslations("Errors");
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { error, session } = await requireAdmin();
 
-    if (!session || (session.user as { role?: string }).role !== "admin") {
+    if (error || !session) {
       return { error: t("unauthorized") || "Unauthorized" };
     }
 
@@ -229,11 +203,9 @@ export async function deleteProduct(id: string) {
 export async function updateProduct(id: string, values: ProductFormValues) {
   try {
     const t = await getTranslations("Errors");
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { error, session } = await requireAdmin();
 
-    if (!session || (session.user as { role?: string }).role !== "admin") {
+    if (error || !session) {
       return { error: t("unauthorized") || "Unauthorized" };
     }
 
@@ -368,17 +340,14 @@ export async function updateProduct(id: string, values: ProductFormValues) {
 export async function deleteProductImage(url: string) {
   try {
     const t = await getTranslations("Errors");
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { error, session } = await requireAdmin();
 
-    if (!session || (session.user as { role?: string }).role !== "admin") {
+    if (error || !session) {
       return { error: t("unauthorized") || "Unauthorized" };
     }
     const fileKey = url.split("/").pop();
     if (!fileKey) return { error: "Invalid URL" };
 
-    // utapi is defined globally in this file (lines 107)
     await utapi.deleteFiles(fileKey);
     return { success: true };
   } catch (error) {
