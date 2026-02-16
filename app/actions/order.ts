@@ -49,6 +49,13 @@ export async function createOrder(values: OrderValues) {
     const productIds = validatedData.items.map((item) => item.productId);
     const products = await prisma.product.findMany({
       where: { id: { in: productIds } },
+      select: {
+        id: true,
+        name: true,
+        stock: true,
+        originalPrice: true,
+        discountedPrice: true,
+      },
     });
 
     // Stock validation: Check if all products have sufficient stock
