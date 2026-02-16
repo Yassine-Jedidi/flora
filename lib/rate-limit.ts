@@ -1,5 +1,6 @@
 import db from "./db";
 import { headers } from "next/headers";
+import { randomUUID } from "crypto";
 
 interface RateLimitConfig {
   key: string; // Unique key for this rate limit (e.g. "order-creation", "search")
@@ -121,7 +122,7 @@ export async function checkRateLimit(config: RateLimitConfig) {
 
     // Assign a safer per-request fallback for non-sensitive endpoints
     // This prevents shared bucket "double-dipping" or blocking valid anonymous traffic
-    clientIp = `req_${Math.random().toString(36).slice(2)}`;
+    clientIp = `req_${randomUUID()}`;
   }
 
   // Create a composite key that's harder to spoof by including user-agent

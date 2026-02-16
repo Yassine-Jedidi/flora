@@ -222,7 +222,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
       select: { role: true },
     });
 
-    const isAdmin = userRole?.role === "admin";
+    const isAdmin = userRole?.role?.toLowerCase() === "admin";
 
     if (!isOwner && !isAdmin) {
       const t = await getTranslations("Errors");

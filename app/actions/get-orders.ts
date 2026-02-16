@@ -44,7 +44,7 @@ export async function getOrders(
       select: { role: true },
     });
 
-    const isAdmin = user?.role === "admin";
+    const isAdmin = user?.role?.toLowerCase() === "admin";
 
     if (!isAdmin) {
       return {
@@ -178,7 +178,7 @@ export async function getOrderGovernorates(): Promise<string[]> {
       select: { role: true },
     });
 
-    if (user?.role !== "admin") {
+    if (user?.role?.toLowerCase() !== "admin") {
       return [];
     }
     const governorates = await prisma.order.findMany({

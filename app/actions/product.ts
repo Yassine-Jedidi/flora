@@ -23,7 +23,7 @@ export async function createProduct(values: ProductFormValues) {
       select: { role: true },
     });
 
-    if (user?.role !== "admin" && user?.role !== "ADMIN") {
+    if (user?.role?.toLowerCase() !== "admin") {
       return { error: t("unauthorized") || "Unauthorized" };
     }
 
@@ -130,6 +130,17 @@ export async function seedCategories() {
   });
 
   if (!session || (session.user as { role?: string }).role !== "admin") {
+    const t = await getTranslations("Errors");
+    return { error: t("unauthorized") };
+  }
+
+  // Verify admin role in database (not just session)
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
+
+  if (user?.role?.toLowerCase() !== "admin") {
     const t = await getTranslations("Errors");
     return { error: t("unauthorized") };
   }

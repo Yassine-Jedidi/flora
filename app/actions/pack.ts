@@ -27,7 +27,7 @@ export async function createPack(values: PackFormValues) {
       select: { role: true },
     });
 
-    if (user?.role !== "admin") {
+    if (user?.role?.toLowerCase() !== "admin") {
       return { error: t("unauthorized") || "Unauthorized" };
     }
     const validatedFields = PackSchema.safeParse(values);
