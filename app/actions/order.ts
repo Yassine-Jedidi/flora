@@ -44,55 +44,58 @@ export async function createOrder(values: OrderValues) {
     }
 
     const validatedData = validatedFields.data;
+    const productIds = validatedData.items.map((item) => item.productId);
 
     // Security: Re-calculate prices from DB to prevent tampering
-    const productIds = validatedData.items.map((item) => item.productId);
-    const products = await prisma.product.findMany({
-      where: { id: { in: productIds } },
-      select: {
-        id: true,
-        name: true,
-        stock: true,
-        originalPrice: true,
-        discountedPrice: true,
-      },
-    });
-
-    // Stock validation: Check if all products have sufficient stock
-    for (const item of validatedData.items) {
-      const product = products.find((p) => p.id === item.productId);
-      if (!product) {
-        return { error: t("productNotFound") };
-      }
-      if (product.stock < item.quantity) {
-        return { error: t("outOfStock", { product: product.name, stock: product.stock }) };
-      }
-    }
-
-    let recomputedSubtotal = new Prisma.Decimal(0);
-    const finalItems = validatedData.items.map((item) => {
-      const dbProduct = products.find((p) => p.id === item.productId);
-      if (!dbProduct) throw new Error(`Product ${item.productId} not found`);
-
-      const price = dbProduct.discountedPrice ?? dbProduct.originalPrice;
-      recomputedSubtotal = recomputedSubtotal.add(price.mul(item.quantity));
-
-      return {
-        productId: item.productId,
-        quantity: item.quantity,
-        price: price,
-      };
-    });
-
-    // Total price = items subtotal + shipping cost
-    const shippingCost = new Prisma.Decimal(SHIPPING_COST);
-    const recomputedTotalPrice = recomputedSubtotal.add(shippingCost);
+    // Also validates stock to prevent overselling
 
     // Get user's locale to store with the order
     const locale = await getLocale();
 
-    // Use transaction to ensure atomic order creation and stock decrement
-    const order = await prisma.$transaction(async (tx) => {
+    // Use transaction to ensure atomic validation, order creation, and stock decrement
+    const orderData = await prisma.$transaction(async (tx) => {
+      // Fetch products inside transaction for consistency
+      const products = await tx.product.findMany({
+        where: { id: { in: productIds } },
+        select: {
+          id: true,
+          name: true,
+          stock: true,
+          originalPrice: true,
+          discountedPrice: true,
+        },
+      });
+
+      // Stock validation: Check if all products have sufficient stock
+      for (const item of validatedData.items) {
+        const product = products.find((p) => p.id === item.productId);
+        if (!product) {
+          throw new Error(t("productNotFound"));
+        }
+        if (product.stock < item.quantity) {
+          throw new Error(t("outOfStock", { product: product.name, stock: product.stock }));
+        }
+      }
+
+      let recomputedSubtotal = new Prisma.Decimal(0);
+      const finalItems = validatedData.items.map((item) => {
+        const dbProduct = products.find((p) => p.id === item.productId);
+        if (!dbProduct) throw new Error(`Product ${item.productId} not found`);
+
+        const price = dbProduct.discountedPrice ?? dbProduct.originalPrice;
+        recomputedSubtotal = recomputedSubtotal.add(price.mul(item.quantity));
+
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          price: price,
+        };
+      });
+
+      // Total price = items subtotal + shipping cost
+      const shippingCost = new Prisma.Decimal(SHIPPING_COST);
+      const recomputedTotalPrice = recomputedSubtotal.add(shippingCost);
+
       // Create the order
       const order = await tx.order.create({
         data: {
@@ -124,16 +127,15 @@ export async function createOrder(values: OrderValues) {
         });
       }
 
-      return order;
+      return { order, finalItems, products, recomputedTotalPrice, shippingCost };
     });
 
     // Send order confirmation email if user is logged in
     if (session?.user?.email) {
       try {
         // Map verified items for email (using trusted server-side data)
-        const emailItems = finalItems.map((item) => {
-          // Reuse 'products' from the validation step (line 46)
-          const product = products.find((p) => p.id === item.productId);
+        const emailItems = orderData.finalItems.map((item: { productId: string; quantity: number; price: Prisma.Decimal }) => {
+          const product = orderData.products.find((p: { id: string; name: string }) => p.id === item.productId);
           return {
             name: product?.name || "Product Item",
             quantity: item.quantity,
@@ -147,11 +149,11 @@ export async function createOrder(values: OrderValues) {
         // The catch handler is properly attached and will log any email sending errors.
         // Email failures won't affect order creation success since the order is already saved.
         sendOrderConfirmationEmail({
-          orderId: order.id,
+          orderId: orderData.order.id,
           userEmail: session.user.email,
           userName: session.user.name ?? validatedData.fullName,
-          totalPrice: recomputedTotalPrice.toNumber(),
-          shippingCost: shippingCost.toNumber(),
+          totalPrice: orderData.recomputedTotalPrice.toNumber(),
+          shippingCost: orderData.shippingCost.toNumber(),
           items: emailItems,
           shippingAddress: {
             fullName: validatedData.fullName,
@@ -191,10 +193,19 @@ export async function createOrder(values: OrderValues) {
       });
     }
 
-    return { success: true, orderId: order.id };
+    return { success: true, orderId: orderData.order.id };
   } catch (error) {
     console.error("Order creation error:", error);
     const t = await getTranslations("Errors.orders");
+
+    // Preserve specific error messages for user-facing validation errors
+    if (error instanceof Error) {
+      const message = error.message;
+      if (message.includes("productNotFound") || message.includes("outOfStock")) {
+        return { error: message };
+      }
+    }
+
     return { error: t("createError") };
   }
 }
