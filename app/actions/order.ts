@@ -51,6 +51,17 @@ export async function createOrder(values: OrderValues) {
       where: { id: { in: productIds } },
     });
 
+    // Stock validation: Check if all products have sufficient stock
+    for (const item of validatedData.items) {
+      const product = products.find((p) => p.id === item.productId);
+      if (!product) {
+        return { error: t("productNotFound") };
+      }
+      if (product.stock < item.quantity) {
+        return { error: t("outOfStock", { product: product.name, stock: product.stock }) };
+      }
+    }
+
     let recomputedSubtotal = new Prisma.Decimal(0);
     const finalItems = validatedData.items.map((item) => {
       const dbProduct = products.find((p) => p.id === item.productId);
@@ -73,22 +84,40 @@ export async function createOrder(values: OrderValues) {
     // Get user's locale to store with the order
     const locale = await getLocale();
 
-    const order = await prisma.order.create({
-      data: {
-        userId: session?.user?.id,
-        fullName: validatedData.fullName,
-        phoneNumber: validatedData.phoneNumber,
-        governorate: validatedData.governorate,
-        city: validatedData.city,
-        detailedAddress: validatedData.detailedAddress,
-        totalPrice: recomputedTotalPrice,
-        shippingCost: shippingCost,
-        status: "PENDING",
-        language: locale,
-        items: {
-          create: finalItems,
+    // Use transaction to ensure atomic order creation and stock decrement
+    const order = await prisma.$transaction(async (tx) => {
+      // Create the order
+      const order = await tx.order.create({
+        data: {
+          userId: session?.user?.id,
+          fullName: validatedData.fullName,
+          phoneNumber: validatedData.phoneNumber,
+          governorate: validatedData.governorate,
+          city: validatedData.city,
+          detailedAddress: validatedData.detailedAddress,
+          totalPrice: recomputedTotalPrice,
+          shippingCost: shippingCost,
+          status: "PENDING",
+          language: locale,
+          items: {
+            create: finalItems,
+          },
         },
-      },
+      });
+
+      // Decrement stock for each item
+      for (const item of finalItems) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: {
+            stock: {
+              decrement: item.quantity,
+            },
+          },
+        });
+      }
+
+      return order;
     });
 
     // Send order confirmation email if user is logged in
