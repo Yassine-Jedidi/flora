@@ -34,12 +34,12 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     title: {
-      default: t("title"),
-      template: `%s | FloraAccess`,
+      default: "Flora Accessories",
+      template: `%s | Flora Accessories`,
     },
     description: t("description"),
-    keywords: ["jewelry", "accessories", "rings", "necklaces", "bracelets", "earrings", "Tunisia", "FloraAccess"],
-    authors: [{ name: "FloraAccess" }],
+    keywords: ["jewelry", "accessories", "rings", "necklaces", "bracelets", "earrings", "Tunisia", "Flora Accessories", "Flora Access"],
+    authors: [{ name: "Flora Accessories" }],
     creator: "FloraAccess",
     publisher: "FloraAccess",
     formatDetection: {
@@ -54,13 +54,13 @@ export async function generateMetadata(): Promise<Metadata> {
       title: t("title"),
       description: t("description"),
       url: BASE_URL,
-      siteName: "FloraAccess",
+      siteName: "Flora Accessories",
       images: [
         {
           url: "/logo.png",
           width: 587,
           height: 581,
-          alt: "FloraAccess - Bijoux et Accessoires de Luxe en Tunisie",
+          alt: "Flora Access - Bijoux et Accessoires de Luxe en Tunisie",
         },
       ],
       locale: (await getLocale()).replace("-", "_"),
@@ -78,7 +78,7 @@ export async function generateMetadata(): Promise<Metadata> {
       apple: "/apple-icon.png",
     },
     appleWebApp: {
-      title: "FloraAccess",
+      title: "Flora Accessories",
       statusBarStyle: "default",
       capable: true,
     },
@@ -117,7 +117,7 @@ export default async function RootLayout({
                   __html: JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "Organization",
-                    "name": "FloraAccess",
+                    "name": "Flora Accessories",
                     "url": BASE_URL,
                     "logo": `${BASE_URL}/logo.png`,
                     "sameAs": [

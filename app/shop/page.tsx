@@ -16,8 +16,8 @@ export async function generateMetadata({
     const isValid = isValidCategory(category);
 
     const dynamicTitle = isValid
-        ? `${tTitles(category as string)} | FloraAccess`
-        : `${t("title")} | FloraAccess`;
+        ? tTitles(category as string)
+        : t("title");
 
     const canonicalUrl = isValid
         ? `/shop?category=${category}`
@@ -38,13 +38,13 @@ export async function generateMetadata({
             title: dynamicTitle,
             description: t("description"),
             url: `${BASE_URL}${canonicalUrl}`,
-            siteName: "FloraAccess",
+            siteName: "Flora Accessories",
             images: [
                 {
                     url: "/logo.png",
                     width: 587,
                     height: 581,
-                    alt: "FloraAccess Collection",
+                    alt: "Flora Accessories Collection",
                 },
             ],
             locale: locale.replace("-", "_"),

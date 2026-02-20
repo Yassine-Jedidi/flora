@@ -28,7 +28,7 @@ export function SparkleBanner() {
             <div className="absolute inset-0 w-full h-full">
                 <Image
                     src="/sparkle-bg.webp"
-                    alt="FloraAccess Jewelry Collection Tunisia ✨"
+                    alt="Flora Accessories Jewelry Collection Tunisia ✨"
                     fill
                     priority
                     className="object-cover object-center scale-105 pointer-events-none"

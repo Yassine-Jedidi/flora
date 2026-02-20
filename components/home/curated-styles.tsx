@@ -71,7 +71,7 @@ export async function CuratedStyles() {
                                 {imageUrl ? (
                                     <Image
                                         src={imageUrl}
-                                        alt={`${category.name} collection | FloraAccess Jewelry Tunisia`}
+                                        alt={`${category.name} collection | Flora Accessories Jewelry Tunisia`}
                                         fill
                                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"

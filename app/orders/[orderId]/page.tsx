@@ -5,7 +5,7 @@ export async function generateMetadata({ params }: { params: Promise<{ orderId: 
     const { orderId } = await params;
     const t = await getTranslations("Orders.details");
     return {
-        title: `${t("title")} #${orderId.slice(-8).toUpperCase()} | Flora Accessories`,
+        title: t("title") + " #" + orderId.slice(-8).toUpperCase(),
         description: t("statusDesc.processing"),
         robots: { index: false, follow: false }
     };

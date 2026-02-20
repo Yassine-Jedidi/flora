@@ -42,7 +42,7 @@ export async function generateMetadata({
             },
         },
         openGraph: {
-            title: `${product.name} | FloraAccess`,
+            title: product.name,
             description: description,
             type: "article",
             url: `${BASE_URL}/product/${product.id}`,
@@ -150,7 +150,7 @@ export default async function ProductPage({
         },
         "brand": {
             "@type": "Brand",
-            "name": "FloraAccess"
+            "name": "Flora Accessories"
         },
         // Placeholder for aggregateRating to enable star snippets
         // In a real scenario, this would come from your reviews DB

@@ -1,110 +1,110 @@
 {
     "Metadata": {
         "root": {
-            "title": "Flora | Explorez des Trésors Uniques",
+            "title": "Flora Accessories",
             "description": "Découvrez de magnifiques bijoux et accessoires pour illuminer votre journée."
         },
         "admin": {
-            "title": "Tableau de Bord Admin | Flora",
+            "title": "Tableau de Bord Admin",
             "description": "Gérez votre collection de bijoux et vos commandes.",
             "newProduct": {
-                "title": "Nouveau Produit | Admin Flora",
+                "title": "Nouveau Produit",
                 "description": "Ajoutez un nouveau trésor à votre collection."
             },
             "editProduct": {
-                "title": "Modifier le Produit | Admin Flora",
+                "title": "Modifier le Produit",
                 "description": "Mettre à jour les détails du produit."
             },
             "newPack": {
-                "title": "Nouveau Pack | Admin Flora",
+                "title": "Nouveau Pack",
                 "description": "Créez un nouveau lot de valeur."
             },
             "editPack": {
-                "title": "Modifier le Pack | Admin Flora",
+                "title": "Modifier le Pack",
                 "description": "Mettre à jour les détails du pack."
             },
             "orders": {
-                "title": "Gérer les Commandes | Admin Flora",
+                "title": "Gérer les Commandes",
                 "description": "Consultez et gérez les commandes des clients."
             },
             "inventory": {
-                "title": "Gestion de l'Inventaire | Admin Flora",
+                "title": "Gestion de l'Inventaire",
                 "description": "Gérez votre catalogue de produits."
             }
         },
         "sale": {
-            "title": "Collection en Solde | Flora Accessories",
+            "title": "Collection en Solde",
             "description": "Découvrez nos trésors à durée limitée avec des remises exclusives"
         },
         "faq": {
-            "title": "Foire Aux Questions | Flora Accessories",
+            "title": "Foire Aux Questions",
             "description": "Trouvez des réponses aux questions courantes sur les commandes, la livraison et les produits chez Flora Accessories Tunisie."
         },
         "shipping": {
-            "title": "Expédition & Livraison | Flora Accessories",
+            "title": "Expédition & Livraison",
             "description": "Découvrez notre politique d'expédition, les délais de livraison et les coûts pour les commandes dans toute la Tunisie."
         },
         "search": {
-            "title": "Rechercher des Trésors | Flora Accessories",
-            "description": "Recherchez vos bijoux et accessoires préférés sur Flora."
+            "title": "Rechercher des Trésors",
+            "description": "Recherchez vos bijoux et accessoires préférés sur Flora Accessories."
         },
         "favorites": {
-            "title": "Vos Favoris | Flora Accessories",
+            "title": "Vos Favoris",
             "description": "Consultez les trésors que vous avez enregistrés dans vos favoris."
         },
         "orders": {
-            "title": "Mes Commandes | Flora Accessories",
+            "title": "Mes Commandes",
             "description": "Suivez et gérez vos commandes de trésors."
         },
         "profile": {
-            "title": "Mon Profil | Flora Accessories",
+            "title": "Mon Profil",
             "description": "Gérez votre compte, vos adresses et votre sécurité."
         },
         "checkout": {
-            "title": "Caisse | Flora Accessories",
+            "title": "Caisse",
             "description": "Complétez votre achat en toute sécurité."
         },
         "auth": {
             "signIn": {
-                "title": "Connexion | Flora Accessories",
+                "title": "Connexion",
                 "description": "Connectez-vous à votre compte pour gérer vos commandes et vos favoris."
             },
             "signUp": {
-                "title": "Inscription | Flora Accessories",
-                "description": "Créez un compte pour commencer votre voyage avec Flora."
+                "title": "Inscription",
+                "description": "Créez un compte pour commencer votre voyage avec Flora Accessories."
             },
             "forgotPassword": {
-                "title": "Mot de Passe Oublié | Flora Accessories",
+                "title": "Mot de Passe Oublié",
                 "description": "Réinitialisez le mot de passe de votre compte."
             },
             "resetPassword": {
-                "title": "Réinitialiser le Mot de Passe | Flora Accessories",
+                "title": "Réinitialiser le Mot de Passe",
                 "description": "Définissez un nouveau mot de passe pour votre compte."
             }
         },
         "categories": {
             "all": {
-                "title": "Tous les Trésors | Flora Accessories",
+                "title": "Tous les Trésors",
                 "description": "Explorez notre collection complète de bijoux et accessoires uniques."
             },
             "rings": {
-                "title": "Bagues | Flora Accessories",
+                "title": "Bagues",
                 "description": "Découvrez notre magnifique collection de bagues élégantes."
             },
             "bracelets": {
-                "title": "Bracelets | Flora Accessories",
+                "title": "Bracelets",
                 "description": "Trouvez le bracelet parfait pour compléter votre style."
             },
             "necklaces": {
-                "title": "Colliers | Flora Accessories",
+                "title": "Colliers",
                 "description": "Explorez notre collection de colliers étincelants."
             },
             "earrings": {
-                "title": "Boucles d'oreilles | Flora Accessories",
+                "title": "Boucles d'oreilles",
                 "description": "Découvrez des boucles d'oreilles élégantes pour chaque occasion."
             },
             "packs": {
-                "title": "Packs Spéciaux | Flora Accessories",
+                "title": "Packs Spéciaux",
                 "description": "Économisez plus avec nos packs de bijoux et accessoires."
             }
         }
@@ -157,7 +157,7 @@
         }
     },
     "HomePage": {
-        "title": "Flora Access",
+        "title": "Flora Accessories",
         "subtitle": "Élégance intemporelle pour toutes les occasions",
         "sparkleTitle": "Brillez chaque jour",
         "sparkleSubtitle": "Découvrez les accessoires les plus mignons pour illuminer votre look quotidien.",
@@ -187,7 +187,7 @@
         "myProfile": "Mon Profil",
         "myOrders": "Mes Commandes",
         "wishlist": "Liste de souhaits",
-        "welcome": "Bienvenue chez Flora",
+        "welcome": "Bienvenue chez Flora Accessories",
         "createAccount": "Créer un compte",
         "menuTitle": "Menu de navigation",
         "gift": "CADEAU",
@@ -202,7 +202,7 @@
         "openSearch": "Ouvrir la recherche",
         "clearSearch": "Effacer la recherche",
         "userProfile": "Profil utilisateur",
-        "logoAlt": "Logo FloraAccess - Bijoux et Accessoires Tunisie"
+        "logoAlt": "Logo Flora Accessories - Bijoux et Accessoires Tunisie"
     },
     "Checkout": {
         "title": "Paiement",
@@ -524,7 +524,7 @@
             "signIn": "Se connecter",
             "noAccount": "Pas encore de compte ?",
             "signUp": "S'inscrire",
-            "success": "Bon retour chez Flora ! 🎀",
+            "success": "Bon retour chez Flora Accessories ! 🎀",
             "error": "E-mail ou mot de passe invalide",
             "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
             "validationError": "Échec de la connexion",
@@ -551,7 +551,7 @@
             "signUp": "S'inscrire",
             "hasAccount": "Vous avez déjà un compte ?",
             "signIn": "Se connecter",
-            "success": "Compte créé ! Bienvenue chez Flora 🎀",
+            "success": "Compte créé ! Bienvenue chez Flora Accessories 🎀",
             "error": "Échec de la création du compte",
             "socialError": "Échec de la connexion avec {provider}",
             "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
@@ -660,7 +660,7 @@
             "labelMemberSince": "Membre depuis",
             "labelPhone": "Numéro de téléphone",
             "noPhone": "Aucun téléphone ajouté",
-            "joinedFlora": "A rejoint Flora",
+            "joinedFlora": "A rejoint Flora Accessories",
             "activeContact": "Contact actif",
             "linkedAccounts": "Comptes liés",
             "noLinkedAccounts": "Aucun compte lié trouvé.",

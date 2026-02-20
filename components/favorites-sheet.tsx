@@ -105,7 +105,7 @@ export function FavoritesSheet() {
                     {product.images[0] ? (
                       <Image
                         src={product.images[0].url}
-                        alt={`${product.name} - FloraAccess`}
+                        alt={`${product.name} - Flora Accessories`}
                         fill
                         sizes="96px"
                         quality={50}

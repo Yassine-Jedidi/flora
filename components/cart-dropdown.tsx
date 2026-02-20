@@ -98,7 +98,7 @@ export function CartDropdown() {
                       {item.image && (
                         <Image
                           src={item.image}
-                          alt={`${item.name} - FloraAccess`}
+                          alt={`${item.name} - Flora Accessories`}
                           fill
                           sizes="64px"
                           quality={50}

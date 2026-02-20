@@ -19,16 +19,16 @@ export async function generateMetadata(): Promise<Metadata> {
             },
         },
         openGraph: {
-            title: `${t("title")} | FloraAccess`,
+            title: t("title"),
             description: t("description"),
             url: `${BASE_URL}/sale`,
-            siteName: "FloraAccess",
+            siteName: "Flora Accessories",
             images: [
                 {
                     url: "/logo.png",
                     width: 587,
                     height: 581,
-                    alt: "FloraAccess Sale Collection",
+                    alt: "Flora Accessories Sale Collection",
                 },
             ],
             locale: locale.replace("-", "_"),
@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
         },
         twitter: {
             card: "summary_large_image",
-            title: `${t("title")} | FloraAccess`,
+            title: t("title"),
             description: t("description"),
             images: ["/logo.png"],
         },

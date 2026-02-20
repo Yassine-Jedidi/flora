@@ -1,110 +1,110 @@
 {
     "Metadata": {
         "root": {
-            "title": "Flora | Explore Unique Treasures",
+            "title": "Flora Accessories",
             "description": "Discover beautiful jewelry and accessories to brighten your day."
         },
         "admin": {
-            "title": "Admin Dashboard | Flora",
+            "title": "Admin Dashboard",
             "description": "Manage your jewelry collection and orders.",
             "newProduct": {
-                "title": "New Product | Flora Admin",
+                "title": "New Product",
                 "description": "Add a new treasure to your collection."
             },
             "editProduct": {
-                "title": "Edit Product | Flora Admin",
+                "title": "Edit Product",
                 "description": "Update product details."
             },
             "newPack": {
-                "title": "New Pack | Flora Admin",
+                "title": "New Pack",
                 "description": "Create a new value bundle."
             },
             "editPack": {
-                "title": "Edit Pack | Flora Admin",
+                "title": "Edit Pack",
                 "description": "Update pack details."
             },
             "orders": {
-                "title": "Manage Orders | Flora Admin",
+                "title": "Manage Orders",
                 "description": "View and manage customer orders."
             },
             "inventory": {
-                "title": "Inventory Management | Flora Admin",
+                "title": "Inventory Management",
                 "description": "Manage your product catalog."
             }
         },
         "sale": {
-            "title": "Sale Collection | Flora Accessories",
+            "title": "Sale Collection",
             "description": "Discover our limited-time treasures with exclusive discounts"
         },
         "faq": {
-            "title": "Frequently Asked Questions | Flora Accessories",
+            "title": "Frequently Asked Questions",
             "description": "Find answers to common questions about ordering, delivery, and products at Flora Accessories Tunisia."
         },
         "shipping": {
-            "title": "Shipping & Delivery | Flora Accessories",
+            "title": "Shipping & Delivery",
             "description": "Learn about our shipping policy, delivery times, and costs for orders across Tunisia."
         },
         "search": {
-            "title": "Search Treasures | Flora Accessories",
-            "description": "Search for your favorite jewelry and accessories at Flora."
+            "title": "Search Treasures",
+            "description": "Search for your favorite jewelry and accessories at Flora Accessories."
         },
         "favorites": {
-            "title": "Your Favorites | Flora Accessories",
+            "title": "Your Favorites",
             "description": "View the treasures you've saved to your favorites."
         },
         "orders": {
-            "title": "My Orders | Flora Accessories",
+            "title": "My Orders",
             "description": "Track and manage your treasure orders."
         },
         "profile": {
-            "title": "My Profile | Flora Accessories",
+            "title": "My Profile",
             "description": "Manage your account, addresses, and security."
         },
         "checkout": {
-            "title": "Checkout | Flora Accessories",
+            "title": "Checkout",
             "description": "Complete your purchase securely."
         },
         "auth": {
             "signIn": {
-                "title": "Sign In | Flora Accessories",
+                "title": "Sign In",
                 "description": "Sign in to your account to manage your orders and favorites."
             },
             "signUp": {
-                "title": "Sign Up | Flora Accessories",
+                "title": "Sign Up",
                 "description": "Create an account to start your journey with Flora."
             },
             "forgotPassword": {
-                "title": "Forgot Password | Flora Accessories",
+                "title": "Forgot Password",
                 "description": "Reset your account password."
             },
             "resetPassword": {
-                "title": "Reset Password | Flora Accessories",
+                "title": "Reset Password",
                 "description": "Set a new password for your account."
             }
         },
         "categories": {
             "all": {
-                "title": "All Treasures | Flora Accessories",
+                "title": "All Treasures",
                 "description": "Explore our complete collection of unique jewelry and accessories."
             },
             "rings": {
-                "title": "Rings | Flora Accessories",
+                "title": "Rings",
                 "description": "Discover our beautiful collection of elegant rings."
             },
             "bracelets": {
-                "title": "Bracelets | Flora Accessories",
+                "title": "Bracelets",
                 "description": "Find the perfect bracelet to complement your style."
             },
             "necklaces": {
-                "title": "Necklaces | Flora Accessories",
+                "title": "Necklaces",
                 "description": "Explore our curated collection of stunning necklaces."
             },
             "earrings": {
-                "title": "Earrings | Flora Accessories",
+                "title": "Earrings",
                 "description": "Discover elegant earrings for every occasion."
             },
             "packs": {
-                "title": "Special Packs | Flora Accessories",
+                "title": "Special Packs",
                 "description": "Save more with our curated jewelry and accessory packs."
             }
         }
@@ -157,7 +157,7 @@
         }
     },
     "HomePage": {
-        "title": "Flora Access",
+        "title": "Flora Accessories",
         "subtitle": "Timeless elegance for every occasion",
         "sparkleTitle": "Sparkle Every Day",
         "sparkleSubtitle": "Discover the cutest accessories to brighten up your daily look.",
@@ -187,7 +187,7 @@
         "myProfile": "My Profile",
         "myOrders": "My Orders",
         "wishlist": "Wishlist",
-        "welcome": "Welcome to Flora",
+        "welcome": "Welcome to Flora Accessories",
         "createAccount": "Create Account",
         "menuTitle": "Navigation Menu",
         "gift": "GIFT",
@@ -202,7 +202,7 @@
         "openSearch": "Open search",
         "clearSearch": "Clear search",
         "userProfile": "User profile",
-        "logoAlt": "FloraAccess Logo - Jewelry and Accessories Tunisia"
+        "logoAlt": "Flora Accessories Logo - Jewelry and Accessories Tunisia"
     },
     "Checkout": {
         "title": "Checkout",
@@ -524,7 +524,7 @@
             "signIn": "Sign In",
             "noAccount": "Don't have an account?",
             "signUp": "Sign Up",
-            "success": "Welcome back to Flora! 🎀",
+            "success": "Welcome back to Flora Accessories! 🎀",
             "error": "Invalid email or password",
             "unexpectedError": "An unexpected error occurred. Please try again.",
             "validationError": "Sign in failed",
@@ -551,7 +551,7 @@
             "signUp": "Sign Up",
             "hasAccount": "Already have an account?",
             "signIn": "Sign In",
-            "success": "Account created! Welcome to Flora 🎀",
+            "success": "Account created! Welcome to Flora Accessories 🎀",
             "error": "Failed to create account",
             "socialError": "Failed to sign in with {provider}",
             "unexpectedError": "An unexpected error occurred. Please try again.",
@@ -660,7 +660,7 @@
             "labelMemberSince": "Member Since",
             "labelPhone": "Phone Number",
             "noPhone": "No phone added",
-            "joinedFlora": "Joined Flora",
+            "joinedFlora": "Joined Flora Accessories",
             "activeContact": "Active Contact",
             "linkedAccounts": "Linked Accounts",
             "noLinkedAccounts": "No linked accounts found.",

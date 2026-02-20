@@ -46,7 +46,7 @@ export default function Home() {
             {
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "FloraAccess",
+              "name": "Flora Accessories",
               "url": BASE_URL,
               "logo": `${BASE_URL}/logo.png`,
               "sameAs": [

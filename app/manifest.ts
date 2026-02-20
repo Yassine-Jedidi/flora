@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "FloraAccess - Bijoux et Accessoires de Luxe",
-    short_name: "FloraAccess",
+    name: "Flora Accessories - Bijoux et Accessoires de Luxe",
+    short_name: "Flora Accessories",
     description:
       "Explorez notre collection exclusive de bijoux et d'accessoires de mode pour chaque occasion. Éclat, style et sophistication livrés à votre porte.",
     start_url: "/",

@@ -16,16 +16,16 @@ export async function generateMetadata() {
             },
         },
         openGraph: {
-            title: `${t("title")} | FloraAccess`,
+            title: t("title"),
             description: t("description"),
             url: "/necklaces",
-            siteName: "FloraAccess",
+            siteName: "Flora Accessories",
             images: [
                 {
                     url: "/logo.png",
                     width: 587,
                     height: 581,
-                    alt: "FloraAccess Jewelry Tunisia",
+                    alt: "Flora Accessories Jewelry Tunisia",
                 },
             ],
             locale: locale.replace("-", "_"),
@@ -33,7 +33,7 @@ export async function generateMetadata() {
         },
         twitter: {
             card: "summary_large_image",
-            title: `${t("title")} | FloraAccess`,
+            title: t("title"),
             description: t("description"),
             images: ["/logo.png"],
         },
